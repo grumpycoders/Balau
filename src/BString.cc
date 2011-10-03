@@ -4,19 +4,19 @@
 #include "BString.h"
 
 void Balau::String::set(const char * fmt, va_list ap) {
-    char * t;
     unsigned int l;
 #ifdef _WIN32
     // Microsoft is stupid.
     char tt[65536];
     l = _vsnprintf(tt, sizeof(tt) - 1, fmt, ap);
     tt[65535] = 0;
-    t = ::strdup(tt);
+    assign(tt, l);
 #else
+    char * t;
     l = vasprintf(&t, fmt, ap);
-#endif
     assign(t, l);
     free(t);
+#endif
 }
 
 int Balau::String::strchrcnt(char c) const {
