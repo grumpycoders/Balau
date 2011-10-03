@@ -8,9 +8,11 @@ DISTRIB = $(shell cat /etc/issue | cut -f 1 -d\  | head -1)
 
 CC = gcc
 CXX = g++
-LD = g++ -m32
-AS = gcc -c -m32
+LD = g++
+AS = gcc -c
 AR = ar rcs
+
+CPPFLAGS = -O3
 
 ifeq ($(SYSTEM),Darwin)
     ARCH_FLAGS = -arch i386
@@ -28,6 +30,8 @@ else
     ARCH_FLAGS = -march=i686 -m32
     ASFLAGS = -march=i686 --32
     STRIP = strip --strip-unneeded
+    CPPFLAGS += -flto
+    LDFLAGS += -flto -O3
 endif
 
 INCLUDES = -Iincludes
@@ -62,13 +66,16 @@ all: dep lib
 tests: $(TESTS)
 	for t in $(TESTS) ; do ./$$t ; done
 
+strip: $(TESTS)
+	for t in $(TESTS) ; do $(STRIP) ./$$t ; done
+
 lib: $(LIB)
 
 libBalau.a: $(BALAU_OBJECTS)
 	$(AR) libBalau.a $(BALAU_OBJECTS)
 
 test-String: test-String.o $(LIB)
-	$(LD) -o $@ $< ./$(LIB)
+	$(LD) $(LDFLAGS) -o $@ $< ./$(LIB)
 
 dep: $(ALL_DEPS)
 
@@ -80,4 +87,4 @@ dep: $(ALL_DEPS)
 clean:
 	rm -f $(ALL_OBJECTS) $(TESTS) $(LIB) $(ALL_DEPS)
 
-.PHONY: lib tests clean
+.PHONY: lib tests clean strip
