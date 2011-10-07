@@ -8,6 +8,7 @@ class TLSManager {
   public:
     virtual void * getTLS();
     virtual void * setTLS(void * val);
+    void * createTLS();
 };
 
 extern TLSManager * tlsManager;
@@ -32,6 +33,26 @@ class Local : public AtStart {
     int m_idx;
     static int s_size;
     static void ** m_globals;
+    
+    friend class TLSManager;
+};
+
+template<class T>
+class DefaultTmpl : public AtStart {
+  public:
+      DefaultTmpl(int pri) : AtStart(pri) { }
+  protected:
+    virtual void doStart() { new T; }
+};
+
+template<class T>
+class LocalTmpl : public Local {
+  public:
+      LocalTmpl() { }
+    T * getGlobal() { return reinterpret_cast<T *>(Local::getGlobal()); }
+    T * get() { return reinterpret_cast<T *>(Local::get()); }
+    void setGlobal(T * obj) { Local::setGlobal(obj); }
+    void set(T * obj) { Local::set(obj); }
 };
 
 };

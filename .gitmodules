@@ -1,0 +1,3 @@
+[submodule "libcoro"]
+	path = libcoro
+	url = git.grumpycoder.net:/pub/repo.git/libcoro

@@ -13,6 +13,10 @@ void * Balau::TLSManager::setTLS(void * val) {
     return r;
 }
 
+void * Balau::TLSManager::createTLS() {
+    return Local::create();
+}
+
 static Balau::TLSManager dummyTLSManager;
 Balau::TLSManager * Balau::tlsManager = &dummyTLSManager;
 
