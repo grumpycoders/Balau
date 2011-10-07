@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdarg.h>
 #include <BString.h>
 
 namespace Balau {
@@ -21,14 +22,15 @@ class Printer {
     virtual void _print(const char * fmt, va_list ap);
 
   private:
+    void _print(const char * fmt, ...);
     void _log(uint32_t level, const char * fmt, va_list ap);
-    static Printer * getPrinter();
 
   public:
       Printer();
 
     void setLocal();
 
+    static Printer * getPrinter();
     static void log(uint32_t level, const String & fmt, ...) { va_list ap; va_start(ap, fmt); log(level, fmt.to_charp(), ap); va_end(ap); }
     static void log(uint32_t level, const char * fmt, ...) { va_list ap; va_start(ap, fmt); log(level, fmt, ap); va_end(ap); }
     static void log(uint32_t level, const char * fmt, va_list ap) { getPrinter()->_log(level, fmt, ap); }
@@ -36,8 +38,8 @@ class Printer {
     static void print(const char * fmt, ...) { va_list ap; va_start(ap, fmt); print(fmt, ap); va_end(ap); }
     static void print(const char * fmt, va_list ap) { getPrinter()->_print(fmt, ap); }
 
-    void enable(uint32_t levels = M_ALL) { m_verbosity |= levels; }
-    void disable(uint32_t levels = M_ALL) { m_verbosity &= ~levels; }
+    static void enable(uint32_t levels = M_ALL) { getPrinter()->m_verbosity |= levels; }
+    static void disable(uint32_t levels = M_ALL) { getPrinter()->m_verbosity &= ~levels; }
 
     uint32_t m_verbosity;
 };

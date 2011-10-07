@@ -12,7 +12,12 @@ LD = g++
 AS = gcc -c
 AR = ar rcs
 
-CPPFLAGS = -O3
+ifeq ($(DEBUG),)
+CPPFLAGS += -O3
+else
+CPPFLAGS += -g
+LDFLAGS += -g
+endif
 
 ifeq ($(SYSTEM),Darwin)
     LIBCORO_CFLAGS = -DCORO_SJLJ
@@ -32,13 +37,11 @@ else
     ARCH_FLAGS = -march=i686 -m32
     ASFLAGS = -march=i686 --32
     STRIP = strip --strip-unneeded
-    CPPFLAGS += -flto
-    LDFLAGS += -flto -O3
 endif
 
 INCLUDES = -Iincludes -Ilibcoro
 
-CPPFLAGS_NO_ARCH += $(INCLUDES) -g -DSTDC_HEADERS -fexceptions -DWORDS_LITTLEENDIAN $(HAVES) $(LIBCORO_CFLAGS)
+CPPFLAGS_NO_ARCH += $(INCLUDES) -DSTDC_HEADERS -fexceptions -DWORDS_LITTLEENDIAN $(HAVES) $(LIBCORO_CFLAGS) -Wno-deprecated
 CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS)
 
 LDFLAGS += $(ARCH_FLAGS) $(LIBS)

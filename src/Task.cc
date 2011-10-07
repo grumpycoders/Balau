@@ -9,8 +9,14 @@ Balau::Task::Task() {
     stack = malloc(size);
     coro_create(&ctx, coroutine, this, stack, size);
     taskMan = TaskMan::getTaskMan();
+    taskMan->registerTask(this);
     tls = tlsManager->createTLS();
     status = STARTING;
+}
+
+Balau::Task::~Task() {
+    free(stack);
+    free(tls);
 }
 
 void Balau::Task::coroutine(void * arg) {
@@ -38,7 +44,8 @@ void Balau::Task::switchTo() {
     tlsManager->setTLS(tls);
     coro_transfer(&taskMan->returnContext, &ctx);
     tlsManager->setTLS(oldTLS);
-    status = IDLE;
+    if (status == RUNNING)
+        status = IDLE;
 }
 
 void Balau::Task::suspend() {

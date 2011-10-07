@@ -23,10 +23,10 @@ class Local : public AtStart {
     void * get() { if (getTLS()) { void * l = getLocal(); return l ? l : getGlobal(); } else return getGlobal(); }
     void setGlobal(void * obj) { m_globals[m_idx] = obj; }
     void setLocal(void * obj) { void * r = getTLS(); reinterpret_cast<void **>(r)[m_idx] = obj; }
-    void set(void * obj) { void * r = getTLS(); if (r) setGlobal(obj); else setLocal(obj); }
+    void set(void * obj) { void * r = getTLS(); if (r) setLocal(obj); else setGlobal(obj); }
     int getIndex() { return m_idx; }
   private:
-    static void * create() { void * r = malloc(s_size * sizeof(void *)); setTLS(r); return r; }
+    static void * create() { void * r = malloc(s_size * sizeof(void *)); return r; }
     static void * getTLS() { return tlsManager->getTLS(); }
     static void * setTLS(void * val) { return tlsManager->setTLS(val); }
     virtual void doStart();

@@ -19,6 +19,10 @@ Balau::Printer::Printer() : m_verbosity(M_STATUS | M_WARNING | M_ERROR) {
         localPrinter.setGlobal(this);
 }
 
+void Balau::Printer::setLocal() {
+    localPrinter.set(this);
+}
+
 Balau::Printer * Balau::Printer::getPrinter() { return localPrinter.get(); }
 
 void Balau::Printer::_log(uint32_t level, const char * fmt, va_list ap) {
@@ -31,11 +35,20 @@ void Balau::Printer::_log(uint32_t level, const char * fmt, va_list ap) {
         if (l & level)
             break;
 
-    print(prefixes[i]);
-    print(fmt, ap);
-    print("\n");
+    Printer * printer = getPrinter();
+
+    printer->_print(prefixes[i]);
+    printer->_print(fmt, ap);
+    printer->_print("\n");
 }
 
 void Balau::Printer::_print(const char * fmt, va_list ap) {
     vfprintf(stderr, fmt, ap);
+}
+
+void Balau::Printer::_print(const char * fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    _print(fmt, ap);
+    va_end(ap);
 }

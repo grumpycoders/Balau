@@ -17,12 +17,12 @@ class Task {
         FAULTED,
     };
       Task();
-      ~Task() { free(stack); free(tls); }
-    virtual void Do() = 0;
+      virtual ~Task();
     virtual const char * getName() = 0;
     Status getStatus() { return status; }
   protected:
     void suspend();
+    virtual void Do() = 0;
   private:
     size_t stackSize() { return 128 * 1024; }
     void switchTo();
