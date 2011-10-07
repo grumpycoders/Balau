@@ -41,7 +41,7 @@ endif
 
 INCLUDES = -Iincludes -Ilibcoro
 
-CPPFLAGS_NO_ARCH += $(INCLUDES) -DSTDC_HEADERS -fexceptions -DWORDS_LITTLEENDIAN $(HAVES) $(LIBCORO_CFLAGS) -Wno-deprecated
+CPPFLAGS_NO_ARCH += $(INCLUDES) -DSTDC_HEADERS -fexceptions -DWORDS_LITTLEENDIAN $(HAVES) $(LIBCORO_CFLAGS) -Wno-deprecated -D_FILE_OFFSET_BITS=64
 CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS)
 
 LDFLAGS += $(ARCH_FLAGS) $(LIBS)
@@ -61,6 +61,7 @@ LIBCORO_SOURCES = \
 coro.c \
 
 TEST_SOURCES = \
+test-Sanity.cc \
 test-String.cc \
 test-Tasks.cc \
 
@@ -69,7 +70,7 @@ LIB = libBalau.a
 BALAU_OBJECTS = $(addsuffix .o, $(notdir $(basename $(BALAU_SOURCES) $(LIBCORO_SOURCES))))
 
 WHOLE_SOURCES = $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(TEST_SOURCES)
-TESTS = $(notdir $(basename $(TEST_SOURCES)))
+TESTS = $(addsuffix .bin, $(notdir $(basename $(TEST_SOURCES))))
 
 ALL_OBJECTS = $(addsuffix .o, $(notdir $(basename $(WHOLE_SOURCES))))
 ALL_DEPS = $(addsuffix .dep, $(notdir $(basename $(WHOLE_SOURCES))))
@@ -87,10 +88,7 @@ lib: $(LIB)
 libBalau.a: $(BALAU_OBJECTS)
 	$(AR) libBalau.a $(BALAU_OBJECTS)
 
-test-String: test-String.o $(LIB)
-	$(LD) $(LDFLAGS) -o $@ $< ./$(LIB)
-
-test-Tasks: test-Tasks.o $(LIB)
+%.bin : %.o $(LIB)
 	$(LD) $(LDFLAGS) -o $@ $< ./$(LIB)
 
 dep: $(ALL_DEPS)
