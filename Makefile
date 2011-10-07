@@ -20,7 +20,7 @@ LDFLAGS += -g
 endif
 
 ifeq ($(SYSTEM),Darwin)
-    LIBCORO_CFLAGS = -DCORO_SJLJ
+    CONFIG_H = darwin-config.h
     ARCH_FLAGS = -arch i386
     LIBS = -liconv
     LD = g++ -arch i386
@@ -33,7 +33,7 @@ ifeq ($(SYSTEM),Darwin)
         AS = i686-apple-darwin-as -arch i386
     endif
 else
-    LIBCORO_CFLAGS = -DCORO_ASM
+    CONFIG_H = linux-config.h
     ARCH_FLAGS = -march=i686 -m32
     ASFLAGS = -march=i686 --32
     STRIP = strip --strip-unneeded
@@ -41,7 +41,7 @@ endif
 
 INCLUDES = -Iincludes -Ilibcoro
 
-CPPFLAGS_NO_ARCH += $(INCLUDES) -DSTDC_HEADERS -fexceptions -DWORDS_LITTLEENDIAN $(HAVES) $(LIBCORO_CFLAGS) -Wno-deprecated -D_FILE_OFFSET_BITS=64
+CPPFLAGS_NO_ARCH += $(INCLUDES) -fexceptions -Wno-deprecated -imacros $(CONFIG_H)
 CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS)
 
 LDFLAGS += $(ARCH_FLAGS) $(LIBS)
