@@ -4,3 +4,6 @@
 [submodule "libeio"]
 	path = libeio
 	url = git.grumpycoder.net:/pub/repo.git/libeio
+[submodule "libev"]
+	path = libev
+	url = git.grumpycoder.net:/pub/repo.git/libev

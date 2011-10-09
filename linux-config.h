@@ -1,8 +1,14 @@
+#define PIC 1
+
 #define STDC_HEADERS 1
 #define WORDS_LITTLEENDIAN 1
 #define CORO_ASM 1
 #define _FILE_OFFSET_BITS 64
 #define EMBED_LIBEIO
+
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE 1
+#endif
 
 /* libeio config */
 #define HAVE_FALLOCATE 1
@@ -18,3 +24,19 @@
 #define HAVE_SYS_SYNCFS 1
 #define HAVE_SYS_SYSCALL_H 1
 #define HAVE_UTIMES 1
+
+/* libev config */
+#define HAVE_CLOCK_SYSCALL 1
+#define HAVE_EPOLL_CTL 1
+#define HAVE_EVENTFD 1
+#define HAVE_FLOOR 1
+#define HAVE_INOTIFY_INIT 1
+#define HAVE_NANOSLEEP 1
+#define HAVE_POLL 1
+#define HAVE_POLL_H 1
+#define HAVE_SELECT 1
+#define HAVE_SIGNALFD 1
+#define HAVE_SYS_EPOLL_H 1
+#define HAVE_SYS_INOTIFY_H 1
+#define HAVE_SYS_SELECT_H 1
+#define HAVE_SYS_SIGNALFD_H 1

@@ -12,7 +12,7 @@ LD = g++
 AS = gcc -c
 AR = ar rcs
 
-CPPFLAGS += -DPIC -fPIC
+CPPFLAGS += -fPIC
 LDFLAGS += -fPIC
 ifeq ($(DEBUG),)
 CPPFLAGS += -O3
@@ -21,7 +21,7 @@ CPPFLAGS += -g
 LDFLAGS += -g
 endif
 
-INCLUDES = includes libcoro libeio
+INCLUDES = includes libcoro libeio libev
 
 ifeq ($(SYSTEM),Darwin)
     LIBS += pthread
@@ -53,7 +53,7 @@ CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS)
 LDFLAGS += $(ARCH_FLAGS) $(addprefix -l, $(LIBS))
 
 vpath %.cc src:tests
-vpath %.c libcoro:libeio
+vpath %.c libcoro:libeio:libev
 
 BALAU_SOURCES = \
 BString.cc \
@@ -66,6 +66,10 @@ TaskMan.cc \
 LIBCORO_SOURCES = \
 coro.c \
 
+LIBEV_SOURCES = \
+ev.c \
+event.c \
+
 LIBEIO_SOURCES = \
 eio.c \
 
@@ -76,9 +80,9 @@ test-Tasks.cc \
 
 LIB = libBalau.a
 
-BALAU_OBJECTS = $(addsuffix .o, $(notdir $(basename $(BALAU_SOURCES) $(LIBCORO_SOURCES))))
+BALAU_OBJECTS = $(addsuffix .o, $(notdir $(basename $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(LIBEIO_SOURCES) $(LIBEV_SOURCES))))
 
-WHOLE_SOURCES = $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(LIBEIO_SOURCES) $(TEST_SOURCES)
+WHOLE_SOURCES = $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(LIBEIO_SOURCES) $(LIBEV_SOURCES) $(TEST_SOURCES)
 TESTS = $(addsuffix .bin, $(notdir $(basename $(TEST_SOURCES))))
 
 ALL_OBJECTS = $(addsuffix .o, $(notdir $(basename $(WHOLE_SOURCES))))
