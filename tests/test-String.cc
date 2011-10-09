@@ -5,7 +5,7 @@ BALAU_STARTUP;
 
 using namespace Balau;
 
-int Application::startup() throw (Balau::GeneralException) {
+void MainTask::Do() {
     Printer::log(M_STATUS, "Test::String running.");
 
     String x = "foobar";
@@ -46,5 +46,4 @@ int Application::startup() throw (Balau::GeneralException) {
     Assert(((unsigned char) y[0]) == 0xe9);
 
     Printer::log(M_STATUS, "Test::String passed.");
-    return 0;
 }

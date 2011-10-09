@@ -2,10 +2,37 @@
 
 #include <stdlib.h>
 #include <coro.h>
+#include <Exceptions.h>
+#include <vector>
 
 namespace Balau {
 
 class TaskMan;
+class Task;
+
+namespace Events {
+
+class BaseEvent {
+  public:
+      BaseEvent() : m_signal(false), m_task(NULL) { }
+    bool gotSignal() { return m_signal; }
+    void doSignal() { m_signal = true; }
+    Task * taskWaiting() { Assert(m_task); return m_task; }
+    void registerOwner(Task * task) { Assert(m_task == NULL); m_task = task; }
+  private:
+    bool m_signal;
+    Task * m_task;
+};
+
+class TaskEvent : public BaseEvent {
+  public:
+      TaskEvent(Task * taskWaited);
+    Task * taskWaited() { return m_taskWaited; }
+  private:
+    Task * m_taskWaited;
+};
+
+};
 
 class Task {
   public:
@@ -19,20 +46,25 @@ class Task {
       Task();
       virtual ~Task();
     virtual const char * getName() = 0;
-    Status getStatus() { return status; }
+    Status getStatus() { return m_status; }
+    static Task * getCurrentTask();
   protected:
     void suspend();
     virtual void Do() = 0;
+    void waitFor(Events::BaseEvent * event);
   private:
     size_t stackSize() { return 128 * 1024; }
     void switchTo();
     static void coroutine(void *);
-    void * stack;
-    coro_context ctx;
-    TaskMan * taskMan;
-    Status status;
-    void * tls;
+    void * m_stack;
+    coro_context m_ctx;
+    TaskMan * m_taskMan;
+    Status m_status;
+    void * m_tls;
     friend class TaskMan;
+    friend class Events::TaskEvent;
+    typedef std::vector<Events::TaskEvent *> waitedByList_t;
+    waitedByList_t m_waitedBy;
 };
 
 };

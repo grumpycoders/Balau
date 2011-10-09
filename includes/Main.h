@@ -37,8 +37,16 @@ class Exit : public GeneralException {
 };
 
 #include <Printer.h>
+#include <Task.h>
+#include <TaskMan.h>
 
 namespace Balau {
+
+class MainTask : public Task {
+  public:
+    virtual const char * getName() { return "Main Task"; }
+    virtual void Do();
+};
 
 class Main {
   public:
@@ -49,11 +57,10 @@ class Main {
         STOPPING,
         STOPPED,
     };
-      Main() : m_status(UNKNOWN) { application = this; }
-    virtual int startup() throw (GeneralException) = 0;
-    static Status status() { return application->m_status; }
+      Main() : m_status(UNKNOWN) { Assert(s_application == 0); s_application = this; }
+    static Status status() { return s_application->m_status; }
     int bootstrap(int _argc, char ** _argv) {
-        int r;
+        int r = 0;
         m_status = STARTING;
 
         argc = _argc;
@@ -65,7 +72,8 @@ class Main {
 
         try {
             m_status = RUNNING;
-            r = startup();
+            MainTask * mainTask = new MainTask();
+            TaskMan::getTaskMan()->mainLoop();
             m_status = STOPPING;
         }
         catch (Exit e) {
@@ -96,7 +104,7 @@ class Main {
     char ** enve;
   private:
     Status m_status;
-    static Main * application;
+    static Main * s_application;
 };
 
 #define BALAU_STARTUP \
@@ -106,12 +114,11 @@ class Application : public Balau::Main { \
     virtual int startup() throw (Balau::GeneralException); \
 }; \
 \
-static Application application; \
-\
 extern "C" { \
     int main(int argc, char ** argv) { \
         setlocale(LC_ALL, ""); \
-        return application.bootstrap(argc, argv); \
+        Balau::Main mainClass; \
+        return mainClass.bootstrap(argc, argv); \
     } \
 }
 

@@ -11,7 +11,7 @@ class TLSManager {
     void * createTLS();
 };
 
-extern TLSManager * tlsManager;
+extern TLSManager * g_tlsManager;
 
 class Local : public AtStart {
   public:
@@ -27,8 +27,8 @@ class Local : public AtStart {
     int getIndex() { return m_idx; }
   private:
     static void * create() { void * r = malloc(s_size * sizeof(void *)); return r; }
-    static void * getTLS() { return tlsManager->getTLS(); }
-    static void * setTLS(void * val) { return tlsManager->setTLS(val); }
+    static void * getTLS() { return g_tlsManager->getTLS(); }
+    static void * setTLS(void * val) { return g_tlsManager->setTLS(val); }
     virtual void doStart();
     int m_idx;
     static int s_size;

@@ -31,4 +31,4 @@ Balau::AtExit::AtExit(int priority) : m_priority(priority) {
     *ptr = this;
 }
 
-Balau::Main * Balau::Main::application = NULL;
+Balau::Main * Balau::Main::s_application = NULL;

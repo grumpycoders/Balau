@@ -18,7 +18,7 @@ void * Balau::TLSManager::createTLS() {
 }
 
 static Balau::TLSManager dummyTLSManager;
-Balau::TLSManager * Balau::tlsManager = &dummyTLSManager;
+Balau::TLSManager * Balau::g_tlsManager = &dummyTLSManager;
 
 int Balau::Local::s_size = 0;
 void ** Balau::Local::m_globals = 0;

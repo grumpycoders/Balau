@@ -11,23 +11,25 @@ class CustomPrinter : public Printer {
 
 static CustomPrinter * customPrinter = NULL;
 
-class MainTask : public Task {
+class TestTask : public Task {
   public:
     virtual const char * getName() { return "MainTask"; }
   private:
     virtual void Do() {
+        Printer::log(M_STATUS, "xyz");
         customPrinter->setLocal();
         Printer::enable(M_ALL);
-        Printer::log(M_DEBUG, "In MainTask::Do()");
+        Printer::log(M_DEBUG, "In TestTask::Do()");
     }
 };
 
-int Application::startup() throw (Balau::GeneralException) {
+void MainTask::Do() {
     customPrinter = new CustomPrinter();
     Printer::log(M_STATUS, "Test::Tasks running.");
-    Task * mainTask = new MainTask();
-    TaskMan::getTaskMan()->mainLoop();
+    Task * testTask = new TestTask();
+    Events::TaskEvent e(testTask);
+    waitFor(&e);
+    suspend();
     Printer::log(M_STATUS, "Test::Tasks passed.");
     Printer::log(M_DEBUG, "You shouldn't see that message.");
-    return 0;
 }

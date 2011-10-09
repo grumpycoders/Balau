@@ -4,50 +4,72 @@
 #include "Printer.h"
 #include "Local.h"
 
+static Balau::LocalTmpl<Balau::Task> localTask;
+
 Balau::Task::Task() {
     size_t size = stackSize();
-    stack = malloc(size);
-    coro_create(&ctx, coroutine, this, stack, size);
-    taskMan = TaskMan::getTaskMan();
-    taskMan->registerTask(this);
-    tls = tlsManager->createTLS();
-    status = STARTING;
+    m_stack = malloc(size);
+    coro_create(&m_ctx, coroutine, this, m_stack, size);
+
+    m_taskMan = TaskMan::getTaskMan();
+    m_taskMan->registerTask(this);
+
+    m_tls = g_tlsManager->createTLS();
+    void * oldTLS = g_tlsManager->getTLS();
+    g_tlsManager->setTLS(m_tls);
+    localTask.set(this);
+    g_tlsManager->setTLS(oldTLS);
+
+    m_status = STARTING;
 }
 
 Balau::Task::~Task() {
-    free(stack);
-    free(tls);
+    free(m_stack);
+    free(m_tls);
 }
 
 void Balau::Task::coroutine(void * arg) {
     Task * task = reinterpret_cast<Task *>(arg);
     Assert(task);
     try {
-        task->status = RUNNING;
+        task->m_status = RUNNING;
         task->Do();
-        task->status = STOPPED;
+        task->m_status = STOPPED;
     }
     catch (GeneralException & e) {
         Printer::log(M_WARNING, "Task %s caused an exception: `%s' - stopping.", task->getName(), e.getMsg());
-        task->status = FAULTED;
+        task->m_status = FAULTED;
     }
     catch (...) {
         Printer::log(M_WARNING, "Task %s caused an unknown exception - stopping.", task->getName());
-        task->status = FAULTED;
+        task->m_status = FAULTED;
     }
-    coro_transfer(&task->ctx, &task->taskMan->returnContext);
+    coro_transfer(&task->m_ctx, &task->m_taskMan->m_returnContext);
 }
 
 void Balau::Task::switchTo() {
-    status = RUNNING;
-    void * oldTLS = tlsManager->getTLS();
-    tlsManager->setTLS(tls);
-    coro_transfer(&taskMan->returnContext, &ctx);
-    tlsManager->setTLS(oldTLS);
-    if (status == RUNNING)
-        status = IDLE;
+    m_status = RUNNING;
+    void * oldTLS = g_tlsManager->getTLS();
+    g_tlsManager->setTLS(m_tls);
+    coro_transfer(&m_taskMan->m_returnContext, &m_ctx);
+    g_tlsManager->setTLS(oldTLS);
+    if (m_status == RUNNING)
+        m_status = IDLE;
 }
 
 void Balau::Task::suspend() {
-    coro_transfer(&ctx, &taskMan->returnContext);
+    coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
+}
+
+Balau::Task * Balau::Task::getCurrentTask() {
+    return localTask.get();
+}
+
+void Balau::Task::waitFor(Balau::Events::BaseEvent * e) {
+    e->registerOwner(this);
+    // probably have to register the event in the Task manager
+}
+
+Balau::Events::TaskEvent::TaskEvent(Task * taskWaited) : m_taskWaited(taskWaited) {
+    m_taskWaited->m_waitedBy.push_back(this);
 }
