@@ -2,3 +2,19 @@
 #define WORDS_LITTLEENDIAN 1
 #define CORO_ASM 1
 #define _FILE_OFFSET_BITS 64
+#define EMBED_LIBEIO
+
+/* libeio config */
+#define HAVE_FALLOCATE 1
+#define HAVE_FDATASYNC 1
+#define HAVE_FUTIMES 1
+#define HAVE_PRCTL_SET_NAME 1
+#define HAVE_PREADWRITE 1
+#define HAVE_READAHEAD 1
+#define HAVE_SENDFILE 1
+#define HAVE_STDINT_H 1
+#define HAVE_SYNC_FILE_RANGE 1
+#define HAVE_SYS_PRCTL_H 1
+#define HAVE_SYS_SYNCFS 1
+#define HAVE_SYS_SYSCALL_H 1
+#define HAVE_UTIMES 1

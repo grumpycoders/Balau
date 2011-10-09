@@ -12,6 +12,8 @@ LD = g++
 AS = gcc -c
 AR = ar rcs
 
+CPPFLAGS += -DPIC -fPIC
+LDFLAGS += -fPIC
 ifeq ($(DEBUG),)
 CPPFLAGS += -O3
 else
@@ -19,7 +21,10 @@ CPPFLAGS += -g
 LDFLAGS += -g
 endif
 
+INCLUDES = includes libcoro libeio
+
 ifeq ($(SYSTEM),Darwin)
+    LIBS += pthread
     CONFIG_H = darwin-config.h
     ARCH_FLAGS = -arch i386
     LIBS = -liconv
@@ -33,21 +38,22 @@ ifeq ($(SYSTEM),Darwin)
         AS = i686-apple-darwin-as -arch i386
     endif
 else
+ifeq ($(SYSTEM),Linux)
+    LIBS += pthread
     CONFIG_H = linux-config.h
     ARCH_FLAGS = -march=i686 -m32
     ASFLAGS = -march=i686 --32
     STRIP = strip --strip-unneeded
 endif
+endif
 
-INCLUDES = -Iincludes -Ilibcoro
-
-CPPFLAGS_NO_ARCH += $(INCLUDES) -fexceptions -Wno-deprecated -imacros $(CONFIG_H)
+CPPFLAGS_NO_ARCH += $(addprefix -I, $(INCLUDES)) -fexceptions -Wno-deprecated -imacros $(CONFIG_H)
 CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS)
 
-LDFLAGS += $(ARCH_FLAGS) $(LIBS)
+LDFLAGS += $(ARCH_FLAGS) $(addprefix -l, $(LIBS))
 
 vpath %.cc src:tests
-vpath %.c libcoro
+vpath %.c libcoro:libeio
 
 BALAU_SOURCES = \
 BString.cc \
@@ -60,6 +66,9 @@ TaskMan.cc \
 LIBCORO_SOURCES = \
 coro.c \
 
+LIBEIO_SOURCES = \
+eio.c \
+
 TEST_SOURCES = \
 test-Sanity.cc \
 test-String.cc \
@@ -69,7 +78,7 @@ LIB = libBalau.a
 
 BALAU_OBJECTS = $(addsuffix .o, $(notdir $(basename $(BALAU_SOURCES) $(LIBCORO_SOURCES))))
 
-WHOLE_SOURCES = $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(TEST_SOURCES)
+WHOLE_SOURCES = $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(LIBEIO_SOURCES) $(TEST_SOURCES)
 TESTS = $(addsuffix .bin, $(notdir $(basename $(TEST_SOURCES))))
 
 ALL_OBJECTS = $(addsuffix .o, $(notdir $(basename $(WHOLE_SOURCES))))
