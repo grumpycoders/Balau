@@ -16,7 +16,6 @@ class TestTask : public Task {
     virtual const char * getName() { return "MainTask"; }
   private:
     virtual void Do() {
-        Printer::log(M_STATUS, "xyz");
         customPrinter->setLocal();
         Printer::enable(M_ALL);
         Printer::log(M_DEBUG, "In TestTask::Do()");
