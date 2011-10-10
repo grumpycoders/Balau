@@ -8,14 +8,19 @@ static Balau::LocalTmpl<Balau::TaskMan> localTaskMan;
 
 Balau::TaskMan::TaskMan() : m_stopped(false) {
     coro_create(&m_returnContext, 0, 0, 0, 0);
-    if (!localTaskMan.getGlobal())
+    if (!localTaskMan.getGlobal()) {
         localTaskMan.setGlobal(this);
+        m_loop = ev_default_loop(EVFLAG_AUTO);
+    } else {
+        m_loop = ev_loop_new(EVFLAG_AUTO);
+    }
 }
 
 Balau::TaskMan * Balau::TaskMan::getTaskMan() { return localTaskMan.get(); }
 
 Balau::TaskMan::~TaskMan() {
     Assert(localTaskMan.getGlobal() != this);
+    ev_loop_destroy(m_loop);
 }
 
 void Balau::TaskMan::mainLoop() {
@@ -33,8 +38,6 @@ void Balau::TaskMan::mainLoop() {
             }
         }
 
-        // That's probably where we poll for events
-
         // lock pending
         // Adding tasks that were added, maybe from other threads
         for (iL = m_pendingAdd.begin(); iL != m_pendingAdd.end(); iL++) {
@@ -44,6 +47,14 @@ void Balau::TaskMan::mainLoop() {
         }
         m_pendingAdd.clear();
         // unlock pending
+
+        ev_run(m_loop, EVRUN_ONCE);
+
+        // let's check who got signaled, and call them
+        for (iH = m_signaledTasks.begin(); iH != m_signaledTasks.end(); iH++) {
+            t = *iH;
+            t->switchTo();
+        }
 
         // Dealing with stopped and faulted tasks.
         // First by signalling the waiters.
@@ -60,6 +71,7 @@ void Balau::TaskMan::mainLoop() {
                 }
             }
         }
+        m_signaledTasks.clear();
 
         // Then, by destroying them.
         bool didDelete;
@@ -84,4 +96,9 @@ void Balau::TaskMan::registerTask(Balau::Task * t) {
     // lock pending
     m_pendingAdd.push_back(t);
     // unlock pending
+}
+
+void Balau::TaskMan::signalTask(Task * t) {
+    Assert(m_tasks.find(t) != m_tasks.end());
+    m_signaledTasks.insert(t);
 }

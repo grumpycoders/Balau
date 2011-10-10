@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <coro.h>
+#include <ev++.h>
 #include <Exceptions.h>
 #include <vector>
 
@@ -16,12 +17,23 @@ class BaseEvent {
   public:
       BaseEvent() : m_signal(false), m_task(NULL) { }
     bool gotSignal() { return m_signal; }
-    void doSignal() { m_signal = true; }
+    void doSignal();
     Task * taskWaiting() { Assert(m_task); return m_task; }
-    void registerOwner(Task * task) { Assert(m_task == NULL); m_task = task; }
+    void registerOwner(Task * task) { Assert(m_task == NULL); m_task = task; gotOwner(task); }
+  protected:
+    virtual void gotOwner(Task * task) { }
   private:
     bool m_signal;
     Task * m_task;
+};
+
+class Timeout : public BaseEvent {
+  public:
+      Timeout(ev_tstamp tstamp);
+    void evt_cb(ev::timer & w, int revents);
+  private:
+    virtual void gotOwner(Task * task);
+    ev::timer m_evt;
 };
 
 class TaskEvent : public BaseEvent {
@@ -48,6 +60,7 @@ class Task {
     virtual const char * getName() = 0;
     Status getStatus() { return m_status; }
     static Task * getCurrentTask();
+    TaskMan * getTaskMan() { return m_taskMan; }
   protected:
     void suspend();
     virtual void Do() = 0;

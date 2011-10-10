@@ -26,6 +26,7 @@
 #define HAVE_UTIMES 1
 
 /* libev config */
+#define EV_STANDALONE 1
 #define HAVE_CLOCK_SYSCALL 1
 #define HAVE_EPOLL_CTL 1
 #define HAVE_EVENTFD 1

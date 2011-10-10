@@ -25,10 +25,20 @@ class TestTask : public Task {
 void MainTask::Do() {
     customPrinter = new CustomPrinter();
     Printer::log(M_STATUS, "Test::Tasks running.");
+
     Task * testTask = new TestTask();
-    Events::TaskEvent e(testTask);
-    waitFor(&e);
+    Events::TaskEvent taskEvt(testTask);
+    waitFor(&taskEvt);
+    Assert(!taskEvt.gotSignal());
     suspend();
+    Assert(taskEvt.gotSignal());
+
+    Events::Timeout timeout(0.1);
+    waitFor(&timeout);
+    Assert(!timeout.gotSignal());
+    suspend();
+    Assert(timeout.gotSignal());
+
     Printer::log(M_STATUS, "Test::Tasks passed.");
     Printer::log(M_DEBUG, "You shouldn't see that message.");
 }

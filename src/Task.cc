@@ -67,9 +67,27 @@ Balau::Task * Balau::Task::getCurrentTask() {
 
 void Balau::Task::waitFor(Balau::Events::BaseEvent * e) {
     e->registerOwner(this);
-    // probably have to register the event in the Task manager
+}
+
+void Balau::Events::BaseEvent::doSignal() {
+    m_signal = true;
+    m_task->getTaskMan()->signalTask(m_task);
 }
 
 Balau::Events::TaskEvent::TaskEvent(Task * taskWaited) : m_taskWaited(taskWaited) {
     m_taskWaited->m_waitedBy.push_back(this);
+}
+
+Balau::Events::Timeout::Timeout(ev_tstamp tstamp) {
+    m_evt.set<Timeout, &Timeout::evt_cb>(this);
+    m_evt.set(tstamp);
+}
+
+void Balau::Events::Timeout::gotOwner(Task * task) {
+    m_evt.set(task->getTaskMan()->getLoop());
+    m_evt.start();
+}
+
+void Balau::Events::Timeout::evt_cb(ev::timer & w, int revents) {
+    doSignal();
 }
