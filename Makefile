@@ -62,6 +62,7 @@ Main.cc \
 Printer.cc \
 Task.cc \
 TaskMan.cc \
+Threads.cc \
 
 LIBCORO_SOURCES = \
 coro.c \

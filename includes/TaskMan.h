@@ -5,6 +5,7 @@
 #include <ev++.h>
 #include <ext/hash_set>
 #include <vector>
+#include <Threads.h>
 
 namespace gnu = __gnu_cxx;
 
@@ -32,6 +33,7 @@ class TaskMan {
     typedef std::vector<Task *> taskList_t;
     taskHash_t m_tasks, m_signaledTasks;
     taskList_t m_pendingAdd;
+    Lock m_pendingLock;
     volatile bool m_stopped;
     struct ev_loop * m_loop;
 };

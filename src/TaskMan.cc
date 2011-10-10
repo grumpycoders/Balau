@@ -33,20 +33,9 @@ void Balau::TaskMan::mainLoop() {
         // checking "STARTING" tasks, and running them once
         for (iH = m_tasks.begin(); iH != m_tasks.end(); iH++) {
             t = *iH;
-            if (t->getStatus() == Task::STARTING) {
+            if (t->getStatus() == Task::STARTING)
                 t->switchTo();
-            }
         }
-
-        // lock pending
-        // Adding tasks that were added, maybe from other threads
-        for (iL = m_pendingAdd.begin(); iL != m_pendingAdd.end(); iL++) {
-            t = *iL;
-            Assert(m_tasks.find(t) == m_tasks.end());
-            m_tasks.insert(t);
-        }
-        m_pendingAdd.clear();
-        // unlock pending
 
         ev_run(m_loop, EVRUN_ONCE);
 
@@ -55,6 +44,16 @@ void Balau::TaskMan::mainLoop() {
             t = *iH;
             t->switchTo();
         }
+
+        m_pendingLock.enter();
+        // Adding tasks that were added, maybe from other threads
+        for (iL = m_pendingAdd.begin(); iL != m_pendingAdd.end(); iL++) {
+            t = *iL;
+            Assert(m_tasks.find(t) == m_tasks.end());
+            m_tasks.insert(t);
+        }
+        m_pendingAdd.clear();
+        m_pendingLock.leave();
 
         // Dealing with stopped and faulted tasks.
         // First by signalling the waiters.
@@ -93,9 +92,9 @@ void Balau::TaskMan::mainLoop() {
 }
 
 void Balau::TaskMan::registerTask(Balau::Task * t) {
-    // lock pending
+    m_pendingLock.enter();
     m_pendingAdd.push_back(t);
-    // unlock pending
+    m_pendingLock.leave();
 }
 
 void Balau::TaskMan::signalTask(Task * t) {
