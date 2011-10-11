@@ -56,13 +56,18 @@ vpath %.cc src:tests
 vpath %.c libcoro:libeio:libev
 
 BALAU_SOURCES = \
-BString.cc \
 Local.cc \
+Threads.cc \
+\
+BString.cc \
 Main.cc \
 Printer.cc \
+\
+Handle.cc \
+Input.cc \
+\
 Task.cc \
 TaskMan.cc \
-Threads.cc \
 
 LIBCORO_SOURCES = \
 coro.c \
@@ -78,6 +83,7 @@ TEST_SOURCES = \
 test-Sanity.cc \
 test-String.cc \
 test-Tasks.cc \
+test-Handles.cc \
 
 LIB = libBalau.a
 

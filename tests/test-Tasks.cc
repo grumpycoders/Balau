@@ -30,13 +30,13 @@ void MainTask::Do() {
     Events::TaskEvent taskEvt(testTask);
     waitFor(&taskEvt);
     Assert(!taskEvt.gotSignal());
-    suspend();
+    yield();
     Assert(taskEvt.gotSignal());
 
     Events::Timeout timeout(0.1);
     waitFor(&timeout);
     Assert(!timeout.gotSignal());
-    suspend();
+    yield();
     Assert(timeout.gotSignal());
 
     Printer::log(M_STATUS, "Test::Tasks passed.");

@@ -44,6 +44,15 @@ class TaskEvent : public BaseEvent {
     Task * m_taskWaited;
 };
 
+class Custom : public BaseEvent {
+  public:
+    void doSignal() { BaseEvent::doSignal(); ev_break(m_loop, EVBREAK_ALL); }
+  protected:
+    virtual void gotOwner(Task * task);
+  private:
+    struct ev_loop * m_loop;
+};
+
 };
 
 class Task {
@@ -60,9 +69,10 @@ class Task {
     virtual const char * getName() = 0;
     Status getStatus() { return m_status; }
     static Task * getCurrentTask();
+    static void yield(Events::BaseEvent * evt) { Task * t = getCurrentTask(); t->waitFor(evt); t->yield(); }
     TaskMan * getTaskMan() { return m_taskMan; }
   protected:
-    void suspend();
+    void yield();
     virtual void Do() = 0;
     void waitFor(Events::BaseEvent * event);
   private:

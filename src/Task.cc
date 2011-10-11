@@ -57,7 +57,7 @@ void Balau::Task::switchTo() {
         m_status = IDLE;
 }
 
-void Balau::Task::suspend() {
+void Balau::Task::yield() {
     coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
 }
 
@@ -90,4 +90,8 @@ void Balau::Events::Timeout::gotOwner(Task * task) {
 
 void Balau::Events::Timeout::evt_cb(ev::timer & w, int revents) {
     doSignal();
+}
+
+void Balau::Events::Custom::gotOwner(Task * task) {
+    m_loop = task->getTaskMan()->getLoop();
 }

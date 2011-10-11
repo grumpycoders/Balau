@@ -1,5 +1,5 @@
-#include <Exceptions.h>
-#include <Threads.h>
+#include "Exceptions.h"
+#include "Threads.h"
 
 Balau::Lock::Lock() {
     int r;
