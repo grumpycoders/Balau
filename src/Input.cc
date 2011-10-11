@@ -7,6 +7,17 @@
 #include "Input.h"
 #include "Task.h"
 
+#ifdef _WIN32
+const char * strerror_r(int errorno, char * buf, size_t bufsize) {
+#ifdef _MSVC
+    strerror_s(buf, bufsize, errorno);
+    return buf;
+#else
+    return strerror(errorno);
+#endif
+}
+#endif
+
 struct cbResults_t {
     Balau::Events::Custom evt;
     int result, errorno;

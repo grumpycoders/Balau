@@ -1,6 +1,16 @@
 #include <Main.h>
 #include <Input.h>
 
+#ifdef _WIN32
+void ctime_r(const time_t * t, char * str) {
+#ifdef _MSVC
+    ctime_s(str, 32, t);
+#else
+    strcpy(str, ctime(t));
+#endif
+}
+#endif
+
 BALAU_STARTUP;
 
 using namespace Balau;
