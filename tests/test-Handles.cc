@@ -16,9 +16,10 @@ void MainTask::Do() {
         failed = true;
     }
     Assert(failed);
-    IO i(new Input("Makefile"));
+    IO i(new Input("tests/rtest.txt"));
     Printer::log(M_STATUS, "Opened file %s:", i->getName());
     Printer::log(M_STATUS, " - size = %lli", i->getSize());
+
     char mtimestr[32];
     time_t mtime = i->getMTime();
     ctime_r(&mtime, mtimestr);
@@ -26,5 +27,18 @@ void MainTask::Do() {
     if (nl)
         *nl = 0;
     Printer::log(M_STATUS, " - mtime = %i (%s)", mtime, mtimestr);
+
+    off_t s = i->rtell();
+    Assert(s == 0);
+
+    i->rseek(0, SEEK_END);
+    s = i->rtell();
+    Assert(s == i->getSize());
+
+    i->rseek(0, SEEK_SET);
+    char * buf = (char *) malloc(i->getSize());
+    ssize_t r = i->read(buf, s + 15);
+    Printer::log(M_STATUS, "Read %i bytes", r);
+
     Printer::log(M_STATUS, "Test::Handles passed.");
 }

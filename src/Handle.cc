@@ -55,7 +55,7 @@ time_t Balau::Handle::getMTime() { return -1; }
 
 ssize_t Balau::Handle::read(void * buf, size_t count) throw (GeneralException) {
     if (canRead())
-        throw GeneralException(String("Handle ") + getName() + " can read, but read() not implemented (missing in class " + typeid(*this).name() + ")");
+        throw GeneralException(String("Handle ") + getName() + " can read, but read() not implemented (missing in class " + ClassName(this).c_str() + ")");
     else
         throw GeneralException("Handle can't read");
     return -1;
@@ -63,7 +63,7 @@ ssize_t Balau::Handle::read(void * buf, size_t count) throw (GeneralException) {
 
 ssize_t Balau::Handle::write(const void * buf, size_t count) throw (GeneralException) {
     if (canWrite())
-        throw GeneralException(String("Handle ") + getName() + " can write, but write() not implemented (missing in class " + typeid(this).name() + ")");
+        throw GeneralException(String("Handle ") + getName() + " can write, but write() not implemented (missing in class " + ClassName(this).c_str() + ")");
     else
         throw GeneralException("Handle can't write");
     return -1;
@@ -71,7 +71,7 @@ ssize_t Balau::Handle::write(const void * buf, size_t count) throw (GeneralExcep
 
 void Balau::Handle::rseek(off_t offset, int whence) throw (GeneralException) {
     if (canSeek())
-        throw GeneralException(String("Handle ") + getName() + " can seek, but rseek() not implemented (missing in class " + typeid(this).name() + ")");
+        throw GeneralException(String("Handle ") + getName() + " can seek, but rseek() not implemented (missing in class " + ClassName(this).c_str() + ")");
     else
         throw GeneralException("Handle can't seek");
 }
@@ -82,7 +82,7 @@ void Balau::Handle::wseek(off_t offset, int whence) throw (GeneralException) {
 
 off_t Balau::Handle::rtell() throw (GeneralException) {
     if (canSeek())
-        throw GeneralException(String("Handle ") + getName() + " can seek, but rtell() not implemented (missing in class " + typeid(this).name() + ")");
+        throw GeneralException(String("Handle ") + getName() + " can seek, but rtell() not implemented (missing in class " + ClassName(this).c_str() + ")");
     else
         throw GeneralException("Handle can't seek");
 }
@@ -143,11 +143,13 @@ off_t Balau::SeekableHandle::rtell() throw (GeneralException) {
     Assert(canRead() || canWrite());
     if (!canRead())
         return wtell();
+    return m_rOffset;
 }
 
 off_t Balau::SeekableHandle::wtell() throw (GeneralException) {
     Assert(canRead() || canWrite());
     if (!canWrite())
         return rtell();
+    return m_wOffset;
 }
 

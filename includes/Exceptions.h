@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cxxabi.h>
 #include <BString.h>
 
 namespace Balau {
@@ -20,6 +21,21 @@ class GeneralException {
 };
 
 static inline void AssertHelper(const String & msg) throw(GeneralException) { throw GeneralException(msg); }
+
+class ClassName {
+  public:
+      template<typename T> ClassName(T * ptr);
+      ~ClassName() { free(m_demangled); }
+    const char * c_str() const { return m_demangled; }
+  private:
+    char * m_demangled;
+};
+
+template<typename T>
+ClassName::ClassName(T * ptr) {
+    int status;
+    m_demangled = abi::__cxa_demangle(typeid(*ptr).name(), 0, 0, &status);
+}
 
 };
 

@@ -53,6 +53,7 @@ class IO {
 
 class SeekableHandle : public Handle {
   public:
+      SeekableHandle() : m_wOffset(0), m_rOffset(0) { }
     virtual bool canSeek();
     virtual void rseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
     virtual void wseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);

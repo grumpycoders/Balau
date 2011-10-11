@@ -93,3 +93,7 @@ off_t Balau::Input::getSize() {
 time_t Balau::Input::getMTime() {
     return m_mtime;
 }
+
+bool Balau::Input::canRead() {
+    return true;
+}

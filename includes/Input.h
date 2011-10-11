@@ -9,6 +9,7 @@ class Input : public SeekableHandle {
       Input(const char * fname) throw (GeneralException);
     virtual void close() throw (GeneralException);
     virtual bool isClosed();
+    virtual bool canRead();
     virtual const char * getName();
     virtual off_t getSize();
     virtual time_t getMTime();
