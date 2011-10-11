@@ -9,6 +9,11 @@ class EAgain : public GeneralException {
       EAgain() : GeneralException("Try Again") { }
 };
 
+class ENoEnt : public GeneralException {
+  public:
+      ENoEnt(const char * name) : GeneralException(String("No such file or directory: `") + name + "'") { }
+};
+
 class IO;
 
 class Handle {
@@ -16,6 +21,7 @@ class Handle {
       virtual ~Handle() { Assert(m_refCount == 0); }
     virtual void close() throw (GeneralException) = 0;
     virtual bool isClosed() = 0;
+    virtual bool isEOF() = 0;
     virtual bool canSeek();
     virtual bool canRead();
     virtual bool canWrite();
@@ -59,6 +65,10 @@ class SeekableHandle : public Handle {
     virtual void wseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
     virtual off_t rtell() throw (GeneralException);
     virtual off_t wtell() throw (GeneralException);
+    virtual bool isEOF();
+  protected:
+    off_t getWOffset() { return m_wOffset; }
+    off_t getROffset() { return m_rOffset; }
   private:
     off_t m_wOffset, m_rOffset;
 };

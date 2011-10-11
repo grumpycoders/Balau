@@ -153,3 +153,6 @@ off_t Balau::SeekableHandle::wtell() throw (GeneralException) {
     return m_wOffset;
 }
 
+bool Balau::SeekableHandle::isEOF() {
+    return m_rOffset == getSize();
+}

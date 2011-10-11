@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -44,7 +45,11 @@ Balau::Input::Input(const char * fname) throw (GeneralException) : m_fd(-1), m_s
     Assert(cbResults.evt.gotSignal());
     if (cbResults.result < 0) {
         char str[4096];
-        throw GeneralException(String("Unable to open file ") + m_name + " for reading: " + strerror_r(cbResults.errorno, str, sizeof(str)) + " (err#" + cbResults.errorno + ")");
+        if (cbResults.errorno == ENOENT) {
+            throw ENoEnt(fname);
+        } else {
+            throw GeneralException(String("Unable to open file ") + m_name + " for reading: " + strerror_r(cbResults.errorno, str, sizeof(str)) + " (err#" + cbResults.errorno + ")");
+        }
     } else {
         m_fd = cbResults.result;
     }
@@ -76,6 +81,21 @@ void Balau::Input::close() throw (GeneralException) {
     } else {
         m_fd = cbResults.result;
     }
+}
+
+ssize_t Balau::Input::read(void * buf, size_t count) throw (GeneralException) {
+    cbResults_t cbResults;
+    eio_req * r = eio_read(m_fd, buf, count, getROffset(), 0, eioDone, &cbResults);
+    Assert(r != 0);
+    Task::yield(&cbResults.evt);
+    Assert(cbResults.evt.gotSignal());
+    if (cbResults.result > 0) {
+        rseek(cbResults.result, SEEK_CUR);
+    } else {
+        char str[4096];
+        throw GeneralException(String("Unable to read file ") + m_name + ": " + strerror_r(cbResults.errorno, str, sizeof(str)) + " (err#" + cbResults.errorno + ")");
+    }
+    return cbResults.result;
 }
 
 bool Balau::Input::isClosed() {

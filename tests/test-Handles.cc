@@ -12,7 +12,7 @@ void MainTask::Do() {
     try {
         IO i(new Input("SomeInexistantFile.txt"));
     }
-    catch (GeneralException) {
+    catch (ENoEnt e) {
         failed = true;
     }
     Assert(failed);
@@ -36,9 +36,21 @@ void MainTask::Do() {
     Assert(s == i->getSize());
 
     i->rseek(0, SEEK_SET);
-    char * buf = (char *) malloc(i->getSize());
-    ssize_t r = i->read(buf, s + 15);
-    Printer::log(M_STATUS, "Read %i bytes", r);
+    char * buf1 = (char *) malloc(i->getSize());
+    ssize_t r = i->read(buf1, s + 15);
+    Printer::log(M_STATUS, "Read %i bytes (instead of %i)", r, s + 15);
+    Assert(i->isEOF())
+
+    char * buf2 = (char *) malloc(i->getSize());
+    i->rseek(0, SEEK_SET);
+    Assert(!i->isEOF());
+    Assert(i->rtell() == 0);
+    r = i->read(buf2, 5);
+    Assert(r == 5);
+    Assert(i->rtell() == 5);
+    r = i->read(buf2 + 5, s - 5);
+    Assert(r == (s - 5));
+    Assert(memcmp(buf1, buf2, s) == 0);
 
     Printer::log(M_STATUS, "Test::Handles passed.");
 }
