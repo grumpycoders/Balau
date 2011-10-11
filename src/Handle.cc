@@ -51,6 +51,7 @@ bool Balau::Handle::canSeek() { return false; }
 bool Balau::Handle::canRead() { return false; }
 bool Balau::Handle::canWrite() { return false; }
 off_t Balau::Handle::getSize() { return -1; }
+time_t Balau::Handle::getMTime() { return -1; }
 
 ssize_t Balau::Handle::read(void * buf, size_t count) throw (GeneralException) {
     if (canRead())
@@ -149,3 +150,4 @@ off_t Balau::SeekableHandle::wtell() throw (GeneralException) {
     if (!canWrite())
         return rtell();
 }
+

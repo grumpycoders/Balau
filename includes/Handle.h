@@ -27,6 +27,7 @@ class Handle {
     virtual off_t rtell() throw (GeneralException);
     virtual off_t wtell() throw (GeneralException);
     virtual off_t getSize();
+    virtual time_t getMTime();
   protected:
       Handle() : m_refCount(0) { }
   private:
