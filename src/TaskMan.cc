@@ -16,6 +16,20 @@ Balau::TaskMan::TaskMan() : m_stopped(false) {
     }
 }
 
+#ifdef _WIN32
+class WinSocketStartup : public Balau::AtStart {
+  public:
+      WinSocketStartup() : AtStart(5) { }
+    virtual void doStart() {
+        WSADATA wsaData;
+        int r = WSAStartup(MAKEWORD(2, 0), &wsaData);
+        Assert(r == 0);
+    }
+};
+
+static WinSocketStartup wsa;
+#endif
+
 Balau::TaskMan * Balau::TaskMan::getTaskMan() { return localTaskMan.get(); }
 
 Balau::TaskMan::~TaskMan() {
