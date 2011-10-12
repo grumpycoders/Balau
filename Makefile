@@ -34,12 +34,13 @@ ifeq ($(SYSTEM),Darwin)
     STRIP = strip -x
     ifeq ($(TRUESYSTEM),Linux)
         CROSSCOMPILE = true
+        ARCH_FLAGS =
         CC = i686-apple-darwin9-gcc
         CXX = i686-apple-darwin9-g++
-        LD = i686-apple-darwin-g++ -arch i386 -mmacosx-version-min=10.5
-        STRIP = i686-apple-darwin-strip -x
-        AS = i686-apple-darwin-as -arch i386
-        AR = i686-apple-darwin-ar rcs
+        LD = i686-apple-darwin9-g++ -arch i386 -mmacosx-version-min=10.5
+        STRIP = i686-apple-darwin9-strip -x
+        AS = i686-apple-darwin9-as -arch i386
+        AR = i686-apple-darwin9-ar rcs
     endif
 endif
 
@@ -127,6 +128,12 @@ relocatable.c \
 
 endif
 
+ifeq ($(SYSTEM),Darwin)
+DARWIN_SOURCES = \
+darwin-eprintf.c \
+
+endif
+
 LIBCORO_SOURCES = \
 coro.c \
 
@@ -145,9 +152,9 @@ test-Handles.cc \
 
 LIB = libBalau.a
 
-BALAU_OBJECTS = $(addsuffix .o, $(notdir $(basename $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(LIBEIO_SOURCES) $(LIBEV_SOURCES) $(WIN32_SOURCES))))
+BALAU_OBJECTS = $(addsuffix .o, $(notdir $(basename $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(LIBEIO_SOURCES) $(LIBEV_SOURCES) $(WIN32_SOURCES) $(DARWIN_SOURCES))))
 
-WHOLE_SOURCES = $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(LIBEIO_SOURCES) $(LIBEV_SOURCES) $(WIN32_SOURCES) $(TEST_SOURCES)
+WHOLE_SOURCES = $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(LIBEIO_SOURCES) $(LIBEV_SOURCES) $(WIN32_SOURCES) $(DARWIN_SOURCES) $(TEST_SOURCES)
 TESTS = $(addsuffix .$(BINEXT), $(notdir $(basename $(TEST_SOURCES))))
 
 ALL_OBJECTS = $(addsuffix .o, $(notdir $(basename $(WHOLE_SOURCES))))

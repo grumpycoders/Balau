@@ -3,7 +3,9 @@
 #include <stdarg.h>
 #include <string.h>
 #include <stdint.h>
+#ifndef __APPLE__
 #include <malloc.h>
+#endif
 #include <stdlib.h>
 #include <string>
 
