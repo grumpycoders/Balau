@@ -31,3 +31,5 @@
 #define HAVE_UNISTD_H 1
 
 #define HAVE_FLOOR 1
+
+#define EV_STAT_ENABLE 0
