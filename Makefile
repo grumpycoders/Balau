@@ -158,6 +158,10 @@ all: dep lib
 tests: $(TESTS)
 ifneq ($(CROSSCOMPILE),true)
 	for t in $(TESTS) ; do ./$$t ; done
+else
+ifeq ($(SYSTEM),MINGW32)
+	for t in $(TESTS) ; do wine ./$$t ; done
+endif
 endif
 
 strip: $(TESTS)
