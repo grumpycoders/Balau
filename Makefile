@@ -148,6 +148,7 @@ TEST_SOURCES = \
 test-Sanity.cc \
 test-String.cc \
 test-Tasks.cc \
+test-Threads.cc \
 test-Handles.cc \
 
 LIB = libBalau.a
