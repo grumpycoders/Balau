@@ -29,3 +29,32 @@ void Balau::Local::doStart() {
     m_globals = reinterpret_cast<void **>(realloc(m_globals, s_size * sizeof(void *)));
     m_globals[m_idx] = 0;
 }
+
+class PThreadsTLSManager : public Balau::TLSManager, public Balau::AtStart {
+  public:
+      PThreadsTLSManager() : AtStart(0) { }
+    virtual void * getTLS();
+    virtual void * setTLS(void * val);
+    virtual void doStart();
+  private:
+    pthread_key_t m_key;
+};
+
+PThreadsTLSManager pthreadsTLSManager;
+
+void PThreadsTLSManager::doStart() {
+    int r;
+
+    r = pthread_key_create(&m_key, NULL);
+    Assert(r == 0);
+}
+
+void * PThreadsTLSManager::getTLS() {
+    return pthread_getspecific(m_key);
+}
+
+void * PThreadsTLSManager::setTLS(void * val) {
+    void * r = pthread_getspecific(m_key);
+    pthread_setspecific(m_key, val);
+    return r;
+}
