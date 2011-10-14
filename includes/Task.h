@@ -18,8 +18,9 @@ class BaseEvent {
       BaseEvent() : m_signal(false), m_task(NULL) { }
     bool gotSignal() { return m_signal; }
     void doSignal();
+    void reset() { Assert(m_task != NULL); m_signal = false; gotOwner(m_task); }
     Task * taskWaiting() { Assert(m_task); return m_task; }
-    void registerOwner(Task * task) { Assert(m_task == NULL); m_task = task; gotOwner(task); }
+    void registerOwner(Task * task) { if (m_task == task) return; Assert(m_task == NULL); m_task = task; gotOwner(task); }
   protected:
     virtual void gotOwner(Task * task) { }
   private:
@@ -31,6 +32,7 @@ class Timeout : public BaseEvent {
   public:
       Timeout(ev_tstamp tstamp);
     void evt_cb(ev::timer & w, int revents);
+    void set(ev_tstamp tstamp);
   private:
     virtual void gotOwner(Task * task);
     ev::timer m_evt;
@@ -69,12 +71,14 @@ class Task {
     virtual const char * getName() = 0;
     Status getStatus() { return m_status; }
     static Task * getCurrentTask();
-    static void yield(Events::BaseEvent * evt) { Task * t = getCurrentTask(); t->waitFor(evt); t->yield(); }
+    static void yield(Events::BaseEvent * evt) { Task * t = getCurrentTask(); t->waitFor(evt, true); t->yield(true); }
     TaskMan * getTaskMan() { return m_taskMan; }
+    struct ev_loop * getLoop();
   protected:
-    void yield();
+    void yield(bool override = false);
     virtual void Do() = 0;
-    void waitFor(Events::BaseEvent * event);
+    void waitFor(Events::BaseEvent * event, bool override = false);
+    void setPreemptible(bool enable);
   private:
     size_t stackSize() { return 128 * 1024; }
     void switchTo();
@@ -88,6 +92,7 @@ class Task {
     friend class Events::TaskEvent;
     typedef std::vector<Events::TaskEvent *> waitedByList_t;
     waitedByList_t m_waitedBy;
+    struct ev_loop * m_loop;
 };
 
 };

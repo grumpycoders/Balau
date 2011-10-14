@@ -22,6 +22,12 @@ class TestTask : public Task {
     }
 };
 
+static void yieldingFunction() {
+    Events::Timeout timeout(0.2);
+    Task::yield(&timeout);
+    Assert(timeout.gotSignal());
+}
+
 void MainTask::Do() {
     customPrinter = new CustomPrinter();
     Printer::log(M_STATUS, "Test::Tasks running.");
@@ -36,6 +42,15 @@ void MainTask::Do() {
     Events::Timeout timeout(0.1);
     waitFor(&timeout);
     Assert(!timeout.gotSignal());
+    yield();
+    Assert(timeout.gotSignal());
+
+    timeout.set(0.1);
+    timeout.reset();
+    setPreemptible(false);
+    yieldingFunction();
+    Assert(!timeout.gotSignal());
+    waitFor(&timeout);
     yield();
     Assert(timeout.gotSignal());
 

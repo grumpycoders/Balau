@@ -21,9 +21,12 @@ Balau::Task::Task() {
     g_tlsManager->setTLS(oldTLS);
 
     m_status = STARTING;
+    m_loop = NULL;
 }
 
 Balau::Task::~Task() {
+    if (m_loop)
+        ev_loop_destroy(m_loop);
     free(m_stack);
     free(m_tls);
 }
@@ -57,16 +60,40 @@ void Balau::Task::switchTo() {
         m_status = IDLE;
 }
 
-void Balau::Task::yield() {
-    coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
+void Balau::Task::yield(bool override) {
+    if (m_loop && override) {
+        ev_run(m_loop, 0);
+    } else {
+        coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
+    }
 }
 
 Balau::Task * Balau::Task::getCurrentTask() {
     return localTask.get();
 }
 
-void Balau::Task::waitFor(Balau::Events::BaseEvent * e) {
+void Balau::Task::waitFor(Balau::Events::BaseEvent * e, bool override) {
+    struct ev_loop * loop = m_loop;
+    if (!override)
+        m_loop = NULL;
     e->registerOwner(this);
+    m_loop = loop;
+}
+
+void Balau::Task::setPreemptible(bool enable) {
+    if (!m_loop && !enable) {
+        m_loop = ev_loop_new(EVFLAG_AUTO);
+    } else if (m_loop) {
+        ev_loop_destroy(m_loop);
+        m_loop = NULL;
+    }
+}
+
+struct ev_loop * Balau::Task::getLoop() {
+    if (m_loop)
+        return m_loop;
+    else
+        return getTaskMan()->getLoop();
 }
 
 void Balau::Events::BaseEvent::doSignal() {
@@ -79,12 +106,16 @@ Balau::Events::TaskEvent::TaskEvent(Task * taskWaited) : m_taskWaited(taskWaited
 }
 
 Balau::Events::Timeout::Timeout(ev_tstamp tstamp) {
+    set(tstamp);
+}
+
+void Balau::Events::Timeout::set(ev_tstamp tstamp) {
     m_evt.set<Timeout, &Timeout::evt_cb>(this);
     m_evt.set(tstamp);
 }
 
 void Balau::Events::Timeout::gotOwner(Task * task) {
-    m_evt.set(task->getTaskMan()->getLoop());
+    m_evt.set(task->getLoop());
     m_evt.start();
 }
 
@@ -93,5 +124,5 @@ void Balau::Events::Timeout::evt_cb(ev::timer & w, int revents) {
 }
 
 void Balau::Events::Custom::gotOwner(Task * task) {
-    m_loop = task->getTaskMan()->getLoop();
+    m_loop = task->getLoop();
 }
