@@ -22,6 +22,7 @@ Balau::Task::Task() {
 
     m_status = STARTING;
     m_loop = NULL;
+    m_okayToEAgain = false;
 }
 
 Balau::Task::~Task() {

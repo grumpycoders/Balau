@@ -8,12 +8,20 @@
 
 namespace Balau {
 
+namespace Events { class BaseEvent; };
+
+class EAgain : public GeneralException {
+  public:
+      EAgain(Events::BaseEvent * evt) : GeneralException("Try Again"), m_evt(evt) { }
+    Events::BaseEvent * getEvent() { return m_evt; }
+  private:
+    Events::BaseEvent * m_evt;
+};
+
 class TaskMan;
 class Task;
 
 namespace Events {
-
-class BaseEvent;
 
 class Callback {
   protected:
@@ -81,13 +89,15 @@ class Task {
     virtual const char * getName() = 0;
     Status getStatus() { return m_status; }
     static Task * getCurrentTask();
-    static void yield(Events::BaseEvent * evt, bool interruptible = false) {
+    static void yield(Events::BaseEvent * evt, bool interruptible = false) throw (GeneralException) {
         Task * t = getCurrentTask();
         t->waitFor(evt, true);
 
         do {
             t->yield(true);
-        } while (!interruptible && !evt->gotSignal());
+        } while ((!interruptible || !t->m_okayToEAgain) && !evt->gotSignal());
+        if (interruptible && t->m_okayToEAgain && !evt->gotSignal())
+            throw EAgain(evt);
     }
     TaskMan * getTaskMan() { return m_taskMan; }
     struct ev_loop * getLoop();
@@ -96,6 +106,11 @@ class Task {
     virtual void Do() = 0;
     void waitFor(Events::BaseEvent * event, bool override = false);
     bool setPreemptible(bool enable);
+    bool setOkayToEAgain(bool enable) {
+        bool oldValue = m_okayToEAgain;
+        m_okayToEAgain = enable;
+        return oldValue;
+    }
   private:
     size_t stackSize() { return 128 * 1024; }
     void switchTo();
@@ -110,6 +125,7 @@ class Task {
     typedef std::vector<Events::TaskEvent *> waitedByList_t;
     waitedByList_t m_waitedBy;
     struct ev_loop * m_loop;
+    bool m_okayToEAgain;
 };
 
 };

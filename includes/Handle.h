@@ -4,11 +4,6 @@
 
 namespace Balau {
 
-class EAgain : public GeneralException {
-  public:
-      EAgain() : GeneralException("Try Again") { }
-};
-
 class ENoEnt : public GeneralException {
   public:
       ENoEnt(const char * name) : GeneralException(String("No such file or directory: `") + name + "'") { }
