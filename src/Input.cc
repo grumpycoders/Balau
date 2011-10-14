@@ -53,7 +53,6 @@ Balau::Input::Input(const char * fname) throw (GeneralException) : m_fd(-1), m_s
     eio_req * r = eio_open(fname, O_RDONLY, 0, 0, eioDone, &cbResults);
     Assert(r != 0);
     Task::yield(&cbResults.evt);
-    Assert(cbResults.evt.gotSignal());
     if (cbResults.result < 0) {
         char str[4096];
         if (cbResults.errorno == ENOENT) {
@@ -69,7 +68,6 @@ Balau::Input::Input(const char * fname) throw (GeneralException) : m_fd(-1), m_s
     r = eio_fstat(m_fd, 0, eioStatsDone, &cbStatsResults);
     Assert(r != 0);
     Task::yield(&cbStatsResults.evt);
-    Assert(cbStatsResults.evt.gotSignal());
     if (cbStatsResults.result == 0) {
         m_size = cbStatsResults.statdata.st_size;
         m_mtime = cbStatsResults.statdata.st_mtime;
@@ -84,7 +82,6 @@ void Balau::Input::close() throw (GeneralException) {
     Assert(r != 0);
     m_fd = -1;
     Task::yield(&cbResults.evt);
-    Assert(cbResults.evt.gotSignal());
     if (cbResults.result < 0) {
         char str[4096];
         strerror_r(cbResults.errorno, str, sizeof(str));
@@ -99,7 +96,6 @@ ssize_t Balau::Input::read(void * buf, size_t count) throw (GeneralException) {
     eio_req * r = eio_read(m_fd, buf, count, getROffset(), 0, eioDone, &cbResults);
     Assert(r != 0);
     Task::yield(&cbResults.evt);
-    Assert(cbResults.evt.gotSignal());
     if (cbResults.result > 0) {
         rseek(cbResults.result, SEEK_CUR);
     } else {
