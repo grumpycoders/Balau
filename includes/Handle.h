@@ -47,7 +47,7 @@ class Handle {
 
 class IO {
   public:
-      template<class T> IO(T * h) { setHandle(h); }
+      IO(Handle * h) { setHandle(h); }
       ~IO() { m_h->delRef(); }
       IO(const IO & io) { setHandle(io.m_h); }
     Handle * operator->() { return m_h; }
