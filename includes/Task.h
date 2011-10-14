@@ -71,7 +71,14 @@ class Task {
     virtual const char * getName() = 0;
     Status getStatus() { return m_status; }
     static Task * getCurrentTask();
-    static void yield(Events::BaseEvent * evt) { Task * t = getCurrentTask(); t->waitFor(evt, true); t->yield(true); }
+    static void yield(Events::BaseEvent * evt, bool interruptible = false) {
+        Task * t = getCurrentTask();
+        t->waitFor(evt, true);
+
+        do {
+            t->yield(true);
+        } while (!interruptible && !evt->gotSignal());
+    }
     TaskMan * getTaskMan() { return m_taskMan; }
     struct ev_loop * getLoop();
   protected:
