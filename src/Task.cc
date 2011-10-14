@@ -80,13 +80,15 @@ void Balau::Task::waitFor(Balau::Events::BaseEvent * e, bool override) {
     m_loop = loop;
 }
 
-void Balau::Task::setPreemptible(bool enable) {
+bool Balau::Task::setPreemptible(bool enable) {
+    bool wasPreemptible = !m_loop;
     if (!m_loop && !enable) {
         m_loop = ev_loop_new(EVFLAG_AUTO);
     } else if (m_loop) {
         ev_loop_destroy(m_loop);
         m_loop = NULL;
     }
+    return wasPreemptible;
 }
 
 struct ev_loop * Balau::Task::getLoop() {
@@ -98,7 +100,10 @@ struct ev_loop * Balau::Task::getLoop() {
 
 void Balau::Events::BaseEvent::doSignal() {
     m_signal = true;
-    m_task->getTaskMan()->signalTask(m_task);
+    if (m_cb)
+        m_cb->gotEvent(this);
+    if (m_task)
+        m_task->getTaskMan()->signalTask(m_task);
 }
 
 Balau::Events::TaskEvent::TaskEvent(Task * taskWaited) : m_taskWaited(taskWaited) {

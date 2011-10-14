@@ -13,9 +13,18 @@ class Task;
 
 namespace Events {
 
+class BaseEvent;
+
+class Callback {
+  protected:
+    virtual void gotEvent(BaseEvent *) = 0;
+    friend class BaseEvent;
+};
+
 class BaseEvent {
   public:
-      BaseEvent() : m_signal(false), m_task(NULL) { }
+      BaseEvent() : m_cb(NULL), m_signal(false), m_task(NULL) { }
+      virtual ~BaseEvent() { if (m_cb) delete m_cb; }
     bool gotSignal() { return m_signal; }
     void doSignal();
     void reset() { Assert(m_task != NULL); m_signal = false; gotOwner(m_task); }
@@ -24,6 +33,7 @@ class BaseEvent {
   protected:
     virtual void gotOwner(Task * task) { }
   private:
+    Callback * m_cb;
     bool m_signal;
     Task * m_task;
 };
@@ -85,7 +95,7 @@ class Task {
     void yield(bool override = false);
     virtual void Do() = 0;
     void waitFor(Events::BaseEvent * event, bool override = false);
-    void setPreemptible(bool enable);
+    bool setPreemptible(bool enable);
   private:
     size_t stackSize() { return 128 * 1024; }
     void switchTo();
