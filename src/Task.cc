@@ -52,7 +52,6 @@ void Balau::Task::coroutine(void * arg) {
 }
 
 void Balau::Task::switchTo() {
-    m_status = RUNNING;
     void * oldTLS = g_tlsManager->getTLS();
     g_tlsManager->setTLS(m_tls);
     coro_transfer(&m_taskMan->m_returnContext, &m_ctx);

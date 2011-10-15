@@ -48,16 +48,20 @@ void Balau::TaskMan::mainLoop() {
         // checking "STARTING" tasks, and running them once; also try to build the status of the noWait boolean.
         for (iH = m_tasks.begin(); iH != m_tasks.end(); iH++) {
             t = *iH;
-            if (t->getStatus() == Task::STARTING) {
+            if (t->getStatus() == Task::STARTING)
                 t->switchTo();
-                if ((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED))
-                    noWait = true;
-            }
+            if ((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED))
+                noWait = true;
         }
 
         // probably means we have pending tasks; or none at all, for some reason. Don't wait on it forever.
-        if (!noWait && m_tasks.size() == 0)
+        if (m_tasks.size() == 0)
             noWait = true;
+
+        m_pendingLock.enter();
+        if (m_pendingAdd.size() != 0)
+            noWait = true;
+        m_pendingLock.leave();
 
         // libev's event "loop". We always runs it once though.
         ev_run(m_loop, noWait ? EVRUN_NOWAIT : EVRUN_ONCE);

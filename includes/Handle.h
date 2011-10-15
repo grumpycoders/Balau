@@ -42,10 +42,12 @@ class Handle {
 
 class IO {
   public:
+      IO() : m_h(NULL) { }
       IO(Handle * h) { setHandle(h); }
-      ~IO() { m_h->delRef(); }
+      ~IO() { if (m_h) m_h->delRef(); }
       IO(const IO & io) { setHandle(io.m_h); }
-    Handle * operator->() { return m_h; }
+    IO & operator=(const IO & io) { if (m_h) m_h->delRef(); setHandle(io.m_h); return *this; }
+    Handle * operator->() { Assert(m_h); return m_h; }
   protected:
     void setHandle(Handle * h) { m_h = h; m_h->addRef(); }
   private:
