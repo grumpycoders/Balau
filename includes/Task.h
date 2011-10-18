@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include <coro.h>
 #include <ev++.h>
-#include <Exceptions.h>
 #include <vector>
+#include <Exceptions.h>
+#include <Printer.h>
 
 namespace Balau {
 
@@ -31,7 +32,7 @@ class Callback {
 
 class BaseEvent {
   public:
-      BaseEvent() : m_cb(NULL), m_signal(false), m_task(NULL) { }
+      BaseEvent() : m_cb(NULL), m_signal(false), m_task(NULL) { Printer::elog(E_TASK, "Creating event at %p", this); }
       virtual ~BaseEvent() { if (m_cb) delete m_cb; }
     bool gotSignal() { return m_signal; }
     void doSignal();

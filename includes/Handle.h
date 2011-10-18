@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Exceptions.h>
+#include <Printer.h>
 
 namespace Balau {
 

@@ -23,6 +23,8 @@ Balau::Task::Task() {
     m_status = STARTING;
     m_loop = NULL;
     m_okayToEAgain = false;
+
+    Printer::elog(E_TASK, "Created a Task at %p");
 }
 
 Balau::Task::~Task() {
@@ -35,23 +37,26 @@ Balau::Task::~Task() {
 void Balau::Task::coroutine(void * arg) {
     Task * task = reinterpret_cast<Task *>(arg);
     Assert(task);
+    Assert(task->m_status == STARTING);
     try {
         task->m_status = RUNNING;
         task->Do();
         task->m_status = STOPPED;
     }
     catch (GeneralException & e) {
-        Printer::log(M_WARNING, "Task %s caused an exception: `%s' - stopping.", task->getName(), e.getMsg());
+        Printer::log(M_WARNING, "Task %s at %p caused an exception: `%s' - stopping.", task->getName(), task, e.getMsg());
         task->m_status = FAULTED;
     }
     catch (...) {
-        Printer::log(M_WARNING, "Task %s caused an unknown exception - stopping.", task->getName());
+        Printer::log(M_WARNING, "Task %s at %p caused an unknown exception - stopping.", task->getName(), task);
         task->m_status = FAULTED;
     }
     coro_transfer(&task->m_ctx, &task->m_taskMan->m_returnContext);
 }
 
 void Balau::Task::switchTo() {
+    Printer::elog(E_TASK, "Switching to task %p - %s", this, getName());
+    Assert(m_status == IDLE || m_status == STARTING);
     void * oldTLS = g_tlsManager->getTLS();
     g_tlsManager->setTLS(m_tls);
     coro_transfer(&m_taskMan->m_returnContext, &m_ctx);
@@ -99,11 +104,14 @@ struct ev_loop * Balau::Task::getLoop() {
 }
 
 void Balau::Events::BaseEvent::doSignal() {
+    Printer::elog(E_TASK, "Event at %p (%s) is signaled with cb %p and task %p", this, ClassName(this).c_str(), m_cb, m_task);
     m_signal = true;
     if (m_cb)
         m_cb->gotEvent(this);
-    if (m_task)
+    if (m_task) {
+        Printer::elog(E_TASK, "Signaling task %p (%s - %s)", m_task, m_task->getName(), ClassName(m_task).c_str());
         m_task->getTaskMan()->signalTask(m_task);
+    }
 }
 
 Balau::Events::TaskEvent::TaskEvent(Task * taskWaited) : m_taskWaited(taskWaited) {

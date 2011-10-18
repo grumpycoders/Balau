@@ -4,6 +4,7 @@
 #include "Main.h"
 #include "TaskMan.h"
 #include "Handle.h"
+#include "Printer.h"
 
 class eioInterface : public Balau::AtStart {
   public:
@@ -29,6 +30,8 @@ void eioInterface::readyCB(ev::async & w, int revents) {
 }
 
 void eioInterface::doStart() {
+    Balau::Printer::elog(Balau::E_HANDLE, "Starting the eio interface");
+
     Balau::TaskMan * taskMan = Balau::TaskMan::getTaskMan();
     Assert(taskMan);
     struct ev_loop * loop = taskMan->getLoop();

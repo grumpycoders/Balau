@@ -6,6 +6,7 @@
 #include "eio.h"
 #include "Input.h"
 #include "Task.h"
+#include "Printer.h"
 
 #ifdef _WIN32
 const char * strerror_r(int errorno, char * buf, size_t bufsize) {
@@ -48,6 +49,8 @@ static int eioStatsDone(eio_req * req) {
 
 Balau::Input::Input(const char * fname) throw (GeneralException) : m_fd(-1), m_size(-1), m_mtime(-1) {
     m_name.set("Input(%s)", fname);
+
+    Printer::elog(E_INPUT, "Opening file %s", fname);
 
     cbResults_t cbResults;
     eio_req * r = eio_open(fname, O_RDONLY, 0, 0, eioDone, &cbResults);

@@ -1,6 +1,7 @@
 #include <iconv.h>
 #include <ctype.h>
 
+#include "Printer.h"
 #include "BString.h"
 
 void Balau::String::set(const char * fmt, va_list ap) {
@@ -82,6 +83,7 @@ Balau::String & Balau::String::do_lower() {
 Balau::String & Balau::String::do_iconv(const char * from, const char * _to) {
     iconv_t cd;
     const String to = String(_to) + "//TRANSLIT";
+    Printer::elog(E_STRING, "Converting a string from %s to %s", from, _to);
 
     const char * inbuf;
     char * outbuf, * t;

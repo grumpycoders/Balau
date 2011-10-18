@@ -12,9 +12,10 @@ static const char * prefixes[] = {
     "(WW) ",
     "(EE) ",
     "(AA) ",
+    "(**) ",
 };
 
-Balau::Printer::Printer() : m_verbosity(M_STATUS | M_WARNING | M_ERROR) {
+Balau::Printer::Printer() : m_verbosity(M_STATUS | M_WARNING | M_ERROR | M_ENGINE_DEBUG) {
     if (!localPrinter.getGlobal())
         localPrinter.setGlobal(this);
 }
@@ -37,9 +38,11 @@ void Balau::Printer::_log(uint32_t level, const char * fmt, va_list ap) {
 
     Printer * printer = getPrinter();
 
+    m_lock.enter();
     printer->_print(prefixes[i]);
     printer->_print(fmt, ap);
     printer->_print("\n");
+    m_lock.leave();
 }
 
 void Balau::Printer::_print(const char * fmt, va_list ap) {

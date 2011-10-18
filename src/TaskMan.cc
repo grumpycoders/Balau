@@ -45,6 +45,8 @@ void Balau::TaskMan::mainLoop() {
         Task * t;
         bool noWait = false;
 
+        Printer::elog(E_TASK, "TaskMan::mainLoop() with m_tasks.size = %i", m_tasks.size());
+
         // checking "STARTING" tasks, and running them once; also try to build the status of the noWait boolean.
         for (iH = m_tasks.begin(); iH != m_tasks.end(); iH++) {
             t = *iH;
@@ -69,6 +71,8 @@ void Balau::TaskMan::mainLoop() {
         // let's check who got signaled, and call them
         for (iH = m_signaledTasks.begin(); iH != m_signaledTasks.end(); iH++) {
             t = *iH;
+            Printer::elog(E_TASK, "Switching to task %p (%s - %s) that got signaled somehow.", t, t->getName(), ClassName(t).c_str());
+            Assert(t->getStatus() == Task::IDLE);
             t->switchTo();
         }
 

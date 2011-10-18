@@ -2,6 +2,7 @@
 
 #include <stdarg.h>
 #include <BString.h>
+#include <Threads.h>
 
 namespace Balau {
 
@@ -14,7 +15,19 @@ enum {
     M_ALERT = 32,
 
     M_ALL = M_DEBUG | M_INFO | M_STATUS | M_WARNING | M_ERROR | M_ALERT,
-    M_MAX = M_ALERT,
+
+    M_ENGINE_DEBUG = 64,
+    M_MAX = M_ENGINE_DEBUG,
+};
+
+enum {
+    E_STRING = 1,
+    E_TASK = 2,
+    E_EVENT = 4,
+    E_HANDLE = 8,
+    E_INPUT = 16,
+    E_SOCKET = 32,
+    E_THREAD = 64,
 };
 
 class Printer {
@@ -25,6 +38,7 @@ class Printer {
     void _print(const char * fmt, ...);
     void _log(uint32_t level, const char * fmt, va_list ap);
 
+    Lock m_lock;
   public:
       Printer();
 
@@ -37,6 +51,12 @@ class Printer {
     static void print(const String & fmt, ...) { va_list ap; va_start(ap, fmt); vprint(fmt.to_charp(), ap); va_end(ap); }
     static void print(const char * fmt, ...) { va_list ap; va_start(ap, fmt); vprint(fmt, ap); va_end(ap); }
     static void vprint(const char * fmt, va_list ap) { getPrinter()->_print(fmt, ap); }
+
+#ifdef DEBUG
+    static void elog(uint32_t engine, const char * fmt, ...) { va_list ap; va_start(ap, fmt); getPrinter()->_log(M_ENGINE_DEBUG, fmt, ap); }
+#else
+    static void elog(uint32_t engine, const char * fmt, ...) { }
+#endif
 
     static void enable(uint32_t levels = M_ALL) { getPrinter()->m_verbosity |= levels; }
     static void disable(uint32_t levels = M_ALL) { getPrinter()->m_verbosity &= ~levels; }
