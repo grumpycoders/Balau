@@ -49,9 +49,10 @@ class BaseEvent {
 
 class Timeout : public BaseEvent {
   public:
-      Timeout(ev_tstamp tstamp);
-    void evt_cb(ev::timer & w, int revents);
-    void set(ev_tstamp tstamp);
+      Timeout(ev_tstamp tstamp) { set(tstamp); }
+      virtual ~Timeout() { m_evt.stop(); }
+    void evt_cb(ev::timer & w, int revents) { doSignal(); }
+    void set(ev_tstamp tstamp) { m_evt.set<Timeout, &Timeout::evt_cb>(this); m_evt.set(tstamp); }
   private:
     virtual void gotOwner(Task * task);
     ev::timer m_evt;
@@ -60,9 +61,24 @@ class Timeout : public BaseEvent {
 class TaskEvent : public BaseEvent {
   public:
       TaskEvent(Task * taskWaited);
+      virtual ~TaskEvent();
+    void ack();
     Task * taskWaited() { return m_taskWaited; }
   private:
     Task * m_taskWaited;
+    bool m_ack;
+};
+
+class Async : public BaseEvent {
+  public:
+      Async() { m_evt.set<Async, &Async::evt_cb>(this); }
+      virtual ~Async() { m_evt.stop(); }
+    void trigger() { m_evt.send(); }
+    void evt_cb(ev::async & w, int revents) { doSignal(); }
+  protected:
+    virtual void gotOwner(Task * task);
+  private:
+    ev::async m_evt;
 };
 
 class Custom : public BaseEvent {

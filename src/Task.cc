@@ -91,17 +91,31 @@ void Balau::Events::BaseEvent::doSignal() {
     }
 }
 
-Balau::Events::TaskEvent::TaskEvent(Task * taskWaited) : m_taskWaited(taskWaited) {
+Balau::Events::TaskEvent::TaskEvent(Task * taskWaited) : m_taskWaited(taskWaited), m_ack(false) {
     m_taskWaited->m_waitedBy.push_back(this);
 }
 
-Balau::Events::Timeout::Timeout(ev_tstamp tstamp) {
-    set(tstamp);
+Balau::Events::TaskEvent::~TaskEvent() {
+    if (!m_ack)
+        ack();
 }
 
-void Balau::Events::Timeout::set(ev_tstamp tstamp) {
-    m_evt.set<Timeout, &Timeout::evt_cb>(this);
-    m_evt.set(tstamp);
+void Balau::Events::TaskEvent::ack() {
+    Assert(!m_ack);
+    bool deleted = false;
+    Task * t = m_taskWaited;
+    Task::waitedByList_t::iterator i;
+    for (i = t->m_waitedBy.begin(); i != t->m_waitedBy.end(); i++) {
+        if (*i == this) {
+            t->m_waitedBy.erase(i);
+            deleted = true;
+            break;
+        }
+    }
+    Printer::elog(E_TASK, "TaskEvent at %p being ack; removing from the 'waited by' list of %p (%s - %s); deleted = %s", this, t, t->getName(), ClassName(t).c_str(), deleted ? "true" : "false");
+    Assert(deleted);
+    m_ack = true;
+    reset();
 }
 
 void Balau::Events::Timeout::gotOwner(Task * task) {
@@ -109,8 +123,9 @@ void Balau::Events::Timeout::gotOwner(Task * task) {
     m_evt.start();
 }
 
-void Balau::Events::Timeout::evt_cb(ev::timer & w, int revents) {
-    doSignal();
+void Balau::Events::Async::gotOwner(Task * task) {
+    m_evt.set(task->getLoop());
+    m_evt.start();
 }
 
 void Balau::Events::Custom::gotOwner(Task * task) {

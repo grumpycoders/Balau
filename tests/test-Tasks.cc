@@ -38,6 +38,7 @@ void MainTask::Do() {
     Assert(!taskEvt.gotSignal());
     yield();
     Assert(taskEvt.gotSignal());
+    taskEvt.ack();
 
     Events::Timeout timeout(0.1);
     waitFor(&timeout);
