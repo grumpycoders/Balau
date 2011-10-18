@@ -14,10 +14,12 @@ AR = ar rcs
 
 BINEXT = bin
 
+CPPFLAGS += -fno-strict-aliasing
+
 ifeq ($(DEBUG),)
-CPPFLAGS += -O3
+CPPFLAGS += -O3 -DNDEBUG
 else
-CPPFLAGS += -g
+CPPFLAGS += -g -DDEBUG
 LDFLAGS += -g
 endif
 
