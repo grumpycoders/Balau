@@ -6,7 +6,7 @@
 static Balau::DefaultTmpl<Balau::TaskMan> defaultTaskMan(50);
 static Balau::LocalTmpl<Balau::TaskMan> localTaskMan;
 
-Balau::TaskMan::TaskMan() : m_stopped(false) {
+Balau::TaskMan::TaskMan() : m_stopped(false), m_allowedToSignal(false) {
     coro_create(&m_returnContext, 0, 0, 0, 0);
     if (!localTaskMan.getGlobal()) {
         localTaskMan.setGlobal(this);
@@ -66,7 +66,24 @@ void Balau::TaskMan::mainLoop() {
         m_pendingLock.leave();
 
         // libev's event "loop". We always runs it once though.
+        m_allowedToSignal = true;
+        Printer::elog(E_TASK, "Going to libev main loop");
         ev_run(m_loop, noWait ? EVRUN_NOWAIT : EVRUN_ONCE);
+        Printer::elog(E_TASK, "Getting out of libev main loop");
+
+        // let's check what task got stopped, and signal them
+        for (iH = m_tasks.begin(); iH != m_tasks.end(); iH++) {
+            t = *iH;
+            if (((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED)) &&
+                 (t->m_waitedBy.size() != 0)) {
+                Task::waitedByList_t::iterator i;
+                for (i = t->m_waitedBy.begin(); i != t->m_waitedBy.end(); i++) {
+                    Events::TaskEvent * e = *i;
+                    e->doSignal();
+                }
+            }
+        }
+        m_allowedToSignal = false;
 
         // let's check who got signaled, and call them
         for (iH = m_signaledTasks.begin(); iH != m_signaledTasks.end(); iH++) {
@@ -75,6 +92,7 @@ void Balau::TaskMan::mainLoop() {
             Assert(t->getStatus() == Task::IDLE);
             t->switchTo();
         }
+        m_signaledTasks.clear();
 
         m_pendingLock.enter();
         // Adding tasks that were added, maybe from other threads
@@ -86,24 +104,7 @@ void Balau::TaskMan::mainLoop() {
         m_pendingAdd.clear();
         m_pendingLock.leave();
 
-        // Dealing with stopped and faulted tasks.
-        // First by signalling the waiters.
-        for (iH = m_tasks.begin(); iH != m_tasks.end(); iH++) {
-            t = *iH;
-            if (((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED)) &&
-                 (t->m_waitedBy.size() != 0)) {
-                Task::waitedByList_t::iterator i;
-                while ((i = t->m_waitedBy.begin()) != t->m_waitedBy.end()) {
-                    Events::TaskEvent * e = *i;
-                    e->doSignal();
-                    e->taskWaiting()->switchTo();
-                    t->m_waitedBy.erase(i);
-                }
-            }
-        }
-        m_signaledTasks.clear();
-
-        // Then, by destroying them.
+        // Finally, let's destroy tasks that no longer are necessary.
         bool didDelete;
         do {
             didDelete = false;
@@ -130,5 +131,6 @@ void Balau::TaskMan::registerTask(Balau::Task * t) {
 
 void Balau::TaskMan::signalTask(Task * t) {
     Assert(m_tasks.find(t) != m_tasks.end());
+    Assert(m_allowedToSignal);
     m_signaledTasks.insert(t);
 }

@@ -36,6 +36,7 @@ class TaskMan {
     Lock m_pendingLock;
     volatile bool m_stopped;
     struct ev_loop * m_loop;
+    bool m_allowedToSignal;
 };
 
 };
