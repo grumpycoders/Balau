@@ -117,6 +117,7 @@ Printer.cc \
 \
 Handle.cc \
 Input.cc \
+Socket.cc \
 \
 Task.cc \
 TaskMan.cc \
@@ -152,6 +153,7 @@ test-String.cc \
 test-Tasks.cc \
 test-Threads.cc \
 test-Handles.cc \
+test-Sockets.cc \
 
 LIB = libBalau.a
 
