@@ -20,13 +20,13 @@ void MainTask::Do() {
 
     bool failed = false;
     try {
-        IO i(new Input("SomeInexistantFile.txt"));
+        IO<Handle> i(new Input("SomeInexistantFile.txt"));
     }
     catch (ENoEnt e) {
         failed = true;
     }
     Assert(failed);
-    IO i(new Input("tests/rtest.txt"));
+    IO<Handle> i(new Input("tests/rtest.txt"));
     Printer::log(M_STATUS, "Opened file %s:", i->getName());
     Printer::log(M_STATUS, " - size = %lli", i->getSize());
 

@@ -10,6 +10,9 @@ class ENoEnt : public GeneralException {
       ENoEnt(const char * name) : GeneralException(String("No such file or directory: `") + name + "'") { }
 };
 
+class IOBase;
+
+template<class T>
 class IO;
 
 class Handle {
@@ -34,25 +37,41 @@ class Handle {
       Handle() : m_refCount(0) { }
   private:
     void addRef() { m_refCount++; }
-    void delRef() { if (--m_refCount == 0) { if (!isClosed()) close(); delete this; } }
-    int refCount() { return m_refCount; }
+    void delRef() {
+        if (--m_refCount == 0) {
+            if (!isClosed())
+                close();
+            delete this;
+        }
+    }
+    friend class IOBase;
+    template<class T>
     friend class IO;
 
     int m_refCount;
 };
 
-class IO {
+class IOBase {
   public:
-      IO() : m_h(NULL) { }
-      IO(Handle * h) { setHandle(h); }
-      ~IO() { if (m_h) m_h->delRef(); }
-      IO(const IO & io) { setHandle(io.m_h); }
-    IO & operator=(const IO & io) { if (m_h) m_h->delRef(); setHandle(io.m_h); return *this; }
-    Handle * operator->() { Assert(m_h); return m_h; }
+      IOBase() : m_h(NULL) { }
+      ~IOBase() { if (m_h) m_h->delRef(); }
   protected:
     void setHandle(Handle * h) { m_h = h; m_h->addRef(); }
-  private:
     Handle * m_h;
+    template<class T>
+    friend class IO;
+};
+
+template<class T>
+class IO : public IOBase {
+  public:
+      IO() { }
+      IO(T * h) { setHandle(h); }
+      IO(const IO<T> & io) { setHandle(io.m_h); }
+      template<class U>
+      IO(const IO<U> & io) { setHandle(io.m_h); }
+    IO<T> & operator=(const IO<T> & io) { if (m_h) m_h->delRef(); setHandle(io.m_h); return *this; }
+    T * operator->() { Assert(m_h); return dynamic_cast<T *>(m_h); }
 };
 
 class SeekableHandle : public Handle {
