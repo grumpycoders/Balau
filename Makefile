@@ -139,8 +139,11 @@ darwin-eprintf.c \
 
 endif
 
+ifneq ($(SYSTEM),MINGW32)
 LIBCORO_SOURCES = \
 coro.c \
+
+endif
 
 LIBEV_SOURCES = \
 ev.c \

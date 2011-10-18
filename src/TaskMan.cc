@@ -7,7 +7,12 @@ static Balau::DefaultTmpl<Balau::TaskMan> defaultTaskMan(50);
 static Balau::LocalTmpl<Balau::TaskMan> localTaskMan;
 
 Balau::TaskMan::TaskMan() : m_stopped(false), m_allowedToSignal(false) {
+#ifndef _WIN32
     coro_create(&m_returnContext, 0, 0, 0, 0);
+#else
+    m_fiber = ConvertThreadToFiber(NULL);
+    Assert(m_fiber);
+#endif
     if (!localTaskMan.getGlobal()) {
         localTaskMan.setGlobal(this);
         m_loop = ev_default_loop(EVFLAG_AUTO);

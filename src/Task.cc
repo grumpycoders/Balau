@@ -8,8 +8,13 @@ static Balau::LocalTmpl<Balau::Task> localTask;
 
 Balau::Task::Task() {
     size_t size = stackSize();
+#ifndef _WIN32
     m_stack = malloc(size);
     coro_create(&m_ctx, coroutine, this, m_stack, size);
+#else
+    m_stack = NULL;
+    m_fiber = CreateFiber(size, coroutine, this);
+#endif
 
     m_taskMan = TaskMan::getTaskMan();
     m_taskMan->registerTask(this);
@@ -27,7 +32,8 @@ Balau::Task::Task() {
 }
 
 Balau::Task::~Task() {
-    free(m_stack);
+    if (m_stack)
+        free(m_stack);
     free(m_tls);
 }
 
@@ -48,7 +54,11 @@ void Balau::Task::coroutine(void * arg) {
         Printer::log(M_WARNING, "Task %s at %p caused an unknown exception - stopping.", task->getName(), task);
         task->m_status = FAULTED;
     }
+#ifndef _WIN32
     coro_transfer(&task->m_ctx, &task->m_taskMan->m_returnContext);
+#else
+    SwitchToFiber(task->m_taskMan->m_fiber);
+#endif
 }
 
 void Balau::Task::switchTo() {
@@ -56,7 +66,11 @@ void Balau::Task::switchTo() {
     Assert(m_status == IDLE || m_status == STARTING);
     void * oldTLS = g_tlsManager->getTLS();
     g_tlsManager->setTLS(m_tls);
+#ifndef _WIN32
     coro_transfer(&m_taskMan->m_returnContext, &m_ctx);
+#else
+    SwitchToFiber(m_fiber);
+#endif
     g_tlsManager->setTLS(oldTLS);
     if (m_status == RUNNING)
         m_status = IDLE;
@@ -64,7 +78,11 @@ void Balau::Task::switchTo() {
 
 void Balau::Task::yield() {
     Printer::elog(E_TASK, "Task %p - %s yielding", this, getName());
+#ifndef _WIN32
     coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
+#else
+    SwitchToFiber(m_taskMan->m_fiber);
+#endif
 }
 
 Balau::Task * Balau::Task::getCurrentTask() {

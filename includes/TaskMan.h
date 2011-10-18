@@ -1,7 +1,9 @@
 #pragma once
 
 #include <stdint.h>
+#ifndef _WIN32
 #include <coro.h>
+#endif
 #include <ev++.h>
 #include <ext/hash_set>
 #include <vector>
@@ -26,7 +28,11 @@ class TaskMan {
   private:
     void registerTask(Task * t);
     void unregisterTask(Task * t);
+#ifndef _WIN32
     coro_context m_returnContext;
+#else
+    void * m_fiber;
+#endif
     friend class Task;
     struct taskHasher { size_t operator()(const Task * t) const { return reinterpret_cast<uintptr_t>(t); } };
     typedef gnu::hash_set<Task *, taskHasher> taskHash_t;

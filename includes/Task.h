@@ -1,7 +1,9 @@
 #pragma once
 
 #include <stdlib.h>
+#ifndef _WIN32
 #include <coro.h>
+#endif
 #include <ev++.h>
 #include <vector>
 #include <Exceptions.h>
@@ -81,6 +83,10 @@ class Async : public BaseEvent {
     ev::async m_evt;
 };
 
+#ifndef _WIN32
+#define CALLBACK
+#endif
+
 class Custom : public BaseEvent {
   public:
     void doSignal() { BaseEvent::doSignal(); ev_break(m_loop, EVBREAK_ALL); }
@@ -137,9 +143,13 @@ class Task {
   private:
     size_t stackSize() { return 128 * 1024; }
     void switchTo();
-    static void coroutine(void *);
+    static void CALLBACK coroutine(void *);
     void * m_stack;
+#ifndef _WIN32
     coro_context m_ctx;
+#else
+    void * m_fiber;
+#endif
     TaskMan * m_taskMan;
     Status m_status;
     void * m_tls;

@@ -2,7 +2,7 @@
 
 #define STDC_HEADERS 1
 #define WORDS_LITTLEENDIAN 1
-#define CORO_ASM 1
+#define CORO_UCONTEXT 1
 #define _FILE_OFFSET_BITS 64
 #define EMBED_LIBEIO 1
 
