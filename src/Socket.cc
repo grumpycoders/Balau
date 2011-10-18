@@ -390,7 +390,8 @@ bool Balau::Socket::connect(const char * hostname, int port) {
 
     do {
         Printer::elog(E_SOCKET, "Connecting now...");
-        if (::connect(m_fd, (sockaddr *) &m_remoteAddr, sizeof(m_remoteAddr)) == 0) {
+        int r = ::connect(m_fd, (sockaddr *) &m_remoteAddr, sizeof(m_remoteAddr));
+        if ((r == 0) || ((r < 0) && (errno == EISCONN))) {
             m_connected = true;
             m_connecting = false;
 

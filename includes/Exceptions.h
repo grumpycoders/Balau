@@ -1,5 +1,6 @@
 #pragma once
 
+#include <typeinfo>
 #include <cxxabi.h>
 #include <BString.h>
 

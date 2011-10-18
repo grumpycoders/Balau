@@ -27,12 +27,14 @@ INCLUDES = includes libcoro libeio libev
 LIBS =
 
 ifeq ($(SYSTEM),Darwin)
+    CC = clang
+    CXX = clang++
     CPPFLAGS += -fPIC
     LDFLAGS += -fPIC
     LIBS += pthread iconv
     CONFIG_H = darwin-config.h
     ARCH_FLAGS = -arch i386
-    LD = g++ -arch i386
+    LD = clang++ -arch i386
     STRIP = strip -x
     ifeq ($(TRUESYSTEM),Linux)
         CROSSCOMPILE = true
@@ -190,10 +192,10 @@ libBalau.a: $(BALAU_OBJECTS)
 dep: $(ALL_DEPS)
 
 %.dep : %.cc
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS_NO_ARCH) -M -MF $@ $<
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS_NO_ARCH) -M $< > $@
 
 %.dep : %.c
-	$(CC) $(CFLAGS) $(CPPFLAGS_NO_ARCH) -M -MF $@ $<
+	$(CC) $(CFLAGS) $(CPPFLAGS_NO_ARCH) -M $< > $@
 
 -include $(ALL_DEPS)
 

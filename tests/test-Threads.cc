@@ -12,6 +12,7 @@ class TestThread : public Thread {
 
 void * TestThread::proc() {
     Printer::log(M_STATUS, "Into a thread");
+    return NULL;
 }
 
 void MainTask::Do() {
