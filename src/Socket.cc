@@ -275,7 +275,7 @@ Balau::Socket::Socket(int fd) : m_fd(fd), m_connected(true), m_connecting(false)
     fcntl(m_fd, F_SETFL, O_NONBLOCK);
 #endif
 
-    m_name.set("Socket(Connected - [%s]:%i <- [%s]:%i)", rLocal, htons(m_localAddr.sin6_port), rRemote, htons(m_remoteAddr.sin6_port));
+    m_name.set("Socket(Connected - [%s]:%i <- [%s]:%i)", rLocal, ntohs(m_localAddr.sin6_port), rRemote, ntohs(m_remoteAddr.sin6_port));
     Printer::elog(E_SOCKET, "Created a new socket from listener at %p; %s", this, m_name.to_charp());
 }
 
@@ -351,6 +351,7 @@ bool Balau::Socket::connect(const char * hostname, int port) {
     Assert(!m_listening);
     Assert(!m_connected);
     Assert(hostname);
+    Assert(!isClosed());
 
     if (!m_connecting) {
         Printer::elog(E_SOCKET, "Resolving %s", hostname);
@@ -417,7 +418,7 @@ bool Balau::Socket::connect(const char * hostname, int port) {
             Assert(rLocal);
             Assert(rRemote);
 
-            m_name.set("Socket(Connected - [%s]:%i -> [%s]:%i)", rLocal, htons(m_localAddr.sin6_port), rRemote, htons(m_remoteAddr.sin6_port));
+            m_name.set("Socket(Connected - [%s]:%i -> [%s]:%i)", rLocal, ntohs(m_localAddr.sin6_port), rRemote, ntohs(m_remoteAddr.sin6_port));
             Printer::elog(E_SOCKET, "Connected; %s", m_name.to_charp());
 
             m_evtW->stop();
@@ -448,6 +449,7 @@ bool Balau::Socket::listen() {
     Assert(!m_listening);
     Assert(!m_connecting);
     Assert(!m_connected);
+    Assert(!isClosed());
 
     if (::listen(m_fd, 16) == 0) {
         m_listening = true;
@@ -465,7 +467,7 @@ bool Balau::Socket::listen() {
 
         Assert(rLocal);
 
-        m_name.set("Socket(Listener - [%s]:%i)", rLocal, htons(m_localAddr.sin6_port));
+        m_name.set("Socket(Listener - [%s]:%i)", rLocal, ntohs(m_localAddr.sin6_port));
         Printer::elog(E_SOCKET, "Socket %i started to listen: %s", m_fd, m_name.to_charp());
     } else {
         String msg = getErrorMessage();

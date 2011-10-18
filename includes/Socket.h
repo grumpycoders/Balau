@@ -58,8 +58,9 @@ template<class Worker>
 class Listener : public Task {
   public:
       Listener(int port, const char * local = NULL) : m_stop(false) {
-          m_listener.setLocal(local, port);
-          bool r = m_listener.listen();
+          bool r = m_listener.setLocal(local, port);
+          Assert(r);
+          r = m_listener.listen();
           Assert(r);
           m_name = String(ClassName(this).c_str()) + " - " + m_listener.getName();
           Printer::elog(E_SOCKET, "Created a listener task at %p", this);
