@@ -343,6 +343,10 @@ bool Balau::Socket::setLocal(const char * hostname, int port) {
     return bind(m_fd, (struct sockaddr *) &m_localAddr, sizeof(m_localAddr)) == 0;
 }
 
+#if defined(_WIN32) && !defined(EISCONN)
+#define EISCONN WSAEISCONN
+#endif
+
 bool Balau::Socket::connect(const char * hostname, int port) {
     Assert(!m_listening);
     Assert(!m_connected);
