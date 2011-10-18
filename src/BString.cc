@@ -48,16 +48,19 @@ Balau::String & Balau::String::do_ltrim() {
 }
 
 Balau::String & Balau::String::do_rtrim() {
-    unsigned int l = length(), p = l;
+    unsigned int i, l = length(), p = l;
     const char * buffer = data();
 
-    for (unsigned int i = l - 1; i >= 0; i--)
+    for (i = l - 1; i > 0; i--)
         if (isspace(buffer[i]))
             p--;
         else
             break;
 
-    erase(p);
+    if ((i == 0) && isspace(buffer[0]))
+        assign("", 0);
+    else
+        erase(p);
 
     return *this;
 }

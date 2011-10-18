@@ -27,6 +27,11 @@ void MainTask::Do() {
     x = y; x.do_rtrim(); Assert(x == " foo bar");
     x = y; x.do_trim();  Assert(x == "foo bar");
 
+    y = "        ";
+    x = y; x.do_ltrim(); Assert(x == "");
+    x = y; x.do_rtrim(); Assert(x == "");
+    x = y; x.do_trim();  Assert(x == "");
+
     x = "42";            Assert(x.to_int() == 42);
     x = "0x42";          Assert(x.to_int() == 0x42);
     x = "42";            Assert(x.to_int(16) == 0x42);
