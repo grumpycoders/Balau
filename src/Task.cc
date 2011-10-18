@@ -21,15 +21,12 @@ Balau::Task::Task() {
     g_tlsManager->setTLS(oldTLS);
 
     m_status = STARTING;
-    m_loop = NULL;
     m_okayToEAgain = false;
 
     Printer::elog(E_TASK, "Created a Task at %p");
 }
 
 Balau::Task::~Task() {
-    if (m_loop)
-        ev_loop_destroy(m_loop);
     free(m_stack);
     free(m_tls);
 }
@@ -65,42 +62,22 @@ void Balau::Task::switchTo() {
         m_status = IDLE;
 }
 
-void Balau::Task::yield(bool override) {
-    if (m_loop && override) {
-        ev_run(m_loop, 0);
-    } else {
-        coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
-    }
+void Balau::Task::yield() {
+    Printer::elog(E_TASK, "Task %p - %s yielding", this, getName());
+    coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
 }
 
 Balau::Task * Balau::Task::getCurrentTask() {
     return localTask.get();
 }
 
-void Balau::Task::waitFor(Balau::Events::BaseEvent * e, bool override) {
-    struct ev_loop * loop = m_loop;
-    if (!override)
-        m_loop = NULL;
+void Balau::Task::waitFor(Balau::Events::BaseEvent * e) {
+    Printer::elog(E_TASK, "Task %p - %s waits for event %p (%s)", this, getName(), e, ClassName(e).c_str());
     e->registerOwner(this);
-    m_loop = loop;
-}
-
-bool Balau::Task::setPreemptible(bool enable) {
-    bool wasPreemptible = !m_loop;
-    if (!m_loop && !enable) {
-        m_loop = ev_loop_new(EVFLAG_AUTO);
-    } else if (m_loop) {
-        ev_loop_destroy(m_loop);
-        m_loop = NULL;
-    }
-    return wasPreemptible;
 }
 
 struct ev_loop * Balau::Task::getLoop() {
-    if (m_loop)
-        return m_loop;
-    else
-        return getTaskMan()->getLoop();
+    return getTaskMan()->getLoop();
 }
 
 void Balau::Events::BaseEvent::doSignal() {

@@ -90,23 +90,29 @@ class Task {
     virtual const char * getName() = 0;
     Status getStatus() { return m_status; }
     static Task * getCurrentTask();
+    static void prepare(Events::BaseEvent * evt) {
+        Task * t = getCurrentTask();
+        t->waitFor(evt);
+    }
     static void yield(Events::BaseEvent * evt, bool interruptible = false) throw (GeneralException) {
         Task * t = getCurrentTask();
-        t->waitFor(evt, true);
+        t->waitFor(evt);
 
         do {
-            t->yield(true);
+            t->yield();
+            Printer::elog(E_TASK, "operation back from yielding; interruptible = %s; okayToEAgain = %s", interruptible ? "true" : "false", t->m_okayToEAgain ? "true" : "false");
         } while ((!interruptible || !t->m_okayToEAgain) && !evt->gotSignal());
-        if (interruptible && t->m_okayToEAgain && !evt->gotSignal())
+        if (interruptible && t->m_okayToEAgain && !evt->gotSignal()) {
+            Printer::elog(E_TASK, "operation is throwing an exception.");
             throw EAgain(evt);
+        }
     }
     TaskMan * getTaskMan() { return m_taskMan; }
     struct ev_loop * getLoop();
   protected:
-    void yield(bool override = false);
+    void yield();
     virtual void Do() = 0;
-    void waitFor(Events::BaseEvent * event, bool override = false);
-    bool setPreemptible(bool enable);
+    void waitFor(Events::BaseEvent * event);
     bool setOkayToEAgain(bool enable) {
         bool oldValue = m_okayToEAgain;
         m_okayToEAgain = enable;
@@ -125,7 +131,6 @@ class Task {
     friend class Events::TaskEvent;
     typedef std::vector<Events::TaskEvent *> waitedByList_t;
     waitedByList_t m_waitedBy;
-    struct ev_loop * m_loop;
     bool m_okayToEAgain;
 };
 

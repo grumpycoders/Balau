@@ -47,11 +47,8 @@ void MainTask::Do() {
 
     timeout.set(0.1);
     timeout.reset();
-    setPreemptible(false);
-    yieldingFunction();
-    Assert(!timeout.gotSignal());
     waitFor(&timeout);
-    yield();
+    yieldingFunction();
     Assert(timeout.gotSignal());
 
     Printer::log(M_STATUS, "Test::Tasks passed.");
