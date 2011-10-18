@@ -1,3 +1,5 @@
+#define _WIN32_WINNT 0x501
+
 #define HAVE_PROPER_ICONV 1
 
 #define __CLEANUP_C 1

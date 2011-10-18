@@ -1,9 +1,12 @@
+#ifndef _WIN32
 #include <arpa/inet.h>
-#include <sys/types.h>
 #include <sys/socket.h>
-#include <netdb.h>
+#endif
+#include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/stat.h>
+#include <stdio.h>
 #include <errno.h>
 #include "Socket.h"
 #include "Threads.h"
@@ -34,6 +37,139 @@ struct DNSRequest {
     Balau::Events::Async * evt;
     int error;
 };
+
+static Balau::String getErrorMessage() {
+    Balau::String msg;
+#ifdef _WIN32
+    char * lpMsgBuf;
+    if (FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        WSAGetLastError(),
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+        (LPTSTR) &lpMsgBuf,
+        0,
+        NULL)) {
+        char * eol = strrchr(lpMsgBuf, '\n');
+        if (eol)
+            *eol = 0;
+        msg = lpMsgBuf;
+    } else {
+        msg = "FormatMessage failed";
+    }
+    LocalFree(lpMsgBuf);
+#else
+    msg = strerror(errno);
+#endif
+    return msg;
+}
+
+#if defined(_WIN32) && !defined(AI_V4MAPPED)
+// mingw32 is retarded.
+#define AI_NUMERICSERV              0x00000008L
+#define AI_ALL                      0x00000100L
+#define AI_ADDRCONFIG               0x00000400L
+#define AI_V4MAPPED                 0x00000800L
+#define AI_NON_AUTHORITATIVE        0x00004000L
+#define AI_SECURE                   0x00008000L
+#define AI_RETURN_PREFERRED_NAMES   0x00010000L
+#define AI_FQDN                     0x00020000L
+#define AI_FILESERVER               0x00040000L
+
+// and winXP is stupid
+
+static const char * inet_ntop4(const unsigned char * src, char * dst, socklen_t size) {
+    char out[INET_ADDRSTRLEN];
+
+    int len = sprintf(out, "%u.%u.%u.%u", src[0], src[1], src[2], src[3]);
+    if (len < 0) {
+        return NULL;
+    } else if (len > size) {
+        errno = ENOSPC;
+        return NULL;
+    }
+    return strcpy(dst, out);
+}
+
+static const char * inet_ntop6(const unsigned char * src, char * dst, socklen_t size) {
+    char tmp[INET6_ADDRSTRLEN], *tp;
+    struct { int base, len; } best, cur;
+    unsigned int words[8];
+    int i;
+
+    memset(words, 0, sizeof(words));
+    for (i = 0; i < 16; i += 2)
+        words[i / 2] = (src[i] << 8) | src[i + 1];
+    best.base = -1;
+    cur.base = -1;
+    for (i = 0; i < 8; i++) {
+        if (words[i] == 0) {
+            if (cur.base == -1)
+                cur.base = i, cur.len = 1;
+            else
+                cur.len++;
+        } else {
+            if (cur.base != -1) {
+                if (best.base == -1 || cur.len > best.len)
+                    best = cur;
+                cur.base = -1;
+            }
+        }
+    }
+    if (cur.base != -1) {
+        if (best.base == -1 || cur.len > best.len)
+            best = cur;
+    }
+    if (best.base != -1 && best.len < 2)
+        best.base = -1;
+
+    tp = tmp;
+    for (i = 0; i < 8; i++) {
+        if (best.base != -1 && i >= best.base && i < (best.base + best.len)) {
+            if (i == best.base)
+            *tp++ = ':';
+            continue;
+        }
+        if (i != 0)
+            *tp++ = ':';
+        if (i == 6 && best.base == 0 && (best.len == 6 || (best.len == 5 && words[5] == 0xffff))) {
+            if (!inet_ntop4 (src + 12, tp, sizeof tmp - (tp - tmp)))
+                return NULL;
+            tp += strlen (tp);
+            break;
+        }
+
+        int len = sprintf (tp, "%x", words[i]);
+        if (len < 0)
+            return NULL;
+        tp += len;
+    }
+    if (best.base != -1 && (best.base + best.len) == 8)
+        *tp++ = ':';
+    *tp++ = '\0';
+
+    if ((socklen_t) (tp - tmp) > size) {
+        errno = ENOSPC;
+        return NULL;
+    }
+
+    return strcpy(dst, tmp);
+}
+
+static const char * inet_ntop(int af, const void * src, char * dst, socklen_t size) {
+    switch (af) {
+    case AF_INET:
+        return inet_ntop4((const unsigned char *) src, dst, size);
+    case AF_INET6:
+        return inet_ntop6((const unsigned char *) src, dst, size);
+    default:
+        errno = WSAEAFNOSUPPORT;
+        WSASetLastError(errno);
+        return NULL;
+    }
+}
+
+#endif
 
 #if 0
 // TODO: use getaddrinfo_a, if available.
@@ -100,7 +236,12 @@ Balau::Socket::Socket() throw (GeneralException) : m_fd(socket(AF_INET6, SOCK_ST
     Assert(m_fd >= 0);
     m_evtR = new SocketEvent(m_fd, EV_READ);
     m_evtW = new SocketEvent(m_fd, EV_WRITE);
+#ifdef _WIN32
+    u_long iMode = 1;
+    ioctlsocket(m_fd, FIONBIO, &iMode);
+#else
     fcntl(m_fd, F_SETFL, O_NONBLOCK);
+#endif
     memset(&m_localAddr, 0, sizeof(m_localAddr));
     memset(&m_remoteAddr, 0, sizeof(m_remoteAddr));
     Printer::elog(E_SOCKET, "Creating a socket at %p", this);
@@ -127,7 +268,12 @@ Balau::Socket::Socket(int fd) : m_fd(fd), m_connected(true), m_connecting(false)
 
     m_evtR = new SocketEvent(m_fd, EV_READ);
     m_evtW = new SocketEvent(m_fd, EV_WRITE);
+#ifdef _WIN32
+    u_long iMode = 1;
+    ioctlsocket(m_fd, FIONBIO, &iMode);
+#else
     fcntl(m_fd, F_SETFL, O_NONBLOCK);
+#endif
 
     m_name.set("Socket(Connected - [%s]:%i <- [%s]:%i)", rLocal, htons(m_localAddr.sin6_port), rRemote, htons(m_remoteAddr.sin6_port));
     Printer::elog(E_SOCKET, "Created a new socket from listener at %p; %s", this, m_name.to_charp());
@@ -136,6 +282,7 @@ Balau::Socket::Socket(int fd) : m_fd(fd), m_connected(true), m_connecting(false)
 void Balau::Socket::close() throw (GeneralException) {
 #ifdef _WIN32
     closesocket(m_fd);
+    WSACleanup();
 #else
     ::close(m_fd);
 #endif
@@ -314,10 +461,20 @@ bool Balau::Socket::listen() {
         Assert(rLocal);
 
         m_name.set("Socket(Listener - [%s]:%i)", rLocal, htons(m_localAddr.sin6_port));
+        Printer::elog(E_SOCKET, "Socket %i started to listen: %s", m_fd, m_name.to_charp());
+    } else {
+        String msg = getErrorMessage();
+        Printer::elog(E_SOCKET, "listen() failed with error #i (%s)", errno, msg.to_charp());
     }
 
     return m_listening;
 }
+
+#ifdef _WIN32
+#ifndef EWOULDBLOCK
+#define EWOULDBLOCK EAGAIN
+#endif
+#endif
 
 Balau::IO<Balau::Socket> Balau::Socket::accept() throw (GeneralException) {
     Assert(m_listening);
@@ -326,13 +483,15 @@ Balau::IO<Balau::Socket> Balau::Socket::accept() throw (GeneralException) {
     while(true) {
         sockaddr_in6 remoteAddr;
         socklen_t len;
+        Printer::elog(E_SOCKET, "Socket %i (%s) is going to accept()", m_fd, m_name.to_charp());
         int s = ::accept(m_fd, (sockaddr *) &remoteAddr, &len);
 
         if (s < 0) {
             if ((errno == EAGAIN) || (errno == EINTR) || (errno == EWOULDBLOCK)) {
                 Task::yield(m_evtR, true);
             } else {
-                throw GeneralException(String("Unexpected error accepting a connection: #") + errno + "(" + strerror(errno) + ")");
+                String msg = getErrorMessage();
+                throw GeneralException(String("Unexpected error accepting a connection: #") + errno + "(" + msg + ")");
             }
         } else {
             Printer::elog(E_SOCKET, "Listener at %p got a new connection", this);

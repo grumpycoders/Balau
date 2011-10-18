@@ -20,6 +20,14 @@ enum {
     M_MAX = M_ENGINE_DEBUG,
 };
 
+#undef E_STRING
+#undef E_TASK
+#undef E_EVENT
+#undef E_HANDLE
+#undef E_INPUT
+#undef E_SOCKET
+#undef E_THREAD
+
 enum {
     E_STRING = 1,
     E_TASK = 2,
