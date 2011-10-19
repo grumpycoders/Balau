@@ -44,8 +44,13 @@ namespace Balau {
 
 class MainTask : public Task {
   public:
+      MainTask() : m_stopTaskManOnExit(true) { }
+      virtual ~MainTask() { if (m_stopTaskManOnExit) TaskMan::getTaskMan()->stop(); }
     virtual const char * getName() { return "Main Task"; }
     virtual void Do();
+    void stopTaskManOnExit(bool v) { m_stopTaskManOnExit = v; }
+  private:
+    bool m_stopTaskManOnExit;
 };
 
 class Main {
