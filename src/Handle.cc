@@ -6,6 +6,17 @@
 #include "Handle.h"
 #include "Printer.h"
 
+#ifdef _WIN32
+static const char * strerror_r(int errorno, char * buf, size_t bufsize) {
+#ifdef _MSVC
+    strerror_s(buf, bufsize, errorno);
+    return buf;
+#else
+    return strerror(errorno);
+#endif
+}
+#endif
+
 class eioInterface : public Balau::AtStart {
   public:
       eioInterface() : AtStart(100) { }
@@ -158,4 +169,30 @@ off_t Balau::SeekableHandle::wtell() throw (GeneralException) {
 
 bool Balau::SeekableHandle::isEOF() {
     return m_rOffset == getSize();
+}
+
+struct cbResults_t {
+    Balau::Events::Custom evt;
+    int result, errorno;
+};
+
+static int eioDone(eio_req * req) {
+    cbResults_t * cbResults = (cbResults_t *) req->data;
+    cbResults->result = req->result;
+    cbResults->errorno = req->errorno;
+    cbResults->evt.doSignal();
+    return 0;
+}
+
+int Balau::FileSystem::mkdir(const char * path) throw (GeneralException) {
+    cbResults_t cbResults;
+    eio_req * r = eio_mkdir(path, 0755, 0, eioDone, &cbResults);
+    Assert(r != 0);
+    Task::yield(&cbResults.evt);
+
+    char str[4096];
+    if (cbResults.result < 0)
+        throw GeneralException(String("Unable to create directory ") + path + ": " + strerror_r(cbResults.errorno, str, sizeof(str)) + " (err#" + cbResults.errorno + ")");
+
+    return cbResults.result;
 }

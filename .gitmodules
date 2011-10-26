@@ -10,3 +10,6 @@
 [submodule "win32/pthreads-win32"]
 	path = win32/pthreads-win32
 	url = git.grumpycoder.net:/pub/repo.git/pthreads-win32
+[submodule "LuaJIT"]
+	path = LuaJIT
+	url = http://luajit.org/git/luajit-2.0.git
