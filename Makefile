@@ -23,7 +23,7 @@ CPPFLAGS += -g -DDEBUG
 LDFLAGS += -g
 endif
 
-INCLUDES = includes libcoro libeio libev
+INCLUDES = includes libcoro libeio libev LuaJIT/src
 LIBS =
 
 ifeq ($(SYSTEM),Darwin)
@@ -91,7 +91,7 @@ endif
 ifeq ($(SYSTEM),Linux)
     CPPFLAGS += -fPIC
     LDFLAGS += -fPIC
-    LIBS += pthread
+    LIBS += pthread dl
     CONFIG_H = linux-config.h
     ARCH_FLAGS = -march=i686 -m32
     ASFLAGS = -march=i686 --32
@@ -123,6 +123,8 @@ Socket.cc \
 \
 Task.cc \
 TaskMan.cc \
+\
+BLua.cc \
 
 ifeq ($(SYSTEM),MINGW32)
 WIN32_SOURCES = \
@@ -159,6 +161,7 @@ test-Tasks.cc \
 test-Threads.cc \
 test-Handles.cc \
 test-Sockets.cc \
+test-Lua.cc \
 
 LIB = libBalau.a
 
@@ -186,11 +189,14 @@ strip: $(TESTS)
 
 lib: $(LIB)
 
-libBalau.a: $(BALAU_OBJECTS)
+LuaJIT:
+	$(MAKE) -C LuaJIT CC="$(CC) $(ARCH_FLAGS)" BUILDMODE=static
+
+libBalau.a: LuaJIT $(BALAU_OBJECTS)
 	$(AR) libBalau.a $(BALAU_OBJECTS)
 
 %.$(BINEXT) : %.o $(LIB)
-	$(LD) $(LDFLAGS) -o $@ $< ./$(LIB) $(LDLIBS)
+	$(LD) $(LDFLAGS) -o $@ $< ./$(LIB) ./LuaJIT/src/libluajit.a $(LDLIBS)
 
 dep: $(ALL_DEPS)
 
@@ -205,4 +211,4 @@ dep: $(ALL_DEPS)
 clean:
 	rm -f $(ALL_OBJECTS) $(TESTS) $(LIB) $(ALL_DEPS)
 
-.PHONY: lib tests clean strip
+.PHONY: lib tests clean strip LuaJIT
