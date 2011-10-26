@@ -63,7 +63,7 @@ class IOBase {
       IOBase() : m_h(NULL) { }
       ~IOBase() { if (m_h) m_h->delRef(); }
   protected:
-    void setHandle(Handle * h) { m_h = h; m_h->addRef(); }
+    void setHandle(Handle * h) { m_h = h; if (m_h) m_h->addRef(); }
     Handle * m_h;
     template<class T>
     friend class IO;
@@ -74,11 +74,12 @@ class IO : public IOBase {
   public:
       IO() { }
       IO(T * h) { setHandle(h); }
-      IO(const IO<T> & io) { setHandle(io.m_h); }
+      IO(const IO<T> & io) { if (io.m_h) setHandle(io.m_h); }
       template<class U>
-      IO(const IO<U> & io) { setHandle(io.m_h); }
+      IO(const IO<U> & io) { if (io.m_h) setHandle(io.m_h); }
     IO<T> & operator=(const IO<T> & io) { if (m_h) m_h->delRef(); setHandle(io.m_h); return *this; }
     T * operator->() { Assert(m_h); return dynamic_cast<T *>(m_h); }
+    bool isNull() { return dynamic_cast<T *>(m_h); }
 };
 
 class SeekableHandle : public Handle {
