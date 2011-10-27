@@ -210,5 +210,6 @@ dep: $(ALL_DEPS)
 
 clean:
 	rm -f $(ALL_OBJECTS) $(TESTS) $(LIB) $(ALL_DEPS)
+	$(MAKE) -C LuaJIT clean
 
 .PHONY: lib tests clean strip LuaJIT

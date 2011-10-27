@@ -47,7 +47,7 @@ class Lua {
 
     typedef int (*lua_CallWrapper)(lua_State *, lua_CFunction);
 
-    int ref(int t = -2) { luaL_ref(L, t); }
+    int ref(int t = -2) { return luaL_ref(L, t); }
     void unref(int ref, int t = -1) { luaL_unref(L, t, ref); }
 
     void open_base();
@@ -57,7 +57,7 @@ class Lua {
     void open_debug();
     void open_bit();
     void open_jit();
-    int wrap_open(openlualib_t open) { int n = gettop(); int r = open(L); while (n < gettop()) remove(n); }
+    int wrap_open(openlualib_t open) { int n = gettop(); int r = open(L); while (n < gettop()) remove(n); return r; }
     void openlib(const String & libname, const struct luaL_reg *l, int nup) { luaL_openlib(L, libname.to_charp(), l, nup); }
 
     void setCallWrap(lua_CallWrapper wrapper);
