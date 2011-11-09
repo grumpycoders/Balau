@@ -1,6 +1,7 @@
 #include "Exceptions.h"
 #include "Threads.h"
 #include "Local.h"
+#include "Atomic.h"
 
 namespace Balau {
 
@@ -38,10 +39,8 @@ Balau::Thread::~Thread() {
 
 void * Balau::Thread::join() {
     void * r = NULL;
-    if (!m_joined) {
-        m_joined = true;
+    if (Atomic::CmpXChgBool(&m_joined, true, false))
         pthread_join(m_thread, &r);
-    }
     return r;
 }
 
