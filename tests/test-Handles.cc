@@ -1,5 +1,6 @@
 #include <Main.h>
 #include <Input.h>
+#include <Output.h>
 
 #ifdef _WIN32
 void ctime_r(const time_t * t, char * str) {
@@ -61,6 +62,13 @@ void MainTask::Do() {
     r = i->read(buf2 + 5, s - 5);
     Assert(r == (s - 5));
     Assert(memcmp(buf1, buf2, s) == 0);
+
+    IO<Handle> o(new Output("tests/out.txt"));
+    s = o->wtell();
+    Assert(s == 0);
+    s = o->getSize();
+    Assert(s == 0);
+    o->write("foo\n", 4);
 
     Printer::log(M_STATUS, "Test::Handles passed.");
 }

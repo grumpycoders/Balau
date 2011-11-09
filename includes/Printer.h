@@ -36,6 +36,7 @@ enum {
     E_INPUT = 16,
     E_SOCKET = 32,
     E_THREAD = 64,
+    E_OUTPUT = 128,
 };
 
 class Printer {
