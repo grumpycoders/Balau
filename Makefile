@@ -194,6 +194,11 @@ LuaJIT:
 	$(MAKE) -C LuaJIT CC="$(CC) $(ARCH_FLAGS)" BUILDMODE=static
 
 libBalau.a: LuaJIT $(BALAU_OBJECTS)
+ifeq ($(SYSTEM),Darwin)
+ifneq ($(CROSSCOMPILE),true)
+	rm -f libBalau.a
+endif
+endif
 	$(AR) libBalau.a $(BALAU_OBJECTS)
 
 %.$(BINEXT) : %.o $(LIB)
