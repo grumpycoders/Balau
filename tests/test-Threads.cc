@@ -23,6 +23,7 @@ void MainTask::Do() {
     t->threadStart();
     Printer::log(M_STATUS, "Joining thread");
     t->join();
+    Printer::log(M_STATUS, "Deleting thread");
     delete t;
 
     Printer::log(M_STATUS, "Test::Threads passed.");

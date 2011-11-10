@@ -47,6 +47,7 @@ void PThreadsTLSManager::doStart() {
 
     r = pthread_key_create(&m_key, NULL);
     Assert(r == 0);
+    Balau::g_tlsManager = this;
 }
 
 void * PThreadsTLSManager::getTLS() {
