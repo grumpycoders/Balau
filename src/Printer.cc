@@ -36,12 +36,10 @@ void Balau::Printer::_log(uint32_t level, const char * fmt, va_list ap) {
         if (l & level)
             break;
 
-    Printer * printer = getPrinter();
-
     m_lock.enter();
-    printer->_print(prefixes[i]);
-    printer->_print(fmt, ap);
-    printer->_print("\n");
+    _print(prefixes[i]);
+    _print(fmt, ap);
+    _print("\n");
     m_lock.leave();
 }
 
