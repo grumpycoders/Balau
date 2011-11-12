@@ -121,6 +121,7 @@ Handle.cc \
 Input.cc \
 Output.cc \
 Socket.cc \
+Buffer.cc \
 \
 Task.cc \
 TaskMan.cc \

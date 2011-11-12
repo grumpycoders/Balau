@@ -1,6 +1,7 @@
 #include <Main.h>
 #include <Input.h>
 #include <Output.h>
+#include <Buffer.h>
 
 #ifdef _WIN32
 void ctime_r(const time_t * t, char * str) {
@@ -69,6 +70,17 @@ void MainTask::Do() {
     s = o->getSize();
     Assert(s == 0);
     o->write("foo\n", 4);
+
+    IO<Handle> b(new Buffer());
+    s = b->rtell();
+    Assert(s == 0);
+    s = b->wtell();
+    Assert(s == 0);
+    b->write("foo\n", 4);
+    s = b->rtell();
+    Assert(s == 0);
+    s = b->wtell();
+    Assert(s == 4);
 
     Printer::log(M_STATUS, "Test::Handles passed.");
 }
