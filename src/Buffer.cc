@@ -55,22 +55,9 @@ void Balau::Buffer::reset() {
     rseek(0);
 }
 
-bool Balau::Buffer::isClosed() {
-    return false;
-}
-
-const char * Balau::Buffer::getName() {
-    return "Buffer";
-}
-
-off_t Balau::Buffer::getSize() {
-    return m_bufSize;
-}
-
-bool Balau::Buffer::canRead() {
-    return true;
-}
-
-bool Balau::Buffer::canWrite() {
-    return true;
-}
+bool Balau::Buffer::isClosed() { return false; }
+bool Balau::Buffer::isEOF() { return rtell() == m_bufSize; }
+const char * Balau::Buffer::getName() { return "Buffer"; }
+off_t Balau::Buffer::getSize() { return m_bufSize; }
+bool Balau::Buffer::canRead() { return true; }
+bool Balau::Buffer::canWrite() { return true; }

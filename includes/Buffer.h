@@ -11,6 +11,7 @@ class Buffer : public SeekableHandle {
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException);
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException);
     virtual bool isClosed();
+    virtual bool isEOF();
     virtual bool canRead();
     virtual bool canWrite();
     virtual const char * getName();
