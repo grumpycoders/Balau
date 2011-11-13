@@ -57,7 +57,7 @@ class Socket : public Handle {
 template<class Worker>
 class Listener : public Task {
   public:
-      Listener(int port, const char * local = NULL) : m_stop(false) {
+      Listener(int port, const char * local = NULL, void * opaque = NULL) : m_stop(false), m_opaque(opaque) {
           bool r = m_listener.setLocal(local, port);
           Assert(r);
           r = m_listener.listen();
@@ -79,7 +79,7 @@ class Listener : public Task {
                     yield();
                 continue;
             }
-            new Worker(io);
+            new Worker(io, m_opaque);
         }
     }
     void stop() {
@@ -93,6 +93,7 @@ class Listener : public Task {
     Events::Async m_evt;
     volatile bool m_stop;
     String m_name;
+    void * m_opaque;
 };
 
 };

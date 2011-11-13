@@ -7,14 +7,14 @@ using namespace Balau;
 
 class Worker : public Task {
   public:
-      Worker(IO<Socket> io);
+      Worker(IO<Socket> io, void *);
     virtual const char * getName();
     virtual void Do();
     IO<Socket> m_io;
     String m_name;
 };
 
-Worker::Worker(IO<Socket> io) : m_io(io) {
+Worker::Worker(IO<Socket> io, void *) : m_io(io) {
     m_name = m_io->getName();
     Printer::log(M_STATUS, "Got connection: %s", m_name.to_charp());
 }
