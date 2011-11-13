@@ -34,8 +34,10 @@ class Handle {
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException);
     void writeString(const char * str, ssize_t len = -1) { if (len < 0) len = strlen(str); write(str, len); }
     void writeString(const String & str) { write(str.to_charp(), str.strlen()); }
+    void seek(off_t offset, int whence = SEEK_SET) { rseek(offset, whence); }
     virtual void rseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
     virtual void wseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
+    off_t tell() { return rtell(); }
     virtual off_t rtell() throw (GeneralException);
     virtual off_t wtell() throw (GeneralException);
     virtual off_t getSize();
