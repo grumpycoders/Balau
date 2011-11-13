@@ -127,6 +127,8 @@ BStream.cc \
 Task.cc \
 TaskMan.cc \
 \
+HttpServer.cc \
+\
 BLua.cc \
 
 ifeq ($(SYSTEM),MINGW32)
