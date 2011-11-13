@@ -280,6 +280,8 @@ Balau::Socket::Socket(int fd) : m_fd(fd), m_connected(true), m_connecting(false)
 }
 
 void Balau::Socket::close() throw (GeneralException) {
+    if (m_fd < 0)
+        return;
 #ifdef _WIN32
     closesocket(m_fd);
     WSACleanup();
