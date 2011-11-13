@@ -38,11 +38,15 @@ ssize_t Balau::Buffer::write(const void * buf, size_t count) throw (GeneralExcep
     if (endBlock > oldEndBlock) {
         m_buffer = (uint8_t *) realloc(m_buffer, endBlock * s_blockSize);
         memset(m_buffer + oldEndBlock * s_blockSize, 0, (endBlock - oldEndBlock) * s_blockSize);
+        m_numBlocks = endBlock;
     }
 
     memcpy(m_buffer + cursor, buf, count);
 
     wseek(cursor + count);
+
+    if (m_bufSize < end)
+        m_bufSize = end;
 
     return count;
 }
