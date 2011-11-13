@@ -2,6 +2,7 @@
 #include <Input.h>
 #include <Output.h>
 #include <Buffer.h>
+#include <BStream.h>
 
 #ifdef _WIN32
 void ctime_r(const time_t * t, char * str) {
@@ -69,18 +70,40 @@ void MainTask::Do() {
     Assert(s == 0);
     s = o->getSize();
     Assert(s == 0);
-    o->write("foo\n", 4);
+    o->writeString("foo\n");
 
     IO<Handle> b(new Buffer());
     s = b->rtell();
     Assert(s == 0);
     s = b->wtell();
     Assert(s == 0);
-    b->write("foo\n", 4);
+    b->writeString("foo\n");
     s = b->rtell();
     Assert(s == 0);
     s = b->wtell();
     Assert(s == 4);
+    b->writeString("bar\r\n");
+    s = b->rtell();
+    Assert(s == 0);
+    s = b->wtell();
+    Assert(s == 9);
+    b->writeString("eof");
+    s = b->rtell();
+    Assert(s == 0);
+    s = b->wtell();
+    Assert(s == 12);
+
+    IO<BStream> strm(new BStream(b));
+    String str;
+    str = strm->readString();
+    Assert(str == "foo");
+    str = strm->readString();
+    Assert(str == "bar");
+    str = strm->readString();
+    Assert(str == "eof");
+    s = b->rtell();
+    Assert(s == 12);
+    Assert(b->isEOF());
 
     Printer::log(M_STATUS, "Test::Handles passed.");
 }

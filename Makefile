@@ -122,6 +122,7 @@ Input.cc \
 Output.cc \
 Socket.cc \
 Buffer.cc \
+BStream.cc \
 \
 Task.cc \
 TaskMan.cc \
