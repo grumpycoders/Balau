@@ -1,3 +1,5 @@
+#include <map>
+
 #include "Http.h"
 #include "HttpServer.h"
 #include "Socket.h"
@@ -58,6 +60,9 @@ bool Balau::HttpWorker::handleClient() {
     String line;
     bool gotFirst = false;
     int method = -1;
+    String url;
+    String HttpVersion;
+    std::map<String, String> HttpHeaders;
 
     // read client's request
     do {
@@ -106,8 +111,45 @@ bool Balau::HttpWorker::handleClient() {
                 send400();
                 return false;
             }
+
+            url = line.extract(urlBegin, urlEnd);
+
+            int httpBegin = urlEnd + 2;
+
+            if ((httpBegin + 5) >= line.strlen()) {
+                send400();
+                return false;
+            }
+
+            if ((line[httpBegin + 0] == 'H') &&
+                (line[httpBegin + 1] == 'T') &&
+                (line[httpBegin + 2] == 'T') &&
+                (line[httpBegin + 3] == 'P') &&
+                (line[httpBegin + 4] == '/')) {
+                HttpVersion = line.extract(httpBegin + 5);
+            } else {
+                send400();
+                return false;
+            }
+
+            if ((HttpVersion != "1.0") && (HttpVersion != "1.1")) {
+                send400();
+                return false;
+            }
         } else {
             // parse HTTP header.
+            int colon = line.strchr(':');
+            if (colon <= 0) {
+                send400();
+                return false;
+            }
+
+            String key = line.extract(0, colon - 1);
+            String value = line.extract(colon + 1);
+
+            value.trim();
+
+            HttpHeaders[key] = value;
         }
     } while(true);
 
