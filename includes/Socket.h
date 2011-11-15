@@ -57,12 +57,12 @@ class Socket : public Handle {
 template<class Worker>
 class Listener : public Task {
   public:
-      Listener(int port, const char * local = NULL, void * opaque = NULL) : m_stop(false), m_opaque(opaque) {
-          bool r = m_listener.setLocal(local, port);
+      Listener(int port, const char * local = NULL, void * opaque = NULL) : m_listener(new Socket), m_stop(false), m_opaque(opaque) {
+          bool r = m_listener->setLocal(local, port);
           Assert(r);
-          r = m_listener.listen();
+          r = m_listener->listen();
           Assert(r);
-          m_name = String(ClassName(this).c_str()) + " - " + m_listener.getName();
+          m_name = String(ClassName(this).c_str()) + " - " + m_listener->getName();
           Printer::elog(E_SOCKET, "Created a listener task at %p", this);
       }
     virtual void Do() {
@@ -71,7 +71,7 @@ class Listener : public Task {
         while (!m_stop) {
             IO<Socket> io;
             try {
-                io = m_listener.accept();
+                io = m_listener->accept();
             }
             catch (EAgain) {
                 Printer::elog(E_SOCKET, "Listener task at %p (%s) got an EAgain - stop = %s", this, ClassName(this).c_str(), m_stop ? "true" : "false");
@@ -89,7 +89,7 @@ class Listener : public Task {
     }
     virtual const char * getName() { return m_name.to_charp(); }
   private:
-    Socket m_listener;
+    IO<Socket> m_listener;
     Events::Async m_evt;
     volatile bool m_stop;
     String m_name;
