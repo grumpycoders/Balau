@@ -492,7 +492,7 @@ Balau::IO<Balau::Socket> Balau::Socket::accept() throw (GeneralException) {
 
     while(true) {
         sockaddr_in6 remoteAddr;
-        socklen_t len;
+        socklen_t len = sizeof(sockaddr_in6);
         Printer::elog(E_SOCKET, "Socket %i (%s) is going to accept()", m_fd, m_name.to_charp());
         int s = ::accept(m_fd, (sockaddr *) &remoteAddr, &len);
 
