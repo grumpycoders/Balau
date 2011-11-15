@@ -16,6 +16,7 @@ class BStream : public Handle {
     virtual off_t getSize();
     int peekNextByte();
     String readString(bool putNL = false);
+    bool isEmpty() { return m_availBytes == 0; }
   private:
     IO<Handle> m_h;
     uint8_t * m_buffer;
