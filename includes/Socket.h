@@ -54,47 +54,32 @@ class Socket : public Handle {
     SocketEvent * m_evtR, * m_evtW;
 };
 
-template<class Worker>
-class Listener : public Task {
+class ListenerBase : public Task {
   public:
-      Listener(int port, const char * local = "", void * opaque = NULL) : m_listener(new Socket), m_stop(false), m_local(local), m_port(port), m_opaque(opaque) { m_name = String(ClassName(this).c_str()) + " - Starting on " + m_local + ":" + port; }
-    virtual void Do() {
-        bool r = m_listener->setLocal(m_local.to_charp(), m_port);
-        Assert(r);
-        r = m_listener->listen();
-        Assert(r);
-        m_name = String(ClassName(this).c_str()) + " - " + m_listener->getName();
-        Printer::elog(E_SOCKET, "Created a %s task at %p", ClassName(this).c_str(), this);
-        waitFor(&m_evt);
-        setOkayToEAgain(true);
-        while (!m_stop) {
-            IO<Socket> io;
-            try {
-                io = m_listener->accept();
-            }
-            catch (EAgain) {
-                Printer::elog(E_SOCKET, "Listener task at %p (%s) got an EAgain - stop = %s", this, ClassName(this).c_str(), m_stop ? "true" : "false");
-                if (!m_stop)
-                    yield();
-                continue;
-            }
-            new Worker(io, m_opaque);
-        }
-    }
-    void stop() {
-        Printer::elog(E_SOCKET, "Listener task at %p (%s) is asked to stop.", this, ClassName(this).c_str());
-        m_stop = true;
-        m_evt.trigger();
-    }
-    virtual const char * getName() { return m_name.to_charp(); }
-  private:
+    virtual void Do();
+    void stop();
+    virtual const char * getName();
+  protected:
+      ListenerBase(int port, const char * local, void * opaque);
+    virtual void factory(IO<Socket> & io, void * opaque) = 0;
+    virtual void setName() = 0;
+    String m_name;
     IO<Socket> m_listener;
+  private:
     Events::Async m_evt;
     volatile bool m_stop;
-    String m_name;
     String m_local;
     int m_port;
     void * m_opaque;
+};
+
+template<class Worker>
+class Listener : public ListenerBase {
+  public:
+      Listener(int port, const char * local = "", void * opaque = NULL) : ListenerBase(port, local, opaque) { }
+  protected:
+    virtual void factory(IO<Socket> & io, void * opaque) { new Worker(io, opaque); }
+    virtual void setName() { m_name = String(ClassName(this).c_str()) + " - " + m_listener->getName(); }
 };
 
 };

@@ -566,3 +566,42 @@ ssize_t Balau::Socket::write(const void * buf, size_t count) throw (GeneralExcep
 
     return -1;
 }
+
+Balau::ListenerBase::ListenerBase(int port, const char * local, void * opaque) : m_listener(new Socket()), m_stop(false), m_local(local), m_port(port), m_opaque(opaque) {
+    m_name = String("Listener for something - Starting on ") + local + ":" + port;
+    waitFor(&m_evt);
+    setOkayToEAgain(true);
+    Printer::elog(E_SOCKET, "Created a listener task at %p (%s)", this, m_name.to_charp());
+}
+
+const char * Balau::ListenerBase::getName() {
+    return m_name.to_charp();
+}
+
+void Balau::ListenerBase::stop() {
+    Printer::elog(E_SOCKET, "Listener task at %p (%s) is asked to stop.", this, m_name.to_charp());
+    m_stop = true;
+    m_evt.trigger();
+}
+
+void Balau::ListenerBase::Do() {
+    bool r = m_listener->setLocal(m_local.to_charp(), m_port);
+    Assert(r);
+    r = m_listener->listen();
+    Assert(r);
+    setName();
+    while (!m_stop) {
+        IO<Socket> io;
+        try {
+            io = m_listener->accept();
+        }
+        catch (EAgain) {
+            Printer::elog(E_SOCKET, "Listener task at %p (%s) got an EAgain - stop = %s", this, m_name.to_charp(), m_stop ? "true" : "false");
+            if (m_stop)
+                return;
+            yield();
+            continue;
+        }
+        factory(io, m_opaque);
+    }
+}
