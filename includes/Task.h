@@ -116,19 +116,7 @@ class Task {
         Task * t = getCurrentTask();
         t->waitFor(evt);
     }
-    static void yield(Events::BaseEvent * evt, bool interruptible = false) throw (GeneralException) {
-        Task * t = getCurrentTask();
-        t->waitFor(evt);
-
-        do {
-            t->yield();
-            Printer::elog(E_TASK, "operation back from yielding; interruptible = %s; okayToEAgain = %s", interruptible ? "true" : "false", t->m_okayToEAgain ? "true" : "false");
-        } while ((!interruptible || !t->m_okayToEAgain) && !evt->gotSignal());
-        if (interruptible && t->m_okayToEAgain && !evt->gotSignal()) {
-            Printer::elog(E_TASK, "operation is throwing an exception.");
-            throw EAgain(evt);
-        }
-    }
+    static void yield(Events::BaseEvent * evt, bool interruptible = false) throw (GeneralException);
     TaskMan * getTaskMan() { return m_taskMan; }
     struct ev_loop * getLoop();
   protected:

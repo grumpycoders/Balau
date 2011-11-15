@@ -149,3 +149,18 @@ void Balau::Events::Async::gotOwner(Task * task) {
 void Balau::Events::Custom::gotOwner(Task * task) {
     m_loop = task->getLoop();
 }
+
+void Balau::Task::yield(Events::BaseEvent * evt, bool interruptible) throw (GeneralException) {
+    Task * t = getCurrentTask();
+    t->waitFor(evt);
+
+    do {
+        t->yield();
+        Printer::elog(E_TASK, "operation back from yielding; interruptible = %s; okayToEAgain = %s", interruptible ? "true" : "false", t->m_okayToEAgain ? "true" : "false");
+    } while ((!interruptible || !t->m_okayToEAgain) && !evt->gotSignal());
+
+    if (interruptible && t->m_okayToEAgain && !evt->gotSignal()) {
+        Printer::elog(E_TASK, "operation is throwing an exception.");
+        throw EAgain(evt);
+    }
+}
