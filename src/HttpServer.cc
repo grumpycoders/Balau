@@ -123,7 +123,7 @@ void Balau::HttpWorker::Do() {
     bool clientStop = false;
 
     while (!clientStop)
-        clientStop = !handleClient() || m_socket.isClosed();
+        clientStop = !handleClient() || m_socket->isClosed();
 }
 
 const char * Balau::HttpWorker::getName() {
