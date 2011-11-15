@@ -18,7 +18,7 @@ void Balau::Socket::SocketEvent::gotOwner(Task * task) {
     if (!m_task) {
         Printer::elog(E_SOCKET, "...with a new task (%p)", task);
     } else if (task == m_task) {
-        m_evt.start();
+        Printer::elog(E_SOCKET, "...with the same task, doing nothing.");
         return;
     } else {
         Printer::elog(E_SOCKET, "...with a new task (%p -> %p); stopping first", m_task, task);
@@ -235,8 +235,8 @@ static DNSRequest resolveName(const char * name, const char * service = NULL, st
 Balau::Socket::Socket() throw (GeneralException) : m_fd(socket(AF_INET6, SOCK_STREAM, 0)), m_connected(false), m_connecting(false), m_listening(false) {
     m_name = "Socket(unconnected)";
     Assert(m_fd >= 0);
-    m_evtR = new SocketEvent(m_fd, EV_READ);
-    m_evtW = new SocketEvent(m_fd, EV_WRITE);
+    m_evtR = new SocketEvent(m_fd, ev::READ);
+    m_evtW = new SocketEvent(m_fd, ev::WRITE);
 #ifdef _WIN32
     u_long iMode = 1;
     ioctlsocket(m_fd, FIONBIO, &iMode);
@@ -267,8 +267,8 @@ Balau::Socket::Socket(int fd) : m_fd(fd), m_connected(true), m_connecting(false)
     Assert(rLocal);
     Assert(rRemote);
 
-    m_evtR = new SocketEvent(m_fd, EV_READ);
-    m_evtW = new SocketEvent(m_fd, EV_WRITE);
+    m_evtR = new SocketEvent(m_fd, ev::READ);
+    m_evtW = new SocketEvent(m_fd, ev::WRITE);
 #ifdef _WIN32
     u_long iMode = 1;
     ioctlsocket(m_fd, FIONBIO, &iMode);
@@ -505,7 +505,6 @@ Balau::IO<Balau::Socket> Balau::Socket::accept() throw (GeneralException) {
             }
         } else {
             Printer::elog(E_SOCKET, "Listener at %p got a new connection", this);
-            m_evtR->stop();
             return IO<Socket>(new Socket(s));
         }
     }

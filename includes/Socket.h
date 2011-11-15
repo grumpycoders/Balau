@@ -34,9 +34,9 @@ class Socket : public Handle {
       Socket(int fd);
     class SocketEvent : public Events::BaseEvent {
       public:
-          SocketEvent(int fd, int evt = EV_READ | EV_WRITE) : m_task(NULL) { Printer::elog(E_SOCKET, "Got a new SocketEvent at %p", this); m_evt.set<SocketEvent, &SocketEvent::evt_cb>(this); m_evt.set(fd, evt); }
-          virtual ~SocketEvent() { m_evt.stop(); }
-          void stop() { reset(); m_evt.stop(); }
+          SocketEvent(int fd, int evt = ev::READ | ev::WRITE) : m_task(NULL) { Printer::elog(E_SOCKET, "Got a new SocketEvent at %p", this); m_evt.set<SocketEvent, &SocketEvent::evt_cb>(this); m_evt.set(fd, evt); }
+          virtual ~SocketEvent() { Printer::elog(E_SOCKET, "Destroying a SocketEvent at %p", this); m_evt.stop(); }
+          void stop() { Printer::elog(E_SOCKET, "Stopping a SocketEvent at %p", this); reset(); m_evt.stop(); }
       private:
         void evt_cb(ev::io & w, int revents) { Printer::elog(E_SOCKET, "Got a libev callback on a SocketEvent at %p", this); doSignal(); }
         virtual void gotOwner(Task * task);
