@@ -112,7 +112,7 @@ bool Balau::HttpWorker::handleClient() {
                 return false;
             }
 
-            url = line.extract(urlBegin, urlEnd);
+            url = line.extract(urlBegin, urlEnd - urlBegin + 1);
 
             int httpBegin = urlEnd + 2;
 
@@ -144,7 +144,7 @@ bool Balau::HttpWorker::handleClient() {
                 return false;
             }
 
-            String key = line.extract(0, colon - 1);
+            String key = line.extract(0, colon);
             String value = line.extract(colon + 1);
 
             value.trim();
