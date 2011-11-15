@@ -57,15 +57,14 @@ class Socket : public Handle {
 template<class Worker>
 class Listener : public Task {
   public:
-      Listener(int port, const char * local = NULL, void * opaque = NULL) : m_listener(new Socket), m_stop(false), m_opaque(opaque) {
-          bool r = m_listener->setLocal(local, port);
-          Assert(r);
-          r = m_listener->listen();
-          Assert(r);
-          m_name = String(ClassName(this).c_str()) + " - " + m_listener->getName();
-          Printer::elog(E_SOCKET, "Created a listener task at %p", this);
-      }
+      Listener(int port, const char * local = "", void * opaque = NULL) : m_listener(new Socket), m_stop(false), m_local(local), m_port(port), m_opaque(opaque) { m_name = String(ClassName(this).c_str()) + " - Starting on " + m_local + ":" + port; }
     virtual void Do() {
+        bool r = m_listener->setLocal(m_local.to_charp(), m_port);
+        Assert(r);
+        r = m_listener->listen();
+        Assert(r);
+        m_name = String(ClassName(this).c_str()) + " - " + m_listener->getName();
+        Printer::elog(E_SOCKET, "Created a %s task at %p", ClassName(this).c_str(), this);
         waitFor(&m_evt);
         setOkayToEAgain(true);
         while (!m_stop) {
@@ -93,6 +92,8 @@ class Listener : public Task {
     Events::Async m_evt;
     volatile bool m_stop;
     String m_name;
+    String m_local;
+    int m_port;
     void * m_opaque;
 };
 
