@@ -505,6 +505,7 @@ Balau::IO<Balau::Socket> Balau::Socket::accept() throw (GeneralException) {
             }
         } else {
             Printer::elog(E_SOCKET, "Listener at %p got a new connection", this);
+            m_evtR->reset();
             return IO<Socket>(new Socket(s));
         }
     }
