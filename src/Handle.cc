@@ -83,6 +83,56 @@ ssize_t Balau::Handle::write(const void * buf, size_t count) throw (GeneralExcep
     return -1;
 }
 
+ssize_t Balau::Handle::forceRead(void * _buf, size_t count) throw (GeneralException) {
+    ssize_t total;
+    uint8_t * buf = (uint8_t *) _buf;
+    if (!canRead())
+        throw GeneralException("Handle can't read");
+
+    while (count && !isClosed()) {
+        ssize_t r;
+        try {
+            r = read(buf, count);
+        }
+        catch (EAgain e) {
+            Task::yield(e.getEvent());
+            continue;
+        }
+        if (r < 0)
+            return r;
+        total += r;
+        count -= r;
+        buf += r;
+    }
+
+    return total;
+}
+
+ssize_t Balau::Handle::forceWrite(const void * _buf, size_t count) throw (GeneralException) {
+    ssize_t total;
+    const uint8_t * buf = (const uint8_t *) _buf;
+    if (!canWrite())
+        throw GeneralException("Handle can't write");
+
+    while (count && !isClosed()) {
+        ssize_t r;
+        try {
+            r = write(buf, count);
+        }
+        catch (EAgain e) {
+            Task::yield(e.getEvent());
+            continue;
+        }
+        if (r < 0)
+            return r;
+        total += r;
+        count -= r;
+        buf += r;
+    }
+
+    return total;
+}
+
 void Balau::Handle::rseek(off_t offset, int whence) throw (GeneralException) {
     if (canSeek())
         throw GeneralException(String("Handle ") + getName() + " can seek, but rseek() not implemented (missing in class " + ClassName(this).c_str() + ")");

@@ -32,8 +32,8 @@ class Handle {
     virtual const char * getName() = 0;
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException);
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException);
-    void writeString(const char * str, ssize_t len = -1) { if (len < 0) len = strlen(str); write(str, len); }
-    void writeString(const String & str) { write(str.to_charp(), str.strlen()); }
+    void writeString(const char * str, ssize_t len = -1) { if (len < 0) len = strlen(str); forceWrite(str, len); }
+    void writeString(const String & str) { forceWrite(str.to_charp(), str.strlen()); }
     void seek(off_t offset, int whence = SEEK_SET) { rseek(offset, whence); }
     virtual void rseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
     virtual void wseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
@@ -42,6 +42,8 @@ class Handle {
     virtual off_t wtell() throw (GeneralException);
     virtual off_t getSize();
     virtual time_t getMTime();
+    ssize_t forceRead(void * buf, size_t count) throw (GeneralException);
+    ssize_t forceWrite(const void * buf, size_t count) throw (GeneralException);
   protected:
       Handle() : m_refCount(0) { }
   private:
