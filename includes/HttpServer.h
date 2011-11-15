@@ -5,6 +5,8 @@
 
 namespace Balau {
 
+class HttpWorker;
+
 class HttpServer {
   public:
       HttpServer() : m_started(false), m_listenerPtr(NULL), m_port(80) { }
@@ -18,6 +20,8 @@ class HttpServer {
     void * m_listenerPtr;
     int m_port;
     String m_local;
+
+    friend class HttpWorker;
 };
 
 };

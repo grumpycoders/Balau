@@ -37,6 +37,7 @@ enum {
     E_SOCKET = 32,
     E_THREAD = 64,
     E_OUTPUT = 128,
+    E_HTTPSERVER = 256,
 };
 
 class Printer {
