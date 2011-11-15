@@ -570,8 +570,6 @@ ssize_t Balau::Socket::write(const void * buf, size_t count) throw (GeneralExcep
 
 Balau::ListenerBase::ListenerBase(int port, const char * local, void * opaque) : m_listener(new Socket()), m_stop(false), m_local(local), m_port(port), m_opaque(opaque) {
     m_name = String("Listener for something - Starting on ") + local + ":" + port;
-    waitFor(&m_evt);
-    setOkayToEAgain(true);
     Printer::elog(E_SOCKET, "Created a listener task at %p (%s)", this, m_name.to_charp());
 }
 
@@ -591,6 +589,8 @@ void Balau::ListenerBase::Do() {
     r = m_listener->listen();
     Assert(r);
     setName();
+    setOkayToEAgain(true);
+    waitFor(&m_evt);
     while (!m_stop) {
         IO<Socket> io;
         try {
