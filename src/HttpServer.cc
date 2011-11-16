@@ -13,7 +13,7 @@ typedef std::map<String, String> StringMap;
 
 class HttpWorker : public Task {
   public:
-      HttpWorker(IO<Socket> & io, void * server);
+      HttpWorker(IO<Handle> io, void * server);
       ~HttpWorker();
   private:
     virtual void Do();
@@ -31,7 +31,7 @@ class HttpWorker : public Task {
 
 };
 
-Balau::HttpWorker::HttpWorker(IO<Socket> & io, void * _server) : m_socket(io), m_strm(new BStream(io)) {
+Balau::HttpWorker::HttpWorker(IO<Handle> io, void * _server) : m_socket(new WriteOnly(io)), m_strm(new BStream(io)) {
     HttpServer * server = (HttpServer *) _server;
     m_name.set("HttpWorker(%s)", m_socket->getName());
     // copy stuff from server, such as port number, root document, base URL, etc...
