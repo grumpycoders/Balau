@@ -9,6 +9,8 @@ static const ev_tstamp s_httpTimeout = 15;
 
 namespace Balau {
 
+typedef std::map<String, String> StringMap;
+
 class HttpWorker : public Task {
   public:
       HttpWorker(IO<Socket> & io, void * server);
@@ -20,27 +22,22 @@ class HttpWorker : public Task {
     bool handleClient();
     void send400(Events::BaseEvent * evt);
     String httpUnescape(const char * in);
+    void readVariables(StringMap & variables, char * str);
 
     IO<Handle> m_socket;
     IO<BStream> m_strm;
     String m_name;
-
-    uint8_t * m_postData;
 };
 
 };
 
-Balau::HttpWorker::HttpWorker(IO<Socket> & io, void * _server) : m_socket(io), m_strm(new BStream(io)), m_postData(NULL) {
+Balau::HttpWorker::HttpWorker(IO<Socket> & io, void * _server) : m_socket(io), m_strm(new BStream(io)) {
     HttpServer * server = (HttpServer *) _server;
     m_name.set("HttpWorker(%s)", m_socket->getName());
     // copy stuff from server, such as port number, root document, base URL, etc...
 }
 
 Balau::HttpWorker::~HttpWorker() {
-    if (m_postData) {
-        free(m_postData);
-        m_postData = NULL;
-    }
 }
 
 Balau::String Balau::HttpWorker::httpUnescape(const char * in) {
@@ -74,6 +71,26 @@ Balau::String Balau::HttpWorker::httpUnescape(const char * in) {
     return r;
 }
 
+void Balau::HttpWorker::readVariables(StringMap & variables, char * str) {
+    char * ampPos;
+    do {
+        ampPos = strchr(str, '&');
+        if (ampPos)
+            *ampPos = 0;
+
+        char * val = strchr(str, '=');
+
+        if (val) {
+            *val++ = 0;
+        }
+        String keyStr = httpUnescape(str);
+        String valStr = val ? httpUnescape(val) : String("");
+        variables[keyStr] = valStr;
+
+        str = ampPos + 1;
+    } while (ampPos);
+}
+
 void Balau::HttpWorker::send400(Events::BaseEvent * evt) {
     static const char str[] =
 "HTTP/1.0 400 Bad Request\r\n"
@@ -93,7 +110,7 @@ void Balau::HttpWorker::send400(Events::BaseEvent * evt) {
 "</html>\n";
 
     setOkayToEAgain(false);
-    m_socket->forceWrite(str, sizeof(str), evt);
+    m_socket->forceWrite(str, sizeof(str) - 1, evt);
     Balau::Printer::elog(Balau::E_HTTPSERVER, "%s had an invalid request", m_name.to_charp());
 }
 
@@ -101,8 +118,6 @@ bool Balau::HttpWorker::handleClient() {
     Events::Timeout evtTimeout(s_httpTimeout);
     waitFor(&evtTimeout);
     setOkayToEAgain(true);
-
-    typedef std::map<String, String> StringMap;
 
     String line;
     bool gotFirst = false;
@@ -112,10 +127,6 @@ bool Balau::HttpWorker::handleClient() {
     String httpVersion;
     StringMap httpHeaders;
     StringMap variables;
-    if (m_postData) {
-        free(m_postData);
-        m_postData = NULL;
-    }
     bool persistent = false;
 
     // read client's request
@@ -212,25 +223,6 @@ bool Balau::HttpWorker::handleClient() {
         return false;
     }
 
-    if (method == Http::POST) {
-        int lengthStr = 0;
-        StringMap::iterator i = httpHeaders.find("Content-Length");
-
-        if (i != httpHeaders.end())
-            lengthStr = i->second.to_int();
-
-        m_postData = (uint8_t *) malloc(lengthStr);
-
-        try {
-            m_strm->forceRead(m_postData, lengthStr);
-        }
-        catch (EAgain) {
-            Assert(evtTimeout.gotSignal());
-            Balau::Printer::elog(Balau::E_HTTPSERVER, "%s timed out getting request (reading POST values)", m_name.to_charp());
-            return false;
-        }
-    }
-
     if (httpVersion == "1.1") {
         StringMap::iterator i = httpHeaders.find("Connection");
 
@@ -244,31 +236,70 @@ bool Balau::HttpWorker::handleClient() {
         }
     }
 
+    if (method == Http::POST) {
+        int length = 0;
+        StringMap::iterator i;
+        bool multipart = false;
+        String boundary;
+
+        i = httpHeaders.find("Content-Length");
+
+        if (i != httpHeaders.end())
+            length = i->second.to_int();
+
+        i = httpHeaders.find("Content-Type");
+
+        if (i != httpHeaders.end()) {
+            static const String multipartStr = "multipart/form-data";
+            if (i->second.extract(multipartStr.strlen()) == multipartStr) {
+                if (i->second[multipartStr.strlen() + 1] != ';') {
+                    send400(&evtTimeout);
+                    return false;
+                }
+                StringMap t;
+                char * b = i->second.extract(sizeof(multipartStr) + 1).trim().strdup();
+                readVariables(t, b);
+                free(b);
+
+                i = t.find("boundary");
+
+                if (i == t.end()) {
+                    send400(&evtTimeout);
+                    return false;
+                }
+
+                boundary = i->second;
+                multipart = true;
+            }
+        }
+
+        if (multipart) {
+            // will handle this horror later...
+            Assert(!"multipart/form-data not supported for now");
+        } else {
+            uint8_t * postData = (uint8_t *) malloc(length);
+
+            try {
+                m_strm->forceRead(postData, length);
+            }
+            catch (EAgain) {
+                Assert(evtTimeout.gotSignal());
+                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s timed out getting request (reading POST values)", m_name.to_charp());
+                return false;
+            }
+
+            readVariables(variables, (char *) postData);
+
+            free(postData);
+        }
+    }
+
     int variablesPos = uri.strchr('?');
 
     if (variablesPos >= 0) {
         char * variablesStr = uri.strdup(variablesPos + 1);
-        char * p = variablesStr;
-        char * ampPos;
         uri = httpUnescape(uri.extract(0, variablesPos).to_charp());
-
-        do {
-            ampPos = strchr(p, '&');
-            if (ampPos)
-                *ampPos = 0;
-
-            char * val = strchr(p, '=');
-
-            if (val) {
-                *val++ = 0;
-            }
-            String keyStr = httpUnescape(p);
-            String valStr = val ? httpUnescape(val) : String("");
-            variables[keyStr] = valStr;
-
-            p = ampPos + 1;
-        } while (ampPos);
-
+        readVariables(variables, variablesStr);
         free(variablesStr);
     }
 
