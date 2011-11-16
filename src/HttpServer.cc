@@ -19,8 +19,9 @@ class HttpWorker : public Task {
 
     bool handleClient();
     void send400(Events::BaseEvent * evt);
+    String httpUnescape(const char * in);
 
-    IO<Socket> m_socket;
+    IO<Handle> m_socket;
     IO<BStream> m_strm;
     String m_name;
 
@@ -40,6 +41,37 @@ Balau::HttpWorker::~HttpWorker() {
         free(m_postData);
         m_postData = NULL;
     }
+}
+
+Balau::String Balau::HttpWorker::httpUnescape(const char * in) {
+    String r;
+    const char * p;
+    char hexa[3];
+    char out;
+
+    for (p = in; *p; p++) {
+        switch (*p) {
+        case '+':
+            r += String(" ", 1);
+            break;
+        case '%':
+            hexa[0] = *++p;
+            if (!hexa[0])
+                return r;
+            hexa[1] = *++p;
+            if (!hexa[1])
+                return r;
+            hexa[2] = 0;
+            out = strtol(hexa, NULL, 16);
+            r += String(&out, 1);
+            break;
+        default:
+            r += String(p, 1);
+            break;
+        }
+    }
+
+    return r;
 }
 
 void Balau::HttpWorker::send400(Events::BaseEvent * evt) {
@@ -70,13 +102,16 @@ bool Balau::HttpWorker::handleClient() {
     waitFor(&evtTimeout);
     setOkayToEAgain(true);
 
+    typedef std::map<String, String> StringMap;
+
     String line;
     bool gotFirst = false;
     int method = -1;
-    String url;
-    String HttpVersion;
-    typedef std::map<String, String> HttpHeaders_t;
-    HttpHeaders_t HttpHeaders;
+    String host;
+    String uri;
+    String httpVersion;
+    StringMap httpHeaders;
+    StringMap variables;
     if (m_postData) {
         free(m_postData);
         m_postData = NULL;
@@ -104,7 +139,7 @@ bool Balau::HttpWorker::handleClient() {
             gotFirst = true;
             int urlBegin = 0;
 
-            // first line is in the form of METHOD URL HTTP/1.x
+            // first line is in the form of METHOD URL HTTP/xxx
             switch(line[0]) {
             case 'G':
                 if ((line[1] == 'E') && (line[2] == 'T') && (line[3] == ' ')) {
@@ -131,7 +166,7 @@ bool Balau::HttpWorker::handleClient() {
                 return false;
             }
 
-            url = line.extract(urlBegin, urlEnd - urlBegin + 1);
+            uri = line.extract(urlBegin, urlEnd - urlBegin + 1);
 
             int httpBegin = urlEnd + 2;
 
@@ -145,13 +180,13 @@ bool Balau::HttpWorker::handleClient() {
                 (line[httpBegin + 2] == 'T') &&
                 (line[httpBegin + 3] == 'P') &&
                 (line[httpBegin + 4] == '/')) {
-                HttpVersion = line.extract(httpBegin + 5);
+                httpVersion = line.extract(httpBegin + 5);
             } else {
                 send400(&evtTimeout);
                 return false;
             }
 
-            if ((HttpVersion != "1.0") && (HttpVersion != "1.1")) {
+            if ((httpVersion != "1.0") && (httpVersion != "1.1")) {
                 send400(&evtTimeout);
                 return false;
             }
@@ -168,7 +203,7 @@ bool Balau::HttpWorker::handleClient() {
 
             value.trim();
 
-            HttpHeaders[key] = value;
+            httpHeaders[key] = value;
         }
     } while(true);
 
@@ -179,9 +214,9 @@ bool Balau::HttpWorker::handleClient() {
 
     if (method == Http::POST) {
         int lengthStr = 0;
-        HttpHeaders_t::iterator i = HttpHeaders.find("Content-Length");
+        StringMap::iterator i = httpHeaders.find("Content-Length");
 
-        if (i != HttpHeaders.end())
+        if (i != httpHeaders.end())
             lengthStr = i->second.to_int();
 
         m_postData = (uint8_t *) malloc(lengthStr);
@@ -196,10 +231,10 @@ bool Balau::HttpWorker::handleClient() {
         }
     }
 
-    if (HttpVersion == "1.1") {
-        HttpHeaders_t::iterator i = HttpHeaders.find("Connection");
+    if (httpVersion == "1.1") {
+        StringMap::iterator i = httpHeaders.find("Connection");
 
-        if (i != HttpHeaders.end()) {
+        if (i != httpHeaders.end()) {
             if (i->second != "close") {
                 send400(&evtTimeout);
                 return false;
@@ -207,6 +242,57 @@ bool Balau::HttpWorker::handleClient() {
         } else {
             persistent = true;
         }
+    }
+
+    int variablesPos = uri.strchr('?');
+
+    if (variablesPos >= 0) {
+        char * variablesStr = uri.strdup(variablesPos + 1);
+        char * p = variablesStr;
+        char * ampPos;
+        uri = httpUnescape(uri.extract(0, variablesPos).to_charp());
+
+        do {
+            ampPos = strchr(p, '&');
+            if (ampPos)
+                *ampPos = 0;
+
+            char * val = strchr(p, '=');
+
+            if (val) {
+                *val++ = 0;
+            }
+            String keyStr = httpUnescape(p);
+            String valStr = val ? httpUnescape(val) : String("");
+            variables[keyStr] = valStr;
+
+            p = ampPos + 1;
+        } while (ampPos);
+
+        free(variablesStr);
+    }
+
+    if (uri.extract(0, 7) == "http://") {
+        int hostEnd = uri.strchr('/', 7);
+
+        if (hostEnd < 0) {
+            host = uri.extract(7);
+            uri = "/";
+        } else {
+            host = uri.extract(7, hostEnd - 7);
+            uri = uri.extract(hostEnd + 1);
+        }
+    }
+
+    StringMap::iterator hostIter = httpHeaders.find("host");
+
+    if (hostIter != httpHeaders.end()) {
+        if (host != "") {
+            send400(&evtTimeout);
+            return false;
+        }
+
+        host = hostIter->second;
     }
 
     // process query; everything should be here now
