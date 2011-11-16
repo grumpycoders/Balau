@@ -27,7 +27,6 @@ class TaskMan {
 
   private:
     void registerTask(Task * t);
-    void unregisterTask(Task * t);
 #ifndef _WIN32
     coro_context m_returnContext;
 #else
