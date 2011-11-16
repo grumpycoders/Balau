@@ -18,7 +18,7 @@ class HttpWorker : public Task {
     virtual const char * getName();
 
     bool handleClient();
-    void send400();
+    void send400(Events::BaseEvent * evt);
 
     IO<Socket> m_socket;
     IO<BStream> m_strm;
@@ -42,7 +42,7 @@ Balau::HttpWorker::~HttpWorker() {
     }
 }
 
-void Balau::HttpWorker::send400() {
+void Balau::HttpWorker::send400(Events::BaseEvent * evt) {
     static const char str[] =
 "HTTP/1.0 400 Bad Request\r\n"
 "Content-Type: text/html; charset=UTF-8\r\n"
@@ -61,7 +61,7 @@ void Balau::HttpWorker::send400() {
 "</html>\n";
 
     setOkayToEAgain(false);
-    m_socket->writeString(str, sizeof(str));
+    m_socket->forceWrite(str, sizeof(str), evt);
     Balau::Printer::elog(Balau::E_HTTPSERVER, "%s had an invalid request", m_name.to_charp());
 }
 
@@ -120,14 +120,14 @@ bool Balau::HttpWorker::handleClient() {
                 break;
             }
             if (urlBegin == 0) {
-                send400();
+                send400(&evtTimeout);
                 return false;
             }
 
             int urlEnd = line.strrchr(' ') - 1;
 
             if (urlEnd < urlBegin) {
-                send400();
+                send400(&evtTimeout);
                 return false;
             }
 
@@ -136,7 +136,7 @@ bool Balau::HttpWorker::handleClient() {
             int httpBegin = urlEnd + 2;
 
             if ((httpBegin + 5) >= line.strlen()) {
-                send400();
+                send400(&evtTimeout);
                 return false;
             }
 
@@ -147,19 +147,19 @@ bool Balau::HttpWorker::handleClient() {
                 (line[httpBegin + 4] == '/')) {
                 HttpVersion = line.extract(httpBegin + 5);
             } else {
-                send400();
+                send400(&evtTimeout);
                 return false;
             }
 
             if ((HttpVersion != "1.0") && (HttpVersion != "1.1")) {
-                send400();
+                send400(&evtTimeout);
                 return false;
             }
         } else {
             // parse HTTP header.
             int colon = line.strchr(':');
             if (colon <= 0) {
-                send400();
+                send400(&evtTimeout);
                 return false;
             }
 
@@ -173,7 +173,7 @@ bool Balau::HttpWorker::handleClient() {
     } while(true);
 
     if (!gotFirst) {
-        send400();
+        send400(&evtTimeout);
         return false;
     }
 
@@ -201,7 +201,7 @@ bool Balau::HttpWorker::handleClient() {
 
         if (i != HttpHeaders.end()) {
             if (i->second != "close") {
-                send400();
+                send400(&evtTimeout);
                 return false;
             }
         } else {
