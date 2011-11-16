@@ -14,8 +14,8 @@ namespace Balau {
 class String : private std::string {
   public:
       String() : std::string() { }
-      String(const char * str) : std::string(str) { }
-      String(const char * str, size_t n) : std::string(str, n) { }
+      String(const char * str) : std::string(str ? str : "") { }
+      String(const char * str, size_t n) : std::string(str ? str : "", str ? n : 0) { }
       String(char c) { set("%c", c); }
       String(int32_t i) { set("%i", i); }
       String(uint32_t i) { set("%u", i); }
