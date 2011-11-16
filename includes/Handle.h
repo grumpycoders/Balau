@@ -108,4 +108,48 @@ class SeekableHandle : public Handle {
     off_t m_wOffset, m_rOffset;
 };
 
+class ReadOnly {
+  public:
+      ReadOnly(IO<Handle> & io) : m_io(io) { Assert(m_io->canRead()); }
+    virtual void close() throw (GeneralException) { m_io->close(); }
+    virtual bool isClosed() { return m_io->isClosed(); }
+    virtual bool isEOF() { return m_io->isEOF(); }
+    virtual bool canSeek() { return m_io->canSeek(); }
+    virtual bool canRead() { return true; }
+    virtual bool canWrite() { return false; }
+    virtual const char * getName() { return m_io->getName(); }
+    virtual ssize_t read(void * buf, size_t count) throw (GeneralException) { return m_io->read(buf, count); }
+    virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) { throw GeneralException("Can't write"); }
+    virtual void rseek(off_t offset, int whence = SEEK_SET) throw (GeneralException) { m_io->rseek(offset, whence); }
+    virtual void wseek(off_t offset, int whence = SEEK_SET) throw (GeneralException) { throw GeneralException("Can't write"); }
+    virtual off_t rtell() throw (GeneralException) { return m_io->rtell(); }
+    virtual off_t wtell() throw (GeneralException) { throw GeneralException("Can't write"); }
+    virtual off_t getSize() { return m_io->getSize(); }
+    virtual time_t getMTime() { return m_io->getMTime(); }
+  private:
+    IO<Handle> m_io;
+};
+
+class WriteOnly {
+  public:
+      WriteOnly(IO<Handle> & io) : m_io(io) { Assert(m_io->canWrite()); }
+    virtual void close() throw (GeneralException) { m_io->close(); }
+    virtual bool isClosed() { return m_io->isClosed(); }
+    virtual bool isEOF() { return m_io->isEOF(); }
+    virtual bool canSeek() { return m_io->canSeek(); }
+    virtual bool canRead() { return false; }
+    virtual bool canWrite() { return true; }
+    virtual const char * getName() { return m_io->getName(); }
+    virtual ssize_t read(void * buf, size_t count) throw (GeneralException) { throw GeneralException("Can't read"); }
+    virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) { return m_io->write(buf, count); }
+    virtual void rseek(off_t offset, int whence = SEEK_SET) throw (GeneralException) { throw GeneralException("Can't read"); }
+    virtual void wseek(off_t offset, int whence = SEEK_SET) throw (GeneralException) { return m_io->wseek(offset, whence); }
+    virtual off_t rtell() throw (GeneralException) { throw GeneralException("Can't read"); }
+    virtual off_t wtell() throw (GeneralException) { return m_io->wtell(); }
+    virtual off_t getSize() { return m_io->getSize(); }
+    virtual time_t getMTime() { return m_io->getMTime(); }
+  private:
+    IO<Handle> m_io;
+};
+
 };
