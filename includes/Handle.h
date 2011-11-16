@@ -108,7 +108,7 @@ class SeekableHandle : public Handle {
     off_t m_wOffset, m_rOffset;
 };
 
-class ReadOnly {
+class ReadOnly : public Handle {
   public:
       ReadOnly(IO<Handle> & io) : m_io(io) { Assert(m_io->canRead()); }
     virtual void close() throw (GeneralException) { m_io->close(); }
@@ -130,7 +130,7 @@ class ReadOnly {
     IO<Handle> m_io;
 };
 
-class WriteOnly {
+class WriteOnly : public Handle {
   public:
       WriteOnly(IO<Handle> & io) : m_io(io) { Assert(m_io->canWrite()); }
     virtual void close() throw (GeneralException) { m_io->close(); }
