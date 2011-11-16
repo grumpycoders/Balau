@@ -6,6 +6,7 @@
 #include "BStream.h"
 
 static const ev_tstamp s_httpTimeout = 15;
+#define DAEMON_NAME "Balau/1.0"
 
 namespace Balau {
 
@@ -96,6 +97,7 @@ void Balau::HttpWorker::send400(Events::BaseEvent * evt) {
 "HTTP/1.0 400 Bad Request\r\n"
 "Content-Type: text/html; charset=UTF-8\r\n"
 "Connection: close\r\n"
+"Server: " DAEMON_NAME "\r\n"
 "\r\n"
 "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"
 "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
