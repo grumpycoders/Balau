@@ -303,6 +303,8 @@ bool Balau::HttpWorker::handleClient() {
         uri = httpUnescape(uri.extract(0, variablesPos).to_charp());
         readVariables(variables, variablesStr);
         free(variablesStr);
+    } else {
+        uri = httpUnescape(uri.to_charp());
     }
 
     if (uri.extract(0, 7) == "http://") {
