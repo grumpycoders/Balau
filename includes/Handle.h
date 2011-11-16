@@ -20,6 +20,12 @@ class IOBase;
 template<class T>
 class IO;
 
+namespace Events {
+
+class BaseEvent;
+
+};
+
 class Handle {
   public:
       virtual ~Handle() { Assert(m_refCount == 0); }
@@ -42,8 +48,8 @@ class Handle {
     virtual off_t wtell() throw (GeneralException);
     virtual off_t getSize();
     virtual time_t getMTime();
-    ssize_t forceRead(void * buf, size_t count) throw (GeneralException);
-    ssize_t forceWrite(const void * buf, size_t count) throw (GeneralException);
+    ssize_t forceRead(void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException);
+    ssize_t forceWrite(const void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException);
   protected:
       Handle() : m_refCount(0) { }
   private:

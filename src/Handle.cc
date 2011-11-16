@@ -83,7 +83,7 @@ ssize_t Balau::Handle::write(const void * buf, size_t count) throw (GeneralExcep
     return -1;
 }
 
-ssize_t Balau::Handle::forceRead(void * _buf, size_t count) throw (GeneralException) {
+ssize_t Balau::Handle::forceRead(void * _buf, size_t count, Events::BaseEvent * evt) throw (GeneralException) {
     ssize_t total;
     uint8_t * buf = (uint8_t *) _buf;
     if (!canRead())
@@ -95,6 +95,8 @@ ssize_t Balau::Handle::forceRead(void * _buf, size_t count) throw (GeneralExcept
             r = read(buf, count);
         }
         catch (EAgain e) {
+            if (evt && evt->gotSignal())
+                return total;
             Task::yield(e.getEvent());
             continue;
         }
@@ -108,7 +110,7 @@ ssize_t Balau::Handle::forceRead(void * _buf, size_t count) throw (GeneralExcept
     return total;
 }
 
-ssize_t Balau::Handle::forceWrite(const void * _buf, size_t count) throw (GeneralException) {
+ssize_t Balau::Handle::forceWrite(const void * _buf, size_t count, Events::BaseEvent * evt) throw (GeneralException) {
     ssize_t total;
     const uint8_t * buf = (const uint8_t *) _buf;
     if (!canWrite())
@@ -120,6 +122,8 @@ ssize_t Balau::Handle::forceWrite(const void * _buf, size_t count) throw (Genera
             r = write(buf, count);
         }
         catch (EAgain e) {
+            if (evt && evt->gotSignal())
+                return total;
             Task::yield(e.getEvent());
             continue;
         }

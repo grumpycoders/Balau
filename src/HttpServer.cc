@@ -5,13 +5,14 @@
 #include "Socket.h"
 #include "BStream.h"
 
-static const ev_tstamp s_httpTimeout = 5;
+static const ev_tstamp s_httpTimeout = 15;
 
 namespace Balau {
 
 class HttpWorker : public Task {
   public:
       HttpWorker(IO<Socket> & io, void * server);
+      ~HttpWorker();
   private:
     virtual void Do();
     virtual const char * getName();
@@ -22,33 +23,45 @@ class HttpWorker : public Task {
     IO<Socket> m_socket;
     IO<BStream> m_strm;
     String m_name;
+
+    uint8_t * m_postData;
 };
 
 };
 
-Balau::HttpWorker::HttpWorker(IO<Socket> & io, void * _server) : m_socket(io), m_strm(new BStream(io)) {
+Balau::HttpWorker::HttpWorker(IO<Socket> & io, void * _server) : m_socket(io), m_strm(new BStream(io)), m_postData(NULL) {
     HttpServer * server = (HttpServer *) _server;
     m_name.set("HttpWorker(%s)", m_socket->getName());
+    // copy stuff from server, such as port number, root document, base URL, etc...
+}
+
+Balau::HttpWorker::~HttpWorker() {
+    if (m_postData) {
+        free(m_postData);
+        m_postData = NULL;
+    }
 }
 
 void Balau::HttpWorker::send400() {
     static const char str[] =
 "HTTP/1.0 400 Bad Request\r\n"
 "Content-Type: text/html; charset=UTF-8\r\n"
+"Connection: close\r\n"
 "\r\n"
-"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\r\n"
-"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n"
-"<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n"
-"  <head>\r\n"
-"    <title>Bad Request</title>\r\n"
-"  </head>\r\n"
-"\r\n"
-"  <body>\r\n"
-"    The HTTP request you've sent is invalid.\r\n"
-"  </body>\r\n"
-"</html>\r\n";
+"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"
+"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+"<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+"  <head>\n"
+"    <title>Bad Request</title>\n"
+"  </head>\n"
+"\n"
+"  <body>\n"
+"    The HTTP request you've sent is invalid.\n"
+"  </body>\n"
+"</html>\n";
 
-    m_socket->write(str, sizeof(str));
+    setOkayToEAgain(false);
+    m_socket->writeString(str, sizeof(str));
     Balau::Printer::elog(Balau::E_HTTPSERVER, "%s had an invalid request", m_name.to_charp());
 }
 
@@ -62,7 +75,13 @@ bool Balau::HttpWorker::handleClient() {
     int method = -1;
     String url;
     String HttpVersion;
-    std::map<String, String> HttpHeaders;
+    typedef std::map<String, String> HttpHeaders_t;
+    HttpHeaders_t HttpHeaders;
+    if (m_postData) {
+        free(m_postData);
+        m_postData = NULL;
+    }
+    bool persistent = false;
 
     // read client's request
     do {
@@ -158,7 +177,45 @@ bool Balau::HttpWorker::handleClient() {
         return false;
     }
 
-    return true;
+    if (method == Http::POST) {
+        int lengthStr = 0;
+        HttpHeaders_t::iterator i = HttpHeaders.find("Content-Length");
+
+        if (i != HttpHeaders.end())
+            lengthStr = i->second.to_int();
+
+        m_postData = (uint8_t *) malloc(lengthStr);
+
+        try {
+            m_strm->forceRead(m_postData, lengthStr);
+        }
+        catch (EAgain) {
+            Assert(evtTimeout.gotSignal());
+            Balau::Printer::elog(Balau::E_HTTPSERVER, "%s timed out getting request (reading POST values)", m_name.to_charp());
+            return false;
+        }
+    }
+
+    if (HttpVersion == "1.1") {
+        HttpHeaders_t::iterator i = HttpHeaders.find("Connection");
+
+        if (i != HttpHeaders.end()) {
+            if (i->second != "close") {
+                send400();
+                return false;
+            }
+        } else {
+            persistent = true;
+        }
+    }
+
+    // process query; everything should be here now
+
+
+
+    // query process finished; wrapping up and exiting.
+
+    return persistent;
 }
 
 void Balau::HttpWorker::Do() {
