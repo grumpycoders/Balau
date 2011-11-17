@@ -41,7 +41,7 @@ template<class T>
 class Queue {
   public:
       Queue() { pthread_cond_init(&m_cond, NULL); }
-      ~Queue() { pthread_cond_destroy(&m_cond); }
+      ~Queue() { while (size()) pop(); pthread_cond_destroy(&m_cond); }
     void push(T & t) {
         m_lock.enter();
         m_queue.push(t);

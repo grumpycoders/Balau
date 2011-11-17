@@ -19,6 +19,8 @@ const char * Stopper::getName() {
 static Balau::DefaultTmpl<Balau::TaskMan> defaultTaskMan(50);
 static Balau::LocalTmpl<Balau::TaskMan> localTaskMan;
 
+static const int TOO_MANY_STACKS = 1024;
+
 namespace Balau {
 
 class TaskScheduler : public Thread, public AtStart, public AtExit {
@@ -109,6 +111,8 @@ Balau::TaskMan::TaskMan() : m_stopped(false), m_allowedToSignal(false) {
     m_evt.set<asyncDummy>();
     m_evt.start();
     s_scheduler.registerTaskMan(this);
+
+    m_nStacks = 0;
 }
 
 #ifdef _WIN32
@@ -129,21 +133,40 @@ Balau::TaskMan * Balau::TaskMan::getDefaultTaskMan() { return localTaskMan.get()
 
 Balau::TaskMan::~TaskMan() {
     Assert(localTaskMan.getGlobal() != this);
+    while (m_stacks.size() != 0) {
+        free(m_stacks.front());
+        m_stacks.pop();
+    }
     s_scheduler.unregisterTaskMan(this);
     // probably way more work to do here in order to clean up tasks from that thread
     ev_loop_destroy(m_loop);
 }
 
 void * Balau::TaskMan::getStack() {
-    return malloc(Task::stackSize());
+    void * r = NULL;
+    if (m_nStacks == 0) {
+        if (Task::needsStacks())
+            r = malloc(Task::stackSize());
+    } else {
+        r = m_stacks.front();
+        m_stacks.pop();
+        m_nStacks--;
+    }
+    return r;
 }
 
 void Balau::TaskMan::freeStack(void * stack) {
-    free(stack);
+    if (!stack)
+        return;
+    if (m_nStacks >= TOO_MANY_STACKS) {
+        free(stack);
+    } else {
+        m_stacks.push(stack);
+        m_nStacks++;
+    }
 }
 
 void Balau::TaskMan::mainLoop() {
-    // We need at least one round before bailing :)
     do {
         taskHash_t::iterator iH;
         Task * t;
@@ -200,7 +223,7 @@ void Balau::TaskMan::mainLoop() {
         while (((m_pendingAdd.size() != 0) || (m_tasks.size() == 0)) && !m_stopped) {
             t = m_pendingAdd.pop();
             Assert(m_tasks.find(t) == m_tasks.end());
-            t->setup(this);
+            t->setup(this, getStack());
             m_tasks.insert(t);
         }
 
@@ -212,6 +235,7 @@ void Balau::TaskMan::mainLoop() {
                 t = *iH;
                 if (((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED)) &&
                      (t->m_waitedBy.size() == 0)) {
+                    freeStack(t->m_stack);
                     delete t;
                     m_tasks.erase(iH);
                     didDelete = true;

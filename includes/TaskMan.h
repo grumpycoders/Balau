@@ -6,7 +6,7 @@
 #endif
 #include <ev++.h>
 #include <ext/hash_set>
-#include <vector>
+#include <queue>
 #include <Threads.h>
 #include <Exceptions.h>
 
@@ -55,6 +55,8 @@ class TaskMan {
     struct ev_loop * m_loop;
     bool m_allowedToSignal;
     ev::async m_evt;
+    std::queue<void *> m_stacks;
+    int m_nStacks;
 };
 
 template<class T>

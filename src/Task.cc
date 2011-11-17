@@ -21,12 +21,14 @@ bool Balau::Task::needsStacks() {
 #endif
 }
 
-void Balau::Task::setup(TaskMan * taskMan) {
+void Balau::Task::setup(TaskMan * taskMan, void * stack) {
     size_t size = stackSize();
 #ifndef _WIN32
-    m_stack = taskMan->getStack();
+    Assert(stack);
+    m_stack = stack;
     coro_create(&m_ctx, coroutineTrampoline, this, m_stack, size);
 #else
+    Assert(!stack);
     m_stack = NULL;
     m_fiber = CreateFiber(size, coroutineTrampoline, this);
 #endif

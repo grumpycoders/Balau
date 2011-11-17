@@ -5,7 +5,7 @@
 #include <coro.h>
 #endif
 #include <ev++.h>
-#include <vector>
+#include <list>
 #include <Exceptions.h>
 #include <Printer.h>
 
@@ -136,7 +136,7 @@ class Task {
     TaskMan * getMyTaskMan() { return m_taskMan; }
   private:
     static size_t stackSize() { return 64 * 1024; }
-    void setup(TaskMan * taskMan);
+    void setup(TaskMan * taskMan, void * stack);
     static bool needsStacks();
     void switchTo();
     static void CALLBACK coroutineTrampoline(void *);
@@ -152,7 +152,7 @@ class Task {
     void * m_tls;
     friend class TaskMan;
     friend class Events::TaskEvent;
-    typedef std::vector<Events::TaskEvent *> waitedByList_t;
+    typedef std::list<Events::TaskEvent *> waitedByList_t;
     waitedByList_t m_waitedBy;
     bool m_okayToEAgain;
 };
