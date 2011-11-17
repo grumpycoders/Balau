@@ -13,10 +13,18 @@ Balau::Task::Task() {
     Printer::elog(E_TASK, "Created a Task at %p");
 }
 
+bool Balau::Task::needsStacks() {
+#ifndef _WIN32
+    return true;
+#else
+    return false;
+#endif
+}
+
 void Balau::Task::setup(TaskMan * taskMan) {
     size_t size = stackSize();
 #ifndef _WIN32
-    m_stack = malloc(size);
+    m_stack = taskMan->getStack();
     coro_create(&m_ctx, coroutineTrampoline, this, m_stack, size);
 #else
     m_stack = NULL;
@@ -34,7 +42,7 @@ void Balau::Task::setup(TaskMan * taskMan) {
 
 Balau::Task::~Task() {
     if (m_stack)
-        free(m_stack);
+        m_taskMan->freeStack(m_stack);
     free(m_tls);
 }
 

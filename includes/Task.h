@@ -135,8 +135,9 @@ class Task {
     }
     TaskMan * getMyTaskMan() { return m_taskMan; }
   private:
-    size_t stackSize() { return 128 * 1024; }
+    static size_t stackSize() { return 64 * 1024; }
     void setup(TaskMan * taskMan);
+    static bool needsStacks();
     void switchTo();
     static void CALLBACK coroutineTrampoline(void *);
     void coroutine();

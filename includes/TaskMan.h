@@ -35,6 +35,8 @@ class TaskMan {
     void stopMe() { m_stopped = true; }
   private:
     static void registerTask(Task * t, Task * stick);
+    void * getStack();
+    void freeStack(void * stack);
     void addToPending(Task * t);
 #ifndef _WIN32
     coro_context m_returnContext;

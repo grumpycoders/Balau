@@ -134,6 +134,14 @@ Balau::TaskMan::~TaskMan() {
     ev_loop_destroy(m_loop);
 }
 
+void * Balau::TaskMan::getStack() {
+    return malloc(Task::stackSize());
+}
+
+void Balau::TaskMan::freeStack(void * stack) {
+    free(stack);
+}
+
 void Balau::TaskMan::mainLoop() {
     // We need at least one round before bailing :)
     do {
