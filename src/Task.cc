@@ -7,28 +7,29 @@
 static Balau::LocalTmpl<Balau::Task> localTask;
 
 Balau::Task::Task() {
+    m_status = STARTING;
+    m_okayToEAgain = false;
+
+    Printer::elog(E_TASK, "Created a Task at %p");
+}
+
+void Balau::Task::setup(TaskMan * taskMan) {
     size_t size = stackSize();
 #ifndef _WIN32
     m_stack = malloc(size);
-    coro_create(&m_ctx, coroutine, this, m_stack, size);
+    coro_create(&m_ctx, coroutineTrampoline, this, m_stack, size);
 #else
     m_stack = NULL;
-    m_fiber = CreateFiber(size, coroutine, this);
+    m_fiber = CreateFiber(size, coroutineTrampoline, this);
 #endif
 
-    m_taskMan = TaskMan::getTaskMan();
-    m_taskMan->registerTask(this);
+    m_taskMan = taskMan;
 
     m_tls = g_tlsManager->createTLS();
     void * oldTLS = g_tlsManager->getTLS();
     g_tlsManager->setTLS(m_tls);
     localTask.set(this);
     g_tlsManager->setTLS(oldTLS);
-
-    m_status = STARTING;
-    m_okayToEAgain = false;
-
-    Printer::elog(E_TASK, "Created a Task at %p");
 }
 
 Balau::Task::~Task() {
@@ -37,27 +38,31 @@ Balau::Task::~Task() {
     free(m_tls);
 }
 
-void Balau::Task::coroutine(void * arg) {
+void Balau::Task::coroutineTrampoline(void * arg) {
     Task * task = reinterpret_cast<Task *>(arg);
     Assert(task);
-    Assert(task->m_status == STARTING);
+    task->coroutine();
+}
+
+void Balau::Task::coroutine() {
+    Assert(m_status == STARTING);
     try {
-        task->m_status = RUNNING;
-        task->Do();
-        task->m_status = STOPPED;
+        m_status = RUNNING;
+        Do();
+        m_status = STOPPED;
     }
     catch (GeneralException & e) {
-        Printer::log(M_WARNING, "Task %s at %p caused an exception: `%s' - stopping.", task->getName(), task, e.getMsg());
-        task->m_status = FAULTED;
+        Printer::log(M_WARNING, "Task %s at %p caused an exception: `%s' - stopping.", getName(), this, e.getMsg());
+        m_status = FAULTED;
     }
     catch (...) {
-        Printer::log(M_WARNING, "Task %s at %p caused an unknown exception - stopping.", task->getName(), task);
-        task->m_status = FAULTED;
+        Printer::log(M_WARNING, "Task %s at %p caused an unknown exception - stopping.", getName(), this);
+        m_status = FAULTED;
     }
 #ifndef _WIN32
-    coro_transfer(&task->m_ctx, &task->m_taskMan->m_returnContext);
+    coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
 #else
-    SwitchToFiber(task->m_taskMan->m_fiber);
+    SwitchToFiber(m_taskMan->m_fiber);
 #endif
 }
 

@@ -32,7 +32,7 @@ void MainTask::Do() {
     customPrinter = new CustomPrinter();
     Printer::log(M_STATUS, "Test::Tasks running.");
 
-    Task * testTask = new TestTask();
+    Task * testTask = Balau::createTask(new TestTask());
     Events::TaskEvent taskEvt(testTask);
     waitFor(&taskEvt);
     Assert(!taskEvt.gotSignal());

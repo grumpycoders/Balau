@@ -354,7 +354,7 @@ typedef Balau::Listener<Balau::HttpWorker> HttpListener;
 
 void Balau::HttpServer::start() {
     Assert(!m_started);
-    m_listenerPtr = new HttpListener(m_port, m_local.to_charp());
+    m_listenerPtr = createTask(new HttpListener(m_port, m_local.to_charp()));
     m_started = true;
 }
 

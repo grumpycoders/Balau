@@ -64,8 +64,8 @@ void MainTask::Do() {
     Printer::enable(M_ALL);
     Printer::log(M_STATUS, "Test::Sockets running.");
 
-    Events::TaskEvent evtSvr(listener = new Listener<Worker>(1234));
-    Events::TaskEvent evtCln(new Client);
+    Events::TaskEvent evtSvr(listener = Balau::createTask(new Listener<Worker>(1234)));
+    Events::TaskEvent evtCln(Balau::createTask(new Client));
     Printer::log(M_STATUS, "Created %s", listener->getName());
     waitFor(&evtSvr);
     waitFor(&evtCln);

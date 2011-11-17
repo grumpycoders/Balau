@@ -8,6 +8,7 @@
 #include <netdb.h>
 #endif
 #include <Handle.h>
+#include <TaskMan.h>
 #include <Task.h>
 #include <Printer.h>
 
@@ -78,7 +79,7 @@ class Listener : public ListenerBase {
   public:
       Listener(int port, const char * local = "", void * opaque = NULL) : ListenerBase(port, local, opaque) { }
   protected:
-    virtual void factory(IO<Socket> & io, void * opaque) { new Worker(io, opaque); }
+    virtual void factory(IO<Socket> & io, void * opaque) { createTask(new Worker(io, opaque)); }
     virtual void setName() { m_name = String(ClassName(this).c_str()) + " - " + m_listener->getName(); }
 };
 

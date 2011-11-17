@@ -45,7 +45,7 @@ namespace Balau {
 class MainTask : public Task {
   public:
       MainTask() : m_stopTaskManOnExit(true) { }
-      virtual ~MainTask() { if (m_stopTaskManOnExit) TaskMan::getTaskMan()->stop(); }
+      virtual ~MainTask() { if (m_stopTaskManOnExit) TaskMan::stop(); }
     virtual const char * getName() { return "Main Task"; }
     virtual void Do();
     void stopTaskManOnExit(bool v) { m_stopTaskManOnExit = v; }
@@ -77,8 +77,8 @@ class Main {
 
         try {
             m_status = RUNNING;
-            MainTask * mainTask = new MainTask();
-            TaskMan::getTaskMan()->mainLoop();
+            MainTask * mainTask = createTask(new MainTask());
+            TaskMan::getDefaultTaskMan()->mainLoop();
             m_status = STOPPING;
         }
         catch (Exit e) {

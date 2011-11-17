@@ -128,10 +128,13 @@ class Task {
         m_okayToEAgain = enable;
         return oldValue;
     }
+    TaskMan * getMyTaskMan() { return m_taskMan; }
   private:
     size_t stackSize() { return 128 * 1024; }
+    void setup(TaskMan * taskMan);
     void switchTo();
-    static void CALLBACK coroutine(void *);
+    static void CALLBACK coroutineTrampoline(void *);
+    void coroutine();
     void * m_stack;
 #ifndef _WIN32
     coro_context m_ctx;

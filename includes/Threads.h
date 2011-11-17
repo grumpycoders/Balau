@@ -57,6 +57,13 @@ class Queue {
         m_lock.leave();
         return t;
     }
+    int size() {
+        int r;
+        m_lock.enter();
+        r = m_queue.size();
+        m_lock.leave();
+        return r;
+    }
   private:
     std::queue<T> m_queue;
     Lock m_lock;
