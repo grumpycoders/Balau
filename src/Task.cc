@@ -114,13 +114,35 @@ void Balau::Events::BaseEvent::doSignal() {
     }
 }
 
-Balau::Events::TaskEvent::TaskEvent(Task * taskWaited) : m_taskWaited(taskWaited), m_ack(false) {
+Balau::Events::TaskEvent::TaskEvent(Task * taskWaited) : m_taskWaited(taskWaited), m_ack(false), m_distant(false) {
     m_taskWaited->m_waitedBy.push_back(this);
+}
+
+void Balau::Events::TaskEvent::signal() {
+    if (m_distant)
+        m_evt.send();
+    doSignal();
+}
+
+void Balau::Events::TaskEvent::gotOwner(Task * task) {
+    TaskMan * tm = task->getMyTaskMan();
+
+    m_evt.stop();
+    if (tm != m_taskWaited->getMyTaskMan()) {
+        m_evt.set(tm->getLoop());
+        m_evt.set<TaskEvent, &TaskEvent::evt_cb>(this);
+        m_evt.start();
+        m_distant = true;
+    } else {
+        m_distant = false;
+    }
 }
 
 Balau::Events::TaskEvent::~TaskEvent() {
     if (!m_ack)
         ack();
+    if (m_distant)
+        m_evt.stop();
 }
 
 void Balau::Events::TaskEvent::ack() {

@@ -65,10 +65,15 @@ class TaskEvent : public BaseEvent {
       TaskEvent(Task * taskWaited);
       virtual ~TaskEvent();
     void ack();
+    void signal();
     Task * taskWaited() { return m_taskWaited; }
+    void evt_cb(ev::async & w, int revents) { doSignal(); }
+  protected:
+    virtual void gotOwner(Task * task);
   private:
     Task * m_taskWaited;
-    bool m_ack;
+    bool m_ack, m_distant;
+    ev::async m_evt;
 };
 
 class Async : public BaseEvent {

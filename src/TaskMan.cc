@@ -173,7 +173,7 @@ void Balau::TaskMan::mainLoop() {
                 Task::waitedByList_t::iterator i;
                 for (i = t->m_waitedBy.begin(); i != t->m_waitedBy.end(); i++) {
                     Events::TaskEvent * e = *i;
-                    e->doSignal();
+                    e->signal();
                 }
             }
         }
