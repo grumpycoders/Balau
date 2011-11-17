@@ -34,7 +34,7 @@ class TaskMan {
     static void stop();
     void stopMe() { m_stopped = true; }
   private:
-    static void registerTask(Task * t);
+    static void registerTask(Task * t, Task * stick);
     void addToPending(Task * t);
 #ifndef _WIN32
     coro_context m_returnContext;
@@ -44,7 +44,7 @@ class TaskMan {
     friend class Task;
     friend class TaskScheduler;
     template<class T>
-    friend T * createTask(T * t);
+    friend T * createTask(T * t, Task * stick = NULL);
     struct taskHasher { size_t operator()(const Task * t) const { return reinterpret_cast<uintptr_t>(t); } };
     typedef gnu::hash_set<Task *, taskHasher> taskHash_t;
     taskHash_t m_tasks, m_signaledTasks;
@@ -56,6 +56,6 @@ class TaskMan {
 };
 
 template<class T>
-T * createTask(T * t) { TaskMan::registerTask(t); Assert(dynamic_cast<Task *>(t)); return t; }
+T * createTask(T * t, Task * stick = NULL) { TaskMan::registerTask(t, stick); Assert(dynamic_cast<Task *>(t)); return t; }
 
 };

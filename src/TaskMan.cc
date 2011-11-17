@@ -216,8 +216,14 @@ void Balau::TaskMan::mainLoop() {
     Printer::elog(E_TASK, "TaskManager stopping.");
 }
 
-void Balau::TaskMan::registerTask(Balau::Task * t) {
-    s_scheduler.registerTask(t);
+void Balau::TaskMan::registerTask(Balau::Task * t, Balau::Task * stick) {
+    if (stick) {
+        TaskMan * tm = stick->getMyTaskMan();
+        tm->addToPending(t);
+        tm->m_evt.send();
+    } else {
+        s_scheduler.registerTask(t);
+    }
 }
 
 void Balau::TaskMan::addToPending(Balau::Task * t) {
