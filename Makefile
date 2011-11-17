@@ -52,7 +52,7 @@ ifeq ($(SYSTEM),MINGW32)
     BINEXT = exe
     COMPILE_PTHREADS = true
     CONFIG_H = mingw32-config.h
-    INCLUDES += win32/iconv win32/pthreads-win32
+    INCLUDES += win32/iconv win32/pthreads-win32 win32/regex
     LIBS += ws2_32
     ifeq ($(TRUESYSTEM),Linux)
         ifeq ($(DISTRIB),CentOS)
@@ -107,7 +107,7 @@ LDFLAGS += $(ARCH_FLAGS)
 LDLIBS = $(addprefix -l, $(LIBS))
 
 vpath %.cc src:tests
-vpath %.c libcoro:libeio:libev:win32/pthreads-win32:win32/iconv
+vpath %.c libcoro:libeio:libev:win32/pthreads-win32:win32/iconv:win32/regex
 
 BALAU_SOURCES = \
 Local.cc \
@@ -130,6 +130,8 @@ TaskMan.cc \
 HttpServer.cc \
 \
 BLua.cc \
+\
+BRegex.cc \
 
 ifeq ($(SYSTEM),MINGW32)
 WIN32_SOURCES = \
@@ -137,6 +139,7 @@ pthread.c \
 iconv.c \
 localcharset.c \
 relocatable.c \
+msvc-regex.c \
 
 endif
 
@@ -167,6 +170,7 @@ test-Threads.cc \
 test-Handles.cc \
 test-Sockets.cc \
 test-Lua.cc \
+test-Regex.cc \
 
 LIB = libBalau.a
 
