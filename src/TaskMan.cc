@@ -35,6 +35,8 @@ class TaskScheduler : public Thread, public AtStart, public AtExit {
     void stopAll();
   private:
     Queue<Task *> m_queue;
+    std::queue<TaskMan *> m_taskManagers;
+    Lock m_lock;
     volatile bool m_stopping;
 };
 
@@ -48,18 +50,43 @@ void Balau::TaskScheduler::registerTask(Task * t) {
 }
 
 void Balau::TaskScheduler::registerTaskMan(TaskMan * t) {
-    // meh. We need a round-robin queue system.
+    m_lock.enter();
+    m_taskManagers.push(t);
+    m_lock.leave();
 }
 
 void Balau::TaskScheduler::unregisterTaskMan(TaskMan * t) {
-    // and here, we need to remove that taskman from the round robin queue.
+    m_lock.enter();
+    TaskMan * p = NULL;
+    // yes, this is a potentially dangerous operation.
+    // But unregistering task managers shouldn't happen that often.
+    while (true) {
+        p = m_taskManagers.front();
+        m_taskManagers.pop();
+        if (p == t)
+            break;
+        m_taskManagers.push(p);
+    }
+    m_lock.leave();
 }
 
 void Balau::TaskScheduler::stopAll() {
     m_stopping = true;
-    // and finally, we need to crawl the whole list and stop all of them.
-    TaskMan * tm = localTaskMan.getGlobal();
-    tm->addToPending(new Stopper());
+    m_lock.enter();
+    std::queue<TaskMan *> altQueue;
+    TaskMan * tm;
+    while (!m_taskManagers.empty()) {
+        tm = m_taskManagers.front();
+        m_taskManagers.pop();
+        altQueue.push(tm);
+        tm->addToPending(new Stopper());
+    }
+    while (!altQueue.empty()) {
+        tm = altQueue.front();
+        altQueue.pop();
+        m_taskManagers.push(tm);
+    }
+    m_lock.leave();
 }
 
 void * Balau::TaskScheduler::proc() {
@@ -70,9 +97,16 @@ void * Balau::TaskScheduler::proc() {
             break;
         if (dynamic_cast<Stopper *>(t) || m_stopping)
             break;
-        // pick up a task manager here... for now let's take the global one.
-        // but we need some sort of round robin across all of the threads, as described above.
-        TaskMan * tm = localTaskMan.getGlobal();
+        m_lock.enter();
+        size_t s = m_taskManagers.size();
+        if (s == 0)
+            break;
+        TaskMan * tm = m_taskManagers.front();
+        if (s != 1) {
+            m_taskManagers.pop();
+            m_taskManagers.push(tm);
+        }
+        m_lock.leave();
         Printer::elog(E_TASK, "TaskScheduler popped task %s at %p; adding to TaskMan %p", t->getName(), t, tm);
         tm->addToPending(t);
         tm->m_evt.send();
