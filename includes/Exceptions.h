@@ -21,6 +21,33 @@ class GeneralException {
     char * m_msg;
 };
 
+static inline void * malloc(size_t size) throw (GeneralException) {
+    void * r = ::malloc(size);
+
+    if (!r && size)
+        throw GeneralException("Failed to allocate memory.");
+
+    return r;
+}
+
+static inline void * calloc(size_t count, size_t size) throw (GeneralException) {
+    void * r = ::calloc(count, size);
+
+    if (!r && ((count * size) != 0))
+        throw GeneralException("Failed to allocate memory.");
+
+    return r;
+}
+
+static inline void * realloc(void * previous, size_t size) throw (GeneralException) {
+    void * r = ::realloc(previous, size);
+
+    if (!r && size)
+        throw GeneralException("Failed to allocate memory.");
+
+    return r;
+}
+
 static inline void AssertHelper(const String & msg) throw(GeneralException) { throw GeneralException(msg); }
 
 class ClassName {
