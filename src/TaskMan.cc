@@ -189,7 +189,7 @@ void Balau::TaskMan::mainLoop() {
         m_signaledTasks.clear();
 
         // Adding tasks that were added, maybe from other threads
-        while ((m_pendingAdd.size() != 0) || (m_tasks.size() == 0) && !m_stopped) {
+        while (((m_pendingAdd.size() != 0) || (m_tasks.size() == 0)) && !m_stopped) {
             t = m_pendingAdd.pop();
             Assert(m_tasks.find(t) == m_tasks.end());
             t->setup(this);
