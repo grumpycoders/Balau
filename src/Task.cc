@@ -43,8 +43,6 @@ void Balau::Task::setup(TaskMan * taskMan, void * stack) {
 }
 
 Balau::Task::~Task() {
-    if (m_stack)
-        m_taskMan->freeStack(m_stack);
     free(m_tls);
 }
 
