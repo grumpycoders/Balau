@@ -56,6 +56,6 @@ class TaskMan {
 };
 
 template<class T>
-T * createTask(T * t, Task * stick = NULL) { TaskMan::registerTask(t, stick); Assert(dynamic_cast<Task *>(t)); return t; }
+T * createTask(T * t, Task * stick) { TaskMan::registerTask(t, stick); Assert(dynamic_cast<Task *>(t)); return t; }
 
 };
