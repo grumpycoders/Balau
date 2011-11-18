@@ -169,6 +169,7 @@ test-Tasks.cc \
 test-Threads.cc \
 test-Handles.cc \
 test-Sockets.cc \
+test-Http.cc \
 test-Lua.cc \
 test-Regex.cc \
 

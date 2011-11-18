@@ -47,3 +47,5 @@ Balau::String Balau::Regex::getError(int err) {
     return r;
 }
 
+Balau::Regex Balau::Regexes::any(".*");
+Balau::Regex Balau::Regexes::empty("^$");

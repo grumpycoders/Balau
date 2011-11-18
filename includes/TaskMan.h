@@ -33,6 +33,7 @@ class TaskMan {
     void signalTask(Task * t);
     static void stop();
     void stopMe() { m_stopped = true; }
+    static Thread * createThreadedTaskMan();
   private:
     static void registerTask(Task * t, Task * stick);
     void * getStack();

@@ -1,5 +1,3 @@
-#include <map>
-
 #include "Http.h"
 #include "HttpServer.h"
 #include "Socket.h"
@@ -10,8 +8,6 @@ static const ev_tstamp s_httpTimeout = 15;
 
 namespace Balau {
 
-typedef std::map<String, String> StringMap;
-
 class HttpWorker : public Task {
   public:
       HttpWorker(IO<Handle> io, void * server);
@@ -21,21 +17,23 @@ class HttpWorker : public Task {
     virtual const char * getName();
 
     bool handleClient();
-    void send400(Events::BaseEvent * evt);
+    void send400();
+    void send404();
     String httpUnescape(const char * in);
-    void readVariables(StringMap & variables, char * str);
+    void readVariables(HttpServer::StringMap & variables, char * str);
 
     IO<Handle> m_socket;
     IO<BStream> m_strm;
     String m_name;
+    HttpServer * m_server;
 };
 
 };
 
 Balau::HttpWorker::HttpWorker(IO<Handle> io, void * _server) : m_socket(new WriteOnly(io)), m_strm(new BStream(io)) {
-    HttpServer * server = (HttpServer *) _server;
+    m_server = (HttpServer *) _server;
     m_name.set("HttpWorker(%s)", m_socket->getName());
-    // copy stuff from server, such as port number, root document, base URL, etc...
+    // get stuff from server, such as port number, root document, base URL, default 400/404 actions, etc...
 }
 
 Balau::HttpWorker::~HttpWorker() {
@@ -72,7 +70,7 @@ Balau::String Balau::HttpWorker::httpUnescape(const char * in) {
     return r;
 }
 
-void Balau::HttpWorker::readVariables(StringMap & variables, char * str) {
+void Balau::HttpWorker::readVariables(HttpServer::StringMap & variables, char * str) {
     char * ampPos;
     do {
         ampPos = strchr(str, '&');
@@ -92,7 +90,7 @@ void Balau::HttpWorker::readVariables(StringMap & variables, char * str) {
     } while (ampPos);
 }
 
-void Balau::HttpWorker::send400(Events::BaseEvent * evt) {
+void Balau::HttpWorker::send400() {
     static const char str[] =
 "HTTP/1.0 400 Bad Request\r\n"
 "Content-Type: text/html; charset=UTF-8\r\n"
@@ -111,8 +109,29 @@ void Balau::HttpWorker::send400(Events::BaseEvent * evt) {
 "  </body>\n"
 "</html>\n";
 
-    setOkayToEAgain(false);
-    m_socket->forceWrite(str, sizeof(str) - 1, evt);
+    m_socket->forceWrite(str, sizeof(str) - 1);
+    Balau::Printer::elog(Balau::E_HTTPSERVER, "%s had an invalid request", m_name.to_charp());
+}
+
+void Balau::HttpWorker::send404() {
+    static const char str[] =
+"HTTP/1.1 404 Not Found\r\n"
+"Content-Type: text/html; charset=UTF-8\r\n"
+"Server: " DAEMON_NAME "\r\n"
+"\r\n"
+"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"
+"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+"<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+"  <head>\n"
+"    <title>404 Not Found</title>\n"
+"  </head>\n"
+"\n"
+"  <body>\n"
+"    The HTTP request you've sent didn't match any action on this server.\n"
+"  </body>\n"
+"</html>\n";
+
+    m_socket->forceWrite(str, sizeof(str) - 1);
     Balau::Printer::elog(Balau::E_HTTPSERVER, "%s had an invalid request", m_name.to_charp());
 }
 
@@ -127,8 +146,9 @@ bool Balau::HttpWorker::handleClient() {
     String host;
     String uri;
     String httpVersion;
-    StringMap httpHeaders;
-    StringMap variables;
+    HttpServer::StringMap httpHeaders;
+    HttpServer::StringMap variables;
+    HttpServer::FileList files;
     bool persistent = false;
 
     // read client's request
@@ -168,14 +188,14 @@ bool Balau::HttpWorker::handleClient() {
                 break;
             }
             if (urlBegin == 0) {
-                send400(&evtTimeout);
+                send400();
                 return false;
             }
 
             int urlEnd = line.strrchr(' ') - 1;
 
             if (urlEnd < urlBegin) {
-                send400(&evtTimeout);
+                send400();
                 return false;
             }
 
@@ -184,7 +204,7 @@ bool Balau::HttpWorker::handleClient() {
             int httpBegin = urlEnd + 2;
 
             if ((httpBegin + 5) >= line.strlen()) {
-                send400(&evtTimeout);
+                send400();
                 return false;
             }
 
@@ -195,19 +215,19 @@ bool Balau::HttpWorker::handleClient() {
                 (line[httpBegin + 4] == '/')) {
                 httpVersion = line.extract(httpBegin + 5);
             } else {
-                send400(&evtTimeout);
+                send400();
                 return false;
             }
 
             if ((httpVersion != "1.0") && (httpVersion != "1.1")) {
-                send400(&evtTimeout);
+                send400();
                 return false;
             }
         } else {
             // parse HTTP header.
             int colon = line.strchr(':');
             if (colon <= 0) {
-                send400(&evtTimeout);
+                send400();
                 return false;
             }
 
@@ -221,16 +241,16 @@ bool Balau::HttpWorker::handleClient() {
     } while(true);
 
     if (!gotFirst) {
-        send400(&evtTimeout);
+        send400();
         return false;
     }
 
     if (httpVersion == "1.1") {
-        StringMap::iterator i = httpHeaders.find("Connection");
+        HttpServer::StringMap::iterator i = httpHeaders.find("Connection");
 
         if (i != httpHeaders.end()) {
             if (i->second != "close") {
-                send400(&evtTimeout);
+                send400();
                 return false;
             }
         } else {
@@ -240,7 +260,7 @@ bool Balau::HttpWorker::handleClient() {
 
     if (method == Http::POST) {
         int length = 0;
-        StringMap::iterator i;
+        HttpServer::StringMap::iterator i;
         bool multipart = false;
         String boundary;
 
@@ -255,10 +275,10 @@ bool Balau::HttpWorker::handleClient() {
             static const String multipartStr = "multipart/form-data";
             if (i->second.extract(multipartStr.strlen()) == multipartStr) {
                 if (i->second[multipartStr.strlen() + 1] != ';') {
-                    send400(&evtTimeout);
+                    send400();
                     return false;
                 }
-                StringMap t;
+                HttpServer::StringMap t;
                 char * b = i->second.extract(sizeof(multipartStr) + 1).trim().strdup();
                 readVariables(t, b);
                 free(b);
@@ -266,7 +286,7 @@ bool Balau::HttpWorker::handleClient() {
                 i = t.find("boundary");
 
                 if (i == t.end()) {
-                    send400(&evtTimeout);
+                    send400();
                     return false;
                 }
 
@@ -319,11 +339,11 @@ bool Balau::HttpWorker::handleClient() {
         }
     }
 
-    StringMap::iterator hostIter = httpHeaders.find("host");
+    HttpServer::StringMap::iterator hostIter = httpHeaders.find("host");
 
     if (hostIter != httpHeaders.end()) {
         if (host != "") {
-            send400(&evtTimeout);
+            send400();
             return false;
         }
 
@@ -332,10 +352,16 @@ bool Balau::HttpWorker::handleClient() {
 
     // process query; everything should be here now
 
-
+    HttpServer::ActionFound f = m_server->findAction(uri.to_charp(), host.to_charp());
+    if (f.first) {
+        if (!f.first->Do(m_server, f.second, m_socket, variables, httpHeaders, files)) {
+            persistent = false;
+        }
+    } else {
+        send404();
+    }
 
     // query process finished; wrapping up and exiting.
-
     return persistent;
 }
 
@@ -354,7 +380,7 @@ typedef Balau::Listener<Balau::HttpWorker> HttpListener;
 
 void Balau::HttpServer::start() {
     Assert(!m_started);
-    m_listenerPtr = createTask(new HttpListener(m_port, m_local.to_charp()));
+    m_listenerPtr = createTask(new HttpListener(m_port, m_local.to_charp(), this));
     m_started = true;
 }
 
@@ -362,4 +388,56 @@ void Balau::HttpServer::stop() {
     Assert(m_started);
     reinterpret_cast<HttpListener *>(m_listenerPtr)->stop();
     m_started = false;
+}
+
+void Balau::HttpServer::registerAction(Action * action) {
+    m_actionsLock.enter();
+    action->ref();
+    m_actions.push_front(action);
+    m_actionsLock.leave();
+}
+
+void Balau::HttpServer::flushAllActions() {
+    m_actionsLock.enter();
+    Action * a;
+    while (!m_actions.empty()) {
+        a = m_actions.front();
+        m_actions.pop_front();
+        a->unref();
+    }
+    m_actionsLock.leave();
+}
+
+Balau::HttpServer::Action::ActionMatches Balau::HttpServer::Action::matches(const char * uri, const char * host) {
+    ActionMatches r;
+
+    r.second = m_host.match(host);
+    if (r.second.empty())
+        return r;
+
+    r.first = m_regex.match(uri);
+    return r;
+}
+
+Balau::HttpServer::ActionFound Balau::HttpServer::findAction(const char * uri, const char * host) {
+    m_actionsLock.enter();
+
+    ActionList::iterator i;
+    ActionFound r;
+
+    for (i = m_actions.begin(); i != m_actions.end(); i++) {
+        r.first = *i;
+        r.second = r.first->matches(uri, host);
+        if (!r.second.first.empty())
+            break;
+    }
+
+    if (r.second.first.empty())
+        r.first = NULL;
+    else
+        r.first->ref();
+
+    m_actionsLock.leave();
+
+    return r;
 }

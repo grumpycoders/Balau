@@ -206,7 +206,7 @@ void Balau::TaskMan::mainLoop() {
         Task * t;
         bool noWait = false;
 
-        Printer::elog(E_TASK, "TaskMan::mainLoop() with m_tasks.size = %i", m_tasks.size());
+        Printer::elog(E_TASK, "TaskMan::mainLoop() at %p with m_tasks.size = %i", this, m_tasks.size());
 
         // checking "STARTING" tasks, and running them once; also try to build the status of the noWait boolean.
         for (iH = m_tasks.begin(); iH != m_tasks.end(); iH++) {
@@ -226,9 +226,9 @@ void Balau::TaskMan::mainLoop() {
 
         // libev's event "loop". We always runs it once though.
         m_allowedToSignal = true;
-        Printer::elog(E_TASK, "Going to libev main loop");
+        Printer::elog(E_TASK, "TaskMan at %p Going to libev main loop", this);
         ev_run(m_loop, noWait || m_stopped ? EVRUN_NOWAIT : EVRUN_ONCE);
-        Printer::elog(E_TASK, "Getting out of libev main loop");
+        Printer::elog(E_TASK, "TaskMan at %p Getting out of libev main loop", this);
 
         // let's check what task got stopped, and signal them
         for (iH = m_tasks.begin(); iH != m_tasks.end(); iH++) {
@@ -247,7 +247,7 @@ void Balau::TaskMan::mainLoop() {
         // let's check who got signaled, and call them
         for (iH = m_signaledTasks.begin(); iH != m_signaledTasks.end(); iH++) {
             t = *iH;
-            Printer::elog(E_TASK, "Switching to task %p (%s - %s) that got signaled somehow.", t, t->getName(), ClassName(t).c_str());
+            Printer::elog(E_TASK, "TaskMan at %p Switching to task %p (%s - %s) that got signaled somehow.", this, t, t->getName(), ClassName(t).c_str());
             Assert(t->getStatus() == Task::IDLE);
             t->switchTo();
         }
@@ -279,7 +279,7 @@ void Balau::TaskMan::mainLoop() {
         } while (didDelete);
 
     } while (!m_stopped);
-    Printer::elog(E_TASK, "TaskManager stopping.");
+    Printer::elog(E_TASK, "TaskManager at %p stopping.", this);
 }
 
 void Balau::TaskMan::registerTask(Balau::Task * t, Balau::Task * stick) {
@@ -304,4 +304,17 @@ void Balau::TaskMan::signalTask(Task * t) {
 
 void Balau::TaskMan::stop() {
     s_scheduler.stopAll();
+}
+
+class ThreadedTaskMan : public Balau::Thread {
+    virtual void * proc() {
+        m_taskMan = new Balau::TaskMan();
+        m_taskMan->mainLoop();
+    }
+    Balau::TaskMan * m_taskMan;
+};
+
+Balau::Thread * Balau::TaskMan::createThreadedTaskMan() {
+    Thread * r = new ThreadedTaskMan();
+    r->threadStart();
 }

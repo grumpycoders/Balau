@@ -19,4 +19,10 @@ class Regex {
     regex_t m_regex;
 };
 
+class Regexes {
+  public:
+    static Regex any;
+    static Regex empty;
+};
+
 };
