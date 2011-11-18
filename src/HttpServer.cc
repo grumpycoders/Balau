@@ -3,7 +3,7 @@
 #include "Socket.h"
 #include "BStream.h"
 
-static const ev_tstamp s_httpTimeout = 15;
+static const ev_tstamp s_httpTimeout = 5;
 #define DAEMON_NAME "Balau/1.0"
 
 namespace Balau {
@@ -188,6 +188,7 @@ bool Balau::HttpWorker::handleClient() {
                 break;
             }
             if (urlBegin == 0) {
+                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s didn't get a URI after the method", m_name.to_charp());
                 send400();
                 return false;
             }
@@ -195,6 +196,7 @@ bool Balau::HttpWorker::handleClient() {
             int urlEnd = line.strrchr(' ') - 1;
 
             if (urlEnd < urlBegin) {
+                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has a misformated URI (or no space after it)", m_name.to_charp());
                 send400();
                 return false;
             }
@@ -204,6 +206,7 @@ bool Balau::HttpWorker::handleClient() {
             int httpBegin = urlEnd + 2;
 
             if ((httpBegin + 5) >= line.strlen()) {
+                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s doesn't have enough characters after the URI", m_name.to_charp());
                 send400();
                 return false;
             }
@@ -215,11 +218,13 @@ bool Balau::HttpWorker::handleClient() {
                 (line[httpBegin + 4] == '/')) {
                 httpVersion = line.extract(httpBegin + 5);
             } else {
+                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s doesn't have HTTP after the URI", m_name.to_charp());
                 send400();
                 return false;
             }
 
             if ((httpVersion != "1.0") && (httpVersion != "1.1")) {
+                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s doesn't have a proper HTTP version", m_name.to_charp());
                 send400();
                 return false;
             }
@@ -227,6 +232,7 @@ bool Balau::HttpWorker::handleClient() {
             // parse HTTP header.
             int colon = line.strchr(':');
             if (colon <= 0) {
+                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has an invalid HTTP header", m_name.to_charp());
                 send400();
                 return false;
             }
@@ -234,13 +240,12 @@ bool Balau::HttpWorker::handleClient() {
             String key = line.extract(0, colon);
             String value = line.extract(colon + 1);
 
-            value.trim();
-
-            httpHeaders[key] = value;
+            httpHeaders[key] = value.trim();
         }
     } while(true);
 
     if (!gotFirst) {
+        Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has nothing in its request", m_name.to_charp());
         send400();
         return false;
     }
@@ -249,7 +254,12 @@ bool Balau::HttpWorker::handleClient() {
         HttpServer::StringMap::iterator i = httpHeaders.find("Connection");
 
         if (i != httpHeaders.end()) {
-            if (i->second != "close") {
+            if (i->second == "close") {
+                persistent = false;
+            } else if (i->second == "keep-alive") {
+                persistent = true;
+            } else {
+                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has an improper Connection HTTP header", m_name.to_charp());
                 send400();
                 return false;
             }
@@ -275,17 +285,19 @@ bool Balau::HttpWorker::handleClient() {
             static const String multipartStr = "multipart/form-data";
             if (i->second.extract(multipartStr.strlen()) == multipartStr) {
                 if (i->second[multipartStr.strlen() + 1] != ';') {
+                    Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has an improper multipart string (no ;)", m_name.to_charp());
                     send400();
                     return false;
                 }
                 HttpServer::StringMap t;
-                char * b = i->second.extract(sizeof(multipartStr) + 1).trim().strdup();
+                char * b = i->second.extract(sizeof(multipartStr) + 1).do_trim().strdup();
                 readVariables(t, b);
                 free(b);
 
                 i = t.find("boundary");
 
                 if (i == t.end()) {
+                    Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has an improper multipart string (no boundary)", m_name.to_charp());
                     send400();
                     return false;
                 }
@@ -343,6 +355,7 @@ bool Balau::HttpWorker::handleClient() {
 
     if (hostIter != httpHeaders.end()) {
         if (host != "") {
+            Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has a host field, although the URI already has one", m_name.to_charp());
             send400();
             return false;
         }
