@@ -19,7 +19,7 @@ CPPFLAGS += -fno-strict-aliasing
 ifeq ($(DEBUG),)
 CPPFLAGS += -O3 -DNDEBUG
 else
-CPPFLAGS += -g -DDEBUG
+CPPFLAGS += -g -DDEBUG -DEV_VERIFY=3
 LDFLAGS += -g
 endif
 
