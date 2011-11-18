@@ -26,7 +26,7 @@ class HttpServer {
           ~Action() { Assert(m_refCount == 0); }
         typedef std::pair<Regex::Captures, Regex::Captures> ActionMatches;
         ActionMatches matches(const char * uri, const char * host);
-        void unref() { if (Atomic::Prefetch::Decrement(&m_refCount) == 0) delete this; }
+        void unref() { if (Atomic::Decrement(&m_refCount) == 0) delete this; }
         void ref() { Atomic::Increment(&m_refCount); }
         void registerMe(HttpServer * server) { server->registerAction(this); }
         virtual bool Do(HttpServer * server, ActionMatches & m, IO<Handle> out, StringMap & vars, StringMap & headers, FileList & files) = 0;
