@@ -257,6 +257,7 @@ void Balau::TaskMan::mainLoop() {
         while (((m_pendingAdd.size() != 0) || (m_tasks.size() == 0)) && !m_stopped) {
             t = m_pendingAdd.pop();
             Assert(m_tasks.find(t) == m_tasks.end());
+            ev_now_update(m_loop);
             t->setup(this, getStack());
             m_tasks.insert(t);
         }
