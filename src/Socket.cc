@@ -243,6 +243,11 @@ Balau::Socket::Socket() throw (GeneralException) : m_fd(socket(AF_INET6, SOCK_ST
 #else
     fcntl(m_fd, F_SETFL, O_NONBLOCK);
 #endif
+
+    int on = 0;
+    int r = setsockopt(m_fd, IPPROTO_IPV6, IPV6_V6ONLY, (char *) &on, sizeof(on));
+    Assert(r == 0);
+
     memset(&m_localAddr, 0, sizeof(m_localAddr));
     memset(&m_remoteAddr, 0, sizeof(m_remoteAddr));
     Printer::elog(E_SOCKET, "Creating a socket at %p", this);
