@@ -311,6 +311,7 @@ class ThreadedTaskMan : public Balau::Thread {
     virtual void * proc() {
         m_taskMan = new Balau::TaskMan();
         m_taskMan->mainLoop();
+        return NULL;
     }
     Balau::TaskMan * m_taskMan;
 };
@@ -318,4 +319,5 @@ class ThreadedTaskMan : public Balau::Thread {
 Balau::Thread * Balau::TaskMan::createThreadedTaskMan() {
     Thread * r = new ThreadedTaskMan();
     r->threadStart();
+    return r;
 }
