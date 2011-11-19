@@ -9,6 +9,7 @@
 #include <Exceptions.h>
 #include <Threads.h>
 #include <Handle.h>
+#include <Http.h>
 
 namespace Balau {
 
@@ -17,19 +18,16 @@ class HttpWorker;
 class HttpServer {
   public:
 
-    typedef std::map<String, String> StringMap;
-    typedef std::map<String, IO<Handle> > FileList;
-
     class Action {
       public:
           Action(Regex & regex, Regex & host = Regexes::any) : m_regex(regex), m_host(host), m_refCount(0) { }
           ~Action() { Assert(m_refCount == 0); }
-        typedef std::pair<Regex::Captures, Regex::Captures> ActionMatches;
-        ActionMatches matches(const char * uri, const char * host);
+        typedef std::pair<Regex::Captures, Regex::Captures> ActionMatch;
+        ActionMatch matches(const char * uri, const char * host);
         void unref() { if (Atomic::Decrement(&m_refCount) == 0) delete this; }
         void ref() { Atomic::Increment(&m_refCount); }
         void registerMe(HttpServer * server) { server->registerAction(this); }
-        virtual bool Do(HttpServer * server, ActionMatches & m, IO<Handle> out, StringMap & vars, StringMap & headers, FileList & files) = 0;
+        virtual bool Do(HttpServer * server, Http::Request & req, ActionMatch & match, IO<Handle> out) = 0;
       private:
         Regex m_regex, m_host;
         volatile int m_refCount;
@@ -43,7 +41,7 @@ class HttpServer {
     void setLocal(const char * local) { Assert(!m_started); m_local = local; }
     void registerAction(Action * action);
     void flushAllActions();
-    typedef std::pair<Action *, Action::ActionMatches> ActionFound;
+    typedef std::pair<Action *, Action::ActionMatch> ActionFound;
     ActionFound findAction(const char * uri, const char * host);
   private:
     bool m_started;

@@ -20,7 +20,7 @@ class HttpWorker : public Task {
     void send400();
     void send404();
     String httpUnescape(const char * in);
-    void readVariables(HttpServer::StringMap & variables, char * str);
+    void readVariables(Http::StringMap & variables, char * str);
 
     IO<Handle> m_socket;
     IO<BStream> m_strm;
@@ -70,7 +70,7 @@ Balau::String Balau::HttpWorker::httpUnescape(const char * in) {
     return r;
 }
 
-void Balau::HttpWorker::readVariables(HttpServer::StringMap & variables, char * str) {
+void Balau::HttpWorker::readVariables(Http::StringMap & variables, char * str) {
     char * ampPos;
     do {
         ampPos = strchr(str, '&');
@@ -146,9 +146,9 @@ bool Balau::HttpWorker::handleClient() {
     String host;
     String uri;
     String httpVersion;
-    HttpServer::StringMap httpHeaders;
-    HttpServer::StringMap variables;
-    HttpServer::FileList files;
+    Http::StringMap httpHeaders;
+    Http::StringMap variables;
+    Http::FileList files;
     bool persistent = false;
 
     // read client's request
@@ -251,7 +251,7 @@ bool Balau::HttpWorker::handleClient() {
     }
 
     if (httpVersion == "1.1") {
-        HttpServer::StringMap::iterator i = httpHeaders.find("Connection");
+        Http::StringMap::iterator i = httpHeaders.find("Connection");
 
         if (i != httpHeaders.end()) {
             if (i->second == "close") {
@@ -270,7 +270,7 @@ bool Balau::HttpWorker::handleClient() {
 
     if (method == Http::POST) {
         int length = 0;
-        HttpServer::StringMap::iterator i;
+        Http::StringMap::iterator i;
         bool multipart = false;
         String boundary;
 
@@ -289,7 +289,7 @@ bool Balau::HttpWorker::handleClient() {
                     send400();
                     return false;
                 }
-                HttpServer::StringMap t;
+                Http::StringMap t;
                 char * b = i->second.extract(sizeof(multipartStr) + 1).do_trim().strdup();
                 readVariables(t, b);
                 free(b);
@@ -351,7 +351,7 @@ bool Balau::HttpWorker::handleClient() {
         }
     }
 
-    HttpServer::StringMap::iterator hostIter = httpHeaders.find("host");
+    Http::StringMap::iterator hostIter = httpHeaders.find("host");
 
     if (hostIter != httpHeaders.end()) {
         if (host != "") {
@@ -367,7 +367,15 @@ bool Balau::HttpWorker::handleClient() {
 
     HttpServer::ActionFound f = m_server->findAction(uri.to_charp(), host.to_charp());
     if (f.first) {
-        if (!f.first->Do(m_server, f.second, m_socket, variables, httpHeaders, files)) {
+        Http::Request req;
+        req.method = method;
+        req.host = host;
+        req.uri = uri;
+        req.variables = variables;
+        req.headers = httpHeaders;
+        req.files = files;
+        req.persistent = persistent;
+        if (!f.first->Do(m_server, req, f.second, m_socket)) {
             persistent = false;
         }
     } else {
@@ -421,8 +429,8 @@ void Balau::HttpServer::flushAllActions() {
     m_actionsLock.leave();
 }
 
-Balau::HttpServer::Action::ActionMatches Balau::HttpServer::Action::matches(const char * uri, const char * host) {
-    ActionMatches r;
+Balau::HttpServer::Action::ActionMatch Balau::HttpServer::Action::matches(const char * uri, const char * host) {
+    ActionMatch r;
 
     r.second = m_host.match(host);
     if (r.second.empty())

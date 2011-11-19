@@ -10,10 +10,10 @@ using namespace Balau;
 class TestAction : public HttpServer::Action {
   public:
       TestAction() : Action(Regexes::any) { }
-    virtual bool Do(HttpServer * server, HttpServer::Action::ActionMatches & m, IO<Handle> out, HttpServer::StringMap & vars, HttpServer::StringMap & headers, HttpServer::FileList & files);
+    virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out);
 };
 
-bool TestAction::Do(HttpServer * server, HttpServer::Action::ActionMatches & m, IO<Handle> out, HttpServer::StringMap & vars, HttpServer::StringMap & headers, HttpServer::FileList & files) {
+bool TestAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) {
     static const char str[] =
 "HTTP/1.1 200 Found\r\n"
 "Content-Type: text/html; charset=UTF-8\r\n"
