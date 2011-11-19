@@ -258,16 +258,17 @@ bool Balau::HttpWorker::handleClient() {
             String::List connVals = conn.split(',');
             bool gotOne = false;
             for (String::List::iterator j = connVals.begin(); j != connVals.end(); j++) {
-                if ((*j == "close") && (!gotOne)) {
+                String t = j->trim();
+                if ((t == "close") && (!gotOne)) {
                     gotOne = true;
                     persistent = false;
-                } else if ((*j == "keep-alive") && (!gotOne)) {
+                } else if ((t == "keep-alive") && (!gotOne)) {
                     gotOne = true;
                     persistent = true;
-                } else if (*j == "TE") {
+                } else if (t == "TE") {
                     Balau::Printer::elog(Balau::E_HTTPSERVER, "%s got the 'TE' connection marker (which is still unknown)", m_name.to_charp());
                 } else {
-                    Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has an improper Connection HTTP header (%s)", m_name.to_charp(), j->to_charp());
+                    Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has an improper Connection HTTP header (%s)", m_name.to_charp(), t.to_charp());
                     send400();
                     return false;
                 }
