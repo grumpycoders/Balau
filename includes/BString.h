@@ -8,6 +8,7 @@
 #endif
 #include <stdlib.h>
 #include <string>
+#include <vector>
 
 namespace Balau {
 
@@ -44,6 +45,8 @@ class String : private std::string {
 
     int to_int(int base = 0) const { return strtol(to_charp(), NULL, base); }
     double to_double() const { return strtod(to_charp(), NULL); }
+    typedef std::vector<String> List;
+    List split(char c);
 
     size_t strlen() const { return std::string::length(); }
     ssize_t strchr(char c, size_t begin = 0) const { return find(c, begin); }

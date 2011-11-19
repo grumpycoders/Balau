@@ -111,3 +111,23 @@ Balau::String & Balau::String::do_iconv(const char * from, const char * _to) {
 
     return *this;
 }
+
+Balau::String::List Balau::String::split(char c) {
+    char * d, * p, * f;
+    List r;
+
+    d = p = strdup();
+
+    while (true) {
+        f = ::strchr(p, c);
+        if (!f)
+            break;
+        *f = 0;
+        r.push_back(p);
+        p = f + 1;
+    }
+
+    r.push_back(p);
+    free(d);
+    return r;
+}
