@@ -9,6 +9,11 @@
 
 static const int s_blockSize = 16 * 1024;
 
+Balau::Buffer::~Buffer() {
+    if (!m_fromConst)
+        free(m_buffer);
+}
+
 void Balau::Buffer::close() throw (GeneralException) {
     reset();
 }
@@ -30,6 +35,9 @@ ssize_t Balau::Buffer::read(void * buf, size_t count) throw (GeneralException) {
 }
 
 ssize_t Balau::Buffer::write(const void * buf, size_t count) throw (GeneralException) {
+    if (m_fromConst)
+        throw GeneralException("Buffer is read only and can't be written to.");
+
     off_t cursor = wtell();
     off_t end = cursor + count;
     off_t endBlock = (end / s_blockSize) + ((end % s_blockSize) ? 1 : 0);
@@ -64,4 +72,4 @@ bool Balau::Buffer::isEOF() { return rtell() == m_bufSize; }
 const char * Balau::Buffer::getName() { return "Buffer"; }
 off_t Balau::Buffer::getSize() { return m_bufSize; }
 bool Balau::Buffer::canRead() { return true; }
-bool Balau::Buffer::canWrite() { return true; }
+bool Balau::Buffer::canWrite() { return !m_fromConst; }
