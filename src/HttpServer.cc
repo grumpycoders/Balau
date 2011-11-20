@@ -3,6 +3,26 @@
 #include "Socket.h"
 #include "BStream.h"
 
+class OutputCheck : public Balau::Handle {
+  public:
+      OutputCheck(Balau::IO<Balau::Handle> h) : m_h(h), m_wrote(false) { Assert(m_h->canWrite()); m_name.set("OutputCheck(%s)", m_h->getName()); }
+    virtual void close() throw (Balau::GeneralException) { m_h->close(); }
+    virtual bool isEOF() { return m_h->isEOF(); }
+    virtual bool canWrite() { return true; }
+    virtual const char * getName() { return m_name.to_charp(); }
+    virtual ssize_t write(const void * buf, size_t count) throw (Balau::GeneralException) {
+        if (!count)
+            return 0;
+        m_wrote = true;
+        return m_h->write(buf, count);
+    }
+    bool wrote() { return m_wrote; }
+  private:
+    Balau::IO<Balau::Handle> m_h;
+    Balau::String m_name;
+    bool m_wrote;
+};
+
 static const ev_tstamp s_httpTimeout = 5;
 #define DAEMON_NAME "Balau/1.0"
 
@@ -19,6 +39,7 @@ class HttpWorker : public Task {
     bool handleClient();
     void send400();
     void send404();
+    void send500(const char * msg);
     String httpUnescape(const char * in);
     void readVariables(Http::StringMap & variables, char * str);
 
@@ -109,7 +130,8 @@ void Balau::HttpWorker::send400() {
 "  </body>\n"
 "</html>\n";
 
-    m_socket->forceWrite(str, sizeof(str) - 1);
+    if (!m_socket->isClosed())
+        m_socket->forceWrite(str, sizeof(str) - 1);
     Balau::Printer::elog(Balau::E_HTTPSERVER, "%s had an invalid request", m_name.to_charp());
 }
 
@@ -131,7 +153,37 @@ void Balau::HttpWorker::send404() {
 "  </body>\n"
 "</html>\n";
 
-    m_socket->forceWrite(str, sizeof(str) - 1);
+    if (!m_socket->isClosed())
+        m_socket->forceWrite(str, sizeof(str) - 1);
+    Balau::Printer::elog(Balau::E_HTTPSERVER, "%s had an invalid request", m_name.to_charp());
+}
+
+void Balau::HttpWorker::send500(const char * msg) {
+    static const char str[] =
+"HTTP/1.1 500 Not Found\r\n"
+"Content-Type: text/html; charset=UTF-8\r\n"
+"Server: " DAEMON_NAME "\r\n"
+"\r\n"
+"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"
+"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+"<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+"  <head>\n"
+"    <title>500 Internal Error</title>\n"
+"  </head>\n"
+"\n"
+"  <body>\n"
+"    The HTTP request you've sent triggered an internal error: `";
+    static const char str2[] =
+"'.\n"
+"  </body>\n"
+"</html>\n";
+
+    if (!m_socket->isClosed())
+        m_socket->forceWrite(str, sizeof(str) - 1);
+    if (!m_socket->isClosed())
+        m_socket->forceWrite(msg, strlen(msg));
+    if (!m_socket->isClosed())
+        m_socket->forceWrite(str2, sizeof(str2) - 1);
     Balau::Printer::elog(Balau::E_HTTPSERVER, "%s had an invalid request", m_name.to_charp());
 }
 
@@ -377,6 +429,7 @@ bool Balau::HttpWorker::handleClient() {
 
     HttpServer::ActionFound f = m_server->findAction(uri.to_charp(), host.to_charp());
     if (f.first) {
+        IO<OutputCheck> out(m_socket);
         Http::Request req;
         req.method = method;
         req.host = host;
@@ -385,8 +438,21 @@ bool Balau::HttpWorker::handleClient() {
         req.headers = httpHeaders;
         req.files = files;
         req.persistent = persistent;
-        if (!f.first->Do(m_server, req, f.second, m_socket)) {
-            persistent = false;
+        try {
+            if (!f.first->Do(m_server, req, f.second, out))
+                persistent = false;
+        }
+        catch (GeneralException e) {
+            Balau::Printer::elog(Balau::E_HTTPSERVER, "%s got an exception while processing its request: `%s'", m_name.to_charp(), e.getMsg());
+            if (!out->wrote())
+                send500(e.getMsg());
+            return false;
+        }
+        catch (...) {
+            Balau::Printer::elog(Balau::E_HTTPSERVER, "%s got an un unknow exception while processing its request: `%s'", m_name.to_charp());
+            if (!out->wrote())
+                send500("unknow exception");
+            return false;
         }
     } else {
         send404();
