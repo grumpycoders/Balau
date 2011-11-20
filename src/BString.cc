@@ -4,7 +4,7 @@
 #include "Printer.h"
 #include "BString.h"
 
-void Balau::String::set(const char * fmt, va_list ap) {
+Balau::String & Balau::String::set(const char * fmt, va_list ap) {
     unsigned int l;
 #ifdef _WIN32
     // Microsoft is stupid.
@@ -18,6 +18,8 @@ void Balau::String::set(const char * fmt, va_list ap) {
     assign(t, l);
     free(t);
 #endif
+
+    return *this;
 }
 
 int Balau::String::strchrcnt(char c) const {

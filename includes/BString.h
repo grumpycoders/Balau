@@ -26,9 +26,9 @@ class String : private std::string {
       String(const String & s) : std::string(s) { }
       String(const std::string & s) : std::string(s) { }
 
-    void set(const char * fmt, va_list);
-    void set(const char * fmt, ...) { va_list ap; va_start(ap, fmt); set(fmt, ap); va_end(ap); }
-    void set(const String & fmt, ...) { va_list ap; va_start(ap, fmt); set(fmt.to_charp(), ap); va_end(ap); }
+    String & set(const char * fmt, va_list);
+    String & set(const char * fmt, ...) { va_list ap; va_start(ap, fmt); set(fmt, ap); va_end(ap); return *this; }
+    String & set(const String & fmt, ...) { va_list ap; va_start(ap, fmt); set(fmt.to_charp(), ap); va_end(ap); return *this; }
 
     int scanf(const char * fmt, va_list ap) const { return ::vsscanf(c_str(), fmt, ap); }
     int scanf(const char * fmt, ...) const { va_list ap; va_start(ap, fmt); int r = scanf(fmt, ap); va_end(ap); return r; }
