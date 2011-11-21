@@ -17,7 +17,8 @@ BINEXT = bin
 CPPFLAGS += -fno-strict-aliasing
 
 ifeq ($(DEBUG),)
-CPPFLAGS += -O3 -DNDEBUG
+CPPFLAGS += -g -O3 -DNDEBUG
+LDFLAGS += -g
 else
 CPPFLAGS += -g -DDEBUG -DEV_VERIFY=3
 LDFLAGS += -g
@@ -90,7 +91,7 @@ endif
 
 ifeq ($(SYSTEM),Linux)
     CPPFLAGS += -fPIC
-    LDFLAGS += -fPIC
+    LDFLAGS += -fPIC -rdynamic
     LIBS += pthread dl
     CONFIG_H = linux-config.h
     ARCH_FLAGS = -march=i686 -m32
@@ -110,6 +111,8 @@ vpath %.cc src:tests
 vpath %.c libcoro:libeio:libev:win32/pthreads-win32:win32/iconv:win32/regex
 
 BALAU_SOURCES = \
+Exceptions.cc \
+\
 Local.cc \
 Threads.cc \
 \

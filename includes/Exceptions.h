@@ -3,22 +3,27 @@
 #include <typeinfo>
 #include <cxxabi.h>
 #include <BString.h>
+#include <vector>
 
 namespace Balau {
 
 class GeneralException {
   public:
-      GeneralException(const char * msg) : m_msg(::strdup(msg)) { }
-      GeneralException(const String & msg) : m_msg(msg.strdup()) { }
-      GeneralException(const GeneralException & e) : m_msg(strdup(e.m_msg)) { }
+      GeneralException(const char * msg) : m_msg(::strdup(msg)) { genTrace(); }
+      GeneralException(const String & msg) : m_msg(msg.strdup()) { genTrace(); }
+      GeneralException(const GeneralException & e) : m_msg(strdup(e.m_msg)), m_trace(e.m_trace) { }
       ~GeneralException() { if (m_msg) free(m_msg); }
     const char * getMsg() const { return m_msg; }
+    const std::vector<String> getTrace() const { return m_trace; }
 
   protected:
       GeneralException() : m_msg(0) { }
     void setMsg(char * msg) { if (m_msg) free(m_msg); m_msg = msg; }
+    void genTrace();
+
   private:
     char * m_msg;
+    std::vector<String> m_trace;
 };
 
 static inline void * malloc(size_t size) throw (GeneralException) {

@@ -61,6 +61,9 @@ void Balau::Task::coroutine() {
     }
     catch (GeneralException & e) {
         Printer::log(M_WARNING, "Task %s at %p caused an exception: `%s' - stopping.", getName(), this, e.getMsg());
+        std::vector<String> trace = e.getTrace();
+        for (std::vector<String>::iterator i = trace.begin(); i != trace.end(); i++)
+            Printer::log(M_DEBUG, "%s", i->to_charp());
         m_status = FAULTED;
     }
     catch (...) {

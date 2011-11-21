@@ -27,7 +27,7 @@ class HttpServer {
         void unref() { if (Atomic::Decrement(&m_refCount) == 0) delete this; }
         void ref() { Atomic::Increment(&m_refCount); }
         void registerMe(HttpServer * server) { server->registerAction(this); }
-        virtual bool Do(HttpServer * server, Http::Request & req, ActionMatch & match, IO<Handle> out) = 0;
+        virtual bool Do(HttpServer * server, Http::Request & req, ActionMatch & match, IO<Handle> out) throw (GeneralException) = 0;
       private:
         Regex m_regex, m_host;
         volatile int m_refCount;

@@ -88,6 +88,9 @@ class Main {
         catch (GeneralException e) {
             m_status = STOPPING;
             Printer::log(M_ERROR | M_ALERT, "The application caused an exception: %s", e.getMsg());
+            std::vector<String> trace = e.getTrace();
+            for (std::vector<String>::iterator i = trace.begin(); i != trace.end(); i++)
+                Printer::log(M_DEBUG, "%s", i->to_charp());
             r = -1;
         }
         catch (...) {

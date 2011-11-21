@@ -10,10 +10,10 @@ using namespace Balau;
 class TestAction : public HttpServer::Action {
   public:
       TestAction() : Action(Regexes::any) { }
-    virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out);
+    virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException);
 };
 
-bool TestAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) {
+bool TestAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
     static const char str[] =
 "HTTP/1.1 200 Found\r\n"
 "Content-Type: text/html; charset=UTF-8\r\n"
@@ -36,7 +36,20 @@ bool TestAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action
     return true;
 }
 
+Balau::Regex testFailureURL("^/failure.html$");
+
+class TestFailure : public HttpServer::Action {
+  public:
+      TestFailure() : Action(testFailureURL) { }
+    virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException);
+};
+
+bool TestFailure::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
+    throw GeneralException("Test...");
+}
+
 void MainTask::Do() {
+    Printer::enable(M_DEBUG);
     Printer::log(M_STATUS, "Test::Http running.");
 
     Thread * tms[4];
@@ -45,8 +58,10 @@ void MainTask::Do() {
         tms[i] = TaskMan::createThreadedTaskMan();
 
     HttpServer * s = new HttpServer();
-    TestAction * a = new TestAction();
+    HttpServer::Action * a = new TestAction();
+    HttpServer::Action * f = new TestFailure();
     a->registerMe(s);
+    f->registerMe(s);
     s->setPort(8080);
     s->setLocal("localhost");
     s->start();

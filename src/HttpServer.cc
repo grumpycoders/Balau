@@ -7,6 +7,7 @@ class OutputCheck : public Balau::Handle {
   public:
       OutputCheck(Balau::IO<Balau::Handle> h) : m_h(h), m_wrote(false) { Assert(m_h->canWrite()); m_name.set("OutputCheck(%s)", m_h->getName()); }
     virtual void close() throw (Balau::GeneralException) { m_h->close(); }
+    virtual bool isClosed() { return m_h->isClosed(); }
     virtual bool isEOF() { return m_h->isEOF(); }
     virtual bool canWrite() { return true; }
     virtual const char * getName() { return m_name.to_charp(); }
@@ -429,7 +430,7 @@ bool Balau::HttpWorker::handleClient() {
 
     HttpServer::ActionFound f = m_server->findAction(uri.to_charp(), host.to_charp());
     if (f.first) {
-        IO<OutputCheck> out(m_socket);
+        IO<OutputCheck> out(new OutputCheck(m_socket));
         Http::Request req;
         req.method = method;
         req.host = host;
@@ -443,13 +444,16 @@ bool Balau::HttpWorker::handleClient() {
                 persistent = false;
         }
         catch (GeneralException e) {
-            Balau::Printer::elog(Balau::E_HTTPSERVER, "%s got an exception while processing its request: `%s'", m_name.to_charp(), e.getMsg());
+            Printer::log(M_ERROR, "%s got an exception while processing its request: `%s'", m_name.to_charp(), e.getMsg());
+            std::vector<String> trace = e.getTrace();
+            for (std::vector<String>::iterator i = trace.begin(); i != trace.end(); i++) 
+                Printer::log(M_DEBUG, "%s", i->to_charp());
             if (!out->wrote())
                 send500(e.getMsg());
             return false;
         }
         catch (...) {
-            Balau::Printer::elog(Balau::E_HTTPSERVER, "%s got an un unknow exception while processing its request: `%s'", m_name.to_charp());
+            Printer::log(M_ERROR, "%s got an unknow exception while processing its request: `%s'", m_name.to_charp());
             if (!out->wrote())
                 send500("unknow exception");
             return false;
