@@ -23,6 +23,7 @@ class BStream : public Handle {
     size_t m_availBytes;
     size_t m_cursor;
     String m_name;
+    bool m_passThru;
 };
 
 };

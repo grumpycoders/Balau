@@ -87,6 +87,8 @@ class IO : public IOBase {
       IO(const IO<T> & io) { if (io.m_h) setHandle(io.m_h); }
       template<class U>
       IO(const IO<U> & io) { if (io.m_h) setHandle(io.m_h); }
+      template<class U>
+      bool isA() { return !!dynamic_cast<U *>(m_h); }
     IO<T> & operator=(const IO<T> & io) { if (m_h) m_h->delRef(); setHandle(io.m_h); return *this; }
     T * operator->() { Assert(m_h); T * r = dynamic_cast<T *>(m_h); Assert(r); return r; }
     bool isNull() { return dynamic_cast<T *>(m_h); }

@@ -1,10 +1,13 @@
 #include "BStream.h"
+#include "Buffer.h"
 
 static const int s_blockSize = 16 * 1024;
 
-Balau::BStream::BStream(const IO<Handle> & h) : m_h(h), m_buffer((uint8_t *) malloc(s_blockSize)), m_availBytes(0), m_cursor(0) {
+Balau::BStream::BStream(const IO<Handle> & h) : m_h(h), m_buffer((uint8_t *) malloc(s_blockSize)), m_availBytes(0), m_cursor(0), m_passThru(false) {
     Assert(m_h->canRead());
     m_name.set("Stream(%s)", m_h->getName());
+    if ((m_h.isA<Buffer>()) || (m_h.isA<BStream>()))
+        m_passThru = true;
 }
 
 void Balau::BStream::close() throw (Balau::GeneralException) {
@@ -21,6 +24,8 @@ const char * Balau::BStream::getName() { return m_name.to_charp(); }
 off_t Balau::BStream::getSize() { return m_h->getSize(); }
 
 ssize_t Balau::BStream::read(void * _buf, size_t count) throw (Balau::GeneralException) {
+    if (m_passThru)
+        return m_h->read(_buf, count);
     uint8_t * buf = (uint8_t *) _buf;
     size_t copied = 0;
     size_t toCopy = count;
@@ -62,6 +67,7 @@ ssize_t Balau::BStream::read(void * _buf, size_t count) throw (Balau::GeneralExc
 }
 
 int Balau::BStream::peekNextByte() {
+    m_passThru = false;
     if (m_availBytes == 0) {
         uint8_t b;
         ssize_t r = read(&b, 1);
