@@ -95,8 +95,8 @@ class String : private std::string {
     bool operator>=(const String & v) const { return compare(v) >= 0; }
     bool operator>=(const char * v) const { return compare(v) >= 0; }
 
-    const char & operator[](size_t i) const { return at(i); }
-    char & operator[](size_t i) { return at(i); }
+    const char & operator[](size_t i) const { if (i < 0) i = strlen() + i; return at(i); }
+    char & operator[](size_t i) { if (i < 0) i = strlen() + i; return at(i); }
 };
 
 };
