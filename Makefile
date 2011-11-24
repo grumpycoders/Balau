@@ -53,8 +53,8 @@ ifeq ($(SYSTEM),MINGW32)
     BINEXT = exe
     COMPILE_PTHREADS = true
     CONFIG_H = mingw32-config.h
-    INCLUDES += win32/iconv win32/pthreads-win32 win32/regex
-    LIBS += ws2_32
+    INCLUDES += win32/iconv win32/pthreads-win32 win32/regex win32/dbghelp
+    LIBS += ws2_32 ntdll
     ifeq ($(TRUESYSTEM),Linux)
         ifeq ($(DISTRIB),CentOS)
             CROSSCOMPILE = true
@@ -65,6 +65,7 @@ ifeq ($(SYSTEM),MINGW32)
             STRIP = i686-pc-mingw32-strip --strip-unneeded
             WINDRES = i686-pc-mingw32-windres
             AR = i686-pc-mingw32-ar rcs
+            LUAJIT_CROSS = i686-pc-mingw32-
         else
             CROSSCOMPILE = true
             CC = i586-mingw32msvc-gcc
@@ -74,7 +75,9 @@ ifeq ($(SYSTEM),MINGW32)
             STRIP = i586-mingw32msvc-strip --strip-unneeded
             WINDRES = i586-mingw32msvc-windres
             AR = i586-mingw32msvc-ar rcs
+            LUAJIT_CROSS = i586-mingw32msvc-
         endif
+        LUAJIT_TARGET = Windows
     endif
 
     ifeq ($(TRUESYSTEM),Darwin)
@@ -203,7 +206,11 @@ strip: $(TESTS)
 lib: $(LIB)
 
 LuaJIT:
+ifeq ($(CROSSCOMPILE),true)
+	$(MAKE) -C LuaJIT HOST_CC="gcc -m32" CROSS=$(LUAJIT_CROSS) TARGET_SYS=$(LUAJIT_TARGET) BUILDMODE=static
+else
 	$(MAKE) -C LuaJIT CC="$(CC) $(ARCH_FLAGS)" BUILDMODE=static
+endif
 
 libBalau.a: LuaJIT $(BALAU_OBJECTS)
 ifeq ($(SYSTEM),Darwin)
