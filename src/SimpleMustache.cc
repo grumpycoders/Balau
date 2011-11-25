@@ -340,12 +340,11 @@ Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::render_r(IO<Ha
                 f = sCtx->find(fr->str);
                 if (f != sCtx->end()) {
                     Context * var = f->second;
-                    Assert((var->m_type == Context::BOOLSEC) || (var->m_type == Context::CONTEXTLIST));
-                    if ((var->m_type == Context::BOOLSEC) && (var->m_bool)) {
-                        cur = render_r(h, ctx, fr->str, ++cur, false, idx);
-                        break;
-                    } else if (var->m_type == Context::CONTEXTLIST) {
+                    if (var->m_type == Context::CONTEXTLIST) {
                         cur = render_r(h, var, fr->str, ++cur, false, -1);
+                        break;
+                    } else if (((var->m_type == Context::BOOLSEC) && (var->m_bool)) || (var->m_type != Context::BOOLSEC)) {
+                        cur = render_r(h, ctx, fr->str, ++cur, false, idx);
                         break;
                     }
                 }
