@@ -134,6 +134,7 @@ Task.cc \
 TaskMan.cc \
 \
 HttpServer.cc \
+SimpleMustache.cc \
 \
 BLua.cc \
 \
