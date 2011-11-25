@@ -2,6 +2,61 @@
 #include "BStream.h"
 #include "BRegex.h"
 
+/* Example of use
+
+
+    SimpleMustache tpl;
+    const char tplStr[] =
+"<h1>{{header}}</h1>\n"
+"{{#bug}}\n"
+"{{/bug}}\n"
+"\n"
+"{{#items}}\n"
+"  {{#first}}\n"
+"    <li><strong>{{name}}</strong></li>\n"
+"  {{/first}}\n"
+"  {{#link}}\n"
+"    <li><a href=\"{{url}}\">{{name}}</a></li>\n"
+"  {{/link}}\n"
+"{{/items}}\n"
+"\n"
+"{{#empty}}\n"
+"  <p>The list is empty.</p>\n"
+"{{/empty}}\n";
+    tpl.setTemplate(tplStr, sizeof(tplStr) - 1);
+    SimpleMustache::Context ctx;
+    ctx["header"] = "Colors";
+    ctx["items"][0]["name"] = "red";
+    ctx["items"][-1]["first"] = true;
+    ctx["items"][-1]["url"] = "#Red";
+    ctx["items"][0]["name"] = "green";
+    ctx["items"][-1]["link"] = true;
+    ctx["items"][-1]["url"] = "#Green";
+    ctx["items"][0]["name"] = "blue";
+    ctx["items"][-1]["link"] = true;
+    ctx["items"][-1]["url"] = "#Blue";
+    ctx["empty"] = false;
+
+    IO<HPrinter> b(new HPrinter);
+    tpl.render(b, &ctx);
+
+
+
+will output:
+
+<h1>Colors</h1>
+    <li><strong>red</strong></li>
+    <li><a href="#Green">green</a></li>
+    <li><a href="#Blue">blue</a></li>
+
+(and a few extra blank lines)
+
+indexes for contextes are counting from 1
+index  0 of a context == new slot
+index -x of a context == slot number size - x
+
+*/
+
 Balau::SimpleMustache::Context & Balau::SimpleMustache::Context::Proxy::operator[](const char * str) {
     Assert(m_parent->m_type == CONTEXTLIST);
     String key = str;
