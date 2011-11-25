@@ -11,14 +11,15 @@ Balau::BStream::BStream(const IO<Handle> & h) : m_h(h), m_buffer((uint8_t *) mal
 }
 
 void Balau::BStream::close() throw (Balau::GeneralException) {
-    m_h->close();
+    if (!m_detached)
+        m_h->close();
     free(m_buffer);
     m_availBytes = 0;
     m_cursor = 0;
 }
 
-bool Balau::BStream::isClosed() { return m_h->isClosed(); }
-bool Balau::BStream::isEOF() { return m_availBytes == 0 && m_h->isEOF(); }
+bool Balau::BStream::isClosed() { return m_closed || m_h->isClosed(); }
+bool Balau::BStream::isEOF() { return (m_availBytes == 0) && m_h->isEOF(); }
 bool Balau::BStream::canRead() { return true; }
 const char * Balau::BStream::getName() { return m_name.to_charp(); }
 off_t Balau::BStream::getSize() { return m_h->getSize(); }

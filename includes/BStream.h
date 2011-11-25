@@ -17,6 +17,7 @@ class BStream : public Handle {
     int peekNextByte();
     String readString(bool putNL = false);
     bool isEmpty() { return m_availBytes == 0; }
+    void detach() { m_detached = true; }
   private:
     IO<Handle> m_h;
     uint8_t * m_buffer;
@@ -24,6 +25,8 @@ class BStream : public Handle {
     size_t m_cursor;
     String m_name;
     bool m_passThru;
+    bool m_detached;
+    bool m_closed;
 };
 
 };
