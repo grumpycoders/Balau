@@ -60,7 +60,8 @@ ssize_t Balau::Buffer::write(const void * buf, size_t count) throw (GeneralExcep
 }
 
 void Balau::Buffer::reset() {
-    m_buffer = (uint8_t *) realloc(m_buffer, 0);
+    if (!m_fromConst)
+        m_buffer = (uint8_t *) realloc(m_buffer, 0);
     m_bufSize = 0;
     m_numBlocks = 0;
     wseek(0);
