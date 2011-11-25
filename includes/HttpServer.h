@@ -20,7 +20,7 @@ class HttpServer {
 
     class Action {
       public:
-          Action(Regex & regex, Regex & host = Regexes::any) : m_regex(regex), m_host(host), m_refCount(0) { }
+          Action(const Regex & regex, const Regex & host = Regexes::any) : m_regex(regex), m_host(host), m_refCount(0) { }
           ~Action() { Assert(m_refCount == 0); }
         typedef std::pair<Regex::Captures, Regex::Captures> ActionMatch;
         ActionMatch matches(const char * uri, const char * host);
@@ -29,7 +29,7 @@ class HttpServer {
         void registerMe(HttpServer * server) { server->registerAction(this); }
         virtual bool Do(HttpServer * server, Http::Request & req, ActionMatch & match, IO<Handle> out) throw (GeneralException) = 0;
       private:
-        Regex m_regex, m_host;
+        const Regex m_regex, m_host;
         volatile int m_refCount;
     };
 

@@ -6,7 +6,7 @@ Balau::Regex::Regex(const char * regex, bool icase) throw (GeneralException) {
         throw GeneralException(getError(r));
 }
 
-Balau::Regex::Captures Balau::Regex::match(const char * str) throw (GeneralException) {
+Balau::Regex::Captures Balau::Regex::match(const char * str) const throw (GeneralException) {
     Captures ret;
     regmatch_t * matches = (regmatch_t *) alloca((m_regex.re_nsub + 1) * sizeof(regmatch_t));
 
@@ -34,7 +34,7 @@ Balau::Regex::~Regex() {
     regfree(&m_regex);
 }
 
-Balau::String Balau::Regex::getError(int err) {
+Balau::String Balau::Regex::getError(int err) const {
     size_t s;
     char * t;
 
@@ -47,5 +47,5 @@ Balau::String Balau::Regex::getError(int err) {
     return r;
 }
 
-Balau::Regex Balau::Regexes::any(".*");
-Balau::Regex Balau::Regexes::empty("^$");
+Balau::Regex const Balau::Regexes::any(".*");
+Balau::Regex const Balau::Regexes::empty("^$");

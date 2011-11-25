@@ -13,16 +13,16 @@ class Regex {
     typedef std::vector<String> Captures;
       Regex(const char * regex, bool icase = false) throw (GeneralException);
       ~Regex();
-    Captures match(const char * str) throw (GeneralException);
+    Captures match(const char * str) const throw (GeneralException);
   private:
-    String getError(int err);
+    String getError(int err) const;
     regex_t m_regex;
 };
 
 class Regexes {
   public:
-    static Regex any;
-    static Regex empty;
+    static const Regex any;
+    static const Regex empty;
 };
 
 };
