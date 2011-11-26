@@ -270,6 +270,9 @@ void Balau::SimpleMustache::setTemplate(IO<Handle> _h) {
                         curFragment->type = Fragment::NOESCAPE;
                         break;
                     case ENDSECTION:
+                        // note: it'd be a nice optimization here to remember and find the
+                        // locations of the start section, so to point the start section
+                        // at its end, to avoid useless loops in the renderer.
                         curFragment->type = Fragment::END_SECTION;
                         break;
                     case INVERTED:

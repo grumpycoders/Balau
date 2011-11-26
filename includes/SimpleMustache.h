@@ -28,6 +28,10 @@ class SimpleMustache {
           ~Context() { empty(); }
         Proxy operator[](ssize_t idx) { ensureList(); return Proxy(this, idx); }
         Context & operator[](const char * str);
+        // we should try and support lambdas, but I'm not entierely sure about them.
+        // Something tells me they need some design love, especially about which
+        // context they use. The specification says they should expand the tags,
+        // but the example doesn't show a function that'd take a context...
         Context & operator=(const char * str) {
             empty();
             m_type = STRING;
