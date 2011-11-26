@@ -353,7 +353,7 @@ Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::render_r(IO<Ha
             return end;
         for (cur = begin; cur != end; cur++) {
             Fragment * fr = *cur;
-            if(fr->type == Fragment::STRING);
+            if(fr->type == Fragment::STRING)
                 h->write(fr->str);
         }
         return end;
@@ -407,6 +407,9 @@ Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::render_r(IO<Ha
                 break;
             case Fragment::INVERTED:
                 cur = render_r(h, NULL, fr->str, ++cur, sCtx->find(fr->str) != sCtx->end(), -1);
+                break;
+            default:
+                Assert(false);
                 break;
             }
         }

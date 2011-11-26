@@ -32,11 +32,13 @@ class SimpleMustache {
             empty();
             m_type = STRING;
             m_str = str;
+            return *this;
         }
         Context & operator=(bool b) {
             empty();
             m_type = BOOLSEC;
             m_bool = b;
+            return *this;
         }
       private:
         enum ContextType {
@@ -48,7 +50,7 @@ class SimpleMustache {
         } m_type;
           Context(ContextType type) : m_type(type), m_root(false) { }
           Context(Context & c) { Assert(false); }
-          Context & operator=(Context & c) { Assert(false); }
+          Context & operator=(Context & c) { Assert(false); return *this; }
         String m_str;
         bool m_bool;
         typedef std::map<String, Context *> SubContext;
