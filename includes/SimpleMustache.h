@@ -98,7 +98,7 @@ class SimpleMustache {
     Fragments m_fragments;
 
     Fragments::iterator render_r(IO<Handle> h, Context * ctx, const String & endSection, Fragments::iterator begin, bool noWrite, int forceIdx);
-    String escape(const String & s) { return s; }
+    String escape(const String & s);
 };
 
 };

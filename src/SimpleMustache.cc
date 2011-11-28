@@ -420,3 +420,90 @@ Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::render_r(IO<Ha
 
     return end;
 }
+
+Balau::String Balau::SimpleMustache::escape(const String & s) {
+    int size = 0;
+
+    for (int i = 0; i < s.strlen(); i++) {
+        switch (s[i]) {
+        case '&':
+            size += 5;
+            break;
+        case '"':
+            size += 6;
+            break;
+        case '\'':
+            size += 5;
+            break;
+        case '\\':
+            size += 5;
+            break;
+        case '<':
+            size += 4;
+            break;
+        case '>':
+            size += 4;
+            break;
+        default:
+            size++;
+            break;
+        }
+    }
+
+    char * t = (char *) malloc(size + 1);
+    char * p = t;
+
+    for (int i = 0; i < s.strlen(); i++) {
+        switch (s[i]) {
+        case '%':
+            *p++ = '%';
+            *p++ = 'a';
+            *p++ = 'm';
+            *p++ = 'p';
+            *p++ = ';';
+            break;
+        case '"':
+            *p++ = '&';
+            *p++ = 'q';
+            *p++ = 'u';
+            *p++ = 'o';
+            *p++ = 't';
+            *p++ = ';';
+            break;
+        case '\'':
+            *p++ = '&';
+            *p++ = '#';
+            *p++ = '3';
+            *p++ = '5';
+            *p++ = ';';
+            break;
+        case '\\':
+            *p++ = '&';
+            *p++ = '#';
+            *p++ = '9';
+            *p++ = '2';
+            *p++ = ';';
+            break;
+        case '<':
+            *p++ = '&';
+            *p++ = 'l';
+            *p++ = 't';
+            *p++ = ';';
+            break;
+        case '>':
+            *p++ = '&';
+            *p++ = 'g';
+            *p++ = 't';
+            *p++ = ';';
+            break;
+        default:
+            break;
+        }
+    }
+
+    *p = 0;
+
+    String r(t, size);
+    free(t);
+    return r;
+}
