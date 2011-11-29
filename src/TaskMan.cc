@@ -34,7 +34,7 @@ class TaskScheduler : public Thread, public AtStart, public AtExit {
     void unregisterTaskMan(TaskMan * t);
     void stopAll();
   private:
-    Queue<Task *> m_queue;
+    Queue<Task> m_queue;
     std::queue<TaskMan *> m_taskManagers;
     Lock m_lock;
     volatile bool m_stopping;
@@ -80,6 +80,7 @@ void Balau::TaskScheduler::stopAll() {
         m_taskManagers.pop();
         altQueue.push(tm);
         tm->addToPending(new Stopper());
+        tm->m_evt.send();
     }
     while (!altQueue.empty()) {
         tm = altQueue.front();
@@ -125,7 +126,9 @@ void Balau::TaskScheduler::doExit() {
     join();
 }
 
-void asyncDummy(ev::async & w, int revents) { }
+void asyncDummy(ev::async & w, int revents) {
+    Balau::Printer::elog(Balau::E_TASK, "TaskMan is getting woken up...");
+}
 
 Balau::TaskMan::TaskMan() : m_stopped(false), m_allowedToSignal(false) {
 #ifndef _WIN32
@@ -217,11 +220,8 @@ void Balau::TaskMan::mainLoop() {
                 noWait = true;
         }
 
-        // probably means we have pending tasks; or none at all, for some reason. Don't wait on it forever.
-        if (m_tasks.size() == 0)
-            noWait = true;
-
-        if (m_pendingAdd.size() != 0)
+        // if we begin that loop with any pending task, just don't loop, so we can add them immediately.
+        if (!m_pendingAdd.isEmpty())
             noWait = true;
 
         // libev's event "loop". We always runs it once though.
@@ -254,8 +254,10 @@ void Balau::TaskMan::mainLoop() {
         m_signaledTasks.clear();
 
         // Adding tasks that were added, maybe from other threads
-        while (((m_pendingAdd.size() != 0) || (m_tasks.size() == 0)) && !m_stopped) {
+        while (!m_pendingAdd.isEmpty()) {
+            Printer::elog(E_TASK, "TaskMan at %p trying to pop a task...", this);
             t = m_pendingAdd.pop();
+            Printer::elog(E_TASK, "TaskMan at %p popped task %p...", this, t);
             Assert(m_tasks.find(t) == m_tasks.end());
             ev_now_update(m_loop);
             t->setup(this, getStack());

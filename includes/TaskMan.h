@@ -51,7 +51,7 @@ class TaskMan {
     struct taskHasher { size_t operator()(const Task * t) const { return reinterpret_cast<uintptr_t>(t); } };
     typedef gnu::hash_set<Task *, taskHasher> taskHash_t;
     taskHash_t m_tasks, m_signaledTasks;
-    Queue<Task *> m_pendingAdd;
+    Queue<Task> m_pendingAdd;
     bool m_stopped;
     struct ev_loop * m_loop;
     bool m_allowedToSignal;

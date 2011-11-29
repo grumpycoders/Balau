@@ -183,7 +183,7 @@ class ResolverThread : public Balau::Thread, public Balau::AtStart, public Balau
     virtual void * proc();
     virtual void doStart();
     virtual void doExit();
-    Balau::Queue<DNSRequest *> m_queue;
+    Balau::Queue<DNSRequest> m_queue;
 };
 
 void ResolverThread::doStart() {

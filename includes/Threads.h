@@ -1,6 +1,5 @@
 #pragma once
 
-#include <queue>
 #include <pthread.h>
 
 namespace Balau {
@@ -40,33 +39,52 @@ class Thread {
 template<class T>
 class Queue {
   public:
-      Queue() { pthread_cond_init(&m_cond, NULL); }
-      ~Queue() { while (size()) pop(); pthread_cond_destroy(&m_cond); }
-    void push(T & t) {
+      Queue() : m_front(NULL), m_back(NULL) { pthread_cond_init(&m_cond, NULL); }
+      ~Queue() { while (!isEmpty()) pop(); pthread_cond_destroy(&m_cond); }
+    void push(T * t) {
         m_lock.enter();
-        m_queue.push(t);
+        Cell * c = new Cell(t);
+        c->m_prev = m_back;
+        if (m_back)
+            m_back->m_next = c;
+        else
+            m_front = c;
+        m_back = c;
         pthread_cond_signal(&m_cond);
         m_lock.leave();
     }
-    T pop() {
+    T * pop() {
         m_lock.enter();
-        if (m_queue.size() == 0)
+        while (!m_front)
             pthread_cond_wait(&m_cond, &m_lock.m_lock);
-        T t = m_queue.front();
-        m_queue.pop();
+        Cell * c = m_front;
+        m_front = c->m_next;
+        if (m_front)
+            m_front->m_prev = NULL;
+        else
+            m_back = NULL;
+        T * t = c->m_elem;
+        delete c;
         m_lock.leave();
         return t;
     }
-    int size() {
-        int r;
+    bool isEmpty() {
+        bool r;
         m_lock.enter();
-        r = m_queue.size();
+        r = !m_front;
         m_lock.leave();
         return r;
     }
   private:
-    std::queue<T> m_queue;
     Lock m_lock;
+    class Cell {
+      public:
+          Cell(T * elem) : m_next(NULL), m_prev(NULL), m_elem(elem) { }
+        Cell * m_next, * m_prev;
+        T * m_elem;
+    };
+    Cell * volatile m_front;
+    Cell * volatile m_back;
     pthread_cond_t m_cond;
 };
 
