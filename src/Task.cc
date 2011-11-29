@@ -10,7 +10,7 @@ Balau::Task::Task() {
     m_status = STARTING;
     m_okayToEAgain = false;
 
-    Printer::elog(E_TASK, "Created a Task at %p");
+    Printer::elog(E_TASK, "Created a Task at %p", this);
 }
 
 bool Balau::Task::needsStacks() {
