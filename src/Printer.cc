@@ -1,3 +1,4 @@
+#include "ev++.h"
 #include "Printer.h"
 #include "Main.h"
 #include "Local.h"
@@ -15,7 +16,10 @@ static const char * prefixes[] = {
     "(**) ",
 };
 
-Balau::Printer::Printer() : m_verbosity(M_STATUS | M_WARNING | M_ERROR | M_ENGINE_DEBUG) {
+Balau::Printer::Printer() : m_verbosity(M_STATUS | M_WARNING | M_ERROR | M_ENGINE_DEBUG), m_detailledLogs(false) {
+#ifdef DEBUG
+    m_detailledLogs = true;
+#endif
     if (!localPrinter.getGlobal())
         localPrinter.setGlobal(this);
 }
@@ -37,6 +41,12 @@ void Balau::Printer::_log(uint32_t level, const char * fmt, va_list ap) {
             break;
 
     m_lock.enter();
+    if (m_detailledLogs) {
+        struct ev_loop * loop = ev_default_loop(0);
+        ev_now_update(loop);
+        ev_tstamp now = ev_now(loop);
+        _print("[%15.8f:%08x] ", now, pthread_self());
+    }
     _print(prefixes[i]);
     _print(fmt, ap);
     _print("\n");

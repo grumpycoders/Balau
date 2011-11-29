@@ -71,7 +71,11 @@ class Printer {
     static void enable(uint32_t levels = M_ALL) { getPrinter()->m_verbosity |= levels; }
     static void disable(uint32_t levels = M_ALL) { getPrinter()->m_verbosity &= ~levels; }
 
+    static void setDetailled(bool enable) { getPrinter()->m_detailledLogs = enable; }
+
+  private:
     uint32_t m_verbosity;
+    bool m_detailledLogs;
 };
 
 };
