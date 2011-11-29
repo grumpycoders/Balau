@@ -12,6 +12,7 @@
 #include "Threads.h"
 #include "Printer.h"
 #include "Main.h"
+#include "Atomic.h"
 
 void Balau::Socket::SocketEvent::gotOwner(Task * task) {
     Printer::elog(E_SOCKET, "Arming SocketEvent at %p", this);
@@ -228,6 +229,8 @@ static DNSRequest resolveName(const char * name, const char * service = NULL, st
     resolverThread.pushRequest(&req);
     Balau::Task::yield(&evt);
 
+    Balau::Atomic::MemoryFence();
+
     return req;
 }
 #endif
@@ -403,8 +406,22 @@ bool Balau::Socket::connect(const char * hostname, int port) {
 
     do {
         Printer::elog(E_SOCKET, "Connecting now...");
-        int r = ::connect(m_fd, (sockaddr *) &m_remoteAddr, sizeof(m_remoteAddr));
-        if ((r == 0) || ((r < 0) && (errno == EISCONN))) {
+        int r;
+        int err;
+        if (spins == 0) {
+            r = ::connect(m_fd, (sockaddr *) &m_remoteAddr, sizeof(m_remoteAddr));
+#ifdef _WIN32
+            err = WSAGetLastError();
+#else
+            err = errno;
+#endif
+        } else {
+            socklen_t sLen = sizeof(err);
+            int g = getsockopt(m_fd, SOL_SOCKET, SO_ERROR, (char *) &err, &sLen);
+            Assert(g == 0);
+            r = err != 0 ? -1 : 0;
+        }
+        if ((r == 0) || ((r < 0) && (err == EISCONN))) {
             m_connected = true;
             m_connecting = false;
 
@@ -434,11 +451,11 @@ bool Balau::Socket::connect(const char * hostname, int port) {
         }
 
 #ifdef _WIN32
-        if (WSAGetLastError() != WSAEWOULDBLOCK) {
+        if (err != WSAWOULDBLOCK) {
 #else
-        if (errno != EINPROGRESS) {
+        if (err != EINPROGRESS) {
 #endif
-            Printer::elog(E_SOCKET, "Connect() failed with the following error code: %i (%s)", errno, strerror(errno));
+            Printer::elog(E_SOCKET, "Connect() failed with the following error code: %i (%s)", err, strerror(err));
             return false;
         } else {
             Assert(spins == 0);
