@@ -25,6 +25,8 @@ template <class T> T Decrement(volatile T * ptr, T delta = 1) { return __sync_fe
 template <class T> T CmpXChgVal(volatile T * ptr, const T xch, const T cmp) { return __sync_val_compare_and_swap(ptr, cmp, xch); }
 template <class T> bool CmpXChgBool(volatile T * ptr, const T xch, const T cmp) { return __sync_bool_compare_and_swap(ptr, cmp, xch); }
 
+static inline void MemoryFence() { __sync_synchronize(); }
+
 template <class T> T Exchange32(volatile T * ptr, const T exchange) {
 #if defined(i386) || defined (__x86_64)
     __asm__ __volatile__("lock xchgl %0, (%1)" : "+r"(exchange) : "r"(ptr));
