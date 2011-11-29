@@ -18,7 +18,9 @@ class Buffer : public SeekableHandle {
     virtual bool canWrite();
     virtual const char * getName();
     virtual off_t getSize();
+    const uint8_t * getBuffer() { return m_buffer + rtell(); }
     void reset();
+    void rewind() { rseek(0); wseek(0); }
   private:
     uint8_t * m_buffer;
     bool m_fromConst;
