@@ -45,7 +45,7 @@ class HttpWorker : public Task {
     void sendError(int error, const char * msg, bool closeConnection, std::vector<String> trace);
     void send400() { std::vector<String> d2; sendError(400, "The HTTP request you've sent is invalid", true, d2); }
     void send404() { std::vector<String> d2; sendError(404, "The HTTP request you've sent didn't match any action on this server.", false, d2); }
-    void send500(const char * msg, std::vector<String> trace) { String smsg; smsg.set("The HTTP request you've sent triggered an internal error: `%s'", msg); sendError(500, smsg.to_charp(), true, trace); }
+    void send500(const char * msg, std::vector<String> trace) { String smsg; smsg.set("The HTTP request you've sent triggered an internal error: `%s\xc2\xb4", msg); sendError(500, smsg.to_charp(), true, trace); }
     String httpUnescape(const char * in);
     void readVariables(Http::StringMap & variables, char * str);
 
@@ -77,12 +77,16 @@ const Balau::String SetDefaultTemplate::m_defaultErrorTemplate(
 "  <head>\n"
 "    <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n"
 "    <title>{{title}}</title>\n"
+"    <style type=\"text/css\">\n"
+"        body { font-family: arial, helvetica, sans-serif; }\n"
+"    </style>\n"
 "  </head>\n"
 "\n"
 "  <body>\n"
-"    <h1>{{msg}}</h1>\n"
+"    <h1>{{title}}</h1>\n"
+"    <h2>{{msg}}</h2>\n"
 "{{#hasTrace}}\n"
-"    <br /><h2>Context:</h2>\n"
+"   <br /><h3>Context:</h3>\n"
 "    {{#trace}}<pre>{{line}}</pre>{{/trace}}<br />\n"
 "{{/hasTrace}}\n"
 "  </body>\n"
