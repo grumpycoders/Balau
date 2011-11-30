@@ -80,6 +80,7 @@ class SimpleMustache {
     void setTemplate(const String & str) { setTemplate((const uint8_t *) str.to_charp(), str.strlen()); }
     void render(IO<Handle> h, Context * ctx) { Assert(ctx); render_r(h, ctx, "", m_fragments.begin(), false, -1); }
     void empty() { while (!m_fragments.empty()) { delete m_fragments.front(); m_fragments.pop_front(); } }
+    void checkTemplate() { Fragments::iterator end = checkTemplate_r(m_fragments.begin()); Assert(end == m_fragments.end()); }
       ~SimpleMustache() { empty(); }
   private:
     struct Fragment {
@@ -99,6 +100,8 @@ class SimpleMustache {
 
     Fragments::iterator render_r(IO<Handle> h, Context * ctx, const String & endSection, Fragments::iterator begin, bool noWrite, int forceIdx);
     String escape(const String & s);
+
+    Fragments::iterator checkTemplate_r(Fragments::iterator begin, const String & endSection = "");
 };
 
 };

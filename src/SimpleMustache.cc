@@ -328,6 +328,24 @@ void Balau::SimpleMustache::setTemplate(IO<Handle> _h) {
         m_fragments.push_back(curFragment);
 }
 
+Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::checkTemplate_r(Fragments::iterator begin, const String & endSection) {
+    Fragments::iterator cur;
+    Fragments::iterator end = m_fragments.end();
+
+    for (cur = begin; cur != end; cur++) {
+        Fragment * fr = *cur;
+        if ((fr->type == Fragment::END_SECTION) && (endSection.strlen() != 0)) {
+            Assert(fr->str == endSection);
+            return cur;
+        }
+        Assert(fr->type != Fragment::END_SECTION);
+        if ((fr->type == Fragment::SECTION) || (fr->type == Fragment::INVERTED))
+            cur = checkTemplate_r(++cur, fr->str);
+    }
+
+    return end;
+}
+
 Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::render_r(IO<Handle> h, Context * ctx, const String & endSection, Fragments::iterator begin, bool noWrite, int forceIdx) {
     Fragments::iterator cur;
     Fragments::iterator end = m_fragments.end();
@@ -382,16 +400,20 @@ Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::render_r(IO<Ha
                 f = sCtx->find(fr->str);
                 if (f != sCtx->end()) {
                     Context * var = f->second;
-                    Assert(var->m_type == Context::STRING);
-                    h->write(escape(var->m_str));
+                    if (var->m_type == Context::STRING)
+                        h->write(escape(var->m_str));
+                    else if (var->m_type == Context::BOOLSEC)
+                        h->write(var->m_bool ? "true" : "false");
                 }
                 break;
             case Fragment::NOESCAPE:
                 f = sCtx->find(fr->str);
                 if (f != sCtx->end()) {
                     Context * var = f->second;
-                    Assert(var->m_type == Context::STRING);
-                    h->write(var->m_str);
+                    if (var->m_type == Context::STRING)
+                        h->write(var->m_str);
+                    else if (var->m_type == Context::BOOLSEC)
+                        h->write(var->m_bool ? "true" : "false");
                 }
                 break;
             case Fragment::SECTION:
