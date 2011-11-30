@@ -477,8 +477,8 @@ Balau::String Balau::SimpleMustache::escape(const String & s) {
 
     for (int i = 0; i < s.strlen(); i++) {
         switch (s[i]) {
-        case '%':
-            *p++ = '%';
+        case '&':
+            *p++ = '&';
             *p++ = 'a';
             *p++ = 'm';
             *p++ = 'p';
@@ -496,7 +496,7 @@ Balau::String Balau::SimpleMustache::escape(const String & s) {
             *p++ = '&';
             *p++ = '#';
             *p++ = '3';
-            *p++ = '5';
+            *p++ = '9';
             *p++ = ';';
             break;
         case '\\':
