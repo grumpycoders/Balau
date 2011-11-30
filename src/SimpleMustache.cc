@@ -519,6 +519,7 @@ Balau::String Balau::SimpleMustache::escape(const String & s) {
             *p++ = ';';
             break;
         default:
+            *p++ = s[i];
             break;
         }
     }
