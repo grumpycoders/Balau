@@ -52,6 +52,7 @@ class Handle {
     ssize_t forceRead(void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException);
     ssize_t forceWrite(const void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException);
     ssize_t write(const String & str) { return write(str.to_charp(), str.strlen()); }
+    ssize_t forceWrite(const String & str) { return forceWrite(str.to_charp(), str.strlen()); }
     uint8_t readU8() { uint8_t r; read(&r, 1); return r; }
   protected:
       Handle() : m_refCount(0) { }
