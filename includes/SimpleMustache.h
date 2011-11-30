@@ -15,8 +15,6 @@ class SimpleMustache {
         class Proxy {
           public:
             Context & operator[](const char * str);
-            Context & operator=(const char * str);
-            Context & operator=(bool b);
           private:
               Proxy(Context * parent, ssize_t idx) : m_parent(parent), m_idx(idx) { }
             Context * m_parent;
@@ -32,6 +30,12 @@ class SimpleMustache {
         // Something tells me they need some design love, especially about which
         // context they use. The specification says they should expand the tags,
         // but the example doesn't show a function that'd take a context...
+        Context & operator=(const String & str) {
+            empty();
+            m_type = STRING;
+            m_str = str;
+            return *this;
+        }
         Context & operator=(const char * str) {
             empty();
             m_type = STRING;
