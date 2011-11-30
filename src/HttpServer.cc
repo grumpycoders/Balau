@@ -459,7 +459,7 @@ bool Balau::HttpWorker::handleClient() {
     // process query; everything should be here now
 
     HttpServer::ActionFound f = m_server->findAction(uri.to_charp(), host.to_charp());
-    if (f.first) {
+    if (f.action) {
         IO<OutputCheck> out(new OutputCheck(m_socket));
         Http::Request req;
         req.method = method;
@@ -470,7 +470,7 @@ bool Balau::HttpWorker::handleClient() {
         req.files = files;
         req.persistent = persistent;
         try {
-            if (!f.first->Do(m_server, req, f.second, out))
+            if (!f.action->Do(m_server, req, f.matches, out))
                 persistent = false;
         }
         catch (GeneralException e) {
@@ -544,11 +544,11 @@ void Balau::HttpServer::flushAllActions() {
 Balau::HttpServer::Action::ActionMatch Balau::HttpServer::Action::matches(const char * uri, const char * host) {
     ActionMatch r;
 
-    r.second = m_host.match(host);
-    if (r.second.empty())
+    r.host = m_host.match(host);
+    if (r.host.empty())
         return r;
 
-    r.first = m_regex.match(uri);
+    r.uri = m_regex.match(uri);
     return r;
 }
 
@@ -559,16 +559,16 @@ Balau::HttpServer::ActionFound Balau::HttpServer::findAction(const char * uri, c
     ActionFound r;
 
     for (i = m_actions.begin(); i != m_actions.end(); i++) {
-        r.first = *i;
-        r.second = r.first->matches(uri, host);
-        if (!r.second.first.empty())
+        r.action = *i;
+        r.matches = r.action->matches(uri, host);
+        if (!r.matches.uri.empty())
             break;
     }
 
-    if (r.second.first.empty())
-        r.first = NULL;
+    if (r.matches.uri.empty())
+        r.action = NULL;
     else
-        r.first->ref();
+        r.action->ref();
 
     m_actionsLock.leave();
 

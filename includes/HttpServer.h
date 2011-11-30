@@ -22,7 +22,9 @@ class HttpServer {
       public:
           Action(const Regex & regex, const Regex & host = Regexes::any) : m_regex(regex), m_host(host), m_refCount(0) { }
           ~Action() { Assert(m_refCount == 0); }
-        typedef std::pair<Regex::Captures, Regex::Captures> ActionMatch;
+        struct ActionMatch {
+            Regex::Captures uri, host;
+        };
         ActionMatch matches(const char * uri, const char * host);
         void unref() { if (Atomic::Decrement(&m_refCount) == 0) delete this; }
         void ref() { Atomic::Increment(&m_refCount); }
@@ -41,7 +43,10 @@ class HttpServer {
     void setLocal(const char * local) { Assert(!m_started); m_local = local; }
     void registerAction(Action * action);
     void flushAllActions();
-    typedef std::pair<Action *, Action::ActionMatch> ActionFound;
+    struct ActionFound {
+        Action * action;
+        Action::ActionMatch matches;
+    };
     ActionFound findAction(const char * uri, const char * host);
   private:
     bool m_started;
