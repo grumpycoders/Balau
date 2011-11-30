@@ -479,7 +479,7 @@ bool Balau::HttpWorker::handleClient() {
             for (std::vector<String>::iterator i = trace.begin(); i != trace.end(); i++) 
                 Printer::log(M_DEBUG, "%s", i->to_charp());
             if (!out->wrote())
-                send500(e.getMsg(), e.getTrace());
+                send500(e.getMsg(), trace);
             return false;
         }
         catch (...) {
