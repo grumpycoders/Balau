@@ -3,12 +3,15 @@
 
 using namespace Balau;
 
+volatile bool threadWorked = false;
+
 class TestThread : public Thread {
     virtual void * proc();
 };
 
 void * TestThread::proc() {
     Printer::log(M_STATUS, "Into a thread");
+    threadWorked = true;
     return NULL;
 }
 
@@ -22,6 +25,8 @@ void MainTask::Do() {
     t->join();
     Printer::log(M_STATUS, "Deleting thread");
     delete t;
+
+    TAssert(threadWorked);
 
     Printer::log(M_STATUS, "Test::Threads passed.");
 }
