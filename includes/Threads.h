@@ -1,5 +1,6 @@
 #pragma once
 
+#include <AtStartExit.h>
 #include <pthread.h>
 
 namespace Balau {
@@ -21,17 +22,19 @@ class Lock {
 
 class ThreadHelper;
 
-class Thread {
+class Thread : public AtExit {
   public:
       virtual ~Thread();
     void threadStart();
     void * join();
   protected:
-      Thread() : m_joined(false) { }
+      Thread(bool registerAtExit = false) : AtExit(registerAtExit ? 1 : -1), m_joined(false) { }
     virtual void * proc() = 0;
+    virtual void threadExit();
   private:
     pthread_t m_thread;
-    bool m_joined;
+    volatile bool m_joined;
+    virtual void doExit() { join(); }
 
     friend class ThreadHelper;
 };

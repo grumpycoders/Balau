@@ -26,12 +26,12 @@ class String : private std::string {
       String(const String & s) : std::string(s) { }
       String(const std::string & s) : std::string(s) { }
 
-    String & set(const char * fmt, va_list);
-    String & set(const char * fmt, ...) { va_list ap; va_start(ap, fmt); set(fmt, ap); va_end(ap); return *this; }
+    String & set(const char * fmt, va_list) __attribute__((format(printf, 2, 0)));
+    String & set(const char * fmt, ...) __attribute__((format(printf, 2, 3))) { va_list ap; va_start(ap, fmt); set(fmt, ap); va_end(ap); return *this; }
     String & set(const String & fmt, ...) { va_list ap; va_start(ap, fmt); set(fmt.to_charp(), ap); va_end(ap); return *this; }
 
     int scanf(const char * fmt, va_list ap) const { return ::vsscanf(c_str(), fmt, ap); }
-    int scanf(const char * fmt, ...) const { va_list ap; va_start(ap, fmt); int r = scanf(fmt, ap); va_end(ap); return r; }
+    int scanf(const char * fmt, ...) const __attribute__((format(scanf, 2, 3))) { va_list ap; va_start(ap, fmt); int r = scanf(fmt, ap); va_end(ap); return r; }
     int scanf(const String & fmt, ...) const { va_list ap; va_start(ap, fmt); int r = scanf(fmt.to_charp(), ap); va_end(ap); return r; }
 
     const char * to_charp(size_t begin = 0) const { return c_str() + begin; }

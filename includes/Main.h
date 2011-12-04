@@ -1,30 +1,9 @@
 #pragma once
 
 #include <Exceptions.h>
+#include <Task.h>
 
 namespace Balau {
-
-class AtStart {
-  protected:
-      AtStart(int priority = 0);
-    virtual void doStart() = 0;
-  private:
-    const int m_priority;
-    AtStart * m_next;
-    static AtStart * s_head;
-    friend class Main;
-};
-
-class AtExit {
-  protected:
-      AtExit(int priority = 0);
-    virtual void doExit() = 0;
-  private:
-    const int m_priority;
-    AtExit * m_next;
-    static AtExit * s_head;
-    friend class Main;
-};
 
 class Exit : public GeneralException {
   public:
@@ -34,19 +13,11 @@ class Exit : public GeneralException {
     int m_code;
 };
 
-};
-
-#include <Printer.h>
-#include <Task.h>
-#include <TaskMan.h>
-
-namespace Balau {
-
 class MainTask : public Task {
   public:
       MainTask() : m_stopTaskManOnExit(true) { }
-      virtual ~MainTask() { if (m_stopTaskManOnExit) TaskMan::stop(); }
-    virtual const char * getName() { return "Main Task"; }
+      virtual ~MainTask();
+    virtual const char * getName();
     virtual void Do();
     void stopTaskManOnExit(bool v) { m_stopTaskManOnExit = v; }
   private:
@@ -62,50 +33,10 @@ class Main {
         STOPPING,
         STOPPED,
     };
-      Main() : m_status(UNKNOWN) { Assert(s_application == 0); s_application = this; }
-    static Status status() { return s_application->m_status; }
-    int bootstrap(int _argc, char ** _argv) {
-        int r = 0;
-        m_status = STARTING;
-
-        argc = _argc;
-        argv = _argv;
-        enve = NULL;
-
-        for (AtStart * ptr = AtStart::s_head; ptr; ptr = ptr->m_next)
-            ptr->doStart();
-
-        try {
-            m_status = RUNNING;
-            MainTask * mainTask = createTask(new MainTask());
-            TaskMan::getDefaultTaskMan()->mainLoop();
-            m_status = STOPPING;
-        }
-        catch (Exit e) {
-            m_status = STOPPING;
-            r = e.getCode();
-        }
-        catch (GeneralException e) {
-            m_status = STOPPING;
-            Printer::log(M_ERROR | M_ALERT, "The application caused an exception: %s", e.getMsg());
-            std::vector<String> trace = e.getTrace();
-            for (std::vector<String>::iterator i = trace.begin(); i != trace.end(); i++)
-                Printer::log(M_DEBUG, "%s", i->to_charp());
-            r = -1;
-        }
-        catch (...) {
-            m_status = STOPPING;
-            Printer::log(M_ERROR | M_ALERT, "The application caused an unknown exception");
-            r = -1;
-        }
-        m_status = STOPPING;
-
-        for (AtExit * ptr = AtExit::s_head; ptr; ptr = ptr->m_next)
-            ptr->doExit();
-
-        m_status = STOPPED;
-        return r;
-    }
+      Main() : m_status(UNKNOWN) { IAssert(s_application == NULL, "There can't be two main apps"); s_application = this; }
+    static Status getStatus() { return s_application->m_status; }
+    int bootstrap(int _argc, char ** _argv);
+    static bool hasMain() { return s_application; }
   protected:
     int argc;
     char ** argv;
@@ -114,20 +45,5 @@ class Main {
     Status m_status;
     static Main * s_application;
 };
-
-#define BALAU_STARTUP \
-\
-class Application : public Balau::Main { \
-  public: \
-    virtual int startup() throw (Balau::GeneralException); \
-}; \
-\
-extern "C" { \
-    int main(int argc, char ** argv) { \
-        setlocale(LC_ALL, ""); \
-        Balau::Main mainClass; \
-        return mainClass.bootstrap(argc, argv); \
-    } \
-}
 
 };

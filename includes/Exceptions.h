@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdarg.h>
 #include <typeinfo>
 #include <cxxabi.h>
 #include <BString.h>
@@ -9,11 +10,12 @@ namespace Balau {
 
 class GeneralException {
   public:
-      GeneralException(const char * msg) : m_msg(::strdup(msg)) { genTrace(); }
-      GeneralException(const String & msg) : m_msg(msg.strdup()) { genTrace(); }
-      GeneralException(const GeneralException & e) : m_msg(strdup(e.m_msg)), m_trace(e.m_trace) { }
+      GeneralException(const char * msg, const char * details = NULL) : m_msg(::strdup(msg)) { setDetails(details); genTrace(); }
+      GeneralException(const String & msg, const char * details = NULL) : m_msg(msg.strdup()) { setDetails(details); genTrace(); }
+      GeneralException(const GeneralException & e) : m_msg(strdup(e.m_msg)), m_trace(e.m_trace) { setDetails(e.m_details); }
       ~GeneralException() { if (m_msg) free(m_msg); }
     const char * getMsg() const { return m_msg; }
+    const char * getDetails() const { return m_details; }
     const std::vector<String> getTrace() const { return m_trace; }
 
   protected:
@@ -23,37 +25,78 @@ class GeneralException {
 
   private:
     char * m_msg;
+    char * m_details;
     std::vector<String> m_trace;
+
+    void setDetails(const char * details) {
+        if (details)
+            m_details = ::strdup(details);
+        else
+            m_details = NULL;
+    }
 };
 
-static inline void * malloc(size_t size) throw (GeneralException) {
+class RessourceException : public GeneralException {
+  public:
+      RessourceException(const String & msg, const char * details) : GeneralException(msg, details) { }
+};
+
+void ExitHelper(const String & msg, const char * fmt = NULL, ...) __attribute__((format(printf, 2, 3)));
+
+static inline void * malloc(size_t size) {
     void * r = ::malloc(size);
 
     if (!r && size)
-        throw GeneralException("Failed to allocate memory.");
+        ExitHelper("Failed to allocate memory", "%li bytes", size);
 
     return r;
 }
 
-static inline void * calloc(size_t count, size_t size) throw (GeneralException) {
+static inline void * calloc(size_t count, size_t size) {
     void * r = ::calloc(count, size);
 
     if (!r && ((count * size) != 0))
-        throw GeneralException("Failed to allocate memory.");
+        ExitHelper("Failed to allocate memory", "%li * %li = %li bytes", count, size, count * size);
 
     return r;
 }
 
-static inline void * realloc(void * previous, size_t size) throw (GeneralException) {
+static inline void * realloc(void * previous, size_t size) {
     void * r = ::realloc(previous, size);
 
     if (!r && size)
-        throw GeneralException("Failed to allocate memory.");
+        ExitHelper("Failed to re-allocate memory", "%li bytes", size);
 
     return r;
 }
 
-static inline void AssertHelper(const String & msg) throw(GeneralException) { throw GeneralException(msg); }
+static inline void AssertHelperInner(const String & msg, const char * details = NULL) throw (GeneralException) {
+    throw GeneralException(msg, details);
+}
+
+static inline void AssertHelper(const String & msg, const char * fmt = NULL, ...) __attribute__((format(printf, 2, 3)));
+
+static inline void AssertHelper(const String & msg, const char * fmt, ...) {
+    if (fmt) {
+        String details;
+        va_list ap;
+        va_start(ap, fmt);
+        details.set(fmt, ap);
+        va_end(ap);
+        AssertHelperInner(msg, details.to_charp());
+    } else {
+        AssertHelperInner(msg);
+    }
+}
+
+class TestException : public GeneralException {
+  public:
+      TestException(const String & msg) : GeneralException(msg) { }
+};
+
+static inline void TestHelper(const String & msg) throw (TestException) {
+    throw TestException(msg);
+}
 
 class ClassName {
   public:
@@ -72,8 +115,29 @@ ClassName::ClassName(T * ptr) {
 
 };
 
-#define Assert(c) if (!(c)) { \
+#define Failure(msg) Balau::AssertHelper(msg);
+#define FailureDetails(msg, ...) Balau::AssertHelper(msg, __VA_ARGS__);
+
+#define IAssert(c, ...) if (!__builtin_expect(!!(c), 0)) { \
     Balau::String msg; \
-    msg.set("Assertion " #c " failed at %s:%i", __FILE__, __LINE__); \
-    Balau::AssertHelper(msg); \
+    msg.set("Internal Assertion " #c " failed at %s:%i", __FILE__, __LINE__); \
+    Balau::AssertHelper(msg, __VA_ARGS__); \
+}
+
+#define AAssert(c, ...) if (!__builtin_expect(!!(c), 0)) { \
+    Balau::String msg; \
+    msg.set("API Assertion " #c " failed at %s:%i", __FILE__, __LINE__); \
+    Balau::AssertHelper(msg, __VA_ARGS__); \
+}
+
+#define RAssert(c, ...) if (!__builtin_expect(!!(c), 0)) { \
+    Balau::String msg; \
+    msg.set("Ressource Assertion " #c " failed at %s:%i", __FILE__, __LINE__); \
+    Balau::ExitHelper(msg, __VA_ARGS__); \
+}
+
+#define TAssert(c) if (!__builtin_expect(!!(c), 0)) { \
+    Balau::String msg; \
+    msg.set("UnitTest Assert " #c " failed at %s:%i", __FILE__, __LINE__); \
+    Balau::TestHelper(msg); \
 }

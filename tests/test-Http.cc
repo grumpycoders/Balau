@@ -1,7 +1,6 @@
 #include <Main.h>
 #include <HttpServer.h>
-
-BALAU_STARTUP;
+#include <TaskMan.h>
 
 #define DAEMON_NAME "Balau/1.0"
 
@@ -48,13 +47,15 @@ bool TestFailure::Do(HttpServer * server, Http::Request & req, HttpServer::Actio
     throw GeneralException("Test...");
 }
 
+#define NTHREADS 4
+
 void MainTask::Do() {
     Printer::enable(M_DEBUG);
     Printer::log(M_STATUS, "Test::Http running.");
 
-    Thread * tms[4];
+    Thread * tms[NTHREADS];
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < NTHREADS; i++)
         tms[i] = TaskMan::createThreadedTaskMan();
 
     HttpServer * s = new HttpServer();
@@ -70,7 +71,7 @@ void MainTask::Do() {
 
     s->stop();
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < NTHREADS; i++)
         tms[i]->join();
 
     Printer::log(M_STATUS, "Test::Http passed.");

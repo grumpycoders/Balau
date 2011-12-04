@@ -58,7 +58,7 @@ index -x of a context == slot number size - x
 */
 
 Balau::SimpleMustache::Context & Balau::SimpleMustache::Context::Proxy::operator[](const char * str) {
-    Assert(m_parent->m_type == CONTEXTLIST);
+    IAssert(m_parent->m_type == CONTEXTLIST, "We got a [str] request on a ContextProxy which parent isn't a CONTEXTLIST... ?");
     String key = str;
     ContextList & ctxLst = m_parent->m_contextList;
     if (m_idx <= 0)
@@ -186,7 +186,7 @@ void Balau::SimpleMustache::setTemplate(IO<Handle> _h) {
             break;
         case READING_INNER:
             if (beginning) {
-                Assert(p == buf);
+                IAssert(p == buf, "READING_INNER; beginning = true but p isn't at the beginning of the buffer...");
                 beginning = false;
                 tagType = NORMAL;
                 stupidMarker = false;
@@ -256,8 +256,8 @@ void Balau::SimpleMustache::setTemplate(IO<Handle> _h) {
                 if (++dist == endMarker.strlen()) {
                     bool pushIt = true;
                     String str = curFragment->str;
-                    Assert(str.strlen() != 0);
-                    Assert(tagType != PARTIAL); // not yet supported
+                    AAssert(str.strlen() != 0, "Got an empty tag... ?");
+                    AAssert(tagType != PARTIAL, "Partials aren't supported yet");
                     Regex::Captures c;
                     switch (tagType) {
                     case NORMAL:
@@ -279,30 +279,30 @@ void Balau::SimpleMustache::setTemplate(IO<Handle> _h) {
                         curFragment->type = Fragment::INVERTED;
                         break;
                     case PARTIAL:
-                        Assert(0);
+                        Failure("Partials aren't supported yet");
                         break;
                     case CHANGING:
                         pushIt = false;
-                        Assert(str[0] == '=');
-                        Assert(str[-1] == '=');
+                        IAssert(str[0] == '=', "A CHANGING tag that doesn't start with =... ?");
+                        AAssert(str[-1] == '=', "A changing tag must end with =");
                         c = changing.match(str.to_charp());
-                        Assert(c.size() == 3);
+                        IAssert(c.size() == 3, "The 'changing' regexp didn't match...");
                         srtMarker = c[1];
                         endMarker = c[2];
-                        Assert(srtMarker.strlen() != 0);
-                        Assert(endMarker.strlen() != 0);
-                        Assert(srtMarker[0] != endMarker[0]);
-                        Assert(srtMarker.strchr(' ') < 0);
-                        Assert(srtMarker.strchr('=') < 0);
-                        Assert(endMarker.strchr(' ') < 0);
-                        Assert(endMarker.strchr('=') < 0);
+                        AAssert(srtMarker.strlen() != 0, "A new Mustache marker can't be empty.");
+                        AAssert(endMarker.strlen() != 0, "A new Mustache marker can't be empty.");
+                        AAssert(srtMarker[0] != endMarker[0], "The beginning and end markers can't start with the same character");
+                        AAssert(srtMarker.strchr(' ') < 0, "A mustache marker can't contain spaces");
+                        AAssert(srtMarker.strchr('=') < 0, "A mustache marker can't contain '='");
+                        AAssert(endMarker.strchr(' ') < 0, "A mustache marker can't contain spaces");
+                        AAssert(endMarker.strchr('=') < 0, "A mustache marker can't contain '='");
                         break;
                     case COMMENT:
                         pushIt = false;
                         break;
                     }
                     if (pushIt) {
-                        Assert(curFragment->type != Fragment::UNKNOWN);
+                        IAssert(curFragment->type != Fragment::UNKNOWN, "We got an unknown fragment at that point...?");
                         m_fragments.push_back(curFragment);
                         curFragment = new Fragment();
                     }
@@ -315,7 +315,7 @@ void Balau::SimpleMustache::setTemplate(IO<Handle> _h) {
         }
     }
 
-    Assert(state == PLAIN);
+    IAssert(state == PLAIN, "We shouldn't exit that parsing loop without being in the 'PLAIN' state");
 
     if (p != buf) {
         *p = 0;
@@ -335,10 +335,10 @@ Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::checkTemplate_
     for (cur = begin; cur != end; cur++) {
         Fragment * fr = *cur;
         if ((fr->type == Fragment::END_SECTION) && (endSection.strlen() != 0)) {
-            Assert(fr->str == endSection);
+            AAssert(fr->str == endSection, "Beginning / End sections mismatch (%s != %s)", fr->str.to_charp(), endSection.to_charp());
             return cur;
         }
-        Assert(fr->type != Fragment::END_SECTION);
+        AAssert(fr->type != Fragment::END_SECTION, "Reached an extra end section (%s)", fr->str.to_charp());
         if ((fr->type == Fragment::SECTION) || (fr->type == Fragment::INVERTED))
             cur = checkTemplate_r(++cur, fr->str);
     }
@@ -356,7 +356,7 @@ Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::render_r(IO<Ha
             Fragment * fr = *cur;
             if (fr->type == Fragment::END_SECTION) {
                 if (depth == 0) {
-                    Assert(fr->str == endSection);
+                    IAssert(fr->str == endSection, "Beginning / End sections mismatch (%s != %s); shouldn't have checkTemplate caught that... ?", fr->str.to_charp(), endSection.to_charp());
                     end = cur;
                     break;
                 } else {
@@ -366,7 +366,7 @@ Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::render_r(IO<Ha
             if ((fr->type == Fragment::SECTION) || (fr->type == Fragment::INVERTED))
                 depth++;
         }
-        Assert(end != m_fragments.end());
+        IAssert(end != m_fragments.end(), "Reached end of template without finding an end section for %s; shouldn't have checkTemplate caught that... ?", endSection.to_charp());
     }
 
     if (!ctx) {
@@ -380,7 +380,7 @@ Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::render_r(IO<Ha
         return end;
     }
 
-    Assert(!noWrite);
+    IAssert(!noWrite, "noWrite == true but we have a context... ?");
 
     Context::ContextList::iterator sCtx;
     int idx = 0;
@@ -390,8 +390,8 @@ Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::render_r(IO<Ha
         Context::SubContext::iterator f;
         for (cur = begin; cur != end; cur++) {
             Fragment * fr = *cur;
-            Assert(fr->type != Fragment::UNKNOWN);
-            Assert(fr->type != Fragment::END_SECTION);
+            IAssert(fr->type != Fragment::UNKNOWN, "Processing an unknown fragment... ?");
+            IAssert(fr->type != Fragment::END_SECTION, "Processing an end section tag... ?");
             switch (fr->type) {
             case Fragment::STRING:
                 h->write(fr->str);
@@ -434,7 +434,7 @@ Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::render_r(IO<Ha
                 cur = render_r(h, NULL, fr->str, ++cur, sCtx->find(fr->str) != sCtx->end(), -1);
                 break;
             default:
-                Assert(false);
+                FailureDetails("We shouldn't end up here", "fragment type = %i", fr->type);
                 break;
             }
         }

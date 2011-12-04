@@ -27,13 +27,14 @@ class TaskMan {
   public:
       TaskMan();
       ~TaskMan();
-    void mainLoop();
+    int mainLoop();
     static TaskMan * getDefaultTaskMan();
     struct ev_loop * getLoop() { return m_loop; }
     void signalTask(Task * t);
-    static void stop();
-    void stopMe() { m_stopped = true; }
+    static void stop(int code);
+    void stopMe(int code) { m_stopped = true; m_stopCode = code; }
     static Thread * createThreadedTaskMan();
+    bool stopped() { return m_stopped; }
   private:
     static void registerTask(Task * t, Task * stick);
     void * getStack();
@@ -58,9 +59,10 @@ class TaskMan {
     ev::async m_evt;
     std::queue<void *> m_stacks;
     int m_nStacks;
+    int m_stopCode;
 };
 
 template<class T>
-T * createTask(T * t, Task * stick) { TaskMan::registerTask(t, stick); Assert(dynamic_cast<Task *>(t)); return t; }
+T * createTask(T * t, Task * stick) { TaskMan::registerTask(t, stick); return t; }
 
 };

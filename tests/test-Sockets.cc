@@ -1,8 +1,6 @@
 #include <Main.h>
 #include <Socket.h>
 
-BALAU_STARTUP;
-
 using namespace Balau;
 
 class Worker : public Task {
@@ -28,11 +26,11 @@ void Worker::Do() {
 
     int r;
     r = m_io->read(&x, 1);
-    Assert(x == 'x');
-    Assert(r == 1);
+    TAssert(x == 'x');
+    TAssert(r == 1);
     y = 'y';
     r = m_io->write(&y, 1);
-    Assert(r == 1);
+    TAssert(r == 1);
 }
 
 Listener<Worker> * listener;
@@ -48,14 +46,14 @@ class Client : public Task {
         char x, y;
         IO<Socket> s(new Socket());
         bool c = s->connect("localhost", 1234);
-        Assert(c);
+        TAssert(c);
         x = 'x';
         int r;
         r = s->write(&x, 1);
-        Assert(r == 1);
+        TAssert(r == 1);
         r = s->read(&y, 1);
-        Assert(y == 'y');
-        Assert(r == 1);
+        TAssert(y == 'y');
+        TAssert(r == 1);
         listener->stop();
     }
 };

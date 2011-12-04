@@ -2,8 +2,6 @@
 #include <Task.h>
 #include <TaskMan.h>
 
-BALAU_STARTUP;
-
 using namespace Balau;
 
 class CustomPrinter : public Printer {
@@ -25,7 +23,7 @@ class TestTask : public Task {
 static void yieldingFunction() {
     Events::Timeout timeout(0.2);
     Task::yield(&timeout);
-    Assert(timeout.gotSignal());
+    TAssert(timeout.gotSignal());
 }
 
 void MainTask::Do() {
@@ -35,22 +33,22 @@ void MainTask::Do() {
     Task * testTask = Balau::createTask(new TestTask());
     Events::TaskEvent taskEvt(testTask);
     waitFor(&taskEvt);
-    Assert(!taskEvt.gotSignal());
+    TAssert(!taskEvt.gotSignal());
     yield();
-    Assert(taskEvt.gotSignal());
+    TAssert(taskEvt.gotSignal());
     taskEvt.ack();
 
     Events::Timeout timeout(0.1);
     waitFor(&timeout);
-    Assert(!timeout.gotSignal());
+    TAssert(!timeout.gotSignal());
     yield();
-    Assert(timeout.gotSignal());
+    TAssert(timeout.gotSignal());
 
     timeout.set(0.1);
     timeout.reset();
     waitFor(&timeout);
     yieldingFunction();
-    Assert(timeout.gotSignal());
+    TAssert(timeout.gotSignal());
 
     Printer::log(M_STATUS, "Test::Tasks passed.");
     Printer::log(M_DEBUG, "You shouldn't see that message.");

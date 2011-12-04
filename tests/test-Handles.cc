@@ -14,8 +14,6 @@ void ctime_r(const time_t * t, char * str) {
 }
 #endif
 
-BALAU_STARTUP;
-
 using namespace Balau;
 
 void MainTask::Do() {
@@ -28,7 +26,7 @@ void MainTask::Do() {
     catch (ENoEnt e) {
         failed = true;
     }
-    Assert(failed);
+    TAssert(failed);
     IO<Handle> i(new Input("tests/rtest.txt"));
     Printer::log(M_STATUS, "Opened file %s:", i->getName());
     Printer::log(M_STATUS, " - size = %lli", i->getSize());
@@ -39,71 +37,71 @@ void MainTask::Do() {
     char * nl = strrchr(mtimestr, '\n');
     if (nl)
         *nl = 0;
-    Printer::log(M_STATUS, " - mtime = %i (%s)", mtime, mtimestr);
+    Printer::log(M_STATUS, " - mtime = %li (%s)", mtime, mtimestr);
 
     off_t s = i->rtell();
-    Assert(s == 0);
+    TAssert(s == 0);
 
     i->rseek(0, SEEK_END);
     s = i->rtell();
-    Assert(s == i->getSize());
+    TAssert(s == i->getSize());
 
     i->rseek(0, SEEK_SET);
     char * buf1 = (char *) malloc(i->getSize());
     ssize_t r = i->read(buf1, s + 15);
-    Printer::log(M_STATUS, "Read %i bytes (instead of %i)", r, s + 15);
-    Assert(i->isEOF())
+    Printer::log(M_STATUS, "Read %li bytes (instead of %lli)", r, s + 15);
+    TAssert(i->isEOF())
 
     char * buf2 = (char *) malloc(i->getSize());
     i->rseek(0, SEEK_SET);
-    Assert(!i->isEOF());
-    Assert(i->rtell() == 0);
+    TAssert(!i->isEOF());
+    TAssert(i->rtell() == 0);
     r = i->read(buf2, 5);
-    Assert(r == 5);
-    Assert(i->rtell() == 5);
+    TAssert(r == 5);
+    TAssert(i->rtell() == 5);
     r = i->read(buf2 + 5, s - 5);
-    Assert(r == (s - 5));
-    Assert(memcmp(buf1, buf2, s) == 0);
+    TAssert(r == (s - 5));
+    TAssert(memcmp(buf1, buf2, s) == 0);
 
     IO<Handle> o(new Output("tests/out.txt"));
     s = o->wtell();
-    Assert(s == 0);
+    TAssert(s == 0);
     s = o->getSize();
-    Assert(s == 0);
+    TAssert(s == 0);
     o->writeString("foo\n");
 
     IO<Handle> b(new Buffer());
     s = b->rtell();
-    Assert(s == 0);
+    TAssert(s == 0);
     s = b->wtell();
-    Assert(s == 0);
+    TAssert(s == 0);
     b->writeString("foo\n");
     s = b->rtell();
-    Assert(s == 0);
+    TAssert(s == 0);
     s = b->wtell();
-    Assert(s == 4);
+    TAssert(s == 4);
     b->writeString("bar\r\n");
     s = b->rtell();
-    Assert(s == 0);
+    TAssert(s == 0);
     s = b->wtell();
-    Assert(s == 9);
+    TAssert(s == 9);
     b->writeString("eof");
     s = b->rtell();
-    Assert(s == 0);
+    TAssert(s == 0);
     s = b->wtell();
-    Assert(s == 12);
+    TAssert(s == 12);
 
     IO<BStream> strm(new BStream(b));
     String str;
     str = strm->readString();
-    Assert(str == "foo");
+    TAssert(str == "foo");
     str = strm->readString();
-    Assert(str == "bar");
+    TAssert(str == "bar");
     str = strm->readString();
-    Assert(str == "eof");
+    TAssert(str == "eof");
     s = b->rtell();
-    Assert(s == 12);
-    Assert(b->isEOF());
+    TAssert(s == 12);
+    TAssert(b->isEOF());
 
     Printer::log(M_STATUS, "Test::Handles passed.");
 }

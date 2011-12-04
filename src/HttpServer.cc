@@ -7,7 +7,7 @@
 
 class OutputCheck : public Balau::Handle {
   public:
-      OutputCheck(Balau::IO<Balau::Handle> h) : m_h(h), m_wrote(false) { Assert(m_h->canWrite()); m_name.set("OutputCheck(%s)", m_h->getName()); }
+      OutputCheck(Balau::IO<Balau::Handle> h) : m_h(h), m_wrote(false) { IAssert(m_h->canWrite(), "We haven't been passed a writable Handle to our HttpWorker... ?"); m_name.set("OutputCheck(%s)", m_h->getName()); }
     virtual void close() throw (Balau::GeneralException) { m_h->close(); }
     virtual bool isClosed() { return m_h->isClosed(); }
     virtual bool isEOF() { return m_h->isEOF(); }
@@ -42,10 +42,10 @@ class HttpWorker : public Task {
     virtual const char * getName();
 
     bool handleClient();
-    void sendError(int error, const char * msg, bool closeConnection, std::vector<String> trace);
-    void send400() { std::vector<String> d2; sendError(400, "The HTTP request you've sent is invalid", true, d2); }
-    void send404() { std::vector<String> d2; sendError(404, "The HTTP request you've sent didn't match any action on this server.", false, d2); }
-    void send500(const char * msg, std::vector<String> trace) { String smsg; smsg.set("The HTTP request you've sent triggered an internal error: `%s\xc2\xb4", msg); sendError(500, smsg.to_charp(), true, trace); }
+    void sendError(int error, const char * msg, const char * details, bool closeConnection, std::vector<String> trace);
+    void send400() { std::vector<String> d2; sendError(400, "The HTTP request you've sent is invalid", NULL, true, d2); }
+    void send404() { std::vector<String> d2; sendError(404, "The HTTP request you've sent didn't match any action on this server.", NULL, false, d2); }
+    void send500(const char * msg, const char * details, std::vector<String> trace) { String smsg; smsg.set("The HTTP request you've sent triggered an internal error: `%s\xc2\xb4", msg); sendError(500, smsg.to_charp(), details, true, trace); }
     String httpUnescape(const char * in);
     void readVariables(Http::StringMap & variables, char * str);
 
@@ -85,6 +85,7 @@ const Balau::String SetDefaultTemplate::m_defaultErrorTemplate(
 "  <body>\n"
 "    <h1>{{title}}</h1>\n"
 "    <h2>{{msg}}</h2>\n"
+"{{details}}\n"
 "{{#hasTrace}}\n"
 "   <br /><h3>Context:</h3>\n"
 "    {{#trace}}<pre>{{line}}</pre>{{/trace}}<br />\n"
@@ -176,7 +177,7 @@ static const char * getErrorMsg(int httpError) {
     }
 }
 
-void Balau::HttpWorker::sendError(int error, const char * msg, bool closeConnection, std::vector<String> trace) {
+void Balau::HttpWorker::sendError(int error, const char * msg, const char * details, bool closeConnection, std::vector<String> trace) {
     SimpleMustache * tpl = &m_errorTemplate;
     const char * errorMsg = getErrorMsg(error);
     Printer::elog(Balau::E_HTTPSERVER, "%s caused a %i error (%s)", m_name.to_charp(), error, errorMsg);
@@ -186,6 +187,8 @@ void Balau::HttpWorker::sendError(int error, const char * msg, bool closeConnect
     ctx["title"] = title;
     ctx["hasTrace"] = !trace.empty();
     ctx["msg"] = msg;
+    if (details)
+        ctx["details"] = details;
     if (m_socket->isClosed()) return;
     for (std::vector<String>::iterator i = trace.begin(); i != trace.end(); i++)
         ctx["trace"][(ssize_t) 0]["line"] = *i;
@@ -210,7 +213,7 @@ void Balau::HttpWorker::sendError(int error, const char * msg, bool closeConnect
 "Content-Type: text/html; charset=UTF-8\r\n"
 "Connection: keep-alive\r\n"
 "Server: %s\r\n"
-"Content-Length: %i\r\n"
+"Content-Length: %lli\r\n"
 "\r\n", error, errorMsg, m_serverName.to_charp(), length);
         m_socket->forceWrite(headers);
         if (m_socket->isClosed()) return;
@@ -402,17 +405,21 @@ bool Balau::HttpWorker::handleClient() {
 
         if (multipart) {
             // will handle this horror later...
-            Assert(!"multipart/form-data not supported for now");
+            Failure("multipart/form-data not supported for now");
         } else {
             uint8_t * postData = (uint8_t *) malloc(length);
 
-            try {
-                m_strm->forceRead(postData, length);
-            }
-            catch (EAgain) {
-                Assert(evtTimeout.gotSignal());
-                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s timed out getting request (reading POST values)", m_name.to_charp());
-                return false;
+            while (true) {
+                try {
+                    m_strm->forceRead(postData, length);
+                    break;
+                }
+                catch (EAgain) {
+                    if (!evtTimeout.gotSignal())
+                        yield();
+                    Balau::Printer::elog(Balau::E_HTTPSERVER, "%s timed out getting request (reading POST values)", m_name.to_charp());
+                    return false;
+                }
             }
 
             readVariables(variables, (char *) postData);
@@ -473,20 +480,23 @@ bool Balau::HttpWorker::handleClient() {
             if (!f.action->Do(m_server, req, f.matches, out))
                 persistent = false;
         }
-        catch (GeneralException e) {
+        catch (GeneralException & e) {
             Printer::log(M_ERROR, "%s got an exception while processing its request: `%s'", m_name.to_charp(), e.getMsg());
+            const char * details = e.getDetails();
+            if (details)
+                Printer::log(M_ERROR, "  %s", details);
             std::vector<String> trace = e.getTrace();
             for (std::vector<String>::iterator i = trace.begin(); i != trace.end(); i++) 
                 Printer::log(M_DEBUG, "%s", i->to_charp());
             if (!out->wrote())
-                send500(e.getMsg(), trace);
+                send500(e.getMsg(), details, trace);
             return false;
         }
         catch (...) {
-            Printer::log(M_ERROR, "%s got an unknow exception while processing its request: `%s'", m_name.to_charp());
+            Printer::log(M_ERROR, "%s got an unknow exception while processing its request.", m_name.to_charp());
             if (!out->wrote()) {
                 std::vector<String> d;
-                send500("unknow exception", d);
+                send500("unknow exception", NULL, d);
             }
             return false;
         }
@@ -512,13 +522,13 @@ const char * Balau::HttpWorker::getName() {
 typedef Balau::Listener<Balau::HttpWorker> HttpListener;
 
 void Balau::HttpServer::start() {
-    Assert(!m_started);
+    AAssert(!m_started, "Don't start an HttpServer twice");
     m_listenerPtr = createTask(new HttpListener(m_port, m_local.to_charp(), this));
     m_started = true;
 }
 
 void Balau::HttpServer::stop() {
-    Assert(m_started);
+    AAssert(m_started, "Don't stop an HttpServer that hasn't been started");
     reinterpret_cast<HttpListener *>(m_listenerPtr)->stop();
     m_started = false;
 }

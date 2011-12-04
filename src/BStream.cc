@@ -4,7 +4,7 @@
 static const int s_blockSize = 16 * 1024;
 
 Balau::BStream::BStream(const IO<Handle> & h) : m_h(h), m_buffer((uint8_t *) malloc(s_blockSize)), m_availBytes(0), m_cursor(0), m_passThru(false) {
-    Assert(m_h->canRead());
+    AAssert(m_h->canRead(), "You can't create a buffered stream with a Handle that can't read");
     m_name.set("Stream(%s)", m_h->getName());
     if ((m_h.isA<Buffer>()) || (m_h.isA<BStream>()))
         m_passThru = true;
@@ -50,9 +50,9 @@ ssize_t Balau::BStream::read(void * _buf, size_t count) throw (Balau::GeneralExc
         return m_h->read(buf, count) + copied;
 
     m_cursor = 0;
-    Assert(m_availBytes == 0);
+    IAssert(m_availBytes == 0, "At this point, our internal buffer should be empty, but it's not: %lu", m_availBytes);
     ssize_t r = m_h->read(m_buffer, s_blockSize);
-    Assert(r >= 0);
+    RAssert(r >= 0, "BStream got an error while reading: %li", r);
     m_availBytes = r;
 
     if (toCopy > m_availBytes)
@@ -74,9 +74,9 @@ int Balau::BStream::peekNextByte() {
         ssize_t r = read(&b, 1);
         if (!r)
             return -1;
-        Assert(r == 1);
-        Assert(m_cursor > 0);
-        Assert(m_availBytes < s_blockSize);
+        RAssert(r == 1, "We asked for one byte, yet we got %li", r);
+        IAssert(m_cursor > 0, "m_cursor is %li", m_cursor);
+        IAssert(m_availBytes < s_blockSize, "m_availBytes = %li; s_blockSize = %i", m_availBytes, s_blockSize);
         m_cursor--;
         m_availBytes++;
     }
@@ -109,7 +109,7 @@ Balau::String Balau::BStream::readString(bool putNL) {
         if (isClosed() || isEOF())
             return ret;
         peekNextByte();
-        Assert(m_cursor == 0);
+        IAssert(m_cursor == 0, "m_cursor is %li", m_cursor);
         cr = (uint8_t *) memchr(m_buffer, '\r', m_availBytes);
         lf = (uint8_t *) memchr(m_buffer, '\n', m_availBytes);
         if (cr && lf) {

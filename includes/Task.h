@@ -38,9 +38,20 @@ class BaseEvent {
       virtual ~BaseEvent() { if (m_cb) delete m_cb; }
     bool gotSignal() { return m_signal; }
     void doSignal();
-    void reset() { Assert(m_task != NULL); m_signal = false; gotOwner(m_task); }
-    Task * taskWaiting() { Assert(m_task); return m_task; }
-    void registerOwner(Task * task) { if (m_task == task) return; Assert(m_task == NULL); m_task = task; gotOwner(task); }
+    void reset() {
+        // could be potentially changed into a simple return
+        AAssert(m_task != NULL, "Can't reset an event that doesn't have a task");
+        m_signal = false;
+        gotOwner(m_task);
+    }
+    Task * taskWaiting() { AAssert(m_task, "No task is waiting for that event"); return m_task; }
+    void registerOwner(Task * task) {
+        if (m_task == task)
+            return;
+        AAssert(m_task == NULL, "Can't register an event for another task");
+        m_task = task;
+        gotOwner(task);
+    }
   protected:
     virtual void gotOwner(Task * task) { }
   private:

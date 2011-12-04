@@ -29,6 +29,8 @@ class Socket : public Handle {
 
     bool setLocal(const char * hostname = NULL, int port = 0);
     bool connect(const char * hostname, int port);
+    bool gotR() { return m_evtR->gotSignal(); }
+    bool gotW() { return m_evtW->gotSignal(); }
     IO<Socket> accept() throw (GeneralException);
     bool listen();
   private:

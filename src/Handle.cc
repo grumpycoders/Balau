@@ -44,7 +44,7 @@ void eioInterface::doStart() {
     Balau::Printer::elog(Balau::E_HANDLE, "Starting the eio interface");
 
     Balau::TaskMan * taskMan = Balau::TaskMan::getDefaultTaskMan();
-    Assert(taskMan);
+    IAssert(taskMan, "The eio interface shouldn't have started before the task manager");
     struct ev_loop * loop = taskMan->getLoop();
 
     m_repeat.set(loop);
@@ -162,7 +162,7 @@ off_t Balau::Handle::wtell() throw (GeneralException) {
 bool Balau::SeekableHandle::canSeek() { return true; }
 
 void Balau::SeekableHandle::rseek(off_t offset, int whence) throw (GeneralException) {
-    Assert(canRead() || canWrite());
+    AAssert(canRead() || canWrite(), "Can't use a SeekableHandle with a Handle that can neither read or write...");
     off_t size;
     if (!canRead())
         wseek(offset, whence);
@@ -185,7 +185,7 @@ void Balau::SeekableHandle::rseek(off_t offset, int whence) throw (GeneralExcept
 }
 
 void Balau::SeekableHandle::wseek(off_t offset, int whence) throw (GeneralException) {
-    Assert(canRead() || canWrite());
+    AAssert(canRead() || canWrite(), "Can't use a SeekableHandle with a Handle that can neither read or write...");
     off_t size;
     if (!canWrite())
         rseek(offset, whence);
@@ -208,14 +208,14 @@ void Balau::SeekableHandle::wseek(off_t offset, int whence) throw (GeneralExcept
 }
 
 off_t Balau::SeekableHandle::rtell() throw (GeneralException) {
-    Assert(canRead() || canWrite());
+    AAssert(canRead() || canWrite(), "Can't use a SeekableHandle with a Handle that can neither read or write...");
     if (!canRead())
         return wtell();
     return m_rOffset;
 }
 
 off_t Balau::SeekableHandle::wtell() throw (GeneralException) {
-    Assert(canRead() || canWrite());
+    AAssert(canRead() || canWrite(), "Can't use a SeekableHandle with a Handle that can neither read or write...");
     if (!canWrite())
         return rtell();
     return m_wOffset;
@@ -241,7 +241,7 @@ static int eioDone(eio_req * req) {
 int Balau::FileSystem::mkdir(const char * path) throw (GeneralException) {
     cbResults_t cbResults;
     eio_req * r = eio_mkdir(path, 0755, 0, eioDone, &cbResults);
-    Assert(r != 0);
+    RAssert(r != NULL, "eio_mkdir returned a NULL eio_req");
     Task::yield(&cbResults.evt);
 
     char str[4096];

@@ -175,40 +175,40 @@ static const char * inet_ntop(int af, const void * src, char * dst, socklen_t si
 #if 0
 // TODO: use getaddrinfo_a, if available.
 #else
-class ResolverThread : public Balau::Thread, public Balau::AtStart, public Balau::AtExit {
+class ResolverThread : public Balau::Thread, public Balau::AtStart {
   public:
-      ResolverThread() : AtStart(8) { }
+      ResolverThread() : Thread(true), AtStart(8), m_stopping(false) { }
     void pushRequest(DNSRequest * req) { m_queue.push(req); }
   private:
     virtual void * proc();
     virtual void doStart();
-    virtual void doExit();
+    virtual void threadExit();
     Balau::Queue<DNSRequest> m_queue;
+    volatile bool m_stopping;
 };
 
 void ResolverThread::doStart() {
     threadStart();
 }
 
-void ResolverThread::doExit() {
+void ResolverThread::threadExit() {
+    m_stopping = true;
     DNSRequest req;
     memset(&req, 0, sizeof(req));
     pushRequest(&req);
-    join();
 }
 
 void * ResolverThread::proc() {
     DNSRequest * req;
-    DNSRequest stop;
-    memset(&stop, 0, sizeof(stop));
-    while (true) {
+    while (!m_stopping) {
         req = m_queue.pop();
-        if (memcmp(&stop, req, sizeof(stop)) == 0)
+        if (m_stopping)
             break;
         Balau::Printer::elog(Balau::E_SOCKET, "Resolver thread got a request for `%s'", req->name);
         req->error = getaddrinfo(req->name, req->service, req->hints, &req->res);
         Balau::Printer::elog(Balau::E_SOCKET, "Resolver thread got an answer; sending signal");
-        req->evt->trigger();
+        if (!m_stopping)
+            req->evt->trigger();
     }
     return NULL;
 }
@@ -237,7 +237,7 @@ static DNSRequest resolveName(const char * name, const char * service = NULL, st
 
 Balau::Socket::Socket() throw (GeneralException) : m_fd(socket(AF_INET6, SOCK_STREAM, 0)), m_connected(false), m_connecting(false), m_listening(false) {
     m_name = "Socket(unconnected)";
-    Assert(m_fd >= 0);
+    RAssert(m_fd >= 0, "socket() returned %i", m_fd);
     m_evtR = new SocketEvent(m_fd, ev::READ);
     m_evtW = new SocketEvent(m_fd, ev::WRITE);
 #ifdef _WIN32
@@ -249,7 +249,7 @@ Balau::Socket::Socket() throw (GeneralException) : m_fd(socket(AF_INET6, SOCK_ST
 
     int on = 0;
     int r = setsockopt(m_fd, IPPROTO_IPV6, IPV6_V6ONLY, (char *) &on, sizeof(on));
-    Assert(r == 0);
+    RAssert(r == 0, "setsockopt returned %i", r);
 
     memset(&m_localAddr, 0, sizeof(m_localAddr));
     memset(&m_remoteAddr, 0, sizeof(m_remoteAddr));
@@ -272,8 +272,8 @@ Balau::Socket::Socket(int fd) : m_fd(fd), m_connected(true), m_connecting(false)
     rLocal = inet_ntop(AF_INET6, &m_localAddr.sin6_addr, prtLocal, len);
     rRemote = inet_ntop(AF_INET6, &m_remoteAddr.sin6_addr, prtRemote, len);
 
-    Assert(rLocal);
-    Assert(rRemote);
+    RAssert(rLocal, "inet_ntop returned NULL");
+    RAssert(rRemote, "inet_ntop returned NULL");
 
     m_evtR = new SocketEvent(m_fd, ev::READ);
     m_evtW = new SocketEvent(m_fd, ev::WRITE);
@@ -314,7 +314,7 @@ bool Balau::Socket::canWrite() { return true; }
 const char * Balau::Socket::getName() { return m_name.to_charp(); }
 
 bool Balau::Socket::setLocal(const char * hostname, int port) {
-    Assert(m_localAddr.sin6_family == 0);
+    AAssert(m_localAddr.sin6_family == 0, "Can't call setLocal twice");
 
     if (hostname && hostname[0]) {
         struct addrinfo hints;
@@ -334,9 +334,9 @@ bool Balau::Socket::setLocal(const char * hostname, int port) {
             freeaddrinfo(res);
             return false;
         }
-        Assert(res->ai_family == AF_INET6);
-        Assert(res->ai_protocol == IPPROTO_TCP);
-        Assert(res->ai_addrlen == sizeof(sockaddr_in6));
+        RAssert(res->ai_family == AF_INET6, "getaddrinfo returned a familiy which isn't AF_INET6; %i", res->ai_family);
+        RAssert(res->ai_protocol == IPPROTO_TCP, "getaddrinfo returned a protocol which isn't IPPROTO_TCP; %i", res->ai_protocol);
+        RAssert(res->ai_addrlen == sizeof(sockaddr_in6), "getaddrinfo returned an addrlen which isn't that of sizeof(sockaddr_in6); %i", res->ai_addrlen);
         memcpy(&m_localAddr.sin6_addr, &((sockaddr_in6 *) res->ai_addr)->sin6_addr, sizeof(struct in6_addr));
         freeaddrinfo(res);
     } else {
@@ -359,14 +359,14 @@ bool Balau::Socket::setLocal(const char * hostname, int port) {
 #endif
 
 bool Balau::Socket::connect(const char * hostname, int port) {
-    Assert(!m_listening);
-    Assert(!m_connected);
-    Assert(hostname);
-    Assert(!isClosed());
+    AAssert(!m_listening, "You can't call Socket::connect() on a listening socket");
+    AAssert(!m_connected, "You can't call Socket::connect() on an already connected socket");
+    AAssert(hostname, "You can't call Socket::connect() without a hostname");
+    AAssert(m_fd >= 0, "You can't call Socket::connect() on a closed socket");
 
     if (!m_connecting) {
         Printer::elog(E_SOCKET, "Resolving %s", hostname);
-        Assert(m_remoteAddr.sin6_family == 0);
+        IAssert(m_remoteAddr.sin6_family == 0, "That shouldn't happen...; family = %i", m_remoteAddr.sin6_family);
 
         struct addrinfo hints;
         memset(&hints, 0, sizeof(hints));
@@ -386,9 +386,9 @@ bool Balau::Socket::connect(const char * hostname, int port) {
             return false;
         }
         Printer::elog(E_SOCKET, "Got a resolution answer");
-        Assert(res->ai_family == AF_INET6);
-        Assert(res->ai_protocol == IPPROTO_TCP);
-        Assert(res->ai_addrlen == sizeof(sockaddr_in6));
+        RAssert(res->ai_family == AF_INET6, "getaddrinfo returned a familiy which isn't AF_INET6; %i", res->ai_family);
+        RAssert(res->ai_protocol == IPPROTO_TCP, "getaddrinfo returned a protocol which isn't IPPROTO_TCP; %i", res->ai_protocol);
+        RAssert(res->ai_addrlen == sizeof(sockaddr_in6), "getaddrinfo returned an addrlen which isn't that of sizeof(sockaddr_in6); %i", res->ai_addrlen);
         memcpy(&m_remoteAddr.sin6_addr, &((sockaddr_in6 *) res->ai_addr)->sin6_addr, sizeof(struct in6_addr));
 
         m_remoteAddr.sin6_port = htons(port);
@@ -399,7 +399,7 @@ bool Balau::Socket::connect(const char * hostname, int port) {
         freeaddrinfo(res);
     } else {
         // if we end up there, it means our yield earlier thrown a EAgain exception.
-        Assert(m_evtR->gotSignal());
+        AAssert(m_evtR->gotSignal(), "Please don't call connect after a EAgain without checking its signal first.");
     }
 
     int spins = 0;
@@ -418,7 +418,7 @@ bool Balau::Socket::connect(const char * hostname, int port) {
         } else {
             socklen_t sLen = sizeof(err);
             int g = getsockopt(m_fd, SOL_SOCKET, SO_ERROR, (char *) &err, &sLen);
-            Assert(g == 0);
+            RAssert(g == 0, "getsockopt failed; g = %i", g);
             r = err != 0 ? -1 : 0;
         }
         if ((r == 0) || ((r < 0) && (err == EISCONN))) {
@@ -440,8 +440,8 @@ bool Balau::Socket::connect(const char * hostname, int port) {
             rLocal = inet_ntop(AF_INET6, &m_localAddr.sin6_addr, prtLocal, len);
             rRemote = inet_ntop(AF_INET6, &m_remoteAddr.sin6_addr, prtRemote, len);
 
-            Assert(rLocal);
-            Assert(rRemote);
+            RAssert(rLocal, "inet_ntop returned NULL");
+            RAssert(rRemote, "inet_ntop returned NULL");
 
             m_name.set("Socket(Connected - [%s]:%i -> [%s]:%i)", rLocal, ntohs(m_localAddr.sin6_port), rRemote, ntohs(m_remoteAddr.sin6_port));
             Printer::elog(E_SOCKET, "Connected; %s", m_name.to_charp());
@@ -458,12 +458,12 @@ bool Balau::Socket::connect(const char * hostname, int port) {
             Printer::elog(E_SOCKET, "Connect() failed with the following error code: %i (%s)", err, strerror(err));
             return false;
         } else {
-            Assert(spins == 0);
+            IAssert(spins == 0, "We shouldn't have spinned...");
         }
 
         Task::yield(m_evtW, true);
         // if we're still here, it means the parent task doesn't want to be thrown an exception
-        Assert(m_evtW->gotSignal());
+        IAssert(m_evtW->gotSignal(), "We shouldn't have been awoken without getting our event signalled");
 
     } while (spins++ < 2);
 
@@ -471,10 +471,10 @@ bool Balau::Socket::connect(const char * hostname, int port) {
 }
 
 bool Balau::Socket::listen() {
-    Assert(!m_listening);
-    Assert(!m_connecting);
-    Assert(!m_connected);
-    Assert(!isClosed());
+    AAssert(!m_listening, "You can't call Socket::listen() on an already listening socket");
+    AAssert(!m_connecting, "You can't call Socket::listen() on a connecting socket");
+    AAssert(!m_connected, "You can't call Socket::listen() on a connected socket");
+    AAssert(m_fd >= 0, "You can't call Socket::listen() on a closed socket");
 
     if (::listen(m_fd, 16) == 0) {
         m_listening = true;
@@ -490,13 +490,13 @@ bool Balau::Socket::listen() {
         len = sizeof(m_localAddr);
         rLocal = inet_ntop(AF_INET6, &m_localAddr.sin6_addr, prtLocal, len);
 
-        Assert(rLocal);
+        RAssert(rLocal, "inet_ntop() returned NULL");
 
         m_name.set("Socket(Listener - [%s]:%i)", rLocal, ntohs(m_localAddr.sin6_port));
         Printer::elog(E_SOCKET, "Socket %i started to listen: %s", m_fd, m_name.to_charp());
     } else {
         String msg = getErrorMessage();
-        Printer::elog(E_SOCKET, "listen() failed with error #i (%s)", errno, msg.to_charp());
+        Printer::elog(E_SOCKET, "listen() failed with error %i (%s)", errno, msg.to_charp());
     }
 
     return m_listening;
@@ -509,8 +509,8 @@ bool Balau::Socket::listen() {
 #endif
 
 Balau::IO<Balau::Socket> Balau::Socket::accept() throw (GeneralException) {
-    Assert(m_listening);
-    Assert(m_fd >= 0);
+    AAssert(m_listening, "You can't call accept() on a non-listening socket");
+    AAssert(m_fd >= 0, "You can't call accept() on a closed socket");
 
     while(true) {
         sockaddr_in6 remoteAddr;
@@ -537,8 +537,8 @@ ssize_t Balau::Socket::read(void * buf, size_t count) throw (GeneralException) {
     if (count == 0)
         return 0;
 
-    Assert(m_connected);
-    Assert(m_fd >= 0);
+    AAssert(m_connected, "You can't call read() on a non-connected socket");
+    AAssert(m_fd >= 0, "You can't call read() on a closed socket");
 
     int spins = 0;
 
@@ -566,15 +566,15 @@ ssize_t Balau::Socket::write(const void * buf, size_t count) throw (GeneralExcep
     if (count == 0)
         return 0;
 
-    Assert(m_connected);
-    Assert(m_fd >= 0);
+    AAssert(m_connected, "You can't call write() on a non-connected socket");
+    AAssert(m_fd >= 0, "You can't call write() on a closed socket");
 
     int spins = 0;
 
     do {
         ssize_t r = ::send(m_fd, (const char *) buf, count, 0);
 
-        Assert(r != 0);
+        RAssert(r != 0, "send() returned 0 (broken pipe ?)");
 
         if (r > 0)
             return r;
@@ -607,9 +607,9 @@ void Balau::ListenerBase::stop() {
 
 void Balau::ListenerBase::Do() {
     bool r = m_listener->setLocal(m_local.to_charp(), m_port);
-    Assert(r);
+    RAssert(r, "Couldn't set the local IP/port to listen to");
     r = m_listener->listen();
-    Assert(r);
+    RAssert(r, "Couldn't listen on the given IP/port");
     setName();
     setOkayToEAgain(true);
     waitFor(&m_evt);

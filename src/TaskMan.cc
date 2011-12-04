@@ -4,12 +4,16 @@
 #include "Local.h"
 
 class Stopper : public Balau::Task {
+  public:
+      Stopper(int code) : m_code(code) { }
+  private:
     virtual void Do();
     virtual const char * getName();
+    int m_code;
 };
 
 void Stopper::Do() {
-    getMyTaskMan()->stopMe();
+    getMyTaskMan()->stopMe(m_code);
 }
 
 const char * Stopper::getName() {
@@ -23,16 +27,16 @@ static const int TOO_MANY_STACKS = 1024;
 
 namespace Balau {
 
-class TaskScheduler : public Thread, public AtStart, public AtExit {
+class TaskScheduler : public Thread, public AtStart {
   public:
-      TaskScheduler() : AtStart(100), m_stopping(false) { }
+      TaskScheduler() : Thread(true), AtStart(100), m_stopping(false) { }
     void registerTask(Task * t);
     virtual void * proc();
     virtual void doStart();
-    virtual void doExit();
+    virtual void threadExit();
     void registerTaskMan(TaskMan * t);
     void unregisterTaskMan(TaskMan * t);
-    void stopAll();
+    void stopAll(int code);
   private:
     Queue<Task> m_queue;
     std::queue<TaskMan *> m_taskManagers;
@@ -70,7 +74,7 @@ void Balau::TaskScheduler::unregisterTaskMan(TaskMan * t) {
     m_lock.leave();
 }
 
-void Balau::TaskScheduler::stopAll() {
+void Balau::TaskScheduler::stopAll(int code) {
     m_stopping = true;
     m_lock.enter();
     std::queue<TaskMan *> altQueue;
@@ -79,7 +83,7 @@ void Balau::TaskScheduler::stopAll() {
         tm = m_taskManagers.front();
         m_taskManagers.pop();
         altQueue.push(tm);
-        tm->addToPending(new Stopper());
+        tm->addToPending(new Stopper(code));
         tm->m_evt.send();
     }
     while (!altQueue.empty()) {
@@ -120,22 +124,21 @@ void Balau::TaskScheduler::doStart() {
     threadStart();
 }
 
-void Balau::TaskScheduler::doExit() {
+void Balau::TaskScheduler::threadExit() {
     Task * s = NULL;
     m_queue.push(s);
-    join();
 }
 
 void asyncDummy(ev::async & w, int revents) {
     Balau::Printer::elog(Balau::E_TASK, "TaskMan is getting woken up...");
 }
 
-Balau::TaskMan::TaskMan() : m_stopped(false), m_allowedToSignal(false) {
+Balau::TaskMan::TaskMan() : m_stopped(false), m_allowedToSignal(false), m_stopCode(0) {
 #ifndef _WIN32
     coro_create(&m_returnContext, 0, 0, 0, 0);
 #else
     m_fiber = ConvertThreadToFiber(NULL);
-    Assert(m_fiber);
+    RAssert(m_fiber, "ConvertThreadToFiber returned NULL");
 #endif
     TaskMan * global = localTaskMan.getGlobal();
     if (!global) {
@@ -159,7 +162,7 @@ class WinSocketStartup : public Balau::AtStart {
     virtual void doStart() {
         WSADATA wsaData;
         int r = WSAStartup(MAKEWORD(2, 0), &wsaData);
-        Assert(r == 0);
+        RAssert(r == 0, "WSAStartup returned %i", r);
     }
 };
 
@@ -169,7 +172,7 @@ static WinSocketStartup wsa;
 Balau::TaskMan * Balau::TaskMan::getDefaultTaskMan() { return localTaskMan.get(); }
 
 Balau::TaskMan::~TaskMan() {
-    Assert(localTaskMan.getGlobal() != this);
+    AAssert(localTaskMan.getGlobal() != this, "Don't create / delete a TaskMan directly");
     while (m_stacks.size() != 0) {
         free(m_stacks.front());
         m_stacks.pop();
@@ -203,13 +206,13 @@ void Balau::TaskMan::freeStack(void * stack) {
     }
 }
 
-void Balau::TaskMan::mainLoop() {
+int Balau::TaskMan::mainLoop() {
     do {
         taskHash_t::iterator iH;
         Task * t;
         bool noWait = false;
 
-        Printer::elog(E_TASK, "TaskMan::mainLoop() at %p with m_tasks.size = %i", this, m_tasks.size());
+        Printer::elog(E_TASK, "TaskMan::mainLoop() at %p with m_tasks.size = %li", this, m_tasks.size());
 
         // checking "STARTING" tasks, and running them once; also try to build the status of the noWait boolean.
         for (iH = m_tasks.begin(); iH != m_tasks.end(); iH++) {
@@ -248,7 +251,7 @@ void Balau::TaskMan::mainLoop() {
         for (iH = m_signaledTasks.begin(); iH != m_signaledTasks.end(); iH++) {
             t = *iH;
             Printer::elog(E_TASK, "TaskMan at %p Switching to task %p (%s - %s) that got signaled somehow.", this, t, t->getName(), ClassName(t).c_str());
-            Assert(t->getStatus() == Task::IDLE);
+            IAssert(t->getStatus() == Task::IDLE, "We're switching to a non-idle task... ? status = %i", t->getStatus());
             t->switchTo();
         }
         m_signaledTasks.clear();
@@ -258,7 +261,7 @@ void Balau::TaskMan::mainLoop() {
             Printer::elog(E_TASK, "TaskMan at %p trying to pop a task...", this);
             t = m_pendingAdd.pop();
             Printer::elog(E_TASK, "TaskMan at %p popped task %p...", this, t);
-            Assert(m_tasks.find(t) == m_tasks.end());
+            IAssert(m_tasks.find(t) == m_tasks.end(), "TaskMan got task %p twice... ?", t);
             ev_now_update(m_loop);
             t->setup(this, getStack());
             m_tasks.insert(t);
@@ -283,6 +286,7 @@ void Balau::TaskMan::mainLoop() {
 
     } while (!m_stopped);
     Printer::elog(E_TASK, "TaskManager at %p stopping.", this);
+    return m_stopCode;
 }
 
 void Balau::TaskMan::registerTask(Balau::Task * t, Balau::Task * stick) {
@@ -300,13 +304,13 @@ void Balau::TaskMan::addToPending(Balau::Task * t) {
 }
 
 void Balau::TaskMan::signalTask(Task * t) {
-    Assert(m_tasks.find(t) != m_tasks.end());
-    Assert(m_allowedToSignal);
+    AAssert(m_tasks.find(t) != m_tasks.end(), "Can't signal task %p that I don't own (me = %p)", t, this);
+    AAssert(m_allowedToSignal, "I'm not allowed to signal (me = %p)", this);
     m_signaledTasks.insert(t);
 }
 
-void Balau::TaskMan::stop() {
-    s_scheduler.stopAll();
+void Balau::TaskMan::stop(int code) {
+    s_scheduler.stopAll(code);
 }
 
 class ThreadedTaskMan : public Balau::Thread {

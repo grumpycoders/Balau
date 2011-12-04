@@ -29,7 +29,7 @@ class BaseEvent;
 
 class Handle {
   public:
-      virtual ~Handle() { Assert(m_refCount == 0); }
+      virtual ~Handle() { AAssert(m_refCount == 0, "Do not use handles directly; warp them in IO<>"); }
     virtual void close() throw (GeneralException) = 0;
     virtual bool isClosed() = 0;
     virtual bool isEOF() = 0;
@@ -107,7 +107,12 @@ class IO : public IOBase {
       template<class U>
       bool isA() { return !!dynamic_cast<U *>(m_h); }
     IO<T> & operator=(const IO<T> & io) { if (m_h) m_h->delRef(); setHandle(io.m_h); return *this; }
-    T * operator->() { Assert(m_h); T * r = dynamic_cast<T *>(m_h); Assert(r); return r; }
+    T * operator->() {
+        AAssert(m_h, "Can't use %s->() with a null Handle", ClassName(this).c_str());
+        T * r = dynamic_cast<T *>(m_h);
+        AAssert(r, "%s->() used with an incompatible Handle type", ClassName(this).c_str());
+        return r;
+    }
     bool isNull() { return dynamic_cast<T *>(m_h); }
 };
 
@@ -129,7 +134,7 @@ class SeekableHandle : public Handle {
 
 class ReadOnly : public Handle {
   public:
-      ReadOnly(IO<Handle> & io) : m_io(io) { Assert(m_io->canRead()); }
+      ReadOnly(IO<Handle> & io) : m_io(io) { AAssert(m_io->canRead(), "You need to use ReadOnly with a Handle that can at least read"); }
     virtual void close() throw (GeneralException) { m_io->close(); }
     virtual bool isClosed() { return m_io->isClosed(); }
     virtual bool isEOF() { return m_io->isEOF(); }
@@ -151,7 +156,7 @@ class ReadOnly : public Handle {
 
 class WriteOnly : public Handle {
   public:
-      WriteOnly(IO<Handle> & io) : m_io(io) { Assert(m_io->canWrite()); }
+      WriteOnly(IO<Handle> & io) : m_io(io) { AAssert(m_io->canWrite(), "You need to use WriteOnly with a Handle that can at least write"); }
     virtual void close() throw (GeneralException) { m_io->close(); }
     virtual bool isClosed() { return m_io->isClosed(); }
     virtual bool isEOF() { return m_io->isEOF(); }

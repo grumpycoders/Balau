@@ -24,7 +24,6 @@ int Balau::Local::s_size = 0;
 void ** Balau::Local::m_globals = 0;
 
 void Balau::Local::doStart() {
-    Assert(Main::status() == Main::STARTING);
     m_idx = s_size++;
     m_globals = reinterpret_cast<void **>(realloc(m_globals, s_size * sizeof(void *)));
     m_globals[m_idx] = 0;
@@ -46,7 +45,7 @@ void PThreadsTLSManager::doStart() {
     int r;
 
     r = pthread_key_create(&m_key, NULL);
-    Assert(r == 0);
+    RAssert(r == 0, "Unable to create a pthtread_key: %i", r);
     Balau::g_tlsManager = this;
 }
 

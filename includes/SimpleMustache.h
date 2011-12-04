@@ -57,8 +57,8 @@ class SimpleMustache {
             LAMBDA,
         } m_type;
           Context(ContextType type) : m_type(type), m_root(false) { }
-          Context(Context & c) { Assert(false); }
-          Context & operator=(Context & c) { Assert(false); return *this; }
+          Context(Context & c) { Failure("You can't copy a Context; use references"); }
+          Context & operator=(Context & c) { Failure("You can't assign a Context; use references"); return *this; }
         String m_str;
         bool m_bool;
         typedef std::map<String, Context *> SubContext;
@@ -82,9 +82,9 @@ class SimpleMustache {
     }
     void setTemplate(const char * str, ssize_t s = -1) { setTemplate((const uint8_t *) str, s); }
     void setTemplate(const String & str) { setTemplate((const uint8_t *) str.to_charp(), str.strlen()); }
-    void render(IO<Handle> h, Context * ctx) { Assert(ctx); render_r(h, ctx, "", m_fragments.begin(), false, -1); }
+    void render(IO<Handle> h, Context * ctx) { AAssert(ctx, "Please pass on a context to render"); render_r(h, ctx, "", m_fragments.begin(), false, -1); }
     void empty() { while (!m_fragments.empty()) { delete m_fragments.front(); m_fragments.pop_front(); } }
-    void checkTemplate() { Fragments::iterator end = checkTemplate_r(m_fragments.begin()); Assert(end == m_fragments.end()); }
+    void checkTemplate() { Fragments::iterator end = checkTemplate_r(m_fragments.begin()); AAssert(end == m_fragments.end(), "The template wasn't fully checked; possibly mismatched sections"); }
       ~SimpleMustache() { empty(); }
   private:
     struct Fragment {

@@ -197,7 +197,7 @@ int Balau::LuaStatics::print(lua_State * __L) {
             L.error("`tostring' must return a string to `print'");
         if (i > 1)
             Printer::print("\t");
-        Printer::print(s);
+        Printer::print("%s", s);
         L.pop();
     }
     Printer::print("\n");

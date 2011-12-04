@@ -21,7 +21,7 @@ class HttpServer {
     class Action {
       public:
           Action(const Regex & regex, const Regex & host = Regexes::any) : m_regex(regex), m_host(host), m_refCount(0) { }
-          ~Action() { Assert(m_refCount == 0); }
+          ~Action() { AAssert(m_refCount == 0, "Don't delete an Action directl"); }
         struct ActionMatch {
             Regex::Captures uri, host;
         };
@@ -39,8 +39,8 @@ class HttpServer {
       ~HttpServer() { if (!m_started) stop(); }
     void start();
     void stop();
-    void setPort(int port) { Assert(!m_started); m_port = port; }
-    void setLocal(const char * local) { Assert(!m_started); m_local = local; }
+    void setPort(int port) { AAssert(!m_started, "You can't set the HTTP port once the server has started"); m_port = port; }
+    void setLocal(const char * local) { AAssert(!m_started, "You can't set the HTTP IP once the server has started"); m_local = local; }
     void registerAction(Action * action);
     void flushAllActions();
     struct ActionFound {

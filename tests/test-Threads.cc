@@ -1,12 +1,9 @@
 #include <Main.h>
 #include <Threads.h>
 
-BALAU_STARTUP;
-
 using namespace Balau;
 
 class TestThread : public Thread {
-  private:
     virtual void * proc();
 };
 

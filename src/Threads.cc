@@ -17,11 +17,11 @@ Balau::Lock::Lock() {
     pthread_mutexattr_t attr;
 
     r = pthread_mutexattr_init(&attr);
-    Assert(r == 0);
+    RAssert(r == 0, "Couldn't initialize mutex attribute; r = %i", r);
     r = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
-    Assert(r == 0);
+    RAssert(r == 0, "Couldn't set mutex attribute; r = %i", r);
     r = pthread_mutex_init(&m_lock, &attr);
-    Assert(r == 0);
+    RAssert(r == 0, "Couldn't initialize mutex; r = %i", r);
 }
 
 void * Balau::ThreadHelper::threadProc(void * arg) {
@@ -39,8 +39,10 @@ Balau::Thread::~Thread() {
 
 void * Balau::Thread::join() {
     void * r = NULL;
-    if (Atomic::CmpXChgBool(&m_joined, true, false))
+    if (Atomic::CmpXChgBool(&m_joined, true, false)) {
+        threadExit();
         pthread_join(m_thread, &r);
+    }
     return r;
 }
 
@@ -49,9 +51,11 @@ void Balau::Thread::threadStart() {
     int r;
 
     r = pthread_attr_init(&attr);
-    Assert(r == 0);
+    RAssert(r == 0, "Couldn't initialize pthread attribute; r = %i", r);
     r = pthread_create(&m_thread, &attr, Balau::ThreadHelper::threadProc, this);
-    Assert(r == 0);
+    RAssert(r == 0, "Couldn't create pthread; r = %i", r);
     r = pthread_attr_destroy(&attr);
-    Assert(r == 0);
+    RAssert(r == 0, "Couldn't destroy pthread attribute; r = %i", r);
 }
+
+void Balau::Thread::threadExit() { }

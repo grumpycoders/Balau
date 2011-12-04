@@ -56,14 +56,14 @@ class Printer {
 
     static Printer * getPrinter();
     static void log(uint32_t level, const String & fmt, ...) { va_list ap; va_start(ap, fmt); vlog(level, fmt.to_charp(), ap); va_end(ap); }
-    static void log(uint32_t level, const char * fmt, ...) { va_list ap; va_start(ap, fmt); vlog(level, fmt, ap); va_end(ap); }
-    static void vlog(uint32_t level, const char * fmt, va_list ap) { getPrinter()->_log(level, fmt, ap); }
+    static void log(uint32_t level, const char * fmt, ...) __attribute__((format(printf, 2, 3))) { va_list ap; va_start(ap, fmt); vlog(level, fmt, ap); va_end(ap); }
+    static void vlog(uint32_t level, const char * fmt, va_list ap) __attribute__((format(printf, 2, 0))) { getPrinter()->_log(level, fmt, ap); }
     static void print(const String & fmt, ...) { va_list ap; va_start(ap, fmt); vprint(fmt.to_charp(), ap); va_end(ap); }
-    static void print(const char * fmt, ...) { va_list ap; va_start(ap, fmt); vprint(fmt, ap); va_end(ap); }
-    static void vprint(const char * fmt, va_list ap) { getPrinter()->_print(fmt, ap); }
+    static void print(const char * fmt, ...) __attribute__((format(printf, 1, 2))) { va_list ap; va_start(ap, fmt); vprint(fmt, ap); va_end(ap); }
+    static void vprint(const char * fmt, va_list ap) __attribute__((format(printf, 1, 0))) { getPrinter()->_print(fmt, ap); }
 
 #ifdef DEBUG
-    static void elog(uint32_t engine, const char * fmt, ...) { va_list ap; va_start(ap, fmt); getPrinter()->_log(M_ENGINE_DEBUG, fmt, ap); }
+    static void elog(uint32_t engine, const char * fmt, ...) __attribute__((format(printf, 2, 3))) { va_list ap; va_start(ap, fmt); getPrinter()->_log(M_ENGINE_DEBUG, fmt, ap); }
 #else
     static void elog(uint32_t engine, const char * fmt, ...) { }
 #endif

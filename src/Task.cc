@@ -24,11 +24,11 @@ bool Balau::Task::needsStacks() {
 void Balau::Task::setup(TaskMan * taskMan, void * stack) {
     size_t size = stackSize();
 #ifndef _WIN32
-    Assert(stack);
+    IAssert(stack, "Can't setup a coroutine without a stack");
     m_stack = stack;
     coro_create(&m_ctx, coroutineTrampoline, this, m_stack, size);
 #else
-    Assert(!stack);
+    Assert(!stack, "We shouldn't allocate stacks with Fibers");
     m_stack = NULL;
     m_fiber = CreateFiber(size, coroutineTrampoline, this);
 #endif
@@ -48,19 +48,39 @@ Balau::Task::~Task() {
 
 void Balau::Task::coroutineTrampoline(void * arg) {
     Task * task = reinterpret_cast<Task *>(arg);
-    Assert(task);
+    IAssert(task, "We didn't get a task to trampoline from... ?");
     task->coroutine();
 }
 
 void Balau::Task::coroutine() {
-    Assert(m_status == STARTING);
+    IAssert(m_status == STARTING, "The Task at %p was badly initialized ? m_status = %i", this, m_status);
     try {
         m_status = RUNNING;
         Do();
         m_status = STOPPED;
     }
+    catch (Exit & e) {
+        m_status = STOPPED;
+        TaskMan::stop(e.getCode());
+    }
+    catch (TestException & e) {
+        m_status = STOPPED;
+        Printer::log(M_ERROR, "Unit test failed: %s", e.getMsg());
+        TaskMan::stop(-1);
+    }
+    catch (RessourceException & e) {
+        m_status = STOPPED;
+        Printer::log(M_ERROR, "Got a ressource exhaustion problem: %s", e.getMsg());
+        const char * details = e.getDetails();
+        if (details)
+            Printer::log(M_ERROR, "  %s", details);
+        TaskMan::stop(-1);
+    }
     catch (GeneralException & e) {
         Printer::log(M_WARNING, "Task %s at %p caused an exception: `%s' - stopping.", getName(), this, e.getMsg());
+        const char * details = e.getDetails();
+        if (details)
+            Printer::log(M_WARNING, "  %s", details);
         std::vector<String> trace = e.getTrace();
         for (std::vector<String>::iterator i = trace.begin(); i != trace.end(); i++)
             Printer::log(M_DEBUG, "%s", i->to_charp());
@@ -79,7 +99,7 @@ void Balau::Task::coroutine() {
 
 void Balau::Task::switchTo() {
     Printer::elog(E_TASK, "Switching to task %p - %s", this, getName());
-    Assert(m_status == IDLE || m_status == STARTING);
+    IAssert(m_status == IDLE || m_status == STARTING, "The task at %p isn't either idle or starting... ? m_status = %i", this, m_status);
     void * oldTLS = g_tlsManager->getTLS();
     g_tlsManager->setTLS(m_tls);
 #ifndef _WIN32
@@ -157,7 +177,7 @@ Balau::Events::TaskEvent::~TaskEvent() {
 }
 
 void Balau::Events::TaskEvent::ack() {
-    Assert(!m_ack);
+    AAssert(!m_ack, "You can't ack() a task event twice.");
     bool deleted = false;
     Task * t = m_taskWaited;
     Task::waitedByList_t::iterator i;
@@ -169,7 +189,7 @@ void Balau::Events::TaskEvent::ack() {
         }
     }
     Printer::elog(E_TASK, "TaskEvent at %p being ack; removing from the 'waited by' list of %p (%s - %s); deleted = %s", this, t, t->getName(), ClassName(t).c_str(), deleted ? "true" : "false");
-    Assert(deleted);
+    IAssert(deleted, "We didn't find task %p in the waitedBy lists... ?", this);
     m_ack = true;
     reset();
 }
