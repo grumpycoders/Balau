@@ -22,21 +22,28 @@ class Lock {
 
 class ThreadHelper;
 
-class Thread : public AtExit {
+class Thread {
   public:
       virtual ~Thread();
     void threadStart();
     void * join();
   protected:
-      Thread(bool registerAtExit = false) : AtExit(registerAtExit ? 1 : -1), m_joined(false) { }
+      Thread() : m_joined(false) { }
     virtual void * proc() = 0;
-    virtual void threadExit();
+    virtual void threadExit() { };
   private:
     pthread_t m_thread;
     volatile bool m_joined;
-    virtual void doExit() { join(); }
 
     friend class ThreadHelper;
+};
+
+class GlobalThread : public Thread, public AtStart, public AtExit {
+  protected:
+      GlobalThread(int startOrder = 10) : AtStart(startOrder), AtExit(1) { }
+  private:
+    virtual void doStart() { threadStart(); }
+    virtual void doExit() { join(); }
 };
 
 template<class T>

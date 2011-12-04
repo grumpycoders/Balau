@@ -175,21 +175,16 @@ static const char * inet_ntop(int af, const void * src, char * dst, socklen_t si
 #if 0
 // TODO: use getaddrinfo_a, if available.
 #else
-class ResolverThread : public Balau::Thread, public Balau::AtStart {
+class ResolverThread : public Balau::GlobalThread {
   public:
-      ResolverThread() : Thread(true), AtStart(8), m_stopping(false) { }
+      ResolverThread() : GlobalThread(8), m_stopping(false) { }
     void pushRequest(DNSRequest * req) { m_queue.push(req); }
   private:
     virtual void * proc();
-    virtual void doStart();
     virtual void threadExit();
     Balau::Queue<DNSRequest> m_queue;
     volatile bool m_stopping;
 };
-
-void ResolverThread::doStart() {
-    threadStart();
-}
 
 void ResolverThread::threadExit() {
     m_stopping = true;

@@ -57,5 +57,3 @@ void Balau::Thread::threadStart() {
     r = pthread_attr_destroy(&attr);
     RAssert(r == 0, "Couldn't destroy pthread attribute; r = %i", r);
 }
-
-void Balau::Thread::threadExit() { }

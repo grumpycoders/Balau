@@ -27,12 +27,11 @@ static const int TOO_MANY_STACKS = 1024;
 
 namespace Balau {
 
-class TaskScheduler : public Thread, public AtStart {
+class TaskScheduler : public GlobalThread {
   public:
-      TaskScheduler() : Thread(true), AtStart(100), m_stopping(false) { }
+      TaskScheduler() : GlobalThread(100), m_stopping(false) { }
     void registerTask(Task * t);
     virtual void * proc();
-    virtual void doStart();
     virtual void threadExit();
     void registerTaskMan(TaskMan * t);
     void unregisterTaskMan(TaskMan * t);
@@ -118,10 +117,6 @@ void * Balau::TaskScheduler::proc() {
     }
     Printer::elog(E_TASK, "TaskScheduler stopping.");
     return NULL;
-}
-
-void Balau::TaskScheduler::doStart() {
-    threadStart();
 }
 
 void Balau::TaskScheduler::threadExit() {
