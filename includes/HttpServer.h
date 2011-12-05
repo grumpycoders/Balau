@@ -55,7 +55,7 @@ class HttpServer {
     String m_local;
     typedef std::list<Action *> ActionList;
     ActionList m_actions;
-    Lock m_actionsLock;
+    RWLock m_actionsLock;
 
     friend class HttpWorker;
 };

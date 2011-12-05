@@ -534,14 +534,14 @@ void Balau::HttpServer::stop() {
 }
 
 void Balau::HttpServer::registerAction(Action * action) {
-    m_actionsLock.enter();
+    m_actionsLock.enterW();
     action->ref();
     m_actions.push_front(action);
     m_actionsLock.leave();
 }
 
 void Balau::HttpServer::flushAllActions() {
-    m_actionsLock.enter();
+    m_actionsLock.enterW();
     Action * a;
     while (!m_actions.empty()) {
         a = m_actions.front();
@@ -563,7 +563,7 @@ Balau::HttpServer::Action::ActionMatch Balau::HttpServer::Action::matches(const 
 }
 
 Balau::HttpServer::ActionFound Balau::HttpServer::findAction(const char * uri, const char * host) {
-    m_actionsLock.enter();
+    m_actionsLock.enterR();
 
     ActionList::iterator i;
     ActionFound r;

@@ -20,6 +20,17 @@ class Lock {
     friend class Queue;
 };
 
+class RWLock {
+  public:
+      RWLock();
+      ~RWLock() { pthread_rwlock_destroy(&m_lock); }
+    void enterR() { pthread_rwlock_rdlock(&m_lock); }
+    void enterW() { pthread_rwlock_wrlock(&m_lock); }
+    void leave() { pthread_rwlock_unlock(&m_lock); }
+  private:
+    pthread_rwlock_t m_lock;
+};
+
 class ThreadHelper;
 
 class Thread {
