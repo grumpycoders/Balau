@@ -3,6 +3,7 @@
 #include <Exceptions.h>
 #include <Printer.h>
 #include <BString.h>
+#include <Atomic.h>
 
 namespace Balau {
 
@@ -57,9 +58,9 @@ class Handle {
   protected:
       Handle() : m_refCount(0) { }
   private:
-    void addRef() { m_refCount++; }
+    void addRef() { Atomic::Increment(&m_refCount); }
     void delRef() {
-        if (--m_refCount == 0) {
+        if (Atomic::Decrement(&m_refCount) == 0) {
             if (!isClosed())
                 close();
             delete this;
@@ -69,7 +70,7 @@ class Handle {
     template<class T>
     friend class IO;
 
-    int m_refCount;
+    volatile int m_refCount;
 };
 
 class HPrinter : public Handle {
