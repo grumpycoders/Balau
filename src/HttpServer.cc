@@ -42,10 +42,27 @@ class HttpWorker : public Task {
     virtual const char * getName();
 
     bool handleClient();
-    void sendError(int error, const char * msg, const char * details, bool closeConnection, std::vector<String> trace);
-    void send400() { std::vector<String> d2; sendError(400, "The HTTP request you've sent is invalid", NULL, true, d2); }
-    void send404() { std::vector<String> d2; sendError(404, "The HTTP request you've sent didn't match any action on this server.", NULL, false, d2); }
-    void send500(const char * msg, const char * details, std::vector<String> trace) { String smsg; smsg.set("The HTTP request you've sent triggered an internal error: `%s\xc2\xb4", msg); sendError(500, smsg.to_charp(), details, true, trace); }
+    void sendError(int error, const char * msg, const char * details, bool closeConnection, std::vector<String> extraHeaders, std::vector<String> trace);
+    void send400() {
+        std::vector<String> d;
+        sendError(400, "The HTTP request you've sent is invalid", NULL, true, d, d);
+    }
+    void send404() {
+        std::vector<String> d;
+        sendError(404, "The HTTP request you've sent didn't match any action on this server.", NULL, false, d, d);
+    }
+    void send405() {
+        std::vector<String> d;
+        std::vector<String> extra;
+        extra.push_back("Allow: GET, POST");
+        sendError(405, "The HTTP request you've sent contains an unsupported method.", NULL, true, extra, d);
+    }
+    void send500(const char * msg, const char * details, std::vector<String> trace) {
+        String smsg;
+        std::vector<String> d;
+        smsg.set("The HTTP request you've sent triggered an internal error: `%s\xc2\xb4", msg);
+        sendError(500, smsg.to_charp(), details, true, d, trace);
+    }
     String httpUnescape(const char * in);
     void readVariables(Http::StringMap & variables, char * str);
 
@@ -163,21 +180,19 @@ static const char * getErrorMsg(int httpError) {
     switch (httpError) {
     case 400:
         return "Bad Request";
-        break;
     case 403:
         return "Forbidden";
-        break;
     case 404:
         return "Not Found";
-        break;
+    case 405:
+        return "Method Not Allowed";
     case 500:
     default:
         return "Internal Error";
-        break;
     }
 }
 
-void Balau::HttpWorker::sendError(int error, const char * msg, const char * details, bool closeConnection, std::vector<String> trace) {
+void Balau::HttpWorker::sendError(int error, const char * msg, const char * details, bool closeConnection, std::vector<String> extraHeaders, std::vector<String> trace) {
     SimpleMustache * tpl = &m_errorTemplate;
     const char * errorMsg = getErrorMsg(error);
     Printer::elog(Balau::E_HTTPSERVER, "%s caused a %i error (%s)", m_name.to_charp(), error, errorMsg);
@@ -198,8 +213,11 @@ void Balau::HttpWorker::sendError(int error, const char * msg, const char * deta
 "HTTP/1.0 %i %s\r\n"
 "Content-Type: text/html; charset=UTF-8\r\n"
 "Connection: close\r\n"
-"Server: %s\r\n"
-"\r\n", error, errorMsg, m_serverName.to_charp());
+"Server: %s\r\n",
+            error, errorMsg, m_serverName.to_charp());
+        for (std::vector<String>::iterator i = extraHeaders.begin(); i != extraHeaders.end(); i++)
+            headers += *i + "\r\n";
+        headers += "\r\n";
         m_socket->forceWrite(headers);
         if (m_socket->isClosed()) return;
         tpl->render(m_socket, &ctx);
@@ -213,8 +231,11 @@ void Balau::HttpWorker::sendError(int error, const char * msg, const char * deta
 "Content-Type: text/html; charset=UTF-8\r\n"
 "Connection: keep-alive\r\n"
 "Server: %s\r\n"
-"Content-Length: %lli\r\n"
-"\r\n", error, errorMsg, m_serverName.to_charp(), length);
+"Content-Length: %lli\r\n",
+            error, errorMsg, m_serverName.to_charp(), length);
+        for (std::vector<String>::iterator i = extraHeaders.begin(); i != extraHeaders.end(); i++)
+            headers += *i + "\r\n";
+        headers += "\r\n";
         m_socket->forceWrite(headers);
         if (m_socket->isClosed()) return;
         m_socket->forceWrite(errorText->getBuffer(), length);
@@ -266,10 +287,43 @@ bool Balau::HttpWorker::handleClient() {
                     method = Http::GET;
                 }
                 break;
+            case 'H':
+                if ((line[1] == 'E') && (line[2] == 'A') && (line[3] == 'D') && (line[4] == ' ')) {
+                    urlBegin = 5;
+                    method = Http::HEAD;
+                }
+                break;
             case 'P':
                 if ((line[1] == 'O') && (line[2] == 'S') && (line[3] == 'T') && (line[4] == ' ')) {
                     urlBegin = 5;
                     method = Http::POST;
+                } else if ((line[1] == 'U') && (line[2] == 'T') && (line[3] == ' ')) {
+                    urlBegin = 4;
+                    method = Http::PUT;
+                }
+                break;
+            case 'D':
+                if ((line[1] == 'E') && (line[2] == 'L') && (line[3] == 'E') && (line[4] == 'T') && (line[5] == 'E') && (line[6] == ' ')) {
+                    urlBegin = 7;
+                    method = Http::DELETE;
+                }
+                break;
+            case 'T':
+                if ((line[1] == 'R') && (line[2] == 'A') && (line[3] == 'C') && (line[4] == 'E') && (line[5] == ' ')) {
+                    urlBegin = 6;
+                    method = Http::TRACE;
+                }
+                break;
+            case 'O':
+                if ((line[1] == 'P') && (line[2] == 'T') && (line[3] == 'I') && (line[4] == 'O') && (line[5] == 'N') && (line[6] == 'S') && (line[7] == ' ')) {
+                    urlBegin = 8;
+                    method = Http::OPTIONS;
+                }
+                break;
+            case 'C':
+                if ((line[1] == 'O') && (line[2] == 'N') && (line[3] == 'N') && (line[4] == 'E') && (line[5] == 'C') && (line[6] == 'T') && (line[7] == ' ')) {
+                    urlBegin = 8;
+                    method = Http::CONNECT;
                 }
                 break;
             }
@@ -333,6 +387,16 @@ bool Balau::HttpWorker::handleClient() {
     if (!gotFirst) {
         Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has nothing in its request", m_name.to_charp());
         send400();
+        return false;
+    }
+
+    if (method == -1) {
+        send400();
+        return false;
+    }
+    
+    if ((method != Http::GET) && (method != Http::POST)) {
+        send405();
         return false;
     }
 

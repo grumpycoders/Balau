@@ -24,7 +24,13 @@ class Request {
 
 enum {
     GET,
+    HEAD,
     POST,
+    PUT,
+    DELETE,
+    TRACE,
+    OPTIONS,
+    CONNECT,
 
     REDIRECT = 301,
 
