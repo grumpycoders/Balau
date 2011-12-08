@@ -176,25 +176,11 @@ void Balau::HttpWorker::readVariables(Http::StringMap & variables, char * str) {
     } while (ampPos);
 }
 
-static const char * getErrorMsg(int httpError) {
-    switch (httpError) {
-    case 400:
-        return "Bad Request";
-    case 403:
-        return "Forbidden";
-    case 404:
-        return "Not Found";
-    case 405:
-        return "Method Not Allowed";
-    case 500:
-    default:
-        return "Internal Error";
-    }
-}
-
 void Balau::HttpWorker::sendError(int error, const char * msg, const char * details, bool closeConnection, std::vector<String> extraHeaders, std::vector<String> trace) {
     SimpleMustache * tpl = &m_errorTemplate;
-    const char * errorMsg = getErrorMsg(error);
+    const char * errorMsg = Http::getStatusMsg(error);
+    if (!errorMsg)
+        errorMsg = "Unknown Status";
     Printer::elog(Balau::E_HTTPSERVER, "%s caused a %i error (%s)", m_name.to_charp(), error, errorMsg);
     SimpleMustache::Context ctx;
     String title;

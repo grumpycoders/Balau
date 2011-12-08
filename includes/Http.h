@@ -8,6 +8,8 @@ namespace Balau {
 
 namespace Http {
 
+const char * getStatusMsg(int httpStatus);
+
 typedef std::map<String, String> StringMap;
 typedef std::map<String, IO<Handle> > FileList;
 

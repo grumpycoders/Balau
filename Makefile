@@ -133,6 +133,7 @@ BStream.cc \
 Task.cc \
 TaskMan.cc \
 \
+Http.cc \
 HttpServer.cc \
 SimpleMustache.cc \
 \
