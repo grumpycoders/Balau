@@ -111,7 +111,7 @@ ssize_t Balau::ZStream::write(const void * buf, size_t count) throw (GeneralExce
         Task::yield(NULL);
         size_t compressed = BLOCK_SIZE - m_zout.avail_out;
         if (compressed) {
-            size_t w = m_h->write(obuf, compressed);
+            size_t w = m_h->forceWrite(obuf, compressed);
             if (w <= 0)
                 return wroteTotal;
         }
@@ -133,7 +133,7 @@ void Balau::ZStream::doFlush(bool finish) {
         EAssert((r == Z_OK) || ((r == Z_STREAM_END) && finish), "deflate() didn't return Z_OK or Z_STREAM_END, but %i (finish = %s)", r, finish ? "true" : "false");
         size_t compressed = BLOCK_SIZE - m_zout.avail_out;
         if (compressed) {
-            size_t w = m_h->write(buf, compressed);
+            size_t w = m_h->forceWrite(buf, compressed);
             if (w <= 0)
                 return;
         }
