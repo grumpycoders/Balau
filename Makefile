@@ -129,6 +129,7 @@ Output.cc \
 Socket.cc \
 Buffer.cc \
 BStream.cc \
+ZHandle.cc \
 \
 Task.cc \
 TaskMan.cc \
