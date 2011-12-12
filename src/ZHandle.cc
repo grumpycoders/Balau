@@ -130,6 +130,7 @@ void Balau::ZStream::doFlush(bool finish) {
         m_zout.next_out = (Bytef *) buf;
         m_zout.avail_out = BLOCK_SIZE;
         r = deflate(&m_zout, finish ? Z_FINISH : Z_SYNC_FLUSH);
+        EAssert((r == Z_OK) || ((r == Z_STREAM_END) && finish), "deflate() didn't return Z_OK or Z_STREAM_END, but %i (finish = %s)", r, finish ? "true" : "false");
         size_t compressed = BLOCK_SIZE - m_zout.avail_out;
         if (compressed) {
             size_t w = m_h->write(buf, compressed);
