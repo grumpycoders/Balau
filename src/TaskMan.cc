@@ -202,24 +202,39 @@ void Balau::TaskMan::freeStack(void * stack) {
 }
 
 int Balau::TaskMan::mainLoop() {
+    taskHash_t starting, stopped, yielded, yielded2;
+    taskHash_t::iterator iH;
+    Task * t;
+
+    // we start by pushing all of the 'STARTING' tasks into the appropriate queue.
+    for (iH = m_tasks.begin(); iH != m_tasks.end(); iH++)
+        if (t->getStatus() == Task::STARTING)
+            starting.insert(*iH);
+
     do {
-        taskHash_t::iterator iH;
-        Task * t;
         bool noWait = false;
 
         Printer::elog(E_TASK, "TaskMan::mainLoop() at %p with m_tasks.size = %li", this, m_tasks.size());
 
         // checking "STARTING" tasks, and running them once; also try to build the status of the noWait boolean.
-        for (iH = m_tasks.begin(); iH != m_tasks.end(); iH++) {
+        while ((iH = starting.begin()) != starting.end()) {
             t = *iH;
-            if (t->getStatus() == Task::STARTING)
-                t->switchTo();
-            if ((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED))
+            IAssert(t->getStatus() == Task::STARTING, "Got task at %p in the starting list, but isn't starting.", t);
+            t->switchTo();
+            IAssert(t->getStatus() != Task::STARTING, "Task at %p got switchedTo, but still is 'STARTING'.", t);
+            starting.erase(iH);
+            if ((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED)) {
                 noWait = true;
+                stopped.insert(t);
+            }
+            if (t->getStatus() == Task::YIELDED) {
+                noWait = true;
+                yielded.insert(t);
+            }
         }
 
         // if we begin that loop with any pending task, just don't loop, so we can add them immediately.
-        if (!m_pendingAdd.isEmpty())
+        if (!m_pendingAdd.isEmpty() || !yielded.empty())
             noWait = true;
 
         // libev's event "loop". We always runs it once though.
@@ -229,10 +244,10 @@ int Balau::TaskMan::mainLoop() {
         Printer::elog(E_TASK, "TaskMan at %p Getting out of libev main loop", this);
 
         // let's check what task got stopped, and signal them
-        for (iH = m_tasks.begin(); iH != m_tasks.end(); iH++) {
+        for (iH = stopped.begin(); iH != stopped.end(); iH++) {
             t = *iH;
-            if (((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED)) &&
-                 (t->m_waitedBy.size() != 0)) {
+            IAssert((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED), "Task %p in stopped list but isn't stopped.", t);
+            if (t->m_waitedBy.size() != 0) {
                 Task::waitedByList_t::iterator i;
                 for (i = t->m_waitedBy.begin(); i != t->m_waitedBy.end(); i++) {
                     Events::TaskEvent * e = *i;
@@ -246,10 +261,36 @@ int Balau::TaskMan::mainLoop() {
         for (iH = m_signaledTasks.begin(); iH != m_signaledTasks.end(); iH++) {
             t = *iH;
             Printer::elog(E_TASK, "TaskMan at %p Switching to task %p (%s - %s) that got signaled somehow.", this, t, t->getName(), ClassName(t).c_str());
-            IAssert(t->getStatus() == Task::IDLE, "We're switching to a non-idle task... ? status = %i", t->getStatus());
+            IAssert(t->getStatus() == Task::IDLE || t->getStatus() == Task::YIELDED, "We're switching to a non-idle/yielded task at %p... ? status = %i", t, t->getStatus());
+            bool wasYielded = t->getStatus() == Task::YIELDED;
             t->switchTo();
+            if ((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED)) {
+                stopped.insert(t);
+                if (wasYielded) {
+                    taskHash_t::iterator i = yielded.find(t);
+                    IAssert(i != yielded.end(), "Task at %p was yielded, but not in yielded list... ?", t);
+                    yielded.erase(i);
+                }
+            } else if (t->getStatus() == Task::YIELDED) {
+                yielded.insert(t);
+            }
         }
         m_signaledTasks.clear();
+
+        // now let's make a round of yielded tasks
+        for (iH = yielded.begin(); iH != yielded.end(); iH++) {
+            t = *iH;
+            Printer::elog(E_TASK, "TaskMan at %p Switching to task %p (%s - %s) that was yielded.", this, t, t->getName(), ClassName(t).c_str());
+            IAssert(t->getStatus() == Task::YIELDED, "Task %p was in yielded list, but wasn't yielded ?", t);
+            t->switchTo();
+            if ((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED)) {
+                stopped.insert(t);
+            } else if (t->getStatus() == Task::YIELDED) {
+                yielded2.insert(t);
+            }
+        }
+        yielded = yielded2;
+        yielded2.clear();
 
         // Adding tasks that were added, maybe from other threads
         while (!m_pendingAdd.isEmpty()) {
@@ -260,19 +301,24 @@ int Balau::TaskMan::mainLoop() {
             ev_now_update(m_loop);
             t->setup(this, getStack());
             m_tasks.insert(t);
+            starting.insert(t);
         }
 
         // Finally, let's destroy tasks that no longer are necessary.
         bool didDelete;
         do {
             didDelete = false;
-            for (iH = m_tasks.begin(); iH != m_tasks.end(); iH++) {
+            for (iH = stopped.begin(); iH != stopped.end(); iH++) {
                 t = *iH;
-                if (((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED)) &&
-                     (t->m_waitedBy.size() == 0)) {
+                IAssert((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED), "Task %p in stopped list but isn't stopped.", t);
+                if (t->m_waitedBy.size() == 0) {
                     freeStack(t->m_stack);
-                    delete t;
+                    stopped.erase(iH);
+                    iH = m_tasks.find(t);
+                    IAssert(iH != m_tasks.end(), "Task %p in stopped list but not in m_tasks...", t);
                     m_tasks.erase(iH);
+                    IAssert(yielded.find(t) == yielded.end(), "Task %p is deleted but is in yielded list... ?", t);
+                    delete t;
                     didDelete = true;
                     break;
                 }

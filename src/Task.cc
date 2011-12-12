@@ -53,8 +53,8 @@ void Balau::Task::coroutineTrampoline(void * arg) {
 }
 
 void Balau::Task::coroutine() {
-    IAssert(m_status == STARTING, "The Task at %p was badly initialized ? m_status = %i", this, m_status);
     try {
+        IAssert(m_status == STARTING, "The Task at %p was badly initialized ? m_status = %i", this, m_status);
         m_status = RUNNING;
         Do();
         m_status = STOPPED;
@@ -99,9 +99,11 @@ void Balau::Task::coroutine() {
 
 void Balau::Task::switchTo() {
     Printer::elog(E_TASK, "Switching to task %p - %s", this, getName());
-    IAssert(m_status == IDLE || m_status == STARTING, "The task at %p isn't either idle or starting... ? m_status = %i", this, m_status);
+    IAssert(m_status == YIELDED || m_status == IDLE || m_status == STARTING, "The task at %p isn't either yielded, idle or starting... ? m_status = %i", this, m_status);
     void * oldTLS = g_tlsManager->getTLS();
     g_tlsManager->setTLS(m_tls);
+    if (m_status == YIELDED || m_status == IDLE)
+        m_status = RUNNING;
 #ifndef _WIN32
     coro_transfer(&m_taskMan->m_returnContext, &m_ctx);
 #else
@@ -112,8 +114,10 @@ void Balau::Task::switchTo() {
         m_status = IDLE;
 }
 
-void Balau::Task::yield() {
+void Balau::Task::yield(bool changeStatus) {
     Printer::elog(E_TASK, "Task %p - %s yielding", this, getName());
+    if (changeStatus)
+        m_status = YIELDED;
 #ifndef _WIN32
     coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
 #else
@@ -210,12 +214,18 @@ void Balau::Events::Custom::gotOwner(Task * task) {
 
 void Balau::Task::yield(Events::BaseEvent * evt, bool interruptible) throw (GeneralException) {
     Task * t = getCurrentTask();
-    t->waitFor(evt);
+    if (evt)
+        t->waitFor(evt);
+    bool gotSignal;
 
     do {
-        t->yield();
+        t->yield(evt == NULL);
         Printer::elog(E_TASK, "operation back from yielding; interruptible = %s; okayToEAgain = %s", interruptible ? "true" : "false", t->m_okayToEAgain ? "true" : "false");
-    } while ((!interruptible || !t->m_okayToEAgain) && !evt->gotSignal());
+        gotSignal = evt ? evt->gotSignal() : true;
+    } while ((!interruptible || !t->m_okayToEAgain) && !gotSignal);
+
+    if (!evt)
+        return;
 
     if (interruptible && t->m_okayToEAgain && !evt->gotSignal()) {
         Printer::elog(E_TASK, "operation is throwing an exception.");

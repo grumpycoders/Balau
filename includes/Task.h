@@ -122,6 +122,7 @@ class Task {
         IDLE,
         STOPPED,
         FAULTED,
+        YIELDED,
     };
       Task();
       virtual ~Task();
@@ -136,7 +137,7 @@ class Task {
     TaskMan * getTaskMan() { return m_taskMan; }
     struct ev_loop * getLoop();
   protected:
-    void yield();
+    void yield(bool changeStatus = false);
     virtual void Do() = 0;
     void waitFor(Events::BaseEvent * event);
     bool setOkayToEAgain(bool enable) {
