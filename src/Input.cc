@@ -55,7 +55,7 @@ Balau::Input::Input(const char * fname) throw (GeneralException) : m_fd(-1), m_s
 
     cbResults_t cbResults;
     eio_req * r = eio_open(fname, O_RDONLY, 0, 0, eioDone, &cbResults);
-    RAssert(r != NULL, "eio_open returned a NULL eio_req");
+    EAssert(r != NULL, "eio_open returned a NULL eio_req");
     Task::yield(&cbResults.evt);
     if (cbResults.result < 0) {
         char str[4096];
@@ -70,7 +70,7 @@ Balau::Input::Input(const char * fname) throw (GeneralException) : m_fd(-1), m_s
 
     cbStatsResults_t cbStatsResults;
     r = eio_fstat(m_fd, 0, eioStatsDone, &cbStatsResults);
-    RAssert(r != NULL, "eio_fstat returned a NULL eio_req");
+    EAssert(r != NULL, "eio_fstat returned a NULL eio_req");
     Task::yield(&cbStatsResults.evt);
     if (cbStatsResults.result == 0) {
         m_size = cbStatsResults.statdata.st_size;
@@ -83,7 +83,7 @@ void Balau::Input::close() throw (GeneralException) {
         return;
     cbResults_t cbResults;
     eio_req * r = eio_close(m_fd, 0, eioDone, &cbResults);
-    RAssert(r != NULL, "eio_close returned a NULL eio_req");
+    EAssert(r != NULL, "eio_close returned a NULL eio_req");
     m_fd = -1;
     Task::yield(&cbResults.evt);
     if (cbResults.result < 0) {
@@ -98,7 +98,7 @@ void Balau::Input::close() throw (GeneralException) {
 ssize_t Balau::Input::read(void * buf, size_t count) throw (GeneralException) {
     cbResults_t cbResults;
     eio_req * r = eio_read(m_fd, buf, count, getROffset(), 0, eioDone, &cbResults);
-    RAssert(r != NULL, "eio_read returned a NULL eio_req");
+    EAssert(r != NULL, "eio_read returned a NULL eio_req");
     Task::yield(&cbResults.evt);
     if (cbResults.result > 0) {
         rseek(cbResults.result, SEEK_CUR);

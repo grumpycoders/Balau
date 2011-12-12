@@ -241,7 +241,7 @@ static int eioDone(eio_req * req) {
 int Balau::FileSystem::mkdir(const char * path) throw (GeneralException) {
     cbResults_t cbResults;
     eio_req * r = eio_mkdir(path, 0755, 0, eioDone, &cbResults);
-    RAssert(r != NULL, "eio_mkdir returned a NULL eio_req");
+    EAssert(r != NULL, "eio_mkdir returned a NULL eio_req");
     Task::yield(&cbResults.evt);
 
     char str[4096];

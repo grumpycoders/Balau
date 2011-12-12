@@ -244,7 +244,7 @@ Balau::Socket::Socket() throw (GeneralException) : m_fd(socket(AF_INET6, SOCK_ST
 
     int on = 0;
     int r = setsockopt(m_fd, IPPROTO_IPV6, IPV6_V6ONLY, (char *) &on, sizeof(on));
-    RAssert(r == 0, "setsockopt returned %i", r);
+    EAssert(r == 0, "setsockopt returned %i", r);
 
     memset(&m_localAddr, 0, sizeof(m_localAddr));
     memset(&m_remoteAddr, 0, sizeof(m_remoteAddr));
@@ -267,8 +267,8 @@ Balau::Socket::Socket(int fd) : m_fd(fd), m_connected(true), m_connecting(false)
     rLocal = inet_ntop(AF_INET6, &m_localAddr.sin6_addr, prtLocal, len);
     rRemote = inet_ntop(AF_INET6, &m_remoteAddr.sin6_addr, prtRemote, len);
 
-    RAssert(rLocal, "inet_ntop returned NULL");
-    RAssert(rRemote, "inet_ntop returned NULL");
+    EAssert(rLocal, "inet_ntop returned NULL");
+    EAssert(rRemote, "inet_ntop returned NULL");
 
     m_evtR = new SocketEvent(m_fd, ev::READ);
     m_evtW = new SocketEvent(m_fd, ev::WRITE);
@@ -329,9 +329,9 @@ bool Balau::Socket::setLocal(const char * hostname, int port) {
             freeaddrinfo(res);
             return false;
         }
-        RAssert(res->ai_family == AF_INET6, "getaddrinfo returned a familiy which isn't AF_INET6; %i", res->ai_family);
-        RAssert(res->ai_protocol == IPPROTO_TCP, "getaddrinfo returned a protocol which isn't IPPROTO_TCP; %i", res->ai_protocol);
-        RAssert(res->ai_addrlen == sizeof(sockaddr_in6), "getaddrinfo returned an addrlen which isn't that of sizeof(sockaddr_in6); %i", res->ai_addrlen);
+        EAssert(res->ai_family == AF_INET6, "getaddrinfo returned a familiy which isn't AF_INET6; %i", res->ai_family);
+        EAssert(res->ai_protocol == IPPROTO_TCP, "getaddrinfo returned a protocol which isn't IPPROTO_TCP; %i", res->ai_protocol);
+        EAssert(res->ai_addrlen == sizeof(sockaddr_in6), "getaddrinfo returned an addrlen which isn't that of sizeof(sockaddr_in6); %i", res->ai_addrlen);
         memcpy(&m_localAddr.sin6_addr, &((sockaddr_in6 *) res->ai_addr)->sin6_addr, sizeof(struct in6_addr));
         freeaddrinfo(res);
     } else {
@@ -381,9 +381,9 @@ bool Balau::Socket::connect(const char * hostname, int port) {
             return false;
         }
         Printer::elog(E_SOCKET, "Got a resolution answer");
-        RAssert(res->ai_family == AF_INET6, "getaddrinfo returned a familiy which isn't AF_INET6; %i", res->ai_family);
-        RAssert(res->ai_protocol == IPPROTO_TCP, "getaddrinfo returned a protocol which isn't IPPROTO_TCP; %i", res->ai_protocol);
-        RAssert(res->ai_addrlen == sizeof(sockaddr_in6), "getaddrinfo returned an addrlen which isn't that of sizeof(sockaddr_in6); %i", res->ai_addrlen);
+        EAssert(res->ai_family == AF_INET6, "getaddrinfo returned a familiy which isn't AF_INET6; %i", res->ai_family);
+        EAssert(res->ai_protocol == IPPROTO_TCP, "getaddrinfo returned a protocol which isn't IPPROTO_TCP; %i", res->ai_protocol);
+        EAssert(res->ai_addrlen == sizeof(sockaddr_in6), "getaddrinfo returned an addrlen which isn't that of sizeof(sockaddr_in6); %i", res->ai_addrlen);
         memcpy(&m_remoteAddr.sin6_addr, &((sockaddr_in6 *) res->ai_addr)->sin6_addr, sizeof(struct in6_addr));
 
         m_remoteAddr.sin6_port = htons(port);
@@ -413,7 +413,7 @@ bool Balau::Socket::connect(const char * hostname, int port) {
         } else {
             socklen_t sLen = sizeof(err);
             int g = getsockopt(m_fd, SOL_SOCKET, SO_ERROR, (char *) &err, &sLen);
-            RAssert(g == 0, "getsockopt failed; g = %i", g);
+            EAssert(g == 0, "getsockopt failed; g = %i", g);
             r = err != 0 ? -1 : 0;
         }
         if ((r == 0) || ((r < 0) && (err == EISCONN))) {
@@ -435,8 +435,8 @@ bool Balau::Socket::connect(const char * hostname, int port) {
             rLocal = inet_ntop(AF_INET6, &m_localAddr.sin6_addr, prtLocal, len);
             rRemote = inet_ntop(AF_INET6, &m_remoteAddr.sin6_addr, prtRemote, len);
 
-            RAssert(rLocal, "inet_ntop returned NULL");
-            RAssert(rRemote, "inet_ntop returned NULL");
+            EAssert(rLocal, "inet_ntop returned NULL");
+            EAssert(rRemote, "inet_ntop returned NULL");
 
             m_name.set("Socket(Connected - [%s]:%i -> [%s]:%i)", rLocal, ntohs(m_localAddr.sin6_port), rRemote, ntohs(m_remoteAddr.sin6_port));
             Printer::elog(E_SOCKET, "Connected; %s", m_name.to_charp());
@@ -485,7 +485,7 @@ bool Balau::Socket::listen() {
         len = sizeof(m_localAddr);
         rLocal = inet_ntop(AF_INET6, &m_localAddr.sin6_addr, prtLocal, len);
 
-        RAssert(rLocal, "inet_ntop() returned NULL");
+        EAssert(rLocal, "inet_ntop() returned NULL");
 
         m_name.set("Socket(Listener - [%s]:%i)", rLocal, ntohs(m_localAddr.sin6_port));
         Printer::elog(E_SOCKET, "Socket %i started to listen: %s", m_fd, m_name.to_charp());
@@ -569,7 +569,7 @@ ssize_t Balau::Socket::write(const void * buf, size_t count) throw (GeneralExcep
     do {
         ssize_t r = ::send(m_fd, (const char *) buf, count, 0);
 
-        RAssert(r != 0, "send() returned 0 (broken pipe ?)");
+        EAssert(r != 0, "send() returned 0 (broken pipe ?)");
 
         if (r > 0)
             return r;
@@ -602,9 +602,9 @@ void Balau::ListenerBase::stop() {
 
 void Balau::ListenerBase::Do() {
     bool r = m_listener->setLocal(m_local.to_charp(), m_port);
-    RAssert(r, "Couldn't set the local IP/port to listen to");
+    EAssert(r, "Couldn't set the local IP/port to listen to");
     r = m_listener->listen();
-    RAssert(r, "Couldn't listen on the given IP/port");
+    EAssert(r, "Couldn't listen on the given IP/port");
     setName();
     setOkayToEAgain(true);
     waitFor(&m_evt);

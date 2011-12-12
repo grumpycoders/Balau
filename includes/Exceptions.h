@@ -136,6 +136,12 @@ ClassName::ClassName(T * ptr) {
     Balau::ExitHelper(msg, __VA_ARGS__); \
 }
 
+#define EAssert(c, ...) if (!__builtin_expect(!!(c), 0)) { \
+    Balau::String msg; \
+    msg.set("Execution Assertion " #c " failed at %s:%i", __FILE__, __LINE__); \
+    Balau::AssertHelper(msg, __VA_ARGS__); \
+}
+
 #define TAssert(c) if (!__builtin_expect(!!(c), 0)) { \
     Balau::String msg; \
     msg.set("UnitTest Assert " #c " failed at %s:%i", __FILE__, __LINE__); \
