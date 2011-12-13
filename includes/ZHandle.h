@@ -21,7 +21,6 @@ class ZStream : public Handle {
     virtual const char * getName();
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException);
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException);
-    virtual off_t getSize();
     void detach() { m_detached = true; }
     void flush() { doFlush(false); }
   private:

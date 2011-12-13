@@ -103,7 +103,7 @@ ssize_t Balau::ZStream::write(const void * buf, size_t count) throw (GeneralExce
     m_zout.next_in = (Bytef *) const_cast<void *>(buf);
     m_zout.avail_in = count;
     void * obuf = alloca(BLOCK_SIZE);
-    while ((count != 0) && !m_h->isClosed() && !m_h->isEOF()) {
+    while ((count != 0) && !m_h->isClosed()) {
         m_zout.next_out = (Bytef *) obuf;
         m_zout.avail_out = BLOCK_SIZE;
         int r = deflate(&m_zout, Z_NO_FLUSH);
@@ -115,8 +115,9 @@ ssize_t Balau::ZStream::write(const void * buf, size_t count) throw (GeneralExce
             if (w <= 0)
                 return wroteTotal;
         }
-        wroteTotal += compressed;
-        count -= compressed;
+        size_t didRead = count - m_zout.avail_in;
+        wroteTotal += didRead;
+        count -= didRead;
     }
     return wroteTotal;
 }
