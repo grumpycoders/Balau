@@ -36,6 +36,7 @@ const char * Balau::Http::getStatusMsg(int httpStatus) {
         case 415: return "Unsupported Media Type";
         case 416: return "Requested Range Not Satisfiable";
         case 417: return "Expectation Failed";
+        case 418: return "I'm a teapot";
         case 500: return "Internal Error";
         case 501: return "Not Implemented";
         case 502: return "Bad Gateway";
