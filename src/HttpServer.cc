@@ -57,6 +57,10 @@ class HttpWorker : public Task {
         extra.push_back("Allow: GET, POST");
         sendError(405, "The HTTP request you've sent contains an unsupported method.", NULL, true, extra, d);
     }
+    void send418() {
+        std::vector<String> d;
+        sendError(418, "Short and stout. Here is my handle, here is my spout.", NULL, true, d, d);
+    }
     void send500(const char * msg, const char * details, std::vector<String> trace) {
         String smsg;
         std::vector<String> d;
@@ -286,6 +290,9 @@ bool Balau::HttpWorker::handleClient() {
                 } else if ((line[1] == 'U') && (line[2] == 'T') && (line[3] == ' ')) {
                     urlBegin = 4;
                     method = Http::PUT;
+                } else if ((line[1] == 'R') && (line[2] == 'O') && (line[3] == 'P') && (line[4] == 'F') && (line[5] == 'I') && (line[6] == 'N') && (line[7] == 'D') && (line[8] == ' ')) {
+                    urlBegin = 9;
+                    method = Http::PROPFIND;
                 }
                 break;
             case 'D':
@@ -310,6 +317,18 @@ bool Balau::HttpWorker::handleClient() {
                 if ((line[1] == 'O') && (line[2] == 'N') && (line[3] == 'N') && (line[4] == 'E') && (line[5] == 'C') && (line[6] == 'T') && (line[7] == ' ')) {
                     urlBegin = 8;
                     method = Http::CONNECT;
+                }
+                break;
+            case 'B':
+                if ((line[1] == 'R') && (line[2] == 'E') && (line[3] == 'W') && (line[4] == ' ')) {
+                    urlBegin = 5;
+                    method = Http::BREW;
+                }
+                break;
+            case 'W':
+                if ((line[1] == 'H') && (line[2] == 'E') && (line[3] == 'N') && (line[4] == ' ')) {
+                    urlBegin = 5;
+                    method = Http::WHEN;
                 }
                 break;
             }
@@ -380,7 +399,12 @@ bool Balau::HttpWorker::handleClient() {
         send400();
         return false;
     }
-    
+
+    if (method == Http::BREW) {
+        send418();
+        return false;
+    }
+
     if ((method != Http::GET) && (method != Http::POST)) {
         send405();
         return false;

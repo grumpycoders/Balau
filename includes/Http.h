@@ -33,6 +33,9 @@ enum {
     TRACE,
     OPTIONS,
     CONNECT,
+    BREW,
+    PROPFIND,
+    WHEN,
 
     REDIRECT = 301,
 
