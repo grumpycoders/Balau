@@ -102,10 +102,10 @@ ifeq ($(SYSTEM),Linux)
     STRIP = strip --strip-unneeded
 endif
 
-CPPFLAGS_NO_ARCH += $(addprefix -I, $(INCLUDES)) -fexceptions -imacros $(CONFIG_H) -std=gnu++0x
+CPPFLAGS_NO_ARCH += $(addprefix -I, $(INCLUDES)) -fexceptions -imacros $(CONFIG_H)
 CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS)
 
-CXXFLAGS += -Wno-deprecated
+CXXFLAGS += -Wno-deprecated -std=gnu++0x
 
 LDFLAGS += $(ARCH_FLAGS)
 LDLIBS = $(addprefix -l, $(LIBS))
