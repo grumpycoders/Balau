@@ -40,7 +40,8 @@ class Handle {
     virtual const char * getName() = 0;
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException);
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException);
-    void writeString(const char * str, ssize_t len = -1) { if (len < 0) len = strlen(str); forceWrite(str, len); }
+    template <ssize_t L> void writeString(const char str[L]) { writeString(str, L - 1); }
+    void writeString(const char * str, ssize_t len) { if (len < 0) len = strlen(str); forceWrite(str, len); }
     void writeString(const String & str) { forceWrite(str.to_charp(), str.strlen()); }
     void seek(off_t offset, int whence = SEEK_SET) { rseek(offset, whence); }
     virtual void rseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
