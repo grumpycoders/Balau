@@ -13,12 +13,8 @@ class TestAction : public HttpServer::Action {
 };
 
 bool TestAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
-    static const char str[] =
-"HTTP/1.1 200 Found\r\n"
-"Content-Type: text/html; charset=UTF-8\r\n"
-"Content-Length: 266\r\n"
-"Server: " DAEMON_NAME "\r\n"
-"\r\n"
+    HttpServer::Response response(server, req, out);
+    response->writeString(
 "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"
 "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
@@ -29,9 +25,9 @@ bool TestAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action
 "  <body>\n"
 "    This is a test document.\n"
 "  </body>\n"
-"</html>\n";
+"</html>\n");
 
-    out->forceWrite(str, sizeof(str) - 1);
+    response.Flush();
     return true;
 }
 

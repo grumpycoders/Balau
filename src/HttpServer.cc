@@ -74,7 +74,6 @@ class HttpWorker : public Task {
     IO<BStream> m_strm;
     String m_name;
     HttpServer * m_server;
-    String m_serverName;
     static SimpleMustache m_errorTemplate;
 };
 
@@ -122,7 +121,6 @@ void SetDefaultTemplate::doStart() {
 Balau::HttpWorker::HttpWorker(IO<Handle> io, void * _server) : m_socket(new WriteOnly(io)), m_strm(new BStream(io)) {
     m_server = (HttpServer *) _server;
     m_name.set("HttpWorker(%s)", m_socket->getName());
-    m_serverName = "Balau/1.0";
     // get stuff from server, such as port number, root document, base URL, default 400/404 actions, etc...
 }
 
@@ -204,7 +202,7 @@ void Balau::HttpWorker::sendError(int error, const char * msg, const char * deta
 "Content-Type: text/html; charset=UTF-8\r\n"
 "Connection: close\r\n"
 "Server: %s\r\n",
-            error, errorMsg, m_serverName.to_charp());
+            error, errorMsg, m_server->getServerName().to_charp());
         for (std::vector<String>::iterator i = extraHeaders.begin(); i != extraHeaders.end(); i++)
             headers += *i + "\r\n";
         headers += "\r\n";
@@ -222,7 +220,7 @@ void Balau::HttpWorker::sendError(int error, const char * msg, const char * deta
 "Connection: keep-alive\r\n"
 "Server: %s\r\n"
 "Content-Length: %lli\r\n",
-            error, errorMsg, m_serverName.to_charp(), length);
+            error, errorMsg, m_server->getServerName().to_charp(), length);
         for (std::vector<String>::iterator i = extraHeaders.begin(); i != extraHeaders.end(); i++)
             headers += *i + "\r\n";
         headers += "\r\n";
@@ -550,6 +548,7 @@ bool Balau::HttpWorker::handleClient() {
         req.headers = httpHeaders;
         req.files = files;
         req.persistent = persistent;
+        req.version = httpVersion;
         try {
             if (!f.action->Do(m_server, req, f.matches, out))
                 persistent = false;
@@ -657,4 +656,42 @@ Balau::HttpServer::ActionFound Balau::HttpServer::findAction(const char * uri, c
     m_actionsLock.leave();
 
     return r;
+}
+
+void Balau::HttpServer::Response::Flush() {
+    AAssert(!m_flushed, "HttpResponse already flushed.");
+
+    m_flushed = true;
+    IO<Buffer> headers(new Buffer());
+
+    headers->writeString("HTTP/");
+    headers->writeString(m_req.version);
+    headers->writeString(" ");
+    String response(m_responseCode);
+    headers->writeString(response);
+    headers->writeString(" ");
+    headers->writeString(Http::getStatusMsg(m_responseCode), -1);
+    headers->writeString("\r\nContent-Type: ");
+    headers->writeString(m_type);
+    headers->writeString("\r\nContent-Length: ");
+    String len(m_buffer->getSize());
+    headers->writeString(len);
+    headers->writeString("\r\nServer: ");
+    headers->writeString(m_server->getServerName());
+    headers->writeString("\r\n");
+    if ((m_req.version == "1.1") && !m_req.persistent) {
+        headers->writeString("Connection: close\r\n");
+    }
+
+    while (!m_extraHeaders.empty()) {
+        String s = m_extraHeaders.front();
+        m_extraHeaders.pop_front();
+        headers->writeString(s);
+        headers->writeString("\r\n");
+    }
+
+    headers->writeString("\r\n");
+
+    m_out->forceWrite(headers->getBuffer(), headers->getSize());
+    m_out->forceWrite(m_buffer->getBuffer(), m_buffer->getSize());
 }

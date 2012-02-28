@@ -9,6 +9,7 @@
 #include <Exceptions.h>
 #include <Threads.h>
 #include <Handle.h>
+#include <Buffer.h>
 #include <Http.h>
 
 namespace Balau {
@@ -17,6 +18,28 @@ class HttpWorker;
 
 class HttpServer {
   public:
+
+    class Response {
+      public:
+          Response(HttpServer * server, Http::Request req, IO<Handle> out) : m_server(server), m_req(req), m_out(out), m_buffer(new Buffer()), m_responseCode(200), m_type("text/html; charset=UTF-8"), m_flushed(false) { }
+        void SetResponseCode(int code) { m_responseCode = code; }
+        void SetContentType(const String & type) { m_type = type; }
+        IO<Buffer> get() { return m_buffer; }
+        IO<Buffer> operator->() { return m_buffer; }
+        void Flush();
+        void AddHeader(const String & line) { m_extraHeaders.push_front(line); }
+        void AddHeader(const String & key, const String & val) { AddHeader(key + ": " + val); }
+      private:
+        HttpServer * m_server;
+        Http::Request m_req;
+        IO<Handle> m_out;
+
+        IO<Buffer> m_buffer;
+        int m_responseCode;
+        String m_type;
+        std::list<String> m_extraHeaders;
+        bool m_flushed;
+    };
 
     class Action {
       public:
@@ -48,6 +71,7 @@ class HttpServer {
         Action::ActionMatch matches;
     };
     ActionFound findAction(const char * uri, const char * host);
+    String getServerName() { return "Balau/1.0"; }
   private:
     bool m_started;
     void * m_listenerPtr;

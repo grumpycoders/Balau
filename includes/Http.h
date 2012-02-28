@@ -13,8 +13,7 @@ const char * getStatusMsg(int httpStatus);
 typedef std::map<String, String> StringMap;
 typedef std::map<String, IO<Handle> > FileList;
 
-class Request {
-  public:
+struct Request {
     int method;
     String host;
     String uri;
@@ -22,6 +21,7 @@ class Request {
     StringMap headers;
     FileList files;
     bool persistent;
+    String version;
 };
 
 enum {
