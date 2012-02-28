@@ -3,6 +3,7 @@
 #include <Output.h>
 #include <Buffer.h>
 #include <BStream.h>
+#include <ZHandle.h>
 
 #ifdef _WIN32
 void ctime_r(const time_t * t, char * str) {
@@ -102,6 +103,27 @@ void MainTask::Do() {
     s = b->rtell();
     TAssert(s == 12);
     TAssert(b->isEOF());
+
+    {
+        IO<Output> o(new Output("tests/out.z"));
+        IO<ZStream> z(new ZStream(o));
+        z->detach();
+        z->writeString("foobar\n");
+    }
+
+    {
+        IO<Output> o(new Output("tests/out.gz"));
+        IO<ZStream> z(new ZStream(o, Z_BEST_COMPRESSION, ZStream::GZIP));
+        z->detach();
+        z->writeString("foobar\n");
+    }
+
+    {
+        IO<Output> o(new Output("tests/out.raw"));
+        IO<ZStream> z(new ZStream(o, Z_BEST_COMPRESSION, ZStream::RAW));
+        z->detach();
+        z->writeString("foobar\n");
+    }
 
     Printer::log(M_STATUS, "Test::Handles passed.");
 }

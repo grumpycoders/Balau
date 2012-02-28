@@ -25,7 +25,7 @@ LDFLAGS += -g
 endif
 
 INCLUDES = includes libcoro libeio libev LuaJIT/src
-LIBS =
+LIBS = z
 
 ifeq ($(SYSTEM),Darwin)
     CC = clang
