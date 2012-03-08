@@ -44,5 +44,5 @@ const char * Balau::Http::getStatusMsg(int httpStatus) {
         case 504: return "Gateway Timeout";
         case 505: return "HTTP Version Not Supported";
     }
-    return NULL;
+    return "Unknown HTTP code";
 }
