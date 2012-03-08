@@ -40,7 +40,7 @@ void Balau::Printer::_log(uint32_t level, const char * fmt, va_list ap) {
         if (l & level)
             break;
 
-    m_lock.enter();
+    ScopeLock sl(m_lock);
     if (m_detailledLogs) {
         struct ev_loop * loop = ev_default_loop(0);
         ev_now_update(loop);
@@ -50,7 +50,6 @@ void Balau::Printer::_log(uint32_t level, const char * fmt, va_list ap) {
     _print(prefixes[i]);
     _print(fmt, ap);
     _print("\n");
-    m_lock.leave();
 }
 
 void Balau::Printer::_print(const char * fmt, va_list ap) {

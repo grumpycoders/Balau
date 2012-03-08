@@ -53,13 +53,12 @@ void Balau::TaskScheduler::registerTask(Task * t) {
 }
 
 void Balau::TaskScheduler::registerTaskMan(TaskMan * t) {
-    m_lock.enter();
+    ScopeLock sl(m_lock);
     m_taskManagers.push(t);
-    m_lock.leave();
 }
 
 void Balau::TaskScheduler::unregisterTaskMan(TaskMan * t) {
-    m_lock.enter();
+    ScopeLock sl(m_lock);
     TaskMan * p = NULL;
     // yes, this is a potentially dangerous operation.
     // But unregistering task managers shouldn't happen that often.
@@ -70,12 +69,11 @@ void Balau::TaskScheduler::unregisterTaskMan(TaskMan * t) {
             break;
         m_taskManagers.push(p);
     }
-    m_lock.leave();
 }
 
 void Balau::TaskScheduler::stopAll(int code) {
     m_stopping = true;
-    m_lock.enter();
+    ScopeLock sl(m_lock);
     std::queue<TaskMan *> altQueue;
     TaskMan * tm;
     while (!m_taskManagers.empty()) {
@@ -90,7 +88,6 @@ void Balau::TaskScheduler::stopAll(int code) {
         altQueue.pop();
         m_taskManagers.push(tm);
     }
-    m_lock.leave();
 }
 
 void * Balau::TaskScheduler::proc() {

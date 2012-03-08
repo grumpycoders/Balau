@@ -15,9 +15,19 @@ class Lock {
     void enter() { pthread_mutex_lock(&m_lock); }
     void leave() { pthread_mutex_unlock(&m_lock); }
   private:
+      Lock(const Lock &);
     pthread_mutex_t m_lock;
     template<class T>
     friend class Queue;
+};
+
+class ScopeLock {
+  public:
+      ScopeLock(Lock & lock) : m_lock(lock) { m_lock.enter(); }
+      ~ScopeLock() { m_lock.leave(); }
+  private:
+      ScopeLock(const ScopeLock &);
+    Lock & m_lock;
 };
 
 class RWLock {
@@ -28,7 +38,26 @@ class RWLock {
     void enterW() { pthread_rwlock_wrlock(&m_lock); }
     void leave() { pthread_rwlock_unlock(&m_lock); }
   private:
+      RWLock(const RWLock &);
     pthread_rwlock_t m_lock;
+};
+
+class ScopeLockR {
+  public:
+      ScopeLockR(Lock & lock) : m_lock(lock) { m_lock.enterR(); }
+      ~ScopeLockR() { m_lock.leave(); }
+  private:
+      ScopeLockR(const ScopeLockR &);
+    RWLock & m_lock;
+};
+
+class ScopeLockW {
+  public:
+      ScopeLockW(Lock & lock) : m_lock(lock) { m_lock.enterW(); }
+      ~ScopeLockW() { m_lock.leave(); }
+  private:
+      ScopeLockW(const ScopeLockW &);
+    RWLock & m_lock;
 };
 
 class ThreadHelper;
@@ -63,7 +92,7 @@ class Queue {
       Queue() : m_front(NULL), m_back(NULL) { pthread_cond_init(&m_cond, NULL); }
       ~Queue() { while (!isEmpty()) pop(); pthread_cond_destroy(&m_cond); }
     void push(T * t) {
-        m_lock.enter();
+        ScopeLock sl(m_lock);
         Cell * c = new Cell(t);
         c->m_prev = m_back;
         if (m_back)
@@ -72,10 +101,9 @@ class Queue {
             m_front = c;
         m_back = c;
         pthread_cond_signal(&m_cond);
-        m_lock.leave();
     }
     T * pop() {
-        m_lock.enter();
+        ScopeLock sl(m_lock);
         while (!m_front)
             pthread_cond_wait(&m_cond, &m_lock.m_lock);
         Cell * c = m_front;
@@ -86,15 +114,11 @@ class Queue {
             m_back = NULL;
         T * t = c->m_elem;
         delete c;
-        m_lock.leave();
         return t;
     }
     bool isEmpty() {
-        bool r;
-        m_lock.enter();
-        r = !m_front;
-        m_lock.leave();
-        return r;
+        ScopeLock sl(m_lock);
+        return !m_front;
     }
   private:
     Lock m_lock;
