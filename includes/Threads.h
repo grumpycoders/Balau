@@ -44,7 +44,7 @@ class RWLock {
 
 class ScopeLockR {
   public:
-      ScopeLockR(Lock & lock) : m_lock(lock) { m_lock.enterR(); }
+      ScopeLockR(RWLock & lock) : m_lock(lock) { m_lock.enterR(); }
       ~ScopeLockR() { m_lock.leave(); }
   private:
       ScopeLockR(const ScopeLockR &);
@@ -53,7 +53,7 @@ class ScopeLockR {
 
 class ScopeLockW {
   public:
-      ScopeLockW(Lock & lock) : m_lock(lock) { m_lock.enterW(); }
+      ScopeLockW(RWLock & lock) : m_lock(lock) { m_lock.enterW(); }
       ~ScopeLockW() { m_lock.leave(); }
   private:
       ScopeLockW(const ScopeLockW &);
