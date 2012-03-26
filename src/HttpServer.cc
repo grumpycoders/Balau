@@ -183,7 +183,7 @@ void Balau::HttpWorker::sendError(int error, const char * msg, const char * deta
     const char * errorMsg = Http::getStatusMsg(error);
     if (!errorMsg)
         errorMsg = "Unknown Status";
-    Printer::elog(Balau::E_HTTPSERVER, "%s caused a %i error (%s)", m_name.to_charp(), error, errorMsg);
+    Printer::elog(E_HTTPSERVER, "%s caused a %i error (%s)", m_name.to_charp(), error, errorMsg);
     SimpleMustache::Context ctx;
     String title;
     title.set("Error %i - %s", error, errorMsg);
@@ -193,7 +193,7 @@ void Balau::HttpWorker::sendError(int error, const char * msg, const char * deta
     if (details)
         ctx["details"] = details;
     if (m_socket->isClosed()) return;
-    for (std::vector<String>::iterator i = trace.begin(); i != trace.end(); i++)
+    for (auto i = trace.begin(); i != trace.end(); i++)
         ctx["trace"][(ssize_t) 0]["line"] = *i;
     if (closeConnection) {
         String headers;
@@ -203,7 +203,7 @@ void Balau::HttpWorker::sendError(int error, const char * msg, const char * deta
 "Connection: close\r\n"
 "Server: %s\r\n",
             error, errorMsg, m_server->getServerName().to_charp());
-        for (std::vector<String>::iterator i = extraHeaders.begin(); i != extraHeaders.end(); i++)
+        for (auto i = extraHeaders.begin(); i != extraHeaders.end(); i++)
             headers += *i + "\r\n";
         headers += "\r\n";
         m_socket->forceWrite(headers);
@@ -221,7 +221,7 @@ void Balau::HttpWorker::sendError(int error, const char * msg, const char * deta
 "Server: %s\r\n"
 "Content-Length: %lli\r\n",
             error, errorMsg, m_server->getServerName().to_charp(), length);
-        for (std::vector<String>::iterator i = extraHeaders.begin(); i != extraHeaders.end(); i++)
+        for (auto i = extraHeaders.begin(); i != extraHeaders.end(); i++)
             headers += *i + "\r\n";
         headers += "\r\n";
         m_socket->forceWrite(headers);
@@ -253,7 +253,7 @@ bool Balau::HttpWorker::handleClient() {
         }
         catch (EAgain) {
             if (evtTimeout.gotSignal()) {
-                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s timed out getting request", m_name.to_charp());
+                Printer::elog(E_HTTPSERVER, "%s timed out getting request", m_name.to_charp());
                 return false;
             }
             yield();
@@ -331,7 +331,7 @@ bool Balau::HttpWorker::handleClient() {
                 break;
             }
             if (urlBegin == 0) {
-                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s didn't get a URI after the method", m_name.to_charp());
+                Printer::elog(E_HTTPSERVER, "%s didn't get a URI after the method", m_name.to_charp());
                 send400();
                 return false;
             }
@@ -339,7 +339,7 @@ bool Balau::HttpWorker::handleClient() {
             int urlEnd = line.strrchr(' ') - 1;
 
             if (urlEnd < urlBegin) {
-                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has a misformated URI (or no space after it)", m_name.to_charp());
+                Printer::elog(E_HTTPSERVER, "%s has a misformated URI (or no space after it)", m_name.to_charp());
                 send400();
                 return false;
             }
@@ -349,7 +349,7 @@ bool Balau::HttpWorker::handleClient() {
             int httpBegin = urlEnd + 2;
 
             if ((httpBegin + 5) >= line.strlen()) {
-                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s doesn't have enough characters after the URI", m_name.to_charp());
+                Printer::elog(E_HTTPSERVER, "%s doesn't have enough characters after the URI", m_name.to_charp());
                 send400();
                 return false;
             }
@@ -361,13 +361,13 @@ bool Balau::HttpWorker::handleClient() {
                 (line[httpBegin + 4] == '/')) {
                 httpVersion = line.extract(httpBegin + 5);
             } else {
-                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s doesn't have HTTP after the URI", m_name.to_charp());
+                Printer::elog(E_HTTPSERVER, "%s doesn't have HTTP after the URI", m_name.to_charp());
                 send400();
                 return false;
             }
 
             if ((httpVersion != "1.0") && (httpVersion != "1.1")) {
-                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s doesn't have a proper HTTP version", m_name.to_charp());
+                Printer::elog(E_HTTPSERVER, "%s doesn't have a proper HTTP version", m_name.to_charp());
                 send400();
                 return false;
             }
@@ -375,7 +375,7 @@ bool Balau::HttpWorker::handleClient() {
             // parse HTTP header.
             int colon = line.strchr(':');
             if (colon <= 0) {
-                Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has an invalid HTTP header", m_name.to_charp());
+                Printer::elog(E_HTTPSERVER, "%s has an invalid HTTP header", m_name.to_charp());
                 send400();
                 return false;
             }
@@ -388,7 +388,7 @@ bool Balau::HttpWorker::handleClient() {
     } while(true);
 
     if (!gotFirst) {
-        Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has nothing in its request", m_name.to_charp());
+        Printer::elog(E_HTTPSERVER, "%s has nothing in its request", m_name.to_charp());
         send400();
         return false;
     }
@@ -409,13 +409,13 @@ bool Balau::HttpWorker::handleClient() {
     }
 
     if (httpVersion == "1.1") {
-        Http::StringMap::iterator i = httpHeaders.find("Connection");
+        auto i = httpHeaders.find("Connection");
 
         if (i != httpHeaders.end()) {
             String conn = i->second;
             String::List connVals = conn.split(',');
             bool gotOne = false;
-            for (String::List::iterator j = connVals.begin(); j != connVals.end(); j++) {
+            for (auto j = connVals.begin(); j != connVals.end(); j++) {
                 String t = j->trim();
                 if ((t == "close") && (!gotOne)) {
                     gotOne = true;
@@ -424,9 +424,9 @@ bool Balau::HttpWorker::handleClient() {
                     gotOne = true;
                     persistent = true;
                 } else if (t == "TE") {
-                    Balau::Printer::elog(Balau::E_HTTPSERVER, "%s got the 'TE' connection marker (which is still unknown)", m_name.to_charp());
+                    Printer::elog(E_HTTPSERVER, "%s got the 'TE' connection marker (which is still unknown)", m_name.to_charp());
                 } else {
-                    Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has an improper Connection HTTP header (%s)", m_name.to_charp(), t.to_charp());
+                    Printer::elog(E_HTTPSERVER, "%s has an improper Connection HTTP header (%s)", m_name.to_charp(), t.to_charp());
                     send400();
                     return false;
                 }
@@ -438,11 +438,9 @@ bool Balau::HttpWorker::handleClient() {
 
     if (method == Http::POST) {
         int length = 0;
-        Http::StringMap::iterator i;
+        auto i = httpHeaders.find("Content-Length");
         bool multipart = false;
         String boundary;
-
-        i = httpHeaders.find("Content-Length");
 
         if (i != httpHeaders.end())
             length = i->second.to_int();
@@ -453,7 +451,7 @@ bool Balau::HttpWorker::handleClient() {
             static const String multipartStr = "multipart/form-data";
             if (i->second.extract(multipartStr.strlen()) == multipartStr) {
                 if (i->second[multipartStr.strlen() + 1] != ';') {
-                    Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has an improper multipart string (no ;)", m_name.to_charp());
+                    Printer::elog(E_HTTPSERVER, "%s has an improper multipart string (no ;)", m_name.to_charp());
                     send400();
                     return false;
                 }
@@ -465,7 +463,7 @@ bool Balau::HttpWorker::handleClient() {
                 i = t.find("boundary");
 
                 if (i == t.end()) {
-                    Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has an improper multipart string (no boundary)", m_name.to_charp());
+                    Printer::elog(E_HTTPSERVER, "%s has an improper multipart string (no boundary)", m_name.to_charp());
                     send400();
                     return false;
                 }
@@ -489,7 +487,7 @@ bool Balau::HttpWorker::handleClient() {
                 catch (EAgain) {
                     if (!evtTimeout.gotSignal())
                         yield();
-                    Balau::Printer::elog(Balau::E_HTTPSERVER, "%s timed out getting request (reading POST values)", m_name.to_charp());
+                    Printer::elog(E_HTTPSERVER, "%s timed out getting request (reading POST values)", m_name.to_charp());
                     return false;
                 }
             }
@@ -523,11 +521,11 @@ bool Balau::HttpWorker::handleClient() {
         }
     }
 
-    Http::StringMap::iterator hostIter = httpHeaders.find("host");
+    auto hostIter = httpHeaders.find("host");
 
     if (hostIter != httpHeaders.end()) {
         if (host != "") {
-            Balau::Printer::elog(Balau::E_HTTPSERVER, "%s has a host field, although the URI already has one", m_name.to_charp());
+            Printer::elog(E_HTTPSERVER, "%s has a host field, although the URI already has one", m_name.to_charp());
             send400();
             return false;
         }
@@ -537,7 +535,7 @@ bool Balau::HttpWorker::handleClient() {
 
     // process query; everything should be here now
 
-    HttpServer::ActionFound f = m_server->findAction(uri.to_charp(), host.to_charp());
+    auto f = m_server->findAction(uri.to_charp(), host.to_charp());
     if (f.action) {
         IO<OutputCheck> out(new OutputCheck(m_socket));
         Http::Request req;
@@ -558,8 +556,8 @@ bool Balau::HttpWorker::handleClient() {
             const char * details = e.getDetails();
             if (details)
                 Printer::log(M_ERROR, "  %s", details);
-            std::vector<String> trace = e.getTrace();
-            for (std::vector<String>::iterator i = trace.begin(); i != trace.end(); i++) 
+            auto trace = e.getTrace();
+            for (auto i = trace.begin(); i != trace.end(); i++) 
                 Printer::log(M_DEBUG, "%s", i->to_charp());
             if (!out->wrote())
                 send500(e.getMsg(), details, trace);
@@ -636,10 +634,9 @@ Balau::HttpServer::Action::ActionMatch Balau::HttpServer::Action::matches(const 
 Balau::HttpServer::ActionFound Balau::HttpServer::findAction(const char * uri, const char * host) {
     ScopeLockR slr(m_actionsLock);
 
-    ActionList::iterator i;
     ActionFound r;
 
-    for (i = m_actions.begin(); i != m_actions.end(); i++) {
+    for (auto i = m_actions.begin(); i != m_actions.end(); i++) {
         r.action = *i;
         r.matches = r.action->matches(uri, host);
         if (!r.matches.uri.empty())
