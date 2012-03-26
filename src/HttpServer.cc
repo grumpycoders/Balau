@@ -193,8 +193,8 @@ void Balau::HttpWorker::sendError(int error, const char * msg, const char * deta
     if (details)
         ctx["details"] = details;
     if (m_socket->isClosed()) return;
-    for (auto i = trace.begin(); i != trace.end(); i++)
-        ctx["trace"][(ssize_t) 0]["line"] = *i;
+    for (String & str : trace)
+        ctx["trace"][(ssize_t) 0]["line"] = str;
     if (closeConnection) {
         String headers;
         headers.set(
@@ -203,8 +203,8 @@ void Balau::HttpWorker::sendError(int error, const char * msg, const char * deta
 "Connection: close\r\n"
 "Server: %s\r\n",
             error, errorMsg, m_server->getServerName().to_charp());
-        for (auto i = extraHeaders.begin(); i != extraHeaders.end(); i++)
-            headers += *i + "\r\n";
+        for (String & str : extraHeaders)
+            headers += str + "\r\n";
         headers += "\r\n";
         m_socket->forceWrite(headers);
         if (m_socket->isClosed()) return;
@@ -221,8 +221,8 @@ void Balau::HttpWorker::sendError(int error, const char * msg, const char * deta
 "Server: %s\r\n"
 "Content-Length: %lli\r\n",
             error, errorMsg, m_server->getServerName().to_charp(), length);
-        for (auto i = extraHeaders.begin(); i != extraHeaders.end(); i++)
-            headers += *i + "\r\n";
+        for (String & str : extraHeaders)
+            headers += str + "\r\n";
         headers += "\r\n";
         m_socket->forceWrite(headers);
         if (m_socket->isClosed()) return;
@@ -636,8 +636,8 @@ Balau::HttpServer::ActionFound Balau::HttpServer::findAction(const char * uri, c
 
     ActionFound r;
 
-    for (auto i = m_actions.begin(); i != m_actions.end(); i++) {
-        r.action = *i;
+    for (Action * action : m_actions) {
+        r.action = action;
         r.matches = r.action->matches(uri, host);
         if (!r.matches.uri.empty())
             break;
