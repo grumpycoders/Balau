@@ -201,12 +201,11 @@ void Balau::TaskMan::freeStack(void * stack) {
 int Balau::TaskMan::mainLoop() {
     taskHash_t starting, stopped, yielded, yielded2;
     taskHash_t::iterator iH;
-    Task * t;
 
     // we start by pushing all of the 'STARTING' tasks into the appropriate queue.
-    for (iH = m_tasks.begin(); iH != m_tasks.end(); iH++)
+    for (Task * t : m_tasks)
         if (t->getStatus() == Task::STARTING)
-            starting.insert(*iH);
+            starting.insert(t);
 
     do {
         bool noWait = false;
@@ -215,7 +214,7 @@ int Balau::TaskMan::mainLoop() {
 
         // checking "STARTING" tasks, and running them once; also try to build the status of the noWait boolean.
         while ((iH = starting.begin()) != starting.end()) {
-            t = *iH;
+            Task * t = *iH;
             IAssert(t->getStatus() == Task::STARTING, "Got task at %p in the starting list, but isn't starting.", t);
             t->switchTo();
             IAssert(t->getStatus() != Task::STARTING, "Task at %p got switchedTo, but still is 'STARTING'.", t);
@@ -241,22 +240,16 @@ int Balau::TaskMan::mainLoop() {
         Printer::elog(E_TASK, "TaskMan at %p Getting out of libev main loop", this);
 
         // let's check what task got stopped, and signal them
-        for (iH = stopped.begin(); iH != stopped.end(); iH++) {
-            t = *iH;
+        for (Task * t : stopped) {
             IAssert((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED), "Task %p in stopped list but isn't stopped.", t);
-            if (t->m_waitedBy.size() != 0) {
-                Task::waitedByList_t::iterator i;
-                for (i = t->m_waitedBy.begin(); i != t->m_waitedBy.end(); i++) {
-                    Events::TaskEvent * e = *i;
+            if (t->m_waitedBy.size() != 0)
+                for (Events::TaskEvent * e : t->m_waitedBy)
                     e->signal();
-                }
-            }
         }
         m_allowedToSignal = false;
 
         // let's check who got signaled, and call them
-        for (iH = m_signaledTasks.begin(); iH != m_signaledTasks.end(); iH++) {
-            t = *iH;
+        for (Task * t : m_signaledTasks) {
             Printer::elog(E_TASK, "TaskMan at %p Switching to task %p (%s - %s) that got signaled somehow.", this, t, t->getName(), ClassName(t).c_str());
             IAssert(t->getStatus() == Task::IDLE || t->getStatus() == Task::YIELDED, "We're switching to a non-idle/yielded task at %p... ? status = %i", t, t->getStatus());
             bool wasYielded = t->getStatus() == Task::YIELDED;
@@ -275,8 +268,7 @@ int Balau::TaskMan::mainLoop() {
         m_signaledTasks.clear();
 
         // now let's make a round of yielded tasks
-        for (iH = yielded.begin(); iH != yielded.end(); iH++) {
-            t = *iH;
+        for (Task * t : yielded) {
             Printer::elog(E_TASK, "TaskMan at %p Switching to task %p (%s - %s) that was yielded.", this, t, t->getName(), ClassName(t).c_str());
             IAssert(t->getStatus() == Task::YIELDED, "Task %p was in yielded list, but wasn't yielded ?", t);
             t->switchTo();
@@ -292,7 +284,7 @@ int Balau::TaskMan::mainLoop() {
         // Adding tasks that were added, maybe from other threads
         while (!m_pendingAdd.isEmpty()) {
             Printer::elog(E_TASK, "TaskMan at %p trying to pop a task...", this);
-            t = m_pendingAdd.pop();
+            Task * t = m_pendingAdd.pop();
             Printer::elog(E_TASK, "TaskMan at %p popped task %p...", this, t);
             IAssert(m_tasks.find(t) == m_tasks.end(), "TaskMan got task %p twice... ?", t);
             ev_now_update(m_loop);
@@ -305,8 +297,8 @@ int Balau::TaskMan::mainLoop() {
         bool didDelete;
         do {
             didDelete = false;
-            for (iH = stopped.begin(); iH != stopped.end(); iH++) {
-                t = *iH;
+            for (auto iH = stopped.begin(); iH != stopped.end(); iH++) {
+                Task * t = *iH;
                 IAssert((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED), "Task %p in stopped list but isn't stopped.", t);
                 if (t->m_waitedBy.size() == 0) {
                     freeStack(t->m_stack);

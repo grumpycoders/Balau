@@ -81,9 +81,9 @@ void Balau::Task::coroutine() {
         const char * details = e.getDetails();
         if (details)
             Printer::log(M_WARNING, "  %s", details);
-        std::vector<String> trace = e.getTrace();
-        for (std::vector<String>::iterator i = trace.begin(); i != trace.end(); i++)
-            Printer::log(M_DEBUG, "%s", i->to_charp());
+        auto trace = e.getTrace();
+        for (String & str : trace)
+            Printer::log(M_DEBUG, "%s", str.to_charp());
         m_status = FAULTED;
     }
     catch (...) {

@@ -67,9 +67,9 @@ int Balau::Main::bootstrap(int _argc, char ** _argv) {
     catch (Exit e) {
         m_status = STOPPING;
         Printer::log(M_ERROR, "We shouldn't have gotten an Exit exception here... exitting anyway");
-        std::vector<String> trace = e.getTrace();
-        for (std::vector<String>::iterator i = trace.begin(); i != trace.end(); i++)
-            Printer::log(M_ERROR, "%s", i->to_charp());
+        auto trace = e.getTrace();
+        for (String & str : trace)
+            Printer::log(M_ERROR, "%s", str.to_charp());
         r = e.getCode();
     }
     catch (RessourceException e) {
@@ -78,9 +78,9 @@ int Balau::Main::bootstrap(int _argc, char ** _argv) {
         const char * details = e.getDetails();
         if (details)
             Printer::log(M_ERROR, "  %s", details);
-        std::vector<String> trace = e.getTrace();
-        for (std::vector<String>::iterator i = trace.begin(); i != trace.end(); i++)
-            Printer::log(M_DEBUG, "%s", i->to_charp());
+        auto trace = e.getTrace();
+        for (String & str : trace)
+            Printer::log(M_DEBUG, "%s", str.to_charp());
         r = -1;
     }
     catch (GeneralException e) {
@@ -89,9 +89,9 @@ int Balau::Main::bootstrap(int _argc, char ** _argv) {
         const char * details = e.getDetails();
         if (details)
             Printer::log(M_ERROR, "  %s", details);
-        std::vector<String> trace = e.getTrace();
-        for (std::vector<String>::iterator i = trace.begin(); i != trace.end(); i++)
-            Printer::log(M_DEBUG, "%s", i->to_charp());
+        auto trace = e.getTrace();
+        for (String & str : trace)
+            Printer::log(M_DEBUG, "%s", str.to_charp());
         r = -1;
     }
     catch (...) {
