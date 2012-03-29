@@ -232,7 +232,7 @@ int Balau::LuaStatics::collector(lua_State * __L) {
     Lua L(__L);
     ObjData * u = (ObjData *) L.touserdata();
     if (u->isObj) {
-        LuaExport * obj = (LuaExport *) u->ptr;
+        LuaObjectFactory * obj = (LuaObjectFactory *) u->ptr;
         delete obj;
     } else {
         free(u->ptr);
@@ -247,7 +247,7 @@ int Balau::LuaStatics::destructor(lua_State * __L) {
     L.gettable(-2, true);
     ObjData * u = (ObjData *) L.touserdata();
     if (u->isObj) {
-        LuaExport * obj = (LuaExport *) u->ptr;
+        LuaObjectFactory * obj = (LuaObjectFactory *) u->ptr;
         delete obj;
     } else {
         free(u->ptr);
@@ -271,6 +271,25 @@ Balau::Lua::Lua() : L(lua_open()) {
     push("BLUA_THREADS");
     newtable();
     settable(LUA_REGISTRYINDEX);
+}
+
+Balau::Lua & Balau::Lua::operator=(Lua && oL) {
+    if (this == &oL)
+        return *this;
+
+    AAssert(!L, "Can't assign a Lua VM to another one.");
+
+    L = oL.L;
+    oL.L = NULL;
+
+    return *this;
+}
+
+void Balau::Lua::close() {
+    AAssert(L, "Can't close an already closed VM");
+
+    lua_close(L);
+    L = NULL;
 }
 
 #define IntPoint(p)  ((unsigned int)(lu_mem)(p))
@@ -676,15 +695,13 @@ Balau::Lua Balau::Lua::thread(bool saveit) {
 }
 
 Balau::Lua Balau::Lua::thread(const String & code, int nargs, bool saveit) {
-    Lua L1;
-    L1 = thread(saveit);
+    Lua L1 = thread(saveit);
     L1.resume(code, nargs);
     return L1;
 }
 
 Balau::Lua Balau::Lua::thread(IO<Handle> h, int nargs, bool saveit) {
-    Lua L1;
-    L1 = thread(saveit);
+    Lua L1 = thread(saveit);
     L1.resume(h, nargs);
     return L1;
 }
@@ -783,15 +800,14 @@ void Balau::Lua::showerror() {
     showstack(M_ERROR);
 }
 
-void Balau::LuaObject::push(Lua & L) throw (GeneralException) {
-    if (m_pushed && m_wantsDestruct)
-        throw GeneralException("Error: object is owned by the LUA script and can not be pushed.");
+void Balau::LuaObjectFactory::push(Lua & L) {
+    AAssert(!(m_pushed && m_wantsDestruct), "Error: object is owned by the LUA script and can not be pushed.");
     L.newtable();
     pushMembers(L);
     m_pushed = true;
 }
 
-void Balau::LuaObject::pushMe(Lua & L, void * o, const char * objname, bool obj) {
+void Balau::LuaObjectFactory::pushMe(Lua & L, void * o, const char * objname, bool obj) {
     ObjData * u;
     L.push("__obj");
     u = (ObjData *) L.newuser(sizeof(ObjData));
@@ -805,7 +821,7 @@ void Balau::LuaObject::pushMe(Lua & L, void * o, const char * objname, bool obj)
     }
 }
 
-void * Balau::LuaObject::getMeInternal(Lua & L, int i) {
+void * Balau::LuaObjectFactory::getMeInternal(Lua & L, int i) {
     ObjData * u = NULL;
 
     if (L.istable(i)) {
@@ -825,13 +841,13 @@ void * Balau::LuaObject::getMeInternal(Lua & L, int i) {
     return u ? u->ptr : NULL;
 }
 
-void Balau::LuaObject::pushIt(Lua & L, const char * s, lua_CFunction f) {
+void Balau::LuaObjectFactory::pushIt(Lua & L, const char * s, lua_CFunction f) {
     L.push(s);
     L.push(f);
     L.settable(-3, true);
 }
 
-void Balau::LuaObject::pushMeta(Lua & L, const char * s, lua_CFunction f) {
+void Balau::LuaObjectFactory::pushMeta(Lua & L, const char * s, lua_CFunction f) {
     if (!L.getmetatable())
         L.newtable();
     L.push(s);
@@ -840,9 +856,8 @@ void Balau::LuaObject::pushMeta(Lua & L, const char * s, lua_CFunction f) {
     L.setmetatable();
 }
 
-void Balau::LuaObject::pushDestruct(Lua & L) throw (GeneralException) {
-    if (m_pushed)
-        throw GeneralException("Error: can't push destructor, object already pushed");
+void Balau::LuaObjectFactory::pushDestruct(Lua & L) {
+    AAssert(!m_pushed, "Error: can't push destructor, object already pushed");
     push(L);
     L.push("__obj");
     L.gettable(-2, true);

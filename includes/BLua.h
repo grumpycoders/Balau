@@ -1,7 +1,5 @@
 #pragma once
 
-#include <typeinfo>
-
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -14,16 +12,16 @@ namespace Balau {
 
 class Lua;
 
-class LuaExport {
-  public:
-      virtual ~LuaExport() { }
-};
-
 class LuaObject {
   public:
-      LuaObject() : m_wantsDestruct(false), m_pushed(false) { }
-    virtual void push(Lua & L) throw (GeneralException);
-    void pushDestruct(Lua & L) throw (GeneralException);
+      virtual ~LuaObject() { }
+};
+
+class LuaObjectFactory {
+  public:
+      LuaObjectFactory() : m_wantsDestruct(false), m_pushed(false) { }
+    virtual void push(Lua & L);
+    void pushDestruct(Lua & L);
     template<class T>
     static T * getMe(Lua & L, int idx = 1);
   protected:
@@ -35,6 +33,8 @@ class LuaObject {
     friend class Lua;
   private:
     bool m_wantsDestruct, m_pushed;
+    LuaObjectFactory & operator=(const LuaObjectFactory &) = delete;
+      LuaObjectFactory(const LuaObjectFactory &) = delete;
 };
 
 typedef int (*openlualib_t)(lua_State * L);
@@ -43,13 +43,16 @@ class Lua {
   public:
       Lua();
       Lua(lua_State * __L) : L(__L) { }
-      Lua(const Lua &) throw (GeneralException) { throw GeneralException("Error: can't duplicate a Lua object."); }
+      Lua(Lua && oL) : L(oL.L) { oL.L = NULL; }
+
+    Lua & operator=(Lua && oL);
 
     typedef int (*lua_CallWrapper)(lua_State *, lua_CFunction);
 
     int ref(int t = -2) { return luaL_ref(L, t); }
     void unref(int ref, int t = -1) { luaL_unref(L, t, ref); }
 
+    void close();
     void open_base();
     void open_table();
     void open_string();
@@ -132,17 +135,17 @@ class Lua {
 
     template<class T>
     T * recast(int n = 1) {
-        LuaExport * b;
+        LuaObject * b;
         T * r;
 
-        b = (LuaExport *) LuaObject::getMeInternal(*this, n);
+        b = (LuaObject *) LuaObjectFactory::getMeInternal(*this, n);
         if (!b)
-            error("LuaExport base object required; got null.");
+            error("LuaObject base object required; got null.");
 
         r = dynamic_cast<T *>(b);
 
         if (!r)
-            error(String("Object not compatible; expecting ") + typeid(r).name() + " but got *" + typeid(*b).name() + " instead.");
+            error(String("Object not compatible; expecting ") + ClassName(r).c_str() + " but got *" + ClassName(b).c_str() + " instead.");
 
         return r;
     }
@@ -156,6 +159,9 @@ class Lua {
     lua_State * L;
 
     friend class LuaStatics;
+
+    Lua & operator=(const Lua &) = delete;
+      Lua(const Lua &) = delete;
 };
 
 class LuaException : public GeneralException {
@@ -249,7 +255,7 @@ struct lua_functypes_t {
 }
 
 template <class T>
-T * LuaObject::getMe(Lua & L, int idx) { return L.recast<T>(idx); }
+T * LuaObjectFactory::getMe(Lua & L, int idx) { return L.recast<T>(idx); }
 
 template <class T>
 class LuaHelpers {
@@ -263,7 +269,7 @@ class LuaHelpers {
         bool invalid = false, arg_valid;
 
         if (method)
-            obj = LuaObject::getMe<T>(L);
+            obj = LuaObjectFactory::getMe<T>(L);
 
         if ((n < tab[caller].minargs) || (n > tab[caller].maxargs)) {
             invalid = true;
