@@ -72,6 +72,9 @@ class Handle {
     friend class IO;
 
     volatile int m_refCount;
+
+      Handle(const Handle &) = delete;
+    Handle & operator=(const Handle &) = delete;
 };
 
 class HPrinter : public Handle {
