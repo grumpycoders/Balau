@@ -150,6 +150,7 @@ void Balau::Events::BaseEvent::doSignal() {
 }
 
 Balau::Events::TaskEvent::TaskEvent(Task * taskWaited) : m_taskWaited(taskWaited), m_ack(false), m_distant(false) {
+    ScopeLock lock(m_taskWaited->m_eventLock);
     m_taskWaited->m_waitedBy.push_back(this);
 }
 
@@ -184,14 +185,15 @@ void Balau::Events::TaskEvent::ack() {
     AAssert(!m_ack, "You can't ack() a task event twice.");
     bool deleted = false;
     Task * t = m_taskWaited;
-    Task::waitedByList_t::iterator i;
-    for (i = t->m_waitedBy.begin(); i != t->m_waitedBy.end(); i++) {
+    t->m_eventLock.enter();
+    for (auto i = t->m_waitedBy.begin(); i != t->m_waitedBy.end(); i++) {
         if (*i == this) {
             t->m_waitedBy.erase(i);
             deleted = true;
             break;
         }
     }
+    t->m_eventLock.leave();
     Printer::elog(E_TASK, "TaskEvent at %p being ack; removing from the 'waited by' list of %p (%s - %s); deleted = %s", this, t, t->getName(), ClassName(t).c_str(), deleted ? "true" : "false");
     IAssert(deleted, "We didn't find task %p in the waitedBy lists... ?", this);
     m_ack = true;

@@ -164,6 +164,7 @@ class Task {
     void * m_tls;
     friend class TaskMan;
     friend class Events::TaskEvent;
+    Lock m_eventLock;
     typedef std::list<Events::TaskEvent *> waitedByList_t;
     waitedByList_t m_waitedBy;
     bool m_okayToEAgain;
