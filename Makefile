@@ -140,6 +140,8 @@ SimpleMustache.cc \
 \
 BLua.cc \
 \
+LuaTask.cc \
+\
 BRegex.cc \
 
 ifeq ($(SYSTEM),MINGW32)
