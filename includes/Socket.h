@@ -61,7 +61,7 @@ class ListenerBase : public Task {
   public:
     virtual void Do();
     void stop();
-    virtual const char * getName();
+    virtual const char * getName() const;
   protected:
       ListenerBase(int port, const char * local, void * opaque);
     virtual void factory(IO<Socket> & io, void * opaque) = 0;

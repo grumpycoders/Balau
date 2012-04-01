@@ -590,7 +590,7 @@ Balau::ListenerBase::ListenerBase(int port, const char * local, void * opaque) :
     Printer::elog(E_SOCKET, "Created a listener task at %p (%s)", this, m_name.to_charp());
 }
 
-const char * Balau::ListenerBase::getName() {
+const char * Balau::ListenerBase::getName() const {
     return m_name.to_charp();
 }
 

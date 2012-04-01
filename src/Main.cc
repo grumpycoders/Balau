@@ -43,7 +43,7 @@ Balau::MainTask::~MainTask() {
         TaskMan::stop(0);
 }
 
-const char * Balau::MainTask::getName() {
+const char * Balau::MainTask::getName() const {
     return "Main Task";
 }
 

@@ -39,7 +39,7 @@ class HttpWorker : public Task {
     static void buildErrorTemplate(const String & str) { m_errorTemplate.setTemplate(str); }
   private:
     virtual void Do();
-    virtual const char * getName();
+    virtual const char * getName() const;
 
     bool handleClient();
     void sendError(int error, const char * msg, const char * details, bool closeConnection, std::vector<String> extraHeaders, std::vector<String> trace);
@@ -586,7 +586,7 @@ void Balau::HttpWorker::Do() {
         clientStop = !handleClient() || m_socket->isClosed();
 }
 
-const char * Balau::HttpWorker::getName() {
+const char * Balau::HttpWorker::getName() const {
     return m_name.to_charp();
 }
 

@@ -161,10 +161,10 @@ void Balau::Events::TaskEvent::signal() {
 }
 
 void Balau::Events::TaskEvent::gotOwner(Task * task) {
-    TaskMan * tm = task->getMyTaskMan();
+    TaskMan * tm = task->getTaskMan();
 
     m_evt.stop();
-    if (tm != m_taskWaited->getMyTaskMan()) {
+    if (tm != m_taskWaited->getTaskMan()) {
         m_evt.set(tm->getLoop());
         m_evt.set<TaskEvent, &TaskEvent::evt_cb>(this);
         m_evt.start();

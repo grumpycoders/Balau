@@ -126,15 +126,15 @@ class Task {
     };
       Task();
       virtual ~Task();
-    virtual const char * getName() = 0;
-    Status getStatus() { return m_status; }
+    virtual const char * getName() const = 0;
+    Status getStatus() const { return m_status; }
     static Task * getCurrentTask();
     static void prepare(Events::BaseEvent * evt) {
         Task * t = getCurrentTask();
         t->waitFor(evt);
     }
     static void yield(Events::BaseEvent * evt, bool interruptible = false) throw (GeneralException);
-    TaskMan * getTaskMan() { return m_taskMan; }
+    TaskMan * getTaskMan() const { return m_taskMan; }
     struct ev_loop * getLoop();
   protected:
     void yield(bool changeStatus = false);
@@ -145,7 +145,6 @@ class Task {
         m_okayToEAgain = enable;
         return oldValue;
     }
-    TaskMan * getMyTaskMan() { return m_taskMan; }
   private:
     static size_t stackSize() { return 64 * 1024; }
     void setup(TaskMan * taskMan, void * stack);

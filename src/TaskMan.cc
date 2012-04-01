@@ -8,15 +8,15 @@ class Stopper : public Balau::Task {
       Stopper(int code) : m_code(code) { }
   private:
     virtual void Do();
-    virtual const char * getName();
+    virtual const char * getName() const;
     int m_code;
 };
 
 void Stopper::Do() {
-    getMyTaskMan()->stopMe(m_code);
+    getTaskMan()->stopMe(m_code);
 }
 
-const char * Stopper::getName() {
+const char * Stopper::getName() const {
     return "Stopper";
 }
 
@@ -321,7 +321,7 @@ int Balau::TaskMan::mainLoop() {
 
 void Balau::TaskMan::registerTask(Balau::Task * t, Balau::Task * stick) {
     if (stick) {
-        TaskMan * tm = stick->getMyTaskMan();
+        TaskMan * tm = stick->getTaskMan();
         tm->addToPending(t);
         tm->m_evt.send();
     } else {

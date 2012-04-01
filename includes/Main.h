@@ -17,7 +17,7 @@ class MainTask : public Task {
   public:
       MainTask() : m_stopTaskManOnExit(true) { }
       virtual ~MainTask();
-    virtual const char * getName();
+    virtual const char * getName() const;
     virtual void Do();
     void stopTaskManOnExit(bool v) { m_stopTaskManOnExit = v; }
   private:
