@@ -17,9 +17,8 @@ void Balau::LuaMainTask::Do() {
         waitFor(&m_queueEvent);
 
         LuaExecCell * cell;
-        while ((cell = m_queue.pop(false))) {
-            createTask(new LuaTask(L.thread(), cell));
-        }
+        while ((cell = m_queue.pop(false)))
+            createTask(new LuaTask(L.thread(), cell), this);
 
         yield();
     }
