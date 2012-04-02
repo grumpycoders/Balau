@@ -11,7 +11,7 @@ static CustomPrinter * customPrinter = NULL;
 
 class TestTask : public Task {
   public:
-    virtual const char * getName() { return "MainTask"; }
+    virtual const char * getName() const { return "TestTask"; }
   private:
     virtual void Do() {
         customPrinter->setLocal();

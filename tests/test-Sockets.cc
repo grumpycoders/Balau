@@ -6,7 +6,7 @@ using namespace Balau;
 class Worker : public Task {
   public:
       Worker(IO<Socket> io, void *);
-    virtual const char * getName();
+    virtual const char * getName() const;
     virtual void Do();
     IO<Socket> m_io;
     String m_name;
@@ -17,7 +17,7 @@ Worker::Worker(IO<Socket> io, void *) : m_io(io) {
     Printer::log(M_STATUS, "Got connection: %s", m_name.to_charp());
 }
 
-const char * Worker::getName() {
+const char * Worker::getName() const {
     return m_name.to_charp();
 }
 
@@ -37,7 +37,7 @@ Listener<Worker> * listener;
 
 class Client : public Task {
   public:
-    virtual const char * getName() { return "Test client"; }
+    virtual const char * getName() const { return "Test client"; }
     virtual void Do() {
         Events::Timeout evt(0.1);
         waitFor(&evt);
