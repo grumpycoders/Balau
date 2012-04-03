@@ -11,7 +11,7 @@ class LuaMainTask;
 
 class LuaExecCell {
   public:
-      LuaExecCell() : m_detached(false) { }
+      LuaExecCell();
     void detach() { m_detached = true; }
     void exec(LuaMainTask * mainTask);
   protected:
@@ -61,7 +61,6 @@ class LuaMainTask : public Task {
     virtual void Do();
     Lua L;
     TQueue<LuaExecCell> m_queue;
-    volatile bool m_stopping;
     friend class LuaExecCell;
 };
 
