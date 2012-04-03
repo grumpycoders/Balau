@@ -5,8 +5,7 @@
 
 namespace Balau {
 
-template<class T>
-class Queue;
+class QueueBase;
 
 class Lock {
   public:
@@ -18,8 +17,7 @@ class Lock {
       Lock(const Lock &) = delete;
     Lock & operator=(const Lock &) = delete;
     pthread_mutex_t m_lock;
-    template<class T>
-    friend class Queue;
+    friend class QueueBase;
 };
 
 class ScopeLock {
@@ -93,58 +91,6 @@ class GlobalThread : public Thread, public AtStart, public AtExit {
     GlobalThread & operator=(const GlobalThread &) = delete;
     virtual void doStart() { threadStart(); }
     virtual void doExit() { join(); }
-};
-
-template<class T>
-class Queue {
-  public:
-      Queue() : m_front(NULL), m_back(NULL) { pthread_cond_init(&m_cond, NULL); }
-      ~Queue() { while (!isEmpty()) pop(); pthread_cond_destroy(&m_cond); }
-    void push(T * t) {
-        ScopeLock sl(m_lock);
-        Cell * c = new Cell(t);
-        c->m_prev = m_back;
-        if (m_back)
-            m_back->m_next = c;
-        else
-            m_front = c;
-        m_back = c;
-        pthread_cond_signal(&m_cond);
-    }
-    T * pop(bool wait = true) {
-        ScopeLock sl(m_lock);
-        while (!m_front && wait)
-            pthread_cond_wait(&m_cond, &m_lock.m_lock);
-        Cell * c = m_front;
-        if (!c)
-            return NULL;
-        m_front = c->m_next;
-        if (m_front)
-            m_front->m_prev = NULL;
-        else
-            m_back = NULL;
-        T * t = c->m_elem;
-        delete c;
-        return t;
-    }
-    bool isEmpty() {
-        ScopeLock sl(m_lock);
-        return !m_front;
-    }
-  private:
-      Queue(const Queue &) = delete;
-    Queue & operator=(const Queue &) = delete;
-    Lock m_lock;
-    struct Cell {
-          Cell(T * elem) : m_next(NULL), m_prev(NULL), m_elem(elem) { }
-          Cell(const Cell &) = delete;
-        Cell & operator=(const Cell &) = delete;
-        Cell * m_next, * m_prev;
-        T * m_elem;
-    };
-    Cell * volatile m_front;
-    Cell * volatile m_back;
-    pthread_cond_t m_cond;
 };
 
 };

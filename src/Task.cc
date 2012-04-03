@@ -234,3 +234,41 @@ void Balau::Task::yield(Events::BaseEvent * evt, bool interruptible) throw (Gene
         throw EAgain(evt);
     }
 }
+
+void Balau::QueueBase::iPush(void * t) {
+    ScopeLock sl(m_lock);
+    Cell * c = new Cell(t);
+    c->m_prev = m_back;
+    if (m_back)
+        m_back->m_next = c;
+    else
+        m_front = c;
+    m_back = c;
+    pthread_cond_signal(&m_cond);
+    m_event.trigger();
+}
+
+void * Balau::QueueBase::iPop(bool wait) {
+    ScopeLock sl(m_lock);
+    while (!m_front) {
+        if (wait) {
+            pthread_cond_wait(&m_cond, &m_lock.m_lock);
+        } else {
+            Task::prepare(&m_event);
+            m_lock.leave();
+            Task::yield(&m_event);
+            m_lock.enter();
+        }
+    }
+    Cell * c = m_front;
+    if (!c)
+        return NULL;
+    m_front = c->m_next;
+    if (m_front)
+        m_front->m_prev = NULL;
+    else
+        m_back = NULL;
+    void * t = c->m_elem;
+    delete c;
+    return t;
+}

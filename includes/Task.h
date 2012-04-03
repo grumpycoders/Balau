@@ -169,4 +169,36 @@ class Task {
     bool m_okayToEAgain;
 };
 
+class QueueBase {
+  public:
+    bool isEmpty() { ScopeLock sl(m_lock); return !m_front; }
+  protected:
+      QueueBase() : m_front(NULL), m_back(NULL) { pthread_cond_init(&m_cond, NULL); }
+      ~QueueBase() { while (!isEmpty()) iPop(false); pthread_cond_destroy(&m_cond); }
+    void iPush(void * t);
+    void * iPop(bool wait);
+
+  private:
+      QueueBase(const QueueBase &) = delete;
+    QueueBase & operator=(const QueueBase &) = delete;
+    Lock m_lock;
+    struct Cell {
+          Cell(void * elem) : m_next(NULL), m_prev(NULL), m_elem(elem) { }
+          Cell(const Cell &) = delete;
+        Cell & operator=(const Cell &) = delete;
+        Cell * m_next, * m_prev;
+        void * m_elem;
+    };
+    Cell * m_front, * m_back;
+    pthread_cond_t m_cond;
+    Events::Async m_event;
+};
+
+template<class T>
+class Queue : public QueueBase {
+  public:
+    void push(T * t) { iPush(t); }
+    T * pop(bool wait = true) { return (T *) iPop(wait); }
+};
+
 };

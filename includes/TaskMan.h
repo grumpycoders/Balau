@@ -9,12 +9,12 @@
 #include <queue>
 #include <Threads.h>
 #include <Exceptions.h>
+#include <Task.h>
 
 namespace gnu = __gnu_cxx;
 
 namespace Balau {
 
-class Task;
 class TaskScheduler;
 
 namespace Events {
@@ -35,6 +35,9 @@ class TaskMan {
     void stopMe(int code) { m_stopped = true; m_stopCode = code; }
     static Thread * createThreadedTaskMan();
     bool stopped() { return m_stopped; }
+    template<class T>
+    static T * createTask(T * t, Task * stick = NULL) { TaskMan::registerTask(t, stick); return t; }
+
   private:
     static void registerTask(Task * t, Task * stick);
     void * getStack();
@@ -61,8 +64,5 @@ class TaskMan {
     int m_nStacks;
     int m_stopCode;
 };
-
-template<class T>
-T * createTask(T * t, Task * stick) { TaskMan::registerTask(t, stick); return t; }
 
 };

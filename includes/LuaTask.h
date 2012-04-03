@@ -53,16 +53,15 @@ class LuaTask : public Task {
 class LuaMainTask : public Task {
   public:
       LuaMainTask();
-      ~LuaMainTask() { L.close(); }
+      ~LuaMainTask();
     void stop();
     virtual const char * getName() const { return "LuaMainTask"; }
   private:
     void exec(LuaExecCell * cell);
     virtual void Do();
     Lua L;
-    Events::Async m_queueEvent;
     Queue<LuaExecCell> m_queue;
-    bool m_stopping;
+    volatile bool m_stopping;
     friend class LuaExecCell;
 };
 

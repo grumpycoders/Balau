@@ -2,6 +2,10 @@
 #include "Main.h"
 #include "TaskMan.h"
 
+class LuaTaskDummy : public Balau::LuaExecCell {
+    virtual void run(Balau::Lua &) { }
+};
+
 Balau::LuaMainTask::LuaMainTask() : m_stopping(false) {
     L.open_base();
     L.open_table();
@@ -12,25 +16,29 @@ Balau::LuaMainTask::LuaMainTask() : m_stopping(false) {
     L.open_jit();
 }
 
+Balau::LuaMainTask::~LuaMainTask() {
+    L.close();
+}
+
 void Balau::LuaMainTask::exec(LuaExecCell * cell) {
     m_queue.push(cell);
-    m_queueEvent.trigger();
 }
 
 void Balau::LuaMainTask::stop() {
     Atomic::CmpXChgVal(&m_stopping, true, false);
-    m_queueEvent.trigger();
+    exec(new LuaTaskDummy());
 }
 
 void Balau::LuaMainTask::Do() {
     while (!m_stopping) {
-        waitFor(&m_queueEvent);
-
         LuaExecCell * cell;
-        while ((cell = m_queue.pop(false)))
-            createTask(new LuaTask(L.thread(), cell), this);
-
-        yield();
+        while ((cell = m_queue.pop(false))) {
+            if (dynamic_cast<LuaTaskDummy *>(cell)) {
+                delete cell;
+                break;
+            }
+            TaskMan::createTask(new LuaTask(L.thread(), cell), this);
+        }
     }
 }
 
