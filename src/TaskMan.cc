@@ -208,30 +208,23 @@ int Balau::TaskMan::mainLoop() {
             starting.insert(t);
 
     do {
-        bool noWait = false;
-
         Printer::elog(E_TASK, "TaskMan::mainLoop() at %p with m_tasks.size = %li", this, m_tasks.size());
 
-        // checking "STARTING" tasks, and running them once; also try to build the status of the noWait boolean.
+        // checking "STARTING" tasks, and running them once
         while ((iH = starting.begin()) != starting.end()) {
             Task * t = *iH;
             IAssert(t->getStatus() == Task::STARTING, "Got task at %p in the starting list, but isn't starting.", t);
             t->switchTo();
             IAssert(t->getStatus() != Task::STARTING, "Task at %p got switchedTo, but still is 'STARTING'.", t);
             starting.erase(iH);
-            if ((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED)) {
-                noWait = true;
+            if ((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED))
                 stopped.insert(t);
-            }
-            if (t->getStatus() == Task::YIELDED) {
-                noWait = true;
+            if (t->getStatus() == Task::YIELDED)
                 yielded.insert(t);
-            }
         }
 
         // if we begin that loop with any pending task, just don't loop, so we can add them immediately.
-        if (!m_pendingAdd.isEmpty() || !yielded.empty() || !stopped.empty())
-            noWait = true;
+        bool noWait = !m_pendingAdd.isEmpty() || !yielded.empty() || !stopped.empty();
 
         // libev's event "loop". We always runs it once though.
         m_allowedToSignal = true;
