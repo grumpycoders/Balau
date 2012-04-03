@@ -230,7 +230,7 @@ int Balau::TaskMan::mainLoop() {
         }
 
         // if we begin that loop with any pending task, just don't loop, so we can add them immediately.
-        if (!m_pendingAdd.isEmpty() || !yielded.empty())
+        if (!m_pendingAdd.isEmpty() || !yielded.empty() || !stopped.empty())
             noWait = true;
 
         // libev's event "loop". We always runs it once though.
