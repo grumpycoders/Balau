@@ -30,6 +30,14 @@ class LuaExecString : public LuaExecCell {
     String m_str;
 };
 
+class LuaExecFile : public LuaExecCell {
+  public:
+      LuaExecFile(IO<Handle> file) : m_file(file) { }
+  private:
+    virtual void run(Lua &);
+    IO<Handle> m_file;
+};
+
 class LuaTask : public Task {
   public:
       ~LuaTask() { L.weaken(); }
@@ -44,7 +52,7 @@ class LuaTask : public Task {
 
 class LuaMainTask : public Task {
   public:
-      LuaMainTask() : m_stopping(false) { }
+      LuaMainTask();
       ~LuaMainTask() { L.close(); }
     void stop();
     virtual const char * getName() const { return "LuaMainTask"; }

@@ -2,6 +2,16 @@
 #include "Main.h"
 #include "TaskMan.h"
 
+Balau::LuaMainTask::LuaMainTask() : m_stopping(false) {
+    L.open_base();
+    L.open_table();
+    L.open_string();
+    L.open_math();
+    L.open_debug();
+    L.open_bit();
+    L.open_jit();
+}
+
 void Balau::LuaMainTask::exec(LuaExecCell * cell) {
     m_queue.push(cell);
     m_queueEvent.trigger();
@@ -42,4 +52,8 @@ void Balau::LuaExecCell::exec(LuaMainTask * mainTask) {
 
 void Balau::LuaExecString::run(Lua & L) {
     L.load(m_str);
+}
+
+void Balau::LuaExecFile::run(Lua & L) {
+    L.load(m_file);
 }
