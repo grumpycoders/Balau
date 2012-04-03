@@ -60,7 +60,7 @@ class LuaMainTask : public Task {
     void exec(LuaExecCell * cell);
     virtual void Do();
     Lua L;
-    Queue<LuaExecCell> m_queue;
+    TQueue<LuaExecCell> m_queue;
     volatile bool m_stopping;
     friend class LuaExecCell;
 };

@@ -174,9 +174,9 @@ class QueueBase {
     bool isEmpty() { ScopeLock sl(m_lock); return !m_front; }
   protected:
       QueueBase() : m_front(NULL), m_back(NULL) { pthread_cond_init(&m_cond, NULL); }
-      ~QueueBase() { while (!isEmpty()) iPop(false); pthread_cond_destroy(&m_cond); }
-    void iPush(void * t);
-    void * iPop(bool wait);
+      ~QueueBase() { while (!isEmpty()) iPop(NULL); pthread_cond_destroy(&m_cond); }
+    void iPush(void * t, Events::Async * event);
+    void * iPop(Events::Async * event);
 
   private:
       QueueBase(const QueueBase &) = delete;
@@ -191,14 +191,22 @@ class QueueBase {
     };
     Cell * m_front, * m_back;
     pthread_cond_t m_cond;
-    Events::Async m_event;
 };
 
 template<class T>
 class Queue : public QueueBase {
   public:
-    void push(T * t) { iPush(t); }
-    T * pop(bool wait = true) { return (T *) iPop(wait); }
+    void push(T * t) { iPush(t, NULL); }
+    T * pop() { return (T *) iPop(NULL); }
+};
+
+template<class T>
+class TQueue : public QueueBase {
+  public:
+    void push(T * t) { iPush(t, &m_event); }
+    T * pop() { return (T *) iPop(&m_event); }
+  private:
+    Events::Async m_event;
 };
 
 };

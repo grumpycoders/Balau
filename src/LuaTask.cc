@@ -32,7 +32,7 @@ void Balau::LuaMainTask::stop() {
 void Balau::LuaMainTask::Do() {
     while (!m_stopping) {
         LuaExecCell * cell;
-        while ((cell = m_queue.pop(false))) {
+        while ((cell = m_queue.pop())) {
             if (dynamic_cast<LuaTaskDummy *>(cell)) {
                 delete cell;
                 break;

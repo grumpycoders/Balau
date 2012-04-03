@@ -235,7 +235,7 @@ void Balau::Task::yield(Events::BaseEvent * evt, bool interruptible) throw (Gene
     }
 }
 
-void Balau::QueueBase::iPush(void * t) {
+void Balau::QueueBase::iPush(void * t, Events::Async * event) {
     ScopeLock sl(m_lock);
     Cell * c = new Cell(t);
     c->m_prev = m_back;
@@ -244,20 +244,22 @@ void Balau::QueueBase::iPush(void * t) {
     else
         m_front = c;
     m_back = c;
-    pthread_cond_signal(&m_cond);
-    m_event.trigger();
+    if (event)
+        event->trigger();
+    else
+        pthread_cond_signal(&m_cond);
 }
 
-void * Balau::QueueBase::iPop(bool wait) {
+void * Balau::QueueBase::iPop(Events::Async * event) {
     ScopeLock sl(m_lock);
     while (!m_front) {
-        if (wait) {
-            pthread_cond_wait(&m_cond, &m_lock.m_lock);
-        } else {
-            Task::prepare(&m_event);
+        if (event) {
+            Task::prepare(event);
             m_lock.leave();
-            Task::yield(&m_event);
+            Task::yield(event);
             m_lock.enter();
+        } else {
+            pthread_cond_wait(&m_cond, &m_lock.m_lock);
         }
     }
     Cell * c = m_front;
