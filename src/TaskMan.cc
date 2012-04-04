@@ -3,6 +3,8 @@
 #include "Main.h"
 #include "Local.h"
 
+namespace {
+
 class Stopper : public Balau::Task {
   public:
       Stopper(int code) : m_code(code) { }
@@ -19,6 +21,8 @@ void Stopper::Do() {
 const char * Stopper::getName() const {
     return "Stopper";
 }
+
+};
 
 static Balau::DefaultTmpl<Balau::TaskMan> defaultTaskMan(50);
 static Balau::LocalTmpl<Balau::TaskMan> localTaskMan;

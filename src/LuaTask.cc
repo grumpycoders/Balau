@@ -3,8 +3,12 @@
 #include "TaskMan.h"
 #include "Printer.h"
 
+namespace {
+
 class LuaTaskStopper : public Balau::LuaExecCell {
     virtual void run(Balau::Lua &) { }
+};
+
 };
 
 Balau::LuaExecCell::LuaExecCell() : m_detached(false) {

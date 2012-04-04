@@ -172,9 +172,8 @@ static const char * inet_ntop(int af, const void * src, char * dst, socklen_t si
 
 #endif
 
-#if 0
-// TODO: use getaddrinfo_a, if available.
-#else
+namespace {
+
 class ResolverThread : public Balau::GlobalThread {
   public:
       ResolverThread() : GlobalThread(8), m_stopping(false) { }
@@ -184,6 +183,8 @@ class ResolverThread : public Balau::GlobalThread {
     virtual void threadExit();
     Balau::Queue<DNSRequest> m_queue;
     volatile bool m_stopping;
+};
+
 };
 
 void ResolverThread::threadExit() {
@@ -228,7 +229,6 @@ static DNSRequest resolveName(const char * name, const char * service = NULL, st
 
     return req;
 }
-#endif
 
 Balau::Socket::Socket() throw (GeneralException) : m_fd(socket(AF_INET6, SOCK_STREAM, 0)), m_connected(false), m_connecting(false), m_listening(false) {
     m_name = "Socket(unconnected)";
