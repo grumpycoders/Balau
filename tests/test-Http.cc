@@ -4,8 +4,6 @@
 #include <Socket.h>
 #include <SimpleMustache.h>
 
-#define DAEMON_NAME "Balau/1.0"
-
 using namespace Balau;
 
 const char htmlTemplateStr[] =
