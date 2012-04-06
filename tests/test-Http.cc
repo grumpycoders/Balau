@@ -2,10 +2,42 @@
 #include <HttpServer.h>
 #include <TaskMan.h>
 #include <Socket.h>
+#include <SimpleMustache.h>
 
 #define DAEMON_NAME "Balau/1.0"
 
 using namespace Balau;
+
+const char htmlTemplateStr[] =
+"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"
+"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+"<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+"  <head>\n"
+"    <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n"
+"    <title>{{title}}</title>\n"
+"    <style type=\"text/css\">\n"
+"        body { font-family: arial, helvetica, sans-serif; }\n"
+"    </style>\n"
+"  </head>\n"
+"\n"
+"  <body>\n"
+"    <h1>{{title}}</h1>\n"
+"    <h2>{{msg}}</h2>\n"
+"  </body>\n"
+"</html>\n"
+;
+
+class TestHtmlTemplate : public AtStart {
+  public:
+      TestHtmlTemplate() : AtStart(10), htmlTemplate(m_template) { }
+    virtual void doStart() { m_template.setTemplate(htmlTemplateStr); }
+
+    const SimpleMustache & htmlTemplate;
+  private:
+    SimpleMustache m_template;
+};
+
+static TestHtmlTemplate testHtmlTemplate;
 
 static Regex stopURL("/stop$");
 
@@ -21,21 +53,13 @@ class StopAction : public HttpServer::Action {
 bool StopAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
     m_stop = true;
     m_event.trigger();
-
+    SimpleMustache::Context ctx;
     HttpServer::Response response(server, req, out);
-    response->writeString(
-"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"
-"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
-"<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-"  <head>\n"
-"    <title>Stop</title>\n"
-"  </head>\n"
-"\n"
-"  <body>\n"
-"    Server stopping.\n"
-"  </body>\n"
-"</html>\n");
 
+    ctx["title"] = "Stop";
+    ctx["msg"] = "Server stopping";
+
+    testHtmlTemplate.htmlTemplate.render(response.get(), &ctx);
     response.Flush();
     return true;
 }
@@ -48,20 +72,13 @@ class TestAction : public HttpServer::Action {
 };
 
 bool TestAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
+    SimpleMustache::Context ctx;
     HttpServer::Response response(server, req, out);
-    response->writeString(
-"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"
-"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
-"<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-"  <head>\n"
-"    <title>Test</title>\n"
-"  </head>\n"
-"\n"
-"  <body>\n"
-"    This is a test document.\n"
-"  </body>\n"
-"</html>\n");
 
+    ctx["title"] = "Test";
+    ctx["msg"] = "This is a test document.";
+
+    testHtmlTemplate.htmlTemplate.render(response.get(), &ctx);
     response.Flush();
     return true;
 }
