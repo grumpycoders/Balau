@@ -152,6 +152,8 @@ Balau::TaskMan::TaskMan() : m_stopped(false), m_allowedToSignal(false), m_stopCo
 }
 
 #ifdef _WIN32
+namespace {
+
 class WinSocketStartup : public Balau::AtStart {
   public:
       WinSocketStartup() : AtStart(5) { }
@@ -163,6 +165,8 @@ class WinSocketStartup : public Balau::AtStart {
 };
 
 static WinSocketStartup wsa;
+
+};
 #endif
 
 Balau::TaskMan * Balau::TaskMan::getDefaultTaskMan() { return localTaskMan.get(); }
