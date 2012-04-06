@@ -146,11 +146,8 @@ void MainTask::Do() {
 
     s->stop();
 
-    for (int i = 0; i < NTHREADS; i++) {
-        tms[i]->stopMe();
-        tms[i]->join();
-        delete tms[i];
-    }
+    for (int i = 0; i < NTHREADS; i++)
+        TaskMan::stopThreadedTaskMan(tms[i]);
 
     Printer::log(M_STATUS, "Test::Http passed.");
 }

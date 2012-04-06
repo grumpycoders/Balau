@@ -47,6 +47,11 @@ class TaskMan {
         r->threadStart();
         return r;
     }
+    static void stopThreadedTaskMan(TaskManThread * tmt) {
+        tmt->stopMe(0);
+        tmt->join();
+        delete tmt;
+    }
     bool stopped() { return m_stopped; }
     template<class T>
     static T * createTask(T * t, Task * stick = NULL) { TaskMan::registerTask(t, stick); return t; }
