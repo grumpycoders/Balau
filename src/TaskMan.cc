@@ -85,7 +85,6 @@ void Balau::TaskScheduler::stopAll(int code) {
         m_taskManagers.pop();
         altQueue.push(tm);
         tm->addToPending(new Stopper(code));
-        tm->m_evt.send();
     }
     while (!altQueue.empty()) {
         tm = altQueue.front();
@@ -114,7 +113,6 @@ void * Balau::TaskScheduler::proc() {
         m_lock.leave();
         Printer::elog(E_TASK, "TaskScheduler popped task %s at %p; adding to TaskMan %p", t->getName(), t, tm);
         tm->addToPending(t);
-        tm->m_evt.send();
     }
     Printer::elog(E_TASK, "TaskScheduler stopping.");
     return NULL;
@@ -127,6 +125,16 @@ void Balau::TaskScheduler::threadExit() {
 
 void asyncDummy(ev::async & w, int revents) {
     Balau::Printer::elog(Balau::E_TASK, "TaskMan is getting woken up...");
+}
+
+void Balau::TaskMan::stopMe(int code) {
+    Task * t = Task::getCurrentTask();
+    if (t->getTaskMan() == this) {
+        m_stopped = true;
+        m_stopCode = code;
+    } else {
+        addToPending(new Stopper(code));
+    }
 }
 
 Balau::TaskMan::TaskMan() : m_stopped(false), m_allowedToSignal(false), m_stopCode(0) {
@@ -179,6 +187,7 @@ Balau::TaskMan::~TaskMan() {
     }
     s_scheduler.unregisterTaskMan(this);
     // probably way more work to do here in order to clean up tasks from that thread
+    m_evt.stop();
     ev_loop_destroy(m_loop);
 }
 
@@ -221,6 +230,8 @@ int Balau::TaskMan::mainLoop() {
         // checking "STARTING" tasks, and running them once
         while ((iH = starting.begin()) != starting.end()) {
             Task * t = *iH;
+            if (t->getStatus() != Task::STARTING)
+                Printer::elog(E_TASK, "pouet");
             IAssert(t->getStatus() == Task::STARTING, "Got task at %p in the starting list, but isn't starting.", t);
             t->switchTo();
             IAssert(t->getStatus() != Task::STARTING, "Task at %p got switchedTo, but still is 'STARTING'.", t);
@@ -324,7 +335,6 @@ void Balau::TaskMan::registerTask(Balau::Task * t, Balau::Task * stick) {
     if (stick) {
         TaskMan * tm = stick->getTaskMan();
         tm->addToPending(t);
-        tm->m_evt.send();
     } else {
         s_scheduler.registerTask(t);
     }
@@ -332,6 +342,7 @@ void Balau::TaskMan::registerTask(Balau::Task * t, Balau::Task * stick) {
 
 void Balau::TaskMan::addToPending(Balau::Task * t) {
     m_pendingAdd.push(t);
+    m_evt.send();
 }
 
 void Balau::TaskMan::signalTask(Task * t) {
@@ -344,17 +355,49 @@ void Balau::TaskMan::stop(int code) {
     s_scheduler.stopAll(code);
 }
 
-class ThreadedTaskMan : public Balau::Thread {
-    virtual void * proc() {
-        m_taskMan = new Balau::TaskMan();
+void * Balau::TaskMan::TaskManThread::proc() {
+    m_taskMan = new Balau::TaskMan();
+    bool success = false;
+    try {
         m_taskMan->mainLoop();
-        return NULL;
+        success = true;
     }
-    Balau::TaskMan * m_taskMan;
-};
+    catch (Exit e) {
+        Printer::log(M_ERROR, "We shouldn't have gotten an Exit exception here... exitting anyway");
+        auto trace = e.getTrace();
+        for (String & str : trace)
+            Printer::log(M_ERROR, "%s", str.to_charp());
+    }
+    catch (RessourceException e) {
+        Printer::log(M_ERROR | M_ALERT, "The TaskMan thread got a ressource problem: %s", e.getMsg());
+        const char * details = e.getDetails();
+        if (details)
+            Printer::log(M_ERROR, "  %s", details);
+        auto trace = e.getTrace();
+        for (String & str : trace)
+            Printer::log(M_DEBUG, "%s", str.to_charp());
+    }
+    catch (GeneralException e) {
+        Printer::log(M_ERROR | M_ALERT, "The TaskMan thread caused an exception: %s", e.getMsg());
+        const char * details = e.getDetails();
+        if (details)
+            Printer::log(M_ERROR, "  %s", details);
+        auto trace = e.getTrace();
+        for (String & str : trace)
+            Printer::log(M_DEBUG, "%s", str.to_charp());
+    }
+    catch (...) {
+        Printer::log(M_ERROR | M_ALERT, "The TaskMan thread caused an unknown exception");
+    }
+    if (!success) {
+        delete m_taskMan;
+        m_taskMan = NULL;
+        TaskMan::stop(-1);
+    }
+    return NULL;
+}
 
-Balau::Thread * Balau::TaskMan::createThreadedTaskMan() {
-    Thread * r = new ThreadedTaskMan();
-    r->threadStart();
-    return r;
+Balau::TaskMan::TaskManThread::~TaskManThread() {
+    if (m_taskMan)
+        delete m_taskMan;
 }

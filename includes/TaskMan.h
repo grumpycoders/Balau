@@ -25,6 +25,15 @@ class Async;
 
 class TaskMan {
   public:
+    class TaskManThread : public Thread {
+      public:
+          virtual ~TaskManThread();
+        virtual void * proc();
+        void stopMe(int code = 0) { m_taskMan->stopMe(code); }
+      private:
+        TaskMan * m_taskMan;
+    };
+
       TaskMan();
       ~TaskMan();
     int mainLoop();
@@ -32,8 +41,12 @@ class TaskMan {
     struct ev_loop * getLoop() { return m_loop; }
     void signalTask(Task * t);
     static void stop(int code);
-    void stopMe(int code) { m_stopped = true; m_stopCode = code; }
-    static Thread * createThreadedTaskMan();
+    void stopMe(int code = 0);
+    static TaskManThread * createThreadedTaskMan() {
+        TaskManThread * r = new TaskManThread();
+        r->threadStart();
+        return r;
+    }
     bool stopped() { return m_stopped; }
     template<class T>
     static T * createTask(T * t, Task * stick = NULL) { TaskMan::registerTask(t, stick); return t; }
