@@ -14,6 +14,26 @@
 #include "Main.h"
 #include "Atomic.h"
 
+#ifndef _WIN32
+namespace {
+
+class SigpipeBlocker : public Balau::AtStart {
+  public:
+      SigpipeBlocker() : AtStart(5) { }
+    virtual void doStart() {
+        struct sigaction new_actn, old_actn;
+        new_actn.sa_handler = SIG_IGN;
+        sigemptyset(&new_actn.sa_mask);
+        new_actn.sa_flags = 0;
+        sigaction(SIGPIPE, &new_actn, &old_actn);
+    }
+};
+
+static SigpipeBlocker sigpipeBlocker;
+
+};
+#endif
+
 void Balau::Socket::SocketEvent::gotOwner(Task * task) {
     Printer::elog(E_SOCKET, "Arming SocketEvent at %p", this);
     if (!m_task) {
@@ -573,6 +593,13 @@ ssize_t Balau::Socket::write(const void * buf, size_t count) throw (GeneralExcep
 
         if (r > 0)
             return r;
+
+#ifndef _WIN32
+        if (errno == EPIPE) {
+            close();
+            return 0;
+        }
+#endif
 
         if ((errno == EAGAIN) || (errno == EINTR) || (errno == EWOULDBLOCK)) {
             Task::yield(m_evtW, true);
