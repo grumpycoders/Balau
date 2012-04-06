@@ -51,7 +51,7 @@ void Balau::LuaMainTask::Do() {
                 delete cell;
                 return;
             }
-            TaskMan::createTask(new LuaTask(L.thread(), cell), this);
+            TaskMan::registerTask(new LuaTask(L.thread(), cell), this);
         }
     }
 }

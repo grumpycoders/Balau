@@ -60,7 +60,7 @@ int Balau::Main::bootstrap(int _argc, char ** _argv) {
 
     try {
         m_status = RUNNING;
-        TaskMan::createTask(new MainTask());
+        TaskMan::registerTask(new MainTask());
         r = TaskMan::getDefaultTaskMan()->mainLoop();
         m_status = STOPPING;
     }

@@ -331,11 +331,14 @@ int Balau::TaskMan::mainLoop() {
     return m_stopCode;
 }
 
-void Balau::TaskMan::registerTask(Balau::Task * t, Balau::Task * stick) {
+void Balau::TaskMan::iRegisterTask(Balau::Task * t, Balau::Task * stick, Events::TaskEvent * event) {
     if (stick) {
+        IAssert(!event, "inconsistent");
         TaskMan * tm = stick->getTaskMan();
         tm->addToPending(t);
     } else {
+        if (event)
+            event->attachToTask(t);
         s_scheduler.registerTask(t);
     }
 }

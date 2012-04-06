@@ -118,10 +118,10 @@ void MainTask::Do() {
     yield();
 
     waitFor(&event);
-    Task * stopper = new Stopper;
-    Events::TaskEvent stopperEvent(stopper);
+
+    Events::TaskEvent stopperEvent;
+    Task * stopper = TaskMan::registerTask(new Stopper, &stopperEvent);
     waitFor(&stopperEvent);
-    TaskMan::createTask(stopper);
 
     bool gotEvent = false, gotStopperEvent = false;
     int count = 0;

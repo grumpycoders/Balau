@@ -30,8 +30,8 @@ void MainTask::Do() {
     customPrinter = new CustomPrinter();
     Printer::log(M_STATUS, "Test::Tasks running.");
 
-    Task * testTask = TaskMan::createTask(new TestTask());
-    Events::TaskEvent taskEvt(testTask);
+    Events::TaskEvent taskEvt;
+    Task * testTask = TaskMan::registerTask(new TestTask(), &taskEvt);
     waitFor(&taskEvt);
     TAssert(!taskEvt.gotSignal());
     yield();

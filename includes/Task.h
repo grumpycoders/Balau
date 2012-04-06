@@ -73,11 +73,12 @@ class Timeout : public BaseEvent {
 
 class TaskEvent : public BaseEvent {
   public:
-      TaskEvent(Task * taskWaited);
+      TaskEvent(Task * taskWaited = NULL);
       virtual ~TaskEvent();
     void ack();
     void signal();
     Task * taskWaited() { return m_taskWaited; }
+    void attachToTask(Task * taskWaited);
     void evt_cb(ev::async & w, int revents) { doSignal(); }
   protected:
     virtual void gotOwner(Task * task);

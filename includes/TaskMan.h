@@ -20,6 +20,7 @@ class TaskScheduler;
 namespace Events {
 
 class Async;
+class TaskEvent;
 
 };
 
@@ -54,10 +55,12 @@ class TaskMan {
     }
     bool stopped() { return m_stopped; }
     template<class T>
-    static T * createTask(T * t, Task * stick = NULL) { TaskMan::registerTask(t, stick); return t; }
+    static T * registerTask(T * t, Task * stick = NULL) { TaskMan::iRegisterTask(t, stick, NULL); return t; }
+    template<class T>
+    static T * registerTask(T * t, Events::TaskEvent * event) { TaskMan::iRegisterTask(t, NULL, event); return t; }
 
   private:
-    static void registerTask(Task * t, Task * stick);
+    static void iRegisterTask(Task * t, Task * stick, Events::TaskEvent * event);
     void * getStack();
     void freeStack(void * stack);
     void addToPending(Task * t);
@@ -68,8 +71,6 @@ class TaskMan {
 #endif
     friend class Task;
     friend class TaskScheduler;
-    template<class T>
-    friend T * createTask(T * t, Task * stick = NULL);
     struct taskHasher { size_t operator()(const Task * t) const { return reinterpret_cast<uintptr_t>(t); } };
     typedef gnu::hash_set<Task *, taskHasher> taskHash_t;
     taskHash_t m_tasks, m_signaledTasks;

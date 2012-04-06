@@ -149,7 +149,14 @@ void Balau::Events::BaseEvent::doSignal() {
     }
 }
 
-Balau::Events::TaskEvent::TaskEvent(Task * taskWaited) : m_taskWaited(taskWaited), m_ack(false), m_distant(false) {
+Balau::Events::TaskEvent::TaskEvent(Task * taskWaited) : m_taskWaited(NULL), m_ack(false), m_distant(false) {
+    if (taskWaited)
+        attachToTask(taskWaited);
+}
+
+void Balau::Events::TaskEvent::attachToTask(Task * taskWaited) {
+    AAssert(!m_taskWaited, "You can't attach a TaskEvent twice.");
+    m_taskWaited = taskWaited;
     ScopeLock lock(m_taskWaited->m_eventLock);
     m_taskWaited->m_waitedBy.push_back(this);
 }

@@ -81,7 +81,7 @@ class Listener : public ListenerBase {
   public:
       Listener(int port, const char * local = "", void * opaque = NULL) : ListenerBase(port, local, opaque) { }
   protected:
-    virtual void factory(IO<Socket> & io, void * opaque) { TaskMan::createTask(new Worker(io, opaque)); }
+    virtual void factory(IO<Socket> & io, void * opaque) { TaskMan::registerTask(new Worker(io, opaque)); }
     virtual void setName() { m_name = String(ClassName(this).c_str()) + " - " + m_listener->getName(); }
 };
 

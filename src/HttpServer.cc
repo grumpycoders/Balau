@@ -594,7 +594,7 @@ typedef Balau::Listener<Balau::HttpWorker> HttpListener;
 
 void Balau::HttpServer::start() {
     AAssert(!m_started, "Don't start an HttpServer twice");
-    m_listenerPtr = TaskMan::createTask(new HttpListener(m_port, m_local.to_charp(), this));
+    m_listenerPtr = TaskMan::registerTask(new HttpListener(m_port, m_local.to_charp(), this));
     m_started = true;
 }
 

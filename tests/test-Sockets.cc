@@ -62,11 +62,16 @@ void MainTask::Do() {
     Printer::enable(M_ALL);
     Printer::log(M_STATUS, "Test::Sockets running.");
 
-    Events::TaskEvent evtSvr(listener = TaskMan::createTask(new Listener<Worker>(1234)));
-    Events::TaskEvent evtCln(TaskMan::createTask(new Client));
-    Printer::log(M_STATUS, "Created %s", listener->getName());
+    Events::TaskEvent evtSvr;
+    Events::TaskEvent evtCln;
+
+    listener = TaskMan::registerTask(new Listener<Worker>(1234), &evtSvr);
+    TaskMan::registerTask(new Client, &evtCln);
+
     waitFor(&evtSvr);
     waitFor(&evtCln);
+
+    Printer::log(M_STATUS, "Created %s", listener->getName());
     bool svrDone = false, clnDone = false;
     while (!svrDone || !clnDone) {
         yield();
