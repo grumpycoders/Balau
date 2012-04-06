@@ -106,9 +106,9 @@ void MainTask::Do() {
     bool stop = false;
 
     HttpServer * s = new HttpServer();
-    (new TestAction())->registerMe(s);
-    (new TestFailure())->registerMe(s);
-    (new StopAction(event, stop))->registerMe(s);
+    s->registerAction(new TestAction());
+    s->registerAction(new TestFailure());
+    s->registerAction(new StopAction(event, stop));
     s->setPort(8080);
     s->setLocal("localhost");
     s->start();
