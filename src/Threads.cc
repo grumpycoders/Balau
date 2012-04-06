@@ -2,6 +2,7 @@
 #include "Threads.h"
 #include "Local.h"
 #include "Atomic.h"
+#include "TaskMan.h"
 
 namespace Balau {
 
@@ -39,11 +40,47 @@ Balau::RWLock::RWLock() {
 }
 
 void * Balau::ThreadHelper::threadProc(void * arg) {
-    void * tls = g_tlsManager->createTLS();
-    g_tlsManager->setTLS(tls);
-    Balau::Thread * thread = reinterpret_cast<Balau::Thread *>(arg);
-    void * r = thread->proc();
-    free(tls);
+    void * r = NULL;
+    bool success = false;
+    try {
+        void * tls = g_tlsManager->createTLS();
+        g_tlsManager->setTLS(tls);
+        Balau::Thread * thread = reinterpret_cast<Balau::Thread *>(arg);
+        r = thread->proc();
+        free(tls);
+        success = true;
+    }
+    catch (Exit e) {
+        Printer::log(M_ERROR, "We shouldn't have gotten an Exit exception here... exitting anyway");
+        auto trace = e.getTrace();
+        for (String & str : trace)
+            Printer::log(M_ERROR, "%s", str.to_charp());
+    }
+    catch (RessourceException e) {
+        Printer::log(M_ERROR | M_ALERT, "The Thread got a ressource problem: %s", e.getMsg());
+        const char * details = e.getDetails();
+        if (details)
+            Printer::log(M_ERROR, "  %s", details);
+        auto trace = e.getTrace();
+        for (String & str : trace)
+            Printer::log(M_DEBUG, "%s", str.to_charp());
+    }
+    catch (GeneralException e) {
+        Printer::log(M_ERROR | M_ALERT, "The Thread caused an exception: %s", e.getMsg());
+        const char * details = e.getDetails();
+        if (details)
+            Printer::log(M_ERROR, "  %s", details);
+        auto trace = e.getTrace();
+        for (String & str : trace)
+            Printer::log(M_DEBUG, "%s", str.to_charp());
+    }
+    catch (...) {
+        Printer::log(M_ERROR | M_ALERT, "The Thread caused an unknown exception");
+    }
+
+    if (!success)
+        TaskMan::stop(-1);
+
     return r;
 }
 

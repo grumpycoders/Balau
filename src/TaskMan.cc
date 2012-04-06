@@ -356,9 +356,10 @@ void Balau::TaskMan::stop(int code) {
 }
 
 void * Balau::TaskMan::TaskManThread::proc() {
-    m_taskMan = new Balau::TaskMan();
     bool success = false;
+    m_taskMan = NULL;
     try {
+        m_taskMan = new Balau::TaskMan();
         m_taskMan->mainLoop();
         success = true;
     }
@@ -390,7 +391,8 @@ void * Balau::TaskMan::TaskManThread::proc() {
         Printer::log(M_ERROR | M_ALERT, "The TaskMan thread caused an unknown exception");
     }
     if (!success) {
-        delete m_taskMan;
+        if (m_taskMan)
+            delete m_taskMan;
         m_taskMan = NULL;
         TaskMan::stop(-1);
     }
