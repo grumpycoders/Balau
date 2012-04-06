@@ -80,11 +80,13 @@ class SimpleMustache {
         IO<Buffer> b(new Buffer(str, s));
         setTemplate(b);
     }
-    void setTemplate(const char * str, ssize_t s = -1) { setTemplate((const uint8_t *) str, s); }
+    template<size_t S>
+    void setTemplate(const char str[S]) { setTemplate((const uint8_t *) str, S); }
+    void setTemplate(const char * str, ssize_t s) { setTemplate((const uint8_t *) str, s); }
     void setTemplate(const String & str) { setTemplate((const uint8_t *) str.to_charp(), str.strlen()); }
-    void render(IO<Handle> h, Context * ctx) { AAssert(ctx, "Please pass on a context to render"); render_r(h, ctx, "", m_fragments.begin(), false, -1); }
+    void render(IO<Handle> h, Context * ctx) const { AAssert(ctx, "Please pass on a context to render"); render_r(h, ctx, "", m_fragments.begin(), false, -1); }
     void empty() { while (!m_fragments.empty()) { delete m_fragments.front(); m_fragments.pop_front(); } }
-    void checkTemplate() { Fragments::iterator end = checkTemplate_r(m_fragments.begin()); AAssert(end == m_fragments.end(), "The template wasn't fully checked; possibly mismatched sections"); }
+    void checkTemplate() { Fragments::const_iterator end = checkTemplate_r(m_fragments.begin()); AAssert(end == m_fragments.end(), "The template wasn't fully checked; possibly mismatched sections"); }
       ~SimpleMustache() { empty(); }
   private:
     struct Fragment {
@@ -102,10 +104,10 @@ class SimpleMustache {
     typedef std::list<Fragment *> Fragments;
     Fragments m_fragments;
 
-    Fragments::iterator render_r(IO<Handle> h, Context * ctx, const String & endSection, Fragments::iterator begin, bool noWrite, int forceIdx);
-    String escape(const String & s);
+    Fragments::const_iterator render_r(IO<Handle> h, Context * ctx, const String & endSection, Fragments::const_iterator begin, bool noWrite, int forceIdx) const;
+    static String escape(const String & s);
 
-    Fragments::iterator checkTemplate_r(Fragments::iterator begin, const String & endSection = "");
+    Fragments::const_iterator checkTemplate_r(Fragments::const_iterator begin, const String & endSection = "") const;
 };
 
 };

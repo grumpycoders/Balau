@@ -328,9 +328,9 @@ void Balau::SimpleMustache::setTemplate(IO<Handle> _h) {
         m_fragments.push_back(curFragment);
 }
 
-Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::checkTemplate_r(Fragments::iterator begin, const String & endSection) {
-    Fragments::iterator cur;
-    Fragments::iterator end = m_fragments.end();
+Balau::SimpleMustache::Fragments::const_iterator Balau::SimpleMustache::checkTemplate_r(Fragments::const_iterator begin, const String & endSection) const {
+    Fragments::const_iterator cur;
+    Fragments::const_iterator end = m_fragments.end();
 
     for (cur = begin; cur != end; cur++) {
         Fragment * fr = *cur;
@@ -346,9 +346,9 @@ Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::checkTemplate_
     return end;
 }
 
-Balau::SimpleMustache::Fragments::iterator Balau::SimpleMustache::render_r(IO<Handle> h, Context * ctx, const String & endSection, Fragments::iterator begin, bool noWrite, int forceIdx) {
-    Fragments::iterator cur;
-    Fragments::iterator end = m_fragments.end();
+Balau::SimpleMustache::Fragments::const_iterator Balau::SimpleMustache::render_r(IO<Handle> h, Context * ctx, const String & endSection, Fragments::const_iterator begin, bool noWrite, int forceIdx) const {
+    Fragments::const_iterator cur;
+    Fragments::const_iterator end = m_fragments.end();
 
     if (endSection.strlen() != 0) {
         int depth = 0;
