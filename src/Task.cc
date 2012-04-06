@@ -157,7 +157,8 @@ Balau::Events::TaskEvent::TaskEvent(Task * taskWaited) : m_taskWaited(taskWaited
 void Balau::Events::TaskEvent::signal() {
     if (m_distant)
         m_evt.send();
-    doSignal();
+    else
+        doSignal();
 }
 
 void Balau::Events::TaskEvent::gotOwner(Task * task) {
