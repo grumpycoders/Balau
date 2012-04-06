@@ -122,6 +122,8 @@ void MainTask::Do() {
     Events::Async event;
     bool stop = false;
 
+    waitFor(&event);
+
     HttpServer * s = new HttpServer();
     s->registerAction(new TestAction());
     s->registerAction(new TestFailure());
@@ -133,8 +135,6 @@ void MainTask::Do() {
     Events::Timeout timeout(1);
     waitFor(&timeout);
     yield();
-
-    waitFor(&event);
 
     Events::TaskEvent stopperEvent;
     Task * stopper = TaskMan::registerTask(new Stopper, &stopperEvent);
