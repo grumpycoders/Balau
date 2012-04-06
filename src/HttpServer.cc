@@ -600,8 +600,14 @@ void Balau::HttpServer::start() {
 
 void Balau::HttpServer::stop() {
     AAssert(m_started, "Don't stop an HttpServer that hasn't been started");
-    reinterpret_cast<HttpListener *>(m_listenerPtr)->stop();
+    HttpListener * listener = reinterpret_cast<HttpListener *>(m_listenerPtr);
+    Events::TaskEvent event(listener);
+    Task::prepare(&event);
+    listener->stop();
     m_started = false;
+    Task::yield(&event);
+    IAssert(event.gotSignal(), "HttpServer::stop didn't actually get the listener to stop");
+    event.ack();
 }
 
 void Balau::HttpServer::registerAction(Action * action) {
