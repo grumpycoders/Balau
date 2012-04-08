@@ -230,8 +230,6 @@ int Balau::TaskMan::mainLoop() {
         // checking "STARTING" tasks, and running them once
         while ((iH = starting.begin()) != starting.end()) {
             Task * t = *iH;
-            if (t->getStatus() != Task::STARTING)
-                Printer::elog(E_TASK, "pouet");
             IAssert(t->getStatus() == Task::STARTING, "Got task at %p in the starting list, but isn't starting.", t);
             t->switchTo();
             IAssert(t->getStatus() != Task::STARTING, "Task at %p got switchedTo, but still is 'STARTING'.", t);
