@@ -167,7 +167,7 @@ class Task {
         return oldValue;
     }
     void setStackless() {
-        AAssert(m_stackless, "Can't set a task to be stackless twice");
+        AAssert(!m_stackless, "Can't set a task to be stackless twice");
         AAssert(m_status == STARTING, "Can't set a task to be stackless after it started. status = %s", StatusToString(m_status));
         m_stackless = true;
         m_okayToEAgain = true;
