@@ -192,6 +192,7 @@ Balau::Events::TaskEvent::TaskEvent(Task * taskWaited) : m_taskWaited(NULL), m_a
 
 void Balau::Events::TaskEvent::attachToTask(Task * taskWaited) {
     AAssert(!m_taskWaited, "You can't attach a TaskEvent twice.");
+    m_ack = false;
     m_taskWaited = taskWaited;
     ScopeLock lock(m_taskWaited->m_eventLock);
     m_taskWaited->m_waitedBy.push_back(this);
@@ -242,6 +243,7 @@ void Balau::Events::TaskEvent::ack() {
     IAssert(deleted, "We didn't find task %p in the waitedBy lists... ?", this);
     m_ack = true;
     reset();
+    m_taskWaited = NULL;
 }
 
 void Balau::Events::Timeout::gotOwner(Task * task) {
