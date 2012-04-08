@@ -153,6 +153,7 @@ class Task {
     static void yield(Events::BaseEvent * evt, bool interruptible = false) throw (GeneralException);
     TaskMan * getTaskMan() const { return m_taskMan; }
     struct ev_loop * getLoop();
+    bool isStackless() { return m_stackless; }
   protected:
     void yield(bool stillRunning = false) throw (GeneralException);
     virtual void Do() = 0;

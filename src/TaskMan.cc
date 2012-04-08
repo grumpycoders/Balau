@@ -192,10 +192,11 @@ Balau::TaskMan::~TaskMan() {
 }
 
 void * Balau::TaskMan::getStack() {
+    if (!Task::needsStacks())
+        return NULL;
     void * r = NULL;
     if (m_nStacks == 0) {
-        if (Task::needsStacks())
-            r = malloc(Task::stackSize());
+        r = malloc(Task::stackSize());
     } else {
         r = m_stacks.front();
         m_stacks.pop();
@@ -298,7 +299,7 @@ int Balau::TaskMan::mainLoop() {
             Printer::elog(E_TASK, "TaskMan at %p popped task %p...", this, t);
             IAssert(m_tasks.find(t) == m_tasks.end(), "TaskMan got task %p twice... ?", t);
             ev_now_update(m_loop);
-            t->setup(this, getStack());
+            t->setup(this, t->isStackless() ? NULL : getStack());
             m_tasks.insert(t);
             starting.insert(t);
         }

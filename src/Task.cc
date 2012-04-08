@@ -19,16 +19,21 @@ bool Balau::Task::needsStacks() {
 }
 
 void Balau::Task::setup(TaskMan * taskMan, void * stack) {
-    size_t size = stackSize();
+    if (m_stackless) {
+        IAssert(!stack, "Since we're stackless, no stack should've been allocated.");
+        m_stack = NULL;
+    } else {
+        size_t size = stackSize();
 #ifndef _WIN32
-    IAssert(stack, "Can't setup a coroutine without a stack");
-    m_stack = stack;
-    coro_create(&m_ctx, coroutineTrampoline, this, m_stack, size);
+        IAssert(stack, "Can't setup a coroutine without a stack");
+        m_stack = stack;
+        coro_create(&m_ctx, coroutineTrampoline, this, m_stack, size);
 #else
-    Assert(!stack, "We shouldn't allocate stacks with Fibers");
-    m_stack = NULL;
-    m_fiber = CreateFiber(size, coroutineTrampoline, this);
+        Assert(!stack, "We shouldn't allocate stacks with Fibers");
+        m_stack = NULL;
+        m_fiber = CreateFiber(size, coroutineTrampoline, this);
 #endif
+    }
 
     m_taskMan = taskMan;
 
