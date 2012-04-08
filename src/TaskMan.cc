@@ -261,7 +261,7 @@ int Balau::TaskMan::mainLoop() {
         // let's check who got signaled, and call them
         for (Task * t : m_signaledTasks) {
             Printer::elog(E_TASK, "TaskMan at %p Switching to task %p (%s - %s) that got signaled somehow.", this, t, t->getName(), ClassName(t).c_str());
-            IAssert(t->getStatus() == Task::IDLE || t->getStatus() == Task::YIELDED, "We're switching to a non-idle/yielded task at %p... ? status = %i", t, t->getStatus());
+            IAssert(t->getStatus() == Task::SLEEPING || t->getStatus() == Task::YIELDED, "We're switching to a non-sleeping/yielded task at %p... ? status = %i", t, t->getStatus());
             bool wasYielded = t->getStatus() == Task::YIELDED;
             t->switchTo();
             if ((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED)) {

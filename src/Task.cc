@@ -6,10 +6,7 @@
 
 static Balau::LocalTmpl<Balau::Task> localTask;
 
-Balau::Task::Task() {
-    m_status = STARTING;
-    m_okayToEAgain = false;
-
+Balau::Task::Task() : m_status(STARTING), m_okayToEAgain(false), m_stackless(false) {
     Printer::elog(E_TASK, "Created a Task at %p", this);
 }
 
@@ -54,7 +51,9 @@ void Balau::Task::coroutineTrampoline(void * arg) {
 
 void Balau::Task::coroutine() {
     try {
-        IAssert(m_status == STARTING, "The Task at %p was badly initialized ? m_status = %i", this, m_status);
+        if (!m_stackless) {
+            IAssert(m_status == STARTING, "The Task at %p was badly initialized ? m_status = %s", this, StatusToString(m_status));
+        }
         m_status = RUNNING;
         Do();
         m_status = STOPPED;
@@ -66,6 +65,12 @@ void Balau::Task::coroutine() {
     catch (TestException & e) {
         m_status = STOPPED;
         Printer::log(M_ERROR, "Unit test failed: %s", e.getMsg());
+        const char * details = e.getDetails();
+        if (details)
+            Printer::log(M_ERROR, "  %s", details);
+        auto trace = e.getTrace();
+        for (String & str : trace)
+            Printer::log(M_ERROR, "%s", str.to_charp());
         TaskMan::stop(-1);
     }
     catch (RessourceException & e) {
@@ -74,7 +79,45 @@ void Balau::Task::coroutine() {
         const char * details = e.getDetails();
         if (details)
             Printer::log(M_ERROR, "  %s", details);
+        auto trace = e.getTrace();
+        for (String & str : trace)
+            Printer::log(M_DEBUG, "%s", str.to_charp());
         TaskMan::stop(-1);
+    }
+    catch (TaskSwitch & e) {
+        if (!m_stackless) {
+            Printer::log(M_ERROR, "Task %s at %p isn't stackless, but still caused a task switch.", getName(), this);
+            const char * details = e.getDetails();
+            if (details)
+                Printer::log(M_ERROR, "  %s", details);
+            auto trace = e.getTrace();
+            for (String & str : trace)
+                Printer::log(M_DEBUG, "%s", str.to_charp());
+            m_status = FAULTED;
+        }
+    }
+    catch (EAgain & e) {
+        waitFor(e.getEvent());
+        if (!m_okayToEAgain) {
+            Printer::log(M_ERROR, "Task %s at %p which is non-okay-to-eagain got an EAgain exception.", getName(), this);
+            const char * details = e.getDetails();
+            if (details)
+                Printer::log(M_ERROR, "  %s", details);
+            auto trace = e.getTrace();
+            for (String & str : trace)
+                Printer::log(M_DEBUG, "%s", str.to_charp());
+            TaskMan::stop(-1);
+        }
+        if (!m_stackless) {
+            Printer::log(M_WARNING, "Task %s at %p hasn't caught an EAgain exception.", getName(), this);
+            const char * details = e.getDetails();
+            if (details)
+                Printer::log(M_WARNING, "  %s", details);
+            auto trace = e.getTrace();
+            for (String & str : trace)
+                Printer::log(M_DEBUG, "%s", str.to_charp());
+            m_status = FAULTED;
+        }
     }
     catch (GeneralException & e) {
         Printer::log(M_WARNING, "Task %s at %p caused an exception: `%s' - stopping.", getName(), this, e.getMsg());
@@ -90,39 +133,50 @@ void Balau::Task::coroutine() {
         Printer::log(M_WARNING, "Task %s at %p caused an unknown exception - stopping.", getName(), this);
         m_status = FAULTED;
     }
+    if (!m_stackless) {
 #ifndef _WIN32
-    coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
+        coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
 #else
-    SwitchToFiber(m_taskMan->m_fiber);
+        SwitchToFiber(m_taskMan->m_fiber);
 #endif
+    }
 }
 
 void Balau::Task::switchTo() {
     Printer::elog(E_TASK, "Switching to task %p - %s", this, getName());
-    IAssert(m_status == YIELDED || m_status == IDLE || m_status == STARTING, "The task at %p isn't either yielded, idle or starting... ? m_status = %i", this, m_status);
+    IAssert(m_status == YIELDED || m_status == SLEEPING || m_status == STARTING, "The task at %p isn't either yielded, sleeping or starting... ? m_status = %s", this, StatusToString(m_status));
     void * oldTLS = g_tlsManager->getTLS();
     g_tlsManager->setTLS(m_tls);
-    if (m_status == YIELDED || m_status == IDLE)
+    if (m_status == YIELDED || m_status == SLEEPING)
         m_status = RUNNING;
+    if (m_stackless) {
+        coroutine();
+    } else {
 #ifndef _WIN32
-    coro_transfer(&m_taskMan->m_returnContext, &m_ctx);
+        coro_transfer(&m_taskMan->m_returnContext, &m_ctx);
 #else
-    SwitchToFiber(m_fiber);
+        SwitchToFiber(m_fiber);
 #endif
+    }
     g_tlsManager->setTLS(oldTLS);
-    if (m_status == RUNNING)
-        m_status = IDLE;
+    IAssert(m_status != RUNNING, "Task %s at %p is still running... ?", getName(), this);
 }
 
-void Balau::Task::yield(bool changeStatus) {
+void Balau::Task::yield(bool stillRunning) throw (GeneralException) {
     Printer::elog(E_TASK, "Task %p - %s yielding", this, getName());
-    if (changeStatus)
+    if (stillRunning)
         m_status = YIELDED;
+    else
+        m_status = SLEEPING;
+    if (m_stackless) {
+        throw TaskSwitch();
+    } else {
 #ifndef _WIN32
-    coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
+        coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
 #else
-    SwitchToFiber(m_taskMan->m_fiber);
+        SwitchToFiber(m_taskMan->m_fiber);
 #endif
+    }
 }
 
 Balau::Task * Balau::Task::getCurrentTask() {

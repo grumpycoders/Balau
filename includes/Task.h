@@ -21,6 +21,11 @@ class EAgain : public GeneralException {
     Events::BaseEvent * m_evt;
 };
 
+class TaskSwitch : public GeneralException {
+  public:
+      TaskSwitch() : GeneralException("Task Switch") { }
+};
+
 class TaskMan;
 class Task;
 
@@ -120,10 +125,21 @@ class Task {
     enum Status {
         STARTING,
         RUNNING,
-        IDLE,
+        SLEEPING,
         STOPPED,
         FAULTED,
         YIELDED,
+    };
+    static const char * StatusToString(enum Status status) {
+        static const char * strs[] = {
+            "STARTING",
+            "RUNNING",
+            "SLEEPING",
+            "STOPPED",
+            "FAULTED",
+            "YIELDED",
+        };
+        return strs[status];
     };
       Task();
       virtual ~Task();
@@ -138,13 +154,18 @@ class Task {
     TaskMan * getTaskMan() const { return m_taskMan; }
     struct ev_loop * getLoop();
   protected:
-    void yield(bool changeStatus = false);
+    void yield(bool stillRunning = false) throw (GeneralException);
     virtual void Do() = 0;
     void waitFor(Events::BaseEvent * event);
     bool setOkayToEAgain(bool enable) {
         bool oldValue = m_okayToEAgain;
         m_okayToEAgain = enable;
         return oldValue;
+    }
+    void setStackless() {
+        AAssert(m_stackless, "Can't set a task to be stackless twice");
+        AAssert(m_status == STARTING, "Can't set a task to be stackless after it started. status = %s", StatusToString(m_status));
+        m_stackless = true;
     }
   private:
     static size_t stackSize() { return 64 * 1024; }
@@ -167,7 +188,7 @@ class Task {
     Lock m_eventLock;
     typedef std::list<Events::TaskEvent *> waitedByList_t;
     waitedByList_t m_waitedBy;
-    bool m_okayToEAgain;
+    bool m_okayToEAgain, m_stackless;
 };
 
 class QueueBase {
