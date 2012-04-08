@@ -51,9 +51,7 @@ void Balau::Task::coroutineTrampoline(void * arg) {
 
 void Balau::Task::coroutine() {
     try {
-        if (!m_stackless) {
-            IAssert(m_status == STARTING, "The Task at %p was badly initialized ? m_status = %s", this, StatusToString(m_status));
-        }
+        IAssert((m_status == STARTING) || (m_stackless && (m_status == RUNNING)), "The Task at %p has a bad status ? m_status = %s, stackless = %s", this, StatusToString(m_status), m_stackless ? "true" : "false");
         m_status = RUNNING;
         Do();
         m_status = STOPPED;
@@ -94,29 +92,8 @@ void Balau::Task::coroutine() {
             for (String & str : trace)
                 Printer::log(M_DEBUG, "%s", str.to_charp());
             m_status = FAULTED;
-        }
-    }
-    catch (EAgain & e) {
-        waitFor(e.getEvent());
-        if (!m_okayToEAgain) {
-            Printer::log(M_ERROR, "Task %s at %p which is non-okay-to-eagain got an EAgain exception.", getName(), this);
-            const char * details = e.getDetails();
-            if (details)
-                Printer::log(M_ERROR, "  %s", details);
-            auto trace = e.getTrace();
-            for (String & str : trace)
-                Printer::log(M_DEBUG, "%s", str.to_charp());
-            TaskMan::stop(-1);
-        }
-        if (!m_stackless) {
-            Printer::log(M_WARNING, "Task %s at %p hasn't caught an EAgain exception.", getName(), this);
-            const char * details = e.getDetails();
-            if (details)
-                Printer::log(M_WARNING, "  %s", details);
-            auto trace = e.getTrace();
-            for (String & str : trace)
-                Printer::log(M_DEBUG, "%s", str.to_charp());
-            m_status = FAULTED;
+        } else {
+            Printer::elog(E_TASK, "Stackless task %s at %p is task-switching.", getName(), this);
         }
     }
     catch (GeneralException & e) {
@@ -169,7 +146,7 @@ void Balau::Task::yield(bool stillRunning) throw (GeneralException) {
     else
         m_status = SLEEPING;
     if (m_stackless) {
-        throw TaskSwitch();
+        throw EAgain(NULL);
     } else {
 #ifndef _WIN32
         coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
@@ -280,6 +257,11 @@ void Balau::Task::yield(Events::BaseEvent * evt, bool interruptible) throw (Gene
     Task * t = getCurrentTask();
     if (evt)
         t->waitFor(evt);
+
+    if (t->m_stackless) {
+        AAssert(interruptible, "You can't run non-interruptible operations from a stackless task.");
+    }
+
     bool gotSignal;
 
     do {

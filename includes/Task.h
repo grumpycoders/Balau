@@ -158,6 +158,9 @@ class Task {
     virtual void Do() = 0;
     void waitFor(Events::BaseEvent * event);
     bool setOkayToEAgain(bool enable) {
+        if (m_stackless) {
+            AAssert(enable, "You can't make a task go not-okay-to-eagain if it's stackless.");
+        }
         bool oldValue = m_okayToEAgain;
         m_okayToEAgain = enable;
         return oldValue;
@@ -166,6 +169,7 @@ class Task {
         AAssert(m_stackless, "Can't set a task to be stackless twice");
         AAssert(m_status == STARTING, "Can't set a task to be stackless after it started. status = %s", StatusToString(m_status));
         m_stackless = true;
+        m_okayToEAgain = true;
     }
   private:
     static size_t stackSize() { return 64 * 1024; }
