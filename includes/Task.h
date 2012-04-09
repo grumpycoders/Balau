@@ -67,6 +67,7 @@ class BaseEvent {
 
 class Timeout : public BaseEvent {
   public:
+      Timeout() { }
       Timeout(ev_tstamp tstamp) { set(tstamp); }
       virtual ~Timeout() { m_evt.stop(); }
     void evt_cb(ev::timer & w, int revents) { doSignal(); }
