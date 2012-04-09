@@ -25,14 +25,18 @@ class TestOperation {
   public:
       TestOperation() : m_count(0), m_completed(false) { }
     void Do() {
-        if (m_count++ == 0)
-            Task::yield(NULL, true);
+        if (m_count++ == 0) {
+            m_timeout.set(0.2);
+            Task::yield(&m_timeout, true);
+        }
+        TAssert(m_timeout.gotSignal());
         m_completed = true;
     }
     bool completed() { return m_completed; }
   private:
     int m_count;
     bool m_completed;
+    Events::Timeout m_timeout;
 };
 
 class TestStackless : public StacklessTask {
@@ -43,6 +47,7 @@ class TestStackless : public StacklessTask {
         StacklessBegin();
         m_operation = new TestOperation();
         StacklessOperation(m_operation->Do());
+        TAssert(m_operation->completed());
         delete m_operation;
         StacklessEnd();
     }
