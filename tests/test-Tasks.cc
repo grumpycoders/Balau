@@ -27,7 +27,7 @@ class TestOperation {
     void Do() {
         if (m_count++ == 0) {
             m_timeout.set(0.2);
-            Task::yield(&m_timeout, true);
+            Task::operationYield(&m_timeout, Task::STACKLESS);
         }
         TAssert(m_timeout.gotSignal());
         m_completed = true;
@@ -56,7 +56,7 @@ class TestStackless : public StacklessTask {
 
 static void yieldingFunction() {
     Events::Timeout timeout(0.2);
-    Task::yield(&timeout);
+    Task::operationYield(&timeout);
     TAssert(timeout.gotSignal());
 }
 

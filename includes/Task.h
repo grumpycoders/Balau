@@ -151,12 +151,21 @@ class Task {
         Task * t = getCurrentTask();
         t->waitFor(evt);
     }
-    static void yield(Events::BaseEvent * evt, bool interruptible = false) throw (GeneralException);
+    enum OperationYieldType {
+        SIMPLE,
+        INTERRUPTIBLE,
+        STACKLESS,
+    };
+    static void operationYield(Events::BaseEvent * evt = NULL, enum OperationYieldType yieldType = SIMPLE) throw (GeneralException);
     TaskMan * getTaskMan() const { return m_taskMan; }
     struct ev_loop * getLoop();
     bool isStackless() { return m_stackless; }
   protected:
     void yield(bool stillRunning = false) throw (GeneralException);
+    void yield(Events::BaseEvent * evt) {
+        waitFor(evt);
+        yield();
+    }
     virtual void Do() = 0;
     void waitFor(Events::BaseEvent * event);
     bool setOkayToEAgain(bool enable) {

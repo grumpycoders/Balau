@@ -607,7 +607,7 @@ void Balau::HttpServer::stop() {
     Task::prepare(&event);
     listener->stop();
     m_started = false;
-    Task::yield(&event);
+    Task::operationYield(&event);
     IAssert(event.gotSignal(), "HttpServer::stop didn't actually get the listener to stop");
     event.ack();
 }

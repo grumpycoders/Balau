@@ -56,7 +56,7 @@ Balau::Output::Output(const char * fname, bool truncate) throw (GeneralException
     cbResults_t cbResults;
     eio_req * r = eio_open(fname, O_WRONLY | O_CREAT | (truncate ? O_TRUNC : 0), 0755, 0, eioDone, &cbResults);
     EAssert(r != NULL, "eio_open returned a NULL eio_req");
-    Task::yield(&cbResults.evt);
+    Task::operationYield(&cbResults.evt);
     if (cbResults.result < 0) {
         char str[4096];
         if (cbResults.errorno == ENOENT) {
@@ -71,7 +71,7 @@ Balau::Output::Output(const char * fname, bool truncate) throw (GeneralException
     cbStatsResults_t cbStatsResults;
     r = eio_fstat(m_fd, 0, eioStatsDone, &cbStatsResults);
     EAssert(r != NULL, "eio_fstat returned a NULL eio_req");
-    Task::yield(&cbStatsResults.evt);
+    Task::operationYield(&cbStatsResults.evt);
     if (cbStatsResults.result == 0) {
         m_size = cbStatsResults.statdata.st_size;
         m_mtime = cbStatsResults.statdata.st_mtime;
@@ -85,7 +85,7 @@ void Balau::Output::close() throw (GeneralException) {
     eio_req * r = eio_close(m_fd, 0, eioDone, &cbResults);
     EAssert(r != NULL, "eio_close returned a NULL eio_req");
     m_fd = -1;
-    Task::yield(&cbResults.evt);
+    Task::operationYield(&cbResults.evt);
     if (cbResults.result < 0) {
         char str[4096];
         strerror_r(cbResults.errorno, str, sizeof(str));
@@ -99,7 +99,7 @@ ssize_t Balau::Output::write(const void * buf, size_t count) throw (GeneralExcep
     cbResults_t cbResults;
     eio_req * r = eio_write(m_fd, const_cast<void *>(buf), count, getWOffset(), 0, eioDone, &cbResults);
     EAssert(r != NULL, "eio_write returned a NULL eio_req");
-    Task::yield(&cbResults.evt);
+    Task::operationYield(&cbResults.evt);
     if (cbResults.result > 0) {
         wseek(cbResults.result, SEEK_CUR);
     } else {

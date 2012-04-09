@@ -79,7 +79,7 @@ ssize_t Balau::ZStream::read(void * buf, size_t count) throw (GeneralException) 
             if (r <= 0)
                 return readTotal;
         }
-        Task::yield(nullptr);
+        Task::operationYield();
         int r = inflate(&m_zin, Z_SYNC_FLUSH);
         size_t didRead = count - m_zin.avail_out;
         readTotal += didRead;
@@ -108,7 +108,7 @@ ssize_t Balau::ZStream::write(const void * buf, size_t count) throw (GeneralExce
         m_zout.avail_out = BLOCK_SIZE;
         int r = deflate(&m_zout, Z_NO_FLUSH);
         EAssert(r == Z_OK, "deflate() didn't return Z_OK but %i", r);
-        Task::yield(nullptr);
+        Task::operationYield();
         size_t compressed = BLOCK_SIZE - m_zout.avail_out;
         if (compressed) {
             size_t w = m_h->forceWrite(obuf, compressed);

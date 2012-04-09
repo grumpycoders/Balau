@@ -243,7 +243,7 @@ static DNSRequest resolveName(const char * name, const char * service = NULL, st
     Balau::Printer::elog(Balau::E_SOCKET, "Sending a request to the resolver thread");
     Balau::Task::prepare(&evt);
     resolverThread.pushRequest(&req);
-    Balau::Task::yield(&evt);
+    Balau::Task::operationYield(&evt);
 
     Balau::Atomic::MemoryFence();
 
@@ -476,7 +476,7 @@ bool Balau::Socket::connect(const char * hostname, int port) {
             IAssert(spins == 0, "We shouldn't have spinned...");
         }
 
-        Task::yield(m_evtW, true);
+        Task::operationYield(m_evtW, Task::INTERRUPTIBLE);
         // if we're still here, it means the parent task doesn't want to be thrown an exception
         IAssert(m_evtW->gotSignal(), "We shouldn't have been awoken without getting our event signalled");
 
@@ -535,7 +535,7 @@ Balau::IO<Balau::Socket> Balau::Socket::accept() throw (GeneralException) {
 
         if (s < 0) {
             if ((errno == EAGAIN) || (errno == EINTR) || (errno == EWOULDBLOCK)) {
-                Task::yield(m_evtR, true);
+                Task::operationYield(m_evtR, Task::INTERRUPTIBLE);
             } else {
                 String msg = getErrorMessage();
                 throw GeneralException(String("Unexpected error accepting a connection: #") + errno + "(" + msg + ")");
@@ -567,7 +567,7 @@ ssize_t Balau::Socket::read(void * buf, size_t count) throw (GeneralException) {
         }
 
         if ((errno == EAGAIN) || (errno == EINTR) || (errno == EWOULDBLOCK)) {
-            Task::yield(m_evtR, true);
+            Task::operationYield(m_evtR, Task::INTERRUPTIBLE);
         } else {
             m_evtR->stop();
             return r;
@@ -602,7 +602,7 @@ ssize_t Balau::Socket::write(const void * buf, size_t count) throw (GeneralExcep
 #endif
 
         if ((errno == EAGAIN) || (errno == EINTR) || (errno == EWOULDBLOCK)) {
-            Task::yield(m_evtW, true);
+            Task::operationYield(m_evtW, Task::INTERRUPTIBLE);
         } else {
             m_evtW->stop();
             return r;

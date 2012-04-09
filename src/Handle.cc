@@ -97,7 +97,7 @@ ssize_t Balau::Handle::forceRead(void * _buf, size_t count, Events::BaseEvent * 
         catch (EAgain e) {
             if (evt && evt->gotSignal())
                 return total;
-            Task::yield(e.getEvent());
+            Task::operationYield(e.getEvent());
             continue;
         }
         if (r < 0)
@@ -124,7 +124,7 @@ ssize_t Balau::Handle::forceWrite(const void * _buf, size_t count, Events::BaseE
         catch (EAgain e) {
             if (evt && evt->gotSignal())
                 return total;
-            Task::yield(e.getEvent());
+            Task::operationYield(e.getEvent());
             continue;
         }
         if (r < 0)
@@ -242,7 +242,7 @@ int Balau::FileSystem::mkdir(const char * path) throw (GeneralException) {
     cbResults_t cbResults;
     eio_req * r = eio_mkdir(path, 0755, 0, eioDone, &cbResults);
     EAssert(r != NULL, "eio_mkdir returned a NULL eio_req");
-    Task::yield(&cbResults.evt);
+    Task::operationYield(&cbResults.evt);
 
     char str[4096];
     if (cbResults.result < 0)

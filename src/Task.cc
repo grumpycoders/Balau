@@ -260,27 +260,36 @@ void Balau::Events::Custom::gotOwner(Task * task) {
     m_loop = task->getLoop();
 }
 
-void Balau::Task::yield(Events::BaseEvent * evt, bool interruptible) throw (GeneralException) {
+void Balau::Task::operationYield(Events::BaseEvent * evt, enum OperationYieldType yieldType) throw (GeneralException) {
     Task * t = getCurrentTask();
     if (evt)
         t->waitFor(evt);
 
     if (t->m_stackless) {
-        AAssert(interruptible, "You can't run non-interruptible operations from a stackless task.");
+        AAssert(yieldType != SIMPLE, "You can't run simple operations from a stackless task.");
+    }
+
+    if (yieldType == STACKLESS) {
+        AAssert(t->m_okayToEAgain, "You can't run a stackless operation from a non-okay-to-eagain task.");
     }
 
     bool gotSignal;
 
     do {
         t->yield(evt == NULL);
-        Printer::elog(E_TASK, "operation back from yielding; interruptible = %s; okayToEAgain = %s", interruptible ? "true" : "false", t->m_okayToEAgain ? "true" : "false");
+        static const char * YieldTypeToString[] = {
+            "SIMPLE",
+            "INTERRUPTIBLE",
+            "STACKLESS",
+        };
+        Printer::elog(E_TASK, "operation back from yielding; yieldType = %s; okayToEAgain = %s", YieldTypeToString[yieldType], t->m_okayToEAgain ? "true" : "false");
         gotSignal = evt ? evt->gotSignal() : true;
-    } while ((!interruptible || !t->m_okayToEAgain) && !gotSignal);
+    } while (((yieldType == SIMPLE) || !t->m_okayToEAgain) && !gotSignal);
 
     if (!evt)
         return;
 
-    if (interruptible && t->m_okayToEAgain && !evt->gotSignal()) {
+    if ((yieldType != SIMPLE) && t->m_okayToEAgain && !evt->gotSignal()) {
         Printer::elog(E_TASK, "operation is throwing an exception.");
         throw EAgain(evt);
     }
@@ -302,12 +311,12 @@ void Balau::QueueBase::iPush(void * t, Events::Async * event) {
 }
 
 void * Balau::QueueBase::iPop(Events::Async * event) {
-    ScopeLock sl(m_lock);
+    m_lock.enter();
     while (!m_front) {
         if (event) {
             Task::prepare(event);
             m_lock.leave();
-            Task::yield(event);
+            Task::operationYield(event, Task::INTERRUPTIBLE);
             m_lock.enter();
         } else {
             pthread_cond_wait(&m_cond, &m_lock.m_lock);
@@ -323,5 +332,6 @@ void * Balau::QueueBase::iPop(Events::Async * event) {
         m_back = NULL;
     void * t = c->m_elem;
     delete c;
+    m_lock.leave();
     return t;
 }

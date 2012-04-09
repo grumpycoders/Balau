@@ -69,7 +69,7 @@ void Balau::LuaExecCell::exec(LuaMainTask * mainTask) {
         Task::prepare(&m_event);
     mainTask->exec(this);
     if (!m_detached)
-        Task::yield(&m_event);
+        Task::operationYield(&m_event);
 }
 
 void Balau::LuaExecString::run(Lua & L) {
