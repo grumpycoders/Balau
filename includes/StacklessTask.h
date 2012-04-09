@@ -31,6 +31,20 @@ class StacklessTask : public Task {
         } \
 
 
+#define StacklessOperationOrCond(operation, cond) \
+        m_state = __LINE__; \
+    } \
+    case __LINE__: { \
+        try { \
+            if (!(cond)) { \
+                operation; \
+            } \
+        } \
+        catch (Balau::EAgain & e) { \
+            taskSwitch(); \
+        } \
+
+
 #define StacklessWaitFor(evt) \
         m_state = __LINE__; \
         waitFor(evt); \
@@ -39,7 +53,7 @@ class StacklessTask : public Task {
     case __LINE__: { \
 
 
-#define StacklessWait(cond) \
+#define StacklessWaitCond(cond) \
         m_state = __LINE__; \
     } \
     case __LINE__: { \
