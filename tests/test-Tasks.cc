@@ -1,6 +1,7 @@
 #include <Main.h>
 #include <Task.h>
 #include <TaskMan.h>
+#include <StacklessTask.h>
 
 using namespace Balau;
 
@@ -20,6 +21,33 @@ class TestTask : public Task {
     }
 };
 
+class TestOperation {
+  public:
+      TestOperation() : m_count(0), m_completed(false) { }
+    void Do() {
+        if (m_count++ == 0)
+            Task::yield(NULL, true);
+        m_completed = true;
+    }
+    bool completed() { return m_completed; }
+  private:
+    int m_count;
+    bool m_completed;
+};
+
+class TestStackless : public StacklessTask {
+  public:
+    virtual const char * getName() const { return "TestStackless"; }
+  private:
+    virtual void Do() {
+        StacklessBegin();
+        m_operation = new TestOperation();
+        StacklessOperation(m_operation->Do());
+        StacklessEnd();
+    }
+    TestOperation * m_operation;
+};
+
 static void yieldingFunction() {
     Events::Timeout timeout(0.2);
     Task::yield(&timeout);
@@ -32,6 +60,13 @@ void MainTask::Do() {
 
     Events::TaskEvent taskEvt;
     Task * testTask = TaskMan::registerTask(new TestTask(), &taskEvt);
+    waitFor(&taskEvt);
+    TAssert(!taskEvt.gotSignal());
+    yield();
+    TAssert(taskEvt.gotSignal());
+    taskEvt.ack();
+
+    Task * testStackless = TaskMan::registerTask(new TestStackless(), &taskEvt);
     waitFor(&taskEvt);
     TAssert(!taskEvt.gotSignal());
     yield();
