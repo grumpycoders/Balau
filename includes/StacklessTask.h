@@ -27,8 +27,6 @@ class StacklessTask : public Task {
             operation; \
         } \
         catch (Balau::EAgain & e) { \
-            auto evt = e.getEvent(); \
-            waitFor(evt); \
             taskSwitch(); \
         } \
 
@@ -62,6 +60,7 @@ class StacklessTask : public Task {
 
 
 #define StacklessEnd() \
+        break; \
     } \
     default: \
         AssertHelper("unknown state", "State %i is out of range in task %s at %p", m_state, getName(), this); \
