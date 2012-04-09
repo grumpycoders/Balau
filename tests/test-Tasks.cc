@@ -43,6 +43,7 @@ class TestStackless : public StacklessTask {
         StacklessBegin();
         m_operation = new TestOperation();
         StacklessOperation(m_operation->Do());
+        delete m_operation;
         StacklessEnd();
     }
     TestOperation * m_operation;
