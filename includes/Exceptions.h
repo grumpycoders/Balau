@@ -74,19 +74,19 @@ static inline void AssertHelperInner(const String & msg, const char * details = 
     throw GeneralException(msg, details);
 }
 
-static inline void AssertHelper(const String & msg, const char * fmt = NULL, ...) __attribute__((format(printf, 2, 3)));
+static inline void AssertHelper(const String & msg, const char * fmt, ...) __attribute__((format(printf, 2, 3)));
 
 static inline void AssertHelper(const String & msg, const char * fmt, ...) {
-    if (fmt) {
-        String details;
-        va_list ap;
-        va_start(ap, fmt);
-        details.set(fmt, ap);
-        va_end(ap);
-        AssertHelperInner(msg, details.to_charp());
-    } else {
-        AssertHelperInner(msg);
-    }
+    String details;
+    va_list ap;
+    va_start(ap, fmt);
+    details.set(fmt, ap);
+    va_end(ap);
+    AssertHelperInner(msg, details.to_charp());
+}
+
+static inline void AssertHelper(const String & msg) {
+    AssertHelperInner(msg);
 }
 
 class TestException : public GeneralException {
