@@ -36,7 +36,7 @@ class HttpWorker : public Task {
       ~HttpWorker();
     static void buildErrorTemplate(IO<Handle> h) { m_errorTemplate.setTemplate(h); }
     template<size_t S>
-    static void buildErrorTemplate(const char str[S]) { m_errorTemplate.setTemplate(str, S); }
+    static void buildErrorTemplate(const char (&str)[S]) { m_errorTemplate.setTemplate(str, S - 1); }
     static void buildErrorTemplate(const char * str, ssize_t s) { m_errorTemplate.setTemplate(str, s); }
     static void buildErrorTemplate(const String & str) { m_errorTemplate.setTemplate(str); }
   private:

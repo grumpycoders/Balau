@@ -81,7 +81,7 @@ class SimpleMustache {
         setTemplate(b);
     }
     template<size_t S>
-    void setTemplate(const char str[S]) { setTemplate((const uint8_t *) str, S); }
+    void setTemplate(const char (&str)[S]) { setTemplate((const uint8_t *) str, S - 1); }
     void setTemplate(const char * str, ssize_t s) { setTemplate((const uint8_t *) str, s); }
     void setTemplate(const String & str) { setTemplate((const uint8_t *) str.to_charp(), str.strlen()); }
     void render(IO<Handle> h, Context * ctx) const { AAssert(ctx, "Please pass on a context to render"); render_r(h, ctx, "", m_fragments.begin(), false, -1); }
