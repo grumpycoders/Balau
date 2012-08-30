@@ -27,6 +27,8 @@ class Task;
 namespace Events {
 
 class Callback {
+  public:
+      virtual ~Callback() { }
   protected:
     virtual void gotEvent(BaseEvent *) = 0;
     friend class BaseEvent;

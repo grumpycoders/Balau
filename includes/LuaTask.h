@@ -12,6 +12,7 @@ class LuaMainTask;
 class LuaExecCell {
   public:
       LuaExecCell() : m_detached(false) { }
+      virtual ~LuaExecCell() { }
     void detach() { m_detached = true; }
     void exec(LuaMainTask * mainTask);
   protected:

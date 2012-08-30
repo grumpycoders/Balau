@@ -44,7 +44,7 @@ class HttpServer {
     class Action {
       public:
           Action(const Regex & regex, const Regex & host = Regexes::any) : m_regex(regex), m_host(host), m_refCount(0) { }
-          ~Action() { AAssert(m_refCount == 0, "Don't delete an Action directly"); }
+          virtual ~Action() { AAssert(m_refCount == 0, "Don't delete an Action directly"); }
         struct ActionMatch {
             Regex::Captures uri, host;
         };
