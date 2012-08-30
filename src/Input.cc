@@ -47,7 +47,7 @@ static int eioStatsDone(eio_req * req) {
     return 0;
 }
 
-Balau::Input::Input(const char * fname) throw (GeneralException) : m_fd(-1), m_size(-1), m_mtime(-1) {
+Balau::Input::Input(const char * fname) throw (GeneralException) {
     m_name.set("Input(%s)", fname);
     m_fname = fname;
 

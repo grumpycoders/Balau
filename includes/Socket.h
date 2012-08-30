@@ -50,9 +50,9 @@ class Socket : public Handle {
 
     int m_fd;
     String m_name;
-    bool m_connected;
-    bool m_connecting;
-    bool m_listening;
+    bool m_connected = false;
+    bool m_connecting = false;
+    bool m_listening = false;
     sockaddr_in6 m_localAddr, m_remoteAddr;
     SocketEvent * m_evtR, * m_evtW;
 };

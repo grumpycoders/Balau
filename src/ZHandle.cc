@@ -1,7 +1,7 @@
 #include "ZHandle.h"
 #include "Task.h"
 
-Balau::ZStream::ZStream(const IO<Handle> & h, int level, header_t header) : m_h(h), m_detached(false), m_closed(false), m_eof(false), m_in(NULL) {
+Balau::ZStream::ZStream(const IO<Handle> & h, int level, header_t header) : m_h(h) {
     m_zin.zalloc = m_zout.zalloc = NULL;
     m_zin.zfree = m_zout.zfree = NULL;
     m_zin.opaque = m_zout.opaque = NULL;

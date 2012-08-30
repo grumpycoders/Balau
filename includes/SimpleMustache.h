@@ -22,7 +22,7 @@ class SimpleMustache {
             friend class Context;
         };
 
-          Context() : m_type(CONTEXTLIST), m_root(true) { }
+          Context() { }
           ~Context() { empty(); }
         Proxy operator[](ssize_t idx) { ensureList(); return Proxy(this, idx); }
         Context & operator[](const char * str);
@@ -55,7 +55,7 @@ class SimpleMustache {
             BOOLSEC,
             CONTEXTLIST,
             LAMBDA,
-        } m_type;
+        } m_type = CONTEXTLIST;
           Context(ContextType type) : m_type(type), m_root(false) { }
           Context(Context & c) { Failure("You can't copy a Context; use references"); }
           Context & operator=(Context & c) { Failure("You can't assign a Context; use references"); return *this; }
@@ -64,7 +64,7 @@ class SimpleMustache {
         typedef std::map<String, Context *> SubContext;
         typedef std::vector<SubContext> ContextList;
         ContextList m_contextList;
-        bool m_root;
+        bool m_root = true;
 
         void empty(bool skipFirst = false);
         void ensureList(bool single = false);

@@ -98,7 +98,7 @@ class GlobalThread : public Thread, public AtStart, public AtExit {
 template<class T>
 class Queue {
   public:
-      Queue() : m_front(NULL), m_back(NULL) { pthread_cond_init(&m_cond, NULL); }
+      Queue() { pthread_cond_init(&m_cond, NULL); }
       ~Queue() { while (!isEmpty()) pop(); pthread_cond_destroy(&m_cond); }
     void push(T * t) {
         ScopeLock sl(m_lock);
@@ -142,8 +142,8 @@ class Queue {
         Cell * m_next, * m_prev;
         T * m_elem;
     };
-    Cell * volatile m_front;
-    Cell * volatile m_back;
+    Cell * volatile m_front = NULL;
+    Cell * volatile m_back = NULL;
     pthread_cond_t m_cond;
 };
 

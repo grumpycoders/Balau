@@ -230,7 +230,7 @@ static DNSRequest resolveName(const char * name, const char * service = NULL, st
 }
 #endif
 
-Balau::Socket::Socket() throw (GeneralException) : m_fd(socket(AF_INET6, SOCK_STREAM, 0)), m_connected(false), m_connecting(false), m_listening(false) {
+Balau::Socket::Socket() throw (GeneralException) : m_fd(socket(AF_INET6, SOCK_STREAM, 0)) {
     m_name = "Socket(unconnected)";
     RAssert(m_fd >= 0, "socket() returned %i", m_fd);
     m_evtR = new SocketEvent(m_fd, ev::READ);
@@ -251,8 +251,9 @@ Balau::Socket::Socket() throw (GeneralException) : m_fd(socket(AF_INET6, SOCK_ST
     Printer::elog(E_SOCKET, "Creating a socket at %p", this);
 }
 
-Balau::Socket::Socket(int fd) : m_fd(fd), m_connected(true), m_connecting(false), m_listening(false)  {
+Balau::Socket::Socket(int fd) : m_fd(fd) {
     socklen_t len;
+    m_connected = true;
 
     len = sizeof(m_localAddr);
     getsockname(m_fd, (sockaddr *) &m_localAddr, &len);

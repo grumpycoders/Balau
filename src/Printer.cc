@@ -16,7 +16,7 @@ static const char * prefixes[] = {
     "(**) ",
 };
 
-Balau::Printer::Printer() : m_verbosity(M_STATUS | M_WARNING | M_ERROR | M_ENGINE_DEBUG), m_detailledLogs(false) {
+Balau::Printer::Printer() {
 #ifdef DEBUG
     m_detailledLogs = true;
 #endif

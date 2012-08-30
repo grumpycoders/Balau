@@ -21,10 +21,10 @@ class BStream : public Handle {
   private:
     IO<Handle> m_h;
     uint8_t * m_buffer;
-    size_t m_availBytes;
-    size_t m_cursor;
+    size_t m_availBytes = 0;
+    size_t m_cursor = 0;
     String m_name;
-    bool m_passThru;
+    bool m_passThru = false;
     bool m_detached;
     bool m_closed;
 };

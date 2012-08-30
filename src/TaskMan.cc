@@ -125,7 +125,7 @@ void asyncDummy(ev::async & w, int revents) {
     Balau::Printer::elog(Balau::E_TASK, "TaskMan is getting woken up...");
 }
 
-Balau::TaskMan::TaskMan() : m_stopped(false), m_allowedToSignal(false), m_stopCode(0) {
+Balau::TaskMan::TaskMan() {
 #ifndef _WIN32
     coro_create(&m_returnContext, 0, 0, 0, 0);
 #else

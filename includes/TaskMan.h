@@ -53,13 +53,13 @@ class TaskMan {
     typedef gnu::hash_set<Task *, taskHasher> taskHash_t;
     taskHash_t m_tasks, m_signaledTasks;
     Queue<Task> m_pendingAdd;
-    bool m_stopped;
+    bool m_stopped = false;
     struct ev_loop * m_loop;
-    bool m_allowedToSignal;
+    bool m_allowedToSignal = false;
     ev::async m_evt;
     std::queue<void *> m_stacks;
     int m_nStacks;
-    int m_stopCode;
+    int m_stopCode = 0;
 };
 
 template<class T>
