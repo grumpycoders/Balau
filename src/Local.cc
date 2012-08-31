@@ -13,10 +13,6 @@ void * Balau::TLSManager::setTLS(void * val) {
     return r;
 }
 
-void * Balau::TLSManager::createTLS() {
-    return Local::create();
-}
-
 static Balau::TLSManager dummyTLSManager;
 Balau::TLSManager * Balau::g_tlsManager = &dummyTLSManager;
 
@@ -29,31 +25,31 @@ void Balau::Local::doStart() {
     m_globals[m_idx] = 0;
 }
 
-class PThreadsTLSManager : public Balau::TLSManager, public Balau::AtStart {
+class GlobalPThreadsTLSManager : public Balau::PThreadsTLSManager, public Balau::AtStart {
   public:
-      PThreadsTLSManager() : AtStart(0) { }
-    virtual void * getTLS();
-    virtual void * setTLS(void * val);
-    virtual void doStart();
-  private:
-    pthread_key_t m_key;
+      GlobalPThreadsTLSManager() : AtStart(0) { }
+    void doStart();
 };
 
-PThreadsTLSManager pthreadsTLSManager;
+GlobalPThreadsTLSManager pthreadsTLSManager;
 
-void PThreadsTLSManager::doStart() {
+void GlobalPThreadsTLSManager::doStart() {
+    init();
+    Balau::g_tlsManager = this;
+}
+
+void Balau::PThreadsTLSManager::init() {
     int r;
 
     r = pthread_key_create(&m_key, NULL);
     RAssert(r == 0, "Unable to create a pthtread_key: %i", r);
-    Balau::g_tlsManager = this;
 }
 
-void * PThreadsTLSManager::getTLS() {
+void * Balau::PThreadsTLSManager::getTLS() {
     return pthread_getspecific(m_key);
 }
 
-void * PThreadsTLSManager::setTLS(void * val) {
+void * Balau::PThreadsTLSManager::setTLS(void * val) {
     void * r = pthread_getspecific(m_key);
     pthread_setspecific(m_key, val);
     return r;

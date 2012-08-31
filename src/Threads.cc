@@ -39,7 +39,7 @@ Balau::RWLock::RWLock() {
 }
 
 void * Balau::ThreadHelper::threadProc(void * arg) {
-    void * tls = g_tlsManager->createTLS();
+    void * tls = Local::createTLS();
     g_tlsManager->setTLS(tls);
     Balau::Thread * thread = reinterpret_cast<Balau::Thread *>(arg);
     void * r = thread->proc();

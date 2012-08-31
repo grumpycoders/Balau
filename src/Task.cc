@@ -35,7 +35,7 @@ void Balau::Task::setup(TaskMan * taskMan, void * stack) {
 
     m_taskMan = taskMan;
 
-    m_tls = g_tlsManager->createTLS();
+    m_tls = Local::createTLS();
     void * oldTLS = g_tlsManager->getTLS();
     g_tlsManager->setTLS(m_tls);
     localTask.set(this);
