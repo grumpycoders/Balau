@@ -20,6 +20,7 @@ class LuaObject {
 class LuaObjectFactory {
   public:
       LuaObjectFactory() : m_wantsDestruct(false), m_pushed(false) { }
+      virtual ~LuaObjectFactory() { }
     virtual void push(Lua & L);
     void pushDestruct(Lua & L);
     template<class T>

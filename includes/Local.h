@@ -8,7 +8,15 @@ class TLSManager {
   public:
     virtual void * getTLS();
     virtual void * setTLS(void * val);
-    void * createTLS();
+};
+
+class PThreadsTLSManager : public TLSManager {
+  public:
+    virtual void * getTLS();
+    virtual void * setTLS(void * val);
+    void init();
+  private:
+    pthread_key_t m_key;
 };
 
 extern TLSManager * g_tlsManager;
@@ -16,6 +24,7 @@ extern TLSManager * g_tlsManager;
 class Local : public AtStart {
   public:
     static int getSize() { return s_size; }
+    static void * createTLS() { void * r = calloc(s_size * sizeof(void *), 1); return r; }
   protected:
       Local() : AtStart(0) { }
     void * getGlobal() { return m_globals[m_idx]; }
@@ -26,7 +35,6 @@ class Local : public AtStart {
     void set(void * obj) { void * r = getTLS(); if (r) setLocal(obj); else setGlobal(obj); }
     int getIndex() { return m_idx; }
   private:
-    static void * create() { void * r = calloc(s_size * sizeof(void *), 1); return r; }
     static void * getTLS() { return g_tlsManager->getTLS(); }
     static void * setTLS(void * val) { return g_tlsManager->setTLS(val); }
     virtual void doStart();

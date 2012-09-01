@@ -47,7 +47,7 @@ static int eioStatsDone(eio_req * req) {
     return 0;
 }
 
-Balau::Output::Output(const char * fname, bool truncate) throw (GeneralException) : m_fd(-1), m_size(-1), m_mtime(-1) {
+Balau::Output::Output(const char * fname, bool truncate) throw (GeneralException) {
     m_name.set("Output(%s)", fname);
     m_fname = fname;
 

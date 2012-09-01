@@ -11,7 +11,7 @@ class LuaTaskStopper : public Balau::LuaExecCell {
 
 };
 
-Balau::LuaExecCell::LuaExecCell() : m_detached(false) {
+Balau::LuaExecCell::LuaExecCell() {
     Printer::elog(E_TASK, "LuaExecCell created at %p", this);
 }
 

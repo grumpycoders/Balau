@@ -118,6 +118,7 @@ Exceptions.cc \
 \
 Local.cc \
 Threads.cc \
+Async.cc \
 \
 BString.cc \
 Main.cc \
@@ -178,6 +179,7 @@ test-Sanity.cc \
 test-String.cc \
 test-Tasks.cc \
 test-Threads.cc \
+test-Async.cc \
 test-Handles.cc \
 test-Sockets.cc \
 test-Http.cc \

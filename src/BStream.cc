@@ -3,7 +3,7 @@
 
 static const int s_blockSize = 16 * 1024;
 
-Balau::BStream::BStream(const IO<Handle> & h) : m_h(h), m_buffer((uint8_t *) malloc(s_blockSize)), m_availBytes(0), m_cursor(0), m_passThru(false) {
+Balau::BStream::BStream(const IO<Handle> & h) : m_h(h), m_buffer((uint8_t *) malloc(s_blockSize)) {
     AAssert(m_h->canRead(), "You can't create a buffered stream with a Handle that can't read");
     m_name.set("Stream(%s)", m_h->getName());
     if ((m_h.isA<Buffer>()) || (m_h.isA<BStream>()))

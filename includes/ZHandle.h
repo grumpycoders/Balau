@@ -28,9 +28,9 @@ class ZStream : public Handle {
     void doFlush(bool finish);
     IO<Handle> m_h;
     z_stream m_zin, m_zout;
-    bool m_detached, m_closed, m_eof;
+    bool m_detached = false, m_closed = false, m_eof = false;
     String m_name;
-    uint8_t * m_in;
+    uint8_t * m_in = NULL;
 };
 
 };

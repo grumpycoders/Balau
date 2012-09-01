@@ -1,9 +1,23 @@
+#include "Async.h"
 #include "TaskMan.h"
 #include "Task.h"
 #include "Main.h"
 #include "Local.h"
 
+static Balau::AsyncManager s_async;
+
 namespace {
+
+class AsyncStarter : public Balau::AtStart, Balau::AtExit {
+  public:
+      AsyncStarter() : AtStart(1000), AtExit(0) { }
+    void doStart() {
+        s_async.threadStart();
+    }
+    void doExit() {
+        s_async.join();
+    }
+};
 
 class Stopper : public Balau::Task {
   public:
@@ -14,6 +28,10 @@ class Stopper : public Balau::Task {
     int m_code;
 };
 
+};
+
+static AsyncStarter s_asyncStarter;
+
 void Stopper::Do() {
     getTaskMan()->stopMe(m_code);
 }
@@ -21,8 +39,6 @@ void Stopper::Do() {
 const char * Stopper::getName() const {
     return "Stopper";
 }
-
-};
 
 static Balau::DefaultTmpl<Balau::TaskMan> defaultTaskMan(50);
 static Balau::LocalTmpl<Balau::TaskMan> localTaskMan;
@@ -137,7 +153,7 @@ void Balau::TaskMan::stopMe(int code) {
     }
 }
 
-Balau::TaskMan::TaskMan() : m_stopped(false), m_allowedToSignal(false), m_stopCode(0) {
+Balau::TaskMan::TaskMan() {
 #ifndef _WIN32
     coro_create(&m_returnContext, 0, 0, 0, 0);
 #else
@@ -225,6 +241,8 @@ int Balau::TaskMan::mainLoop() {
         if (t->getStatus() == Task::STARTING)
             starting.insert(t);
 
+    s_async.setIdleReadyCallback(asyncIdleReady, this);
+
     do {
         Printer::elog(E_TASK, "TaskMan::mainLoop() at %p with m_tasks.size = %li", this, m_tasks.size());
 
@@ -249,6 +267,9 @@ int Balau::TaskMan::mainLoop() {
         Printer::elog(E_TASK, "TaskMan at %p Going to libev main loop", this);
         ev_run(m_loop, noWait || m_stopped ? EVRUN_NOWAIT : EVRUN_ONCE);
         Printer::elog(E_TASK, "TaskMan at %p Getting out of libev main loop", this);
+
+        // calling async's idle
+        s_async.idle();
 
         // let's check what task got stopped, and signal them
         for (Task * t : stopped) {
@@ -327,6 +348,7 @@ int Balau::TaskMan::mainLoop() {
 
     } while (!m_stopped);
     Printer::elog(E_TASK, "TaskManager at %p stopping.", this);
+    s_async.setIdleReadyCallback(NULL, NULL);
     return m_stopCode;
 }
 
@@ -340,6 +362,10 @@ void Balau::TaskMan::iRegisterTask(Balau::Task * t, Balau::Task * stick, Events:
             event->attachToTask(t);
         s_scheduler.registerTask(t);
     }
+}
+
+void Balau::TaskMan::registerAsyncOp(Balau::AsyncOperation * op) {
+    s_async.queueOp(op);
 }
 
 void Balau::TaskMan::addToPending(Balau::Task * t) {

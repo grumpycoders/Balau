@@ -7,6 +7,7 @@
 #include <ev++.h>
 #include <ext/hash_set>
 #include <queue>
+#include <Async.h>
 #include <Threads.h>
 #include <Exceptions.h>
 #include <Task.h>
@@ -19,7 +20,6 @@ class TaskScheduler;
 
 namespace Events {
 
-class Async;
 class TaskEvent;
 
 };
@@ -61,9 +61,17 @@ class TaskMan {
 
   private:
     static void iRegisterTask(Task * t, Task * stick, Events::TaskEvent * event);
+    static void registerAsyncOp(AsyncOperation * op);
     void * getStack();
     void freeStack(void * stack);
     void addToPending(Task * t);
+    static void asyncIdleReady(void * param) {
+        TaskMan * taskMan = (TaskMan *) param;
+        taskMan->asyncIdleReady();
+    }
+    void asyncIdleReady() {
+        m_evt.send();
+    }
 #ifndef _WIN32
     coro_context m_returnContext;
 #else
@@ -71,17 +79,22 @@ class TaskMan {
 #endif
     friend class Task;
     friend class TaskScheduler;
+    template<class T>
+    friend T * createAsyncOp(T * op);
     struct taskHasher { size_t operator()(const Task * t) const { return reinterpret_cast<uintptr_t>(t); } };
     typedef gnu::hash_set<Task *, taskHasher> taskHash_t;
     taskHash_t m_tasks, m_signaledTasks;
     Queue<Task> m_pendingAdd;
-    bool m_stopped;
     struct ev_loop * m_loop;
-    bool m_allowedToSignal;
     ev::async m_evt;
     std::queue<void *> m_stacks;
     int m_nStacks;
-    int m_stopCode;
+    int m_stopCode = 0;
+    bool m_stopped = false;
+    bool m_allowedToSignal = false;
 };
+
+template<class T>
+T * createAsyncOp(T * op) { TaskMan::registerAsyncOp(op); return op; }
 
 };

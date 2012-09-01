@@ -37,7 +37,7 @@ void Balau::Task::setup(TaskMan * taskMan, void * stack) {
 
     m_taskMan = taskMan;
 
-    m_tls = g_tlsManager->createTLS();
+    m_tls = Local::createTLS();
     void * oldTLS = g_tlsManager->getTLS();
     g_tlsManager->setTLS(m_tls);
     localTask.set(this);
@@ -310,9 +310,9 @@ void Balau::QueueBase::iPush(void * t, Events::Async * event) {
         pthread_cond_signal(&m_cond);
 }
 
-void * Balau::QueueBase::iPop(Events::Async * event) {
-    m_lock.enter();
-    while (!m_front) {
+void * Balau::QueueBase::iPop(Events::Async * event, bool wait) {
+    ScopeLock sl(m_lock);
+    while (!m_front && wait) {
         if (event) {
             Task::prepare(event);
             m_lock.leave();
@@ -332,6 +332,5 @@ void * Balau::QueueBase::iPop(Events::Async * event) {
         m_back = NULL;
     void * t = c->m_elem;
     delete c;
-    m_lock.leave();
     return t;
 }

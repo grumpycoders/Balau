@@ -43,7 +43,7 @@ void * Balau::ThreadHelper::threadProc(void * arg) {
     void * r = NULL;
     bool success = false;
     try {
-        void * tls = g_tlsManager->createTLS();
+        void * tls = Local::createTLS();
         g_tlsManager->setTLS(tls);
         Balau::Thread * thread = reinterpret_cast<Balau::Thread *>(arg);
         r = thread->proc();

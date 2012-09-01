@@ -32,6 +32,8 @@ class Task;
 namespace Events {
 
 class Callback {
+  public:
+      virtual ~Callback() { }
   protected:
     virtual void gotEvent(BaseEvent *) = 0;
     friend class BaseEvent;
@@ -210,23 +212,23 @@ class QueueBase {
   public:
     bool isEmpty() { ScopeLock sl(m_lock); return !m_front; }
   protected:
-      QueueBase() : m_front(NULL), m_back(NULL) { pthread_cond_init(&m_cond, NULL); }
-      ~QueueBase() { while (!isEmpty()) iPop(NULL); pthread_cond_destroy(&m_cond); }
+      QueueBase() { pthread_cond_init(&m_cond, NULL); }
+      ~QueueBase() { while (!isEmpty()) iPop(NULL, false); pthread_cond_destroy(&m_cond); }
     void iPush(void * t, Events::Async * event);
-    void * iPop(Events::Async * event);
+    void * iPop(Events::Async * event, bool wait);
 
   private:
       QueueBase(const QueueBase &) = delete;
     QueueBase & operator=(const QueueBase &) = delete;
     Lock m_lock;
     struct Cell {
-          Cell(void * elem) : m_next(NULL), m_prev(NULL), m_elem(elem) { }
+          Cell(void * elem) : m_elem(elem) { }
           Cell(const Cell &) = delete;
         Cell & operator=(const Cell &) = delete;
-        Cell * m_next, * m_prev;
+        Cell * m_next = NULL, * m_prev = NULL;
         void * m_elem;
     };
-    Cell * m_front, * m_back;
+    Cell * m_front = NULL, * m_back = NULL;
     pthread_cond_t m_cond;
 };
 
@@ -234,16 +236,23 @@ template<class T>
 class Queue : public QueueBase {
   public:
     void push(T * t) { iPush(t, NULL); }
-    T * pop() { return (T *) iPop(NULL); }
+    T * pop() { return (T *) iPop(NULL, true); }
 };
 
 template<class T>
 class TQueue : public QueueBase {
   public:
     void push(T * t) { iPush(t, &m_event); }
-    T * pop() { return (T *) iPop(&m_event); }
+    T * pop() { return (T *) iPop(&m_event, true); }
   private:
     Events::Async m_event;
+};
+
+template<class T>
+class CQueue : public QueueBase {
+  public:
+    void push(T * t) { iPush(t, NULL); }
+    T * pop() { return (T *) iPop(NULL, false); }
 };
 
 };

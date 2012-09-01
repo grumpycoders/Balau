@@ -12,13 +12,14 @@ class LuaMainTask;
 class LuaExecCell {
   public:
       LuaExecCell();
+      virtual ~LuaExecCell() { }
     void detach() { m_detached = true; }
     void exec(LuaMainTask * mainTask);
   protected:
     virtual void run(Lua &) = 0;
   private:
     Events::Async m_event;
-    bool m_detached;
+    bool m_detached = false;
     friend class LuaTask;
 };
 
