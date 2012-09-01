@@ -33,10 +33,14 @@ void Balau::AsyncManager::queueOp(AsyncOperation * op) {
         op->m_idleReadyCallback = tls->idleReadyCallback;
         op->m_idleReadyParam = tls->idleReadyParam;
     }
-    if (op->needsMainQueue())
+    if (op->needsMainQueue()) {
         m_queue.push(op);
-    else
+    } else if (op->needsFinishWorker()) {
         m_finished.push(op);
+    } else {
+        op->run();
+        op->finalize();
+    }
 }
 
 void Balau::AsyncManager::checkIdle() {
@@ -120,6 +124,8 @@ void * Balau::AsyncFinishWorker::proc() {
             Printer::elog(E_ASYNC, "AsyncFinishWorker got a stopper operation");
             m_stopping = true;
         }
+        if (!op->needsMainQueue())
+            op->run();
         op->finalize();
     }
 
