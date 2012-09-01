@@ -147,6 +147,7 @@ void MainTask::Do() {
         if (event.gotSignal()) {
             TAssert(!gotEvent);
             gotEvent = true;
+            event.reset();
         }
         if (stopperEvent.gotSignal()) {
             TAssert(!gotStopperEvent);
