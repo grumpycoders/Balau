@@ -7,6 +7,7 @@
 #include <ev++.h>
 #include <ext/hash_set>
 #include <queue>
+#include <Async.h>
 #include <Threads.h>
 #include <Exceptions.h>
 
@@ -16,12 +17,6 @@ namespace Balau {
 
 class Task;
 class TaskScheduler;
-
-namespace Events {
-
-class Async;
-
-};
 
 class TaskMan {
   public:
@@ -37,9 +32,17 @@ class TaskMan {
     bool stopped() { return m_stopped; }
   private:
     static void registerTask(Task * t, Task * stick);
+    static void registerAsyncOp(AsyncOperation * op);
     void * getStack();
     void freeStack(void * stack);
     void addToPending(Task * t);
+    static void asyncIdleReady(void * param) {
+        TaskMan * taskMan = (TaskMan *) param;
+        taskMan->asyncIdleReady();
+    }
+    void asyncIdleReady() {
+        m_evt.send();
+    }
 #ifndef _WIN32
     coro_context m_returnContext;
 #else
@@ -49,20 +52,25 @@ class TaskMan {
     friend class TaskScheduler;
     template<class T>
     friend T * createTask(T * t, Task * stick = NULL);
+    template<class T>
+    friend T * createAsyncOp(T * op);
     struct taskHasher { size_t operator()(const Task * t) const { return reinterpret_cast<uintptr_t>(t); } };
     typedef gnu::hash_set<Task *, taskHasher> taskHash_t;
     taskHash_t m_tasks, m_signaledTasks;
     Queue<Task> m_pendingAdd;
-    bool m_stopped = false;
     struct ev_loop * m_loop;
-    bool m_allowedToSignal = false;
     ev::async m_evt;
     std::queue<void *> m_stacks;
     int m_nStacks;
     int m_stopCode = 0;
+    bool m_stopped = false;
+    bool m_allowedToSignal = false;
 };
 
 template<class T>
 T * createTask(T * t, Task * stick) { TaskMan::registerTask(t, stick); return t; }
+
+template<class T>
+T * createAsyncOp(T * op) { TaskMan::registerAsyncOp(op); return op; }
 
 };

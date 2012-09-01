@@ -38,6 +38,7 @@ enum {
     E_THREAD = 64,
     E_OUTPUT = 128,
     E_HTTPSERVER = 256,
+    E_ASYNC = 512,
 };
 
 class Printer {
