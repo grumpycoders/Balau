@@ -171,7 +171,7 @@ void Balau::AsyncManager::threadExit() {
 }
 
 void Balau::AsyncManager::stopAllWorkers() {
-    Printer::elog(E_ASYNC, "AsyncManager thread is being stopping and joining %i workers", m_numFinishers);
+    Printer::elog(E_ASYNC, "AsyncManager thread is stopping and joining %i workers", m_numFinishers);
     for (int i = 0; i < m_numFinishers; i++)
         m_finished.push(new AsyncStopper());
     for (auto worker : m_workers)
