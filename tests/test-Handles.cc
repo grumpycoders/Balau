@@ -125,5 +125,35 @@ void MainTask::Do() {
         z->writeString("foobar\n");
     }
 
+    {
+        IO<Input> i(new Input("tests/out.z"));
+        IO<ZStream> z(new ZStream(i));
+        IO<BStream> s(new BStream(z));
+        z->detach();
+        s->detach();
+        String f = s->readString();
+        TAssert(f == "foobar");
+    }
+
+    {
+        IO<Input> i(new Input("tests/out.gz"));
+        IO<ZStream> z(new ZStream(i, Z_BEST_COMPRESSION, ZStream::GZIP));
+        IO<BStream> s(new BStream(z));
+        z->detach();
+        s->detach();
+        String f = s->readString();
+        TAssert(f == "foobar");
+    }
+
+    {
+        IO<Input> i(new Input("tests/out.raw"));
+        IO<ZStream> z(new ZStream(i, Z_BEST_COMPRESSION, ZStream::RAW));
+        IO<BStream> s(new BStream(z));
+        z->detach();
+        s->detach();
+        String f = s->readString();
+        TAssert(f == "foobar");
+    }
+
     Printer::log(M_STATUS, "Test::Handles passed.");
 }

@@ -22,14 +22,14 @@ Balau::ZStream::ZStream(const IO<Handle> & h, int level, header_t header) : m_h(
 }
 
 void Balau::ZStream::close() throw (GeneralException) {
-    if (m_in) {
-        free(m_in);
-        m_in = NULL;
-    }
     if (m_h->canWrite())
         finish();
     inflateEnd(&m_zin);
     deflateEnd(&m_zout);
+    if (m_in) {
+        free(m_in);
+        m_in = NULL;
+    }
     if (!m_detached)
         m_h->close();
     m_closed = true;
@@ -78,6 +78,7 @@ ssize_t Balau::ZStream::read(void * buf, size_t count) throw (GeneralException) 
             size_t r = m_h->read(m_in, BLOCK_SIZE);
             if (r <= 0)
                 return readTotal;
+            m_zin.avail_in = r;
         }
         Task::operationYield();
         int r = inflate(&m_zin, Z_SYNC_FLUSH);
