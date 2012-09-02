@@ -23,14 +23,15 @@ class ZStream : public Handle {
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException);
     void detach() { m_detached = true; }
     void flush() { doFlush(false); }
+    void setUseAsyncOp(bool useAsyncOp) { m_useAsyncOp = useAsyncOp; }
   private:
     void finish() { doFlush(true); }
     void doFlush(bool finish);
     IO<Handle> m_h;
     z_stream m_zin, m_zout;
-    bool m_detached = false, m_closed = false, m_eof = false;
     String m_name;
     uint8_t * m_in = NULL;
+    bool m_detached = false, m_closed = false, m_eof = false, m_useAsyncOp = true;
 };
 
 };
