@@ -13,6 +13,9 @@
 #include "Printer.h"
 #include "Main.h"
 #include "Atomic.h"
+#include "Async.h"
+#include "Task.h"
+#include "TaskMan.h"
 
 #ifndef _WIN32
 namespace {
@@ -49,15 +52,6 @@ void Balau::Socket::SocketEvent::gotOwner(Task * task) {
     m_evt.set(task->getLoop());
     m_evt.start();
 }
-
-struct DNSRequest {
-    const char * name;
-    const char * service;
-    struct addrinfo * res;
-    struct addrinfo * hints;
-    Balau::Events::Async * evt;
-    int error;
-};
 
 static Balau::String getErrorMessage() {
     Balau::String msg;
@@ -194,64 +188,52 @@ static const char * inet_ntop(int af, const void * src, char * dst, socklen_t si
 
 namespace {
 
-class ResolverThread : public Balau::GlobalThread {
+struct DNSRequest {
+    struct addrinfo * res;
+    int error;
+};
+
+class AsyncOpResolv : public Balau::AsyncOperation {
   public:
-      ResolverThread() : GlobalThread(8), m_stopping(false) { }
-    void pushRequest(DNSRequest * req) { m_queue.push(req); }
-  private:
-    virtual void * proc();
-    virtual void threadExit();
-    Balau::Queue<DNSRequest> m_queue;
-    volatile bool m_stopping;
-};
-
-};
-
-void ResolverThread::threadExit() {
-    m_stopping = true;
-    DNSRequest req;
-    memset(&req, 0, sizeof(req));
-    pushRequest(&req);
-}
-
-void * ResolverThread::proc() {
-    DNSRequest * req;
-    while (!m_stopping) {
-        req = m_queue.pop();
-        if (m_stopping)
-            break;
-        Balau::Printer::elog(Balau::E_SOCKET, "Resolver thread got a request for `%s'", req->name);
-        req->error = getaddrinfo(req->name, req->service, req->hints, &req->res);
-        Balau::Printer::elog(Balau::E_SOCKET, "Resolver thread got an answer; sending signal");
-        if (!m_stopping)
-            req->evt->trigger();
+      AsyncOpResolv(const char * name, const char * service, struct addrinfo * hints, Balau::Events::Custom * evt, struct DNSRequest * request)
+        : m_name(name)
+        , m_service(service)
+        , m_hints(hints)
+        , m_evt(evt)
+        , m_request(request)
+        { }
+    virtual bool needsMainQueue() { return false; }
+    virtual bool needsFinishWorker() { return true; }
+    virtual void run() {
+        m_request->error = getaddrinfo(m_name, m_service, m_hints, &m_request->res);
     }
-    return NULL;
-}
+    virtual void done() {
+        m_evt->doSignal();
+        delete this;
+    }
+  private:
+    const char * m_name;
+    const char * m_service;
+    struct addrinfo * m_hints;
+    Balau::Events::Custom * m_evt;
+    struct DNSRequest * m_request;
+};
 
-static ResolverThread resolverThread;
+};
 
 static DNSRequest resolveName(const char * name, const char * service = NULL, struct addrinfo * hints = NULL) {
-    Balau::Events::Async evt;
     DNSRequest req;
+    Balau::Events::Custom evt;
     memset(&req, 0, sizeof(req));
 
-    req.name = name;
-    req.service = service;
-    req.hints = hints;
-    req.evt = &evt;
-    Balau::Printer::elog(Balau::E_SOCKET, "Sending a request to the resolver thread");
-    Balau::Task::prepare(&evt);
-    resolverThread.pushRequest(&req);
+    createAsyncOp(new AsyncOpResolv(name, service, hints, &evt, &req));
     Balau::Task::operationYield(&evt);
-
-    Balau::Atomic::MemoryFence();
 
     return req;
 }
 
 Balau::Socket::Socket() throw (GeneralException) : m_fd(socket(AF_INET6, SOCK_STREAM, 0)) {
-    m_name = "Socket(unconnected)";
+    m_name = "Socket(nonconnected)";
     RAssert(m_fd >= 0, "socket() returned %i", m_fd);
     m_evtR = new SocketEvent(m_fd, ev::READ);
     m_evtW = new SocketEvent(m_fd, ev::WRITE);
