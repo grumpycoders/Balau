@@ -6,10 +6,10 @@ namespace Balau {
 
 class StacklessTask : public Task {
   public:
-      StacklessTask() : m_state(0) { setStackless(); }
+      StacklessTask() { setStackless(); }
   protected:
     void taskSwitch() throw (GeneralException) { throw TaskSwitch(); }
-    unsigned int m_state;
+    unsigned int m_state = 0;
 };
 
 };
