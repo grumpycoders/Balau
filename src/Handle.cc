@@ -1,10 +1,11 @@
 #include <typeinfo>
+#include <errno.h>
 #include "ev++.h"
-#include "eio.h"
 #include "Main.h"
 #include "TaskMan.h"
 #include "Handle.h"
 #include "Printer.h"
+#include "Async.h"
 
 #ifdef _WIN32
 static const char * strerror_r(int errorno, char * buf, size_t bufsize) {
@@ -16,50 +17,6 @@ static const char * strerror_r(int errorno, char * buf, size_t bufsize) {
 #endif
 }
 #endif
-
-class eioInterface : public Balau::AtStart {
-  public:
-      eioInterface() : AtStart(100) { }
-    void repeatCB(ev::idle & w, int revents);
-    void readyCB(ev::async & w, int revents);
-    static void wantPoll();
-    virtual void doStart();
-    ev::idle m_repeat;
-    ev::async m_ready;
-};
-
-static eioInterface eioIF;
-
-void eioInterface::repeatCB(ev::idle & w, int revents) {
-    if (eio_poll() != -1)
-        w.stop();
-}
-
-void eioInterface::readyCB(ev::async & w, int revents) {
-    if (eio_poll() == -1)
-        m_repeat.start();
-}
-
-void eioInterface::doStart() {
-    Balau::Printer::elog(Balau::E_HANDLE, "Starting the eio interface");
-
-    Balau::TaskMan * taskMan = Balau::TaskMan::getDefaultTaskMan();
-    IAssert(taskMan, "The eio interface shouldn't have started before the task manager");
-    struct ev_loop * loop = taskMan->getLoop();
-
-    m_repeat.set(loop);
-    m_repeat.set<eioInterface, &eioInterface::repeatCB>(this);
-
-    m_ready.set(loop);
-    m_ready.set<eioInterface, &eioInterface::readyCB>(this);
-    m_ready.start();
-
-    eio_init(wantPoll, NULL);
-}
-
-void eioInterface::wantPoll() {
-    eioIF.m_ready.send();
-}
 
 bool Balau::Handle::canSeek() { return false; }
 bool Balau::Handle::canRead() { return false; }
@@ -225,28 +182,41 @@ bool Balau::SeekableHandle::isEOF() {
     return m_rOffset == getSize();
 }
 
+namespace {
+
 struct cbResults_t {
     Balau::Events::Custom evt;
     int result, errorno;
 };
 
-static int eioDone(eio_req * req) {
-    cbResults_t * cbResults = (cbResults_t *) req->data;
-    cbResults->result = req->result;
-    cbResults->errorno = req->errorno;
-    cbResults->evt.doSignal();
-    return 0;
-}
+class AsyncOpMkdir : public Balau::AsyncOperation {
+  public:
+      AsyncOpMkdir(const char * path, mode_t mode, cbResults_t * results) : m_path(path), m_mode(mode), m_results(results) { }
+    virtual void run() {
+        int r = m_results->result = mkdir(m_path, m_mode);
+        m_results->errorno = r < 0 ? errno : 0;
+    }
+    virtual void done() {
+        m_results->evt.doSignal();
+        delete this;
+    }
+  private:
+    const char * m_path;
+    mode_t m_mode;
+    cbResults_t * m_results;
+};
+
+};
 
 int Balau::FileSystem::mkdir(const char * path) throw (GeneralException) {
     cbResults_t cbResults;
-    eio_req * r = eio_mkdir(path, 0755, 0, eioDone, &cbResults);
-    EAssert(r != NULL, "eio_mkdir returned a NULL eio_req");
+    createAsyncOp(new AsyncOpMkdir(path, 0755, &cbResults));
     Task::operationYield(&cbResults.evt);
 
-    char str[4096];
-    if (cbResults.result < 0)
+    if (cbResults.result < 0) {
+        char str[4096];
         throw GeneralException(String("Unable to create directory ") + path + ": " + strerror_r(cbResults.errorno, str, sizeof(str)) + " (err#" + cbResults.errorno + ")");
+    }
 
     return cbResults.result;
 }

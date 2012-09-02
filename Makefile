@@ -24,7 +24,7 @@ CPPFLAGS += -g -DDEBUG -DEV_VERIFY=3
 LDFLAGS += -g
 endif
 
-INCLUDES = includes libcoro libeio libev LuaJIT/src
+INCLUDES = includes libcoro libev LuaJIT/src
 LIBS = z
 
 ifeq ($(SYSTEM),Darwin)
@@ -111,7 +111,7 @@ LDFLAGS += $(ARCH_FLAGS)
 LDLIBS = $(addprefix -l, $(LIBS))
 
 vpath %.cc src:tests
-vpath %.c libcoro:libeio:libev:win32/pthreads-win32:win32/iconv:win32/regex
+vpath %.c libcoro:libev:win32/pthreads-win32:win32/iconv:win32/regex
 
 BALAU_SOURCES = \
 Exceptions.cc \
@@ -171,9 +171,6 @@ LIBEV_SOURCES = \
 ev.c \
 event.c \
 
-LIBEIO_SOURCES = \
-eio.c \
-
 TEST_SOURCES = \
 test-Sanity.cc \
 test-String.cc \
@@ -188,9 +185,9 @@ test-Regex.cc \
 
 LIB = libBalau.a
 
-BALAU_OBJECTS = $(addsuffix .o, $(notdir $(basename $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(LIBEIO_SOURCES) $(LIBEV_SOURCES) $(WIN32_SOURCES) $(DARWIN_SOURCES))))
+BALAU_OBJECTS = $(addsuffix .o, $(notdir $(basename $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(LIBEV_SOURCES) $(WIN32_SOURCES) $(DARWIN_SOURCES))))
 
-WHOLE_SOURCES = $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(LIBEIO_SOURCES) $(LIBEV_SOURCES) $(WIN32_SOURCES) $(DARWIN_SOURCES) $(TEST_SOURCES)
+WHOLE_SOURCES = $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(LIBEV_SOURCES) $(WIN32_SOURCES) $(DARWIN_SOURCES) $(TEST_SOURCES)
 TESTS = $(addsuffix .$(BINEXT), $(notdir $(basename $(TEST_SOURCES))))
 
 ALL_OBJECTS = $(addsuffix .o, $(notdir $(basename $(WHOLE_SOURCES))))
