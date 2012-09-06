@@ -15,11 +15,14 @@ class LuaExecCell {
       virtual ~LuaExecCell() { }
     void detach() { m_detached = true; }
     void exec(LuaMainTask * mainTask);
+    bool gotError() { return m_gotError; }
   protected:
     virtual void run(Lua &) = 0;
+    void setError() { m_gotError = true; }
   private:
     Events::Async m_event;
     bool m_detached = false;
+    bool m_gotError = false;
     friend class LuaTask;
 };
 

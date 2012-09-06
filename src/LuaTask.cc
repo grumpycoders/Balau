@@ -57,7 +57,12 @@ void Balau::LuaMainTask::Do() {
 }
 
 void Balau::LuaTask::Do() {
-    m_cell->run(L);
+    try {
+        m_cell->run(L);
+    }
+    catch (...) {
+        m_cell->setError();
+    }
     if (m_cell->m_detached)
         delete m_cell;
     else

@@ -759,7 +759,7 @@ void Balau::Lua::showstack(int level) {
     String t;
 
     if (n == 0) {
-        Printer::log(level, "Stack empty\n");
+        Printer::log(level, "Stack empty");
         return;
     }
 
@@ -790,12 +790,12 @@ void Balau::Lua::showstack(int level) {
             t = "Unknown";
         }
 
-        Printer::log(level, String(i) + ": " + t + "\n");
+        Printer::log(level, String(i) + ": " + t);
     }
 }
 
 void Balau::Lua::showerror() {
-    Printer::log(M_ERROR, "Lua object: Got an LUA error, inspecting stack.\n");
+    Printer::log(M_ERROR, "Lua object: Got an LUA error, inspecting stack.");
 
     showstack(M_ERROR);
 }
