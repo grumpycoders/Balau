@@ -15,13 +15,16 @@ class Exit : public GeneralException {
 
 class MainTask : public Task {
   public:
-      MainTask() : m_stopTaskManOnExit(true) { }
+      MainTask(int argc, char ** argv, char ** enve) : argc(argc), argv(argv), enve(enve) { }
       virtual ~MainTask();
     virtual const char * getName() const;
     virtual void Do();
     void stopTaskManOnExit(bool v) { m_stopTaskManOnExit = v; }
   private:
-    bool m_stopTaskManOnExit;
+    int argc;
+    char ** argv;
+    char ** enve;
+    bool m_stopTaskManOnExit = true;
 };
 
 class Main {
@@ -37,10 +40,6 @@ class Main {
     static Status getStatus() { return s_application->m_status; }
     int bootstrap(int _argc, char ** _argv);
     static bool hasMain() { return s_application; }
-  protected:
-    int argc;
-    char ** argv;
-    char ** enve;
   private:
     Status m_status;
     static Main * s_application;

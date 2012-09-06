@@ -47,20 +47,16 @@ const char * Balau::MainTask::getName() const {
     return "Main Task";
 }
 
-int Balau::Main::bootstrap(int _argc, char ** _argv) {
+int Balau::Main::bootstrap(int argc, char ** argv) {
     int r = 0;
     m_status = STARTING;
-
-    argc = _argc;
-    argv = _argv;
-    enve = NULL;
 
     for (AtStart * ptr = AtStart::s_head; ptr; ptr = ptr->m_next)
         ptr->doStart();
 
     try {
         m_status = RUNNING;
-        TaskMan::registerTask(new MainTask());
+        TaskMan::registerTask(new MainTask(argc, argv, NULL));
         r = TaskMan::getDefaultTaskMan()->mainLoop();
         m_status = STOPPING;
     }
