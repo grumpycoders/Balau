@@ -232,7 +232,7 @@ int Balau::LuaStatics::collector(lua_State * __L) {
     Lua L(__L);
     ObjData * u = (ObjData *) L.touserdata();
     if (u->isObj) {
-        LuaObjectFactory * obj = (LuaObjectFactory *) u->ptr;
+        LuaObject * obj = (LuaObject *) u->ptr;
         delete obj;
     } else {
         free(u->ptr);
@@ -245,14 +245,7 @@ int Balau::LuaStatics::destructor(lua_State * __L) {
     Lua L(__L);
     L.push("__obj");
     L.gettable(-2, true);
-    ObjData * u = (ObjData *) L.touserdata();
-    if (u->isObj) {
-        LuaObjectFactory * obj = (LuaObjectFactory *) u->ptr;
-        delete obj;
-    } else {
-        free(u->ptr);
-    }
-    u->ptr = NULL;
+    collector(__L);
     L.pop();
     return 0;
 }
