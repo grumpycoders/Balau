@@ -12,28 +12,45 @@ namespace Balau {
 
 class Lua;
 
-class LuaObject {
+class LuaObjectBase {
   public:
-      virtual ~LuaObject() { }
+      virtual void destroy() { }
+    void detach() { m_detached = true; }
+  protected:
+    bool isDetached() { return m_detached; }
+  private:
+    bool m_detached = false;
+};
+
+template<class T>
+class LuaObject : public LuaObjectBase {
+  public:
+      LuaObject(T * obj) : m_obj(obj) { }
+      virtual void destroy() { if (!isDetached() && m_obj) delete m_obj; detach(); }
+    T * getObj() { return m_obj; }
+  private:
+    T * m_obj;
 };
 
 class LuaObjectFactory {
   public:
-      LuaObjectFactory() : m_wantsDestruct(false), m_pushed(false) { }
+      LuaObjectFactory() { }
       virtual ~LuaObjectFactory() { }
     virtual void push(Lua & L);
     void pushDestruct(Lua & L);
     template<class T>
     static T * getMe(Lua & L, int idx = 1);
   protected:
-    virtual void pushMembers(Lua & L) = 0;
-    void pushMe(Lua & L, void * obj = 0, const char * name = NULL, bool isObj = true);
+    virtual void pushObjectAndMembers(Lua & L) = 0;
+    template<class T>
+    void pushObj(Lua & L, T * obj, const char * name = NULL);
     static void pushIt(Lua & L, const char * name, lua_CFunction func);
     static void pushMeta(Lua & L, const char * name, lua_CFunction func);
-    static void * getMeInternal(Lua & L, int idx);
+    static LuaObjectBase * getMeInternal(Lua & L, int idx);
     friend class Lua;
   private:
-    bool m_wantsDestruct, m_pushed;
+    void pushMe(Lua & L, LuaObjectBase * o, const char * name = NULL);
+    bool m_wantsDestruct = false, m_pushed = false;
     LuaObjectFactory & operator=(const LuaObjectFactory &) = delete;
       LuaObjectFactory(const LuaObjectFactory &) = delete;
 };
@@ -61,6 +78,7 @@ class Lua {
     void open_debug();
     void open_bit();
     void open_jit();
+    void open_ffi();
     int wrap_open(openlualib_t open) { int n = gettop(); int r = open(L); while (n < gettop()) remove(n); return r; }
     void openlib(const String & libname, const struct luaL_reg *l, int nup) { luaL_openlib(L, libname.to_charp(), l, nup); }
 
@@ -136,19 +154,19 @@ class Lua {
 
     template<class T>
     T * recast(int n = 1) {
-        LuaObject * b;
-        T * r;
+        LuaObjectBase * b;
+        LuaObject<T> * r;
 
-        b = (LuaObject *) LuaObjectFactory::getMeInternal(*this, n);
+        b = LuaObjectFactory::getMeInternal(*this, n);
         if (!b)
             error("LuaObject base object required; got null.");
 
-        r = dynamic_cast<T *>(b);
+        r = dynamic_cast<LuaObject<T> *>(b);
 
         if (!r)
             error(String("Object not compatible; expecting ") + ClassName(r).c_str() + " but got *" + ClassName(b).c_str() + " instead.");
 
-        return r;
+        return r->getObj();
     }
 
     lua_State * getState() { return L; }
@@ -215,32 +233,30 @@ struct lua_functypes_t {
         false); \
     }
 
-#define PUSH_METHOD(classname, enumvar) pushit( \
+#define PUSH_METHOD(classname, enumvar) pushIt( \
     L, \
     classname##_methods[enumvar].name, \
     sLua_##classname::method_##enumvar)
 
-#define PUSH_METAMETHOD(classname, enumvar) pushmeta( \
+#define PUSH_METAMETHOD(classname, enumvar) pushMeta( \
     L, \
     String("__") + classname##_methods[enumvar].name, \
     sLua_##classname::method_##enumvar)
 
-#define PUSH_FUNCTION(classname, enumvar) L->declarefunc( \
+#define PUSH_FUNCTION(classname, enumvar) L.declareFunc( \
     classname##_functions[enumvar].name, \
     sLua_##classname::function_##enumvar)
 
-#define PUSH_SUBFUNCTION(classname, enumvar, array) L->declarefunc( \
+#define PUSH_SUBFUNCTION(classname, enumvar, array) L.declareFunc( \
     classname##_functions[enumvar].name, \
     sLua_##classname::function_##enumvar, \
     array)
 
-
 #define CHECK_METHODS(classname) { \
     int i = 0; \
     while (classname##_methods[i].number != -1) { \
-        if (i != classname##_methods[i].number) { \
-            throw GeneralException("Data of " #classname "_methods inconsistants!"); \
-        } \
+        lua_functypes_t & func = classname##_methods[i]; \
+        AAssert(i == func.number, "Mismatched method in class " #classname); \
         i++; \
     } \
 }
@@ -248,9 +264,8 @@ struct lua_functypes_t {
 #define CHECK_FUNCTIONS(classname) { \
     int i = 0; \
     while (classname##_functions[i].number != -1) { \
-        if (i != classname##_functions[i].number) { \
-            throw GeneralException("Data of " #classname "_functions inconsistants!"); \
-        } \
+        lua_functypes_t & func = classname##_functions[i]; \
+        AAssert(i == func.number, "Mismatched function in class " #classname); \
         i++; \
     } \
 }
@@ -338,5 +353,10 @@ class LuaHelpers {
 };
 
 template<class T> T * lua_recast(Lua & L, int n = 1) { return L.recast<T>(n); }
+
+template<class T>
+void LuaObjectFactory::pushObj(Lua & L, T * obj, const char * name) {
+    pushMe(L, new (L.newuser(sizeof(LuaObject<T>))) LuaObject<T>(obj), name);
+}
 
 };

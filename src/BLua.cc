@@ -223,29 +223,22 @@ int Balau::LuaStatics::callwrap(lua_State * __L, lua_CFunction func) {
     return 0;
 }
 
-struct ObjData {
-    void * ptr;
-    bool isObj;
-};
-
 int Balau::LuaStatics::collector(lua_State * __L) {
     Lua L(__L);
-    ObjData * u = (ObjData *) L.touserdata();
-    if (u->isObj) {
-        LuaObject * obj = (LuaObject *) u->ptr;
-        delete obj;
-    } else {
-        free(u->ptr);
-    }
-    u->ptr = NULL;
+    LuaObjectBase * o = (LuaObjectBase *) L.touserdata();
+    o->destroy();
     return 0;
 }
 
 int Balau::LuaStatics::destructor(lua_State * __L) {
     Lua L(__L);
     L.push("__obj");
-    L.gettable(-2, true);
+    L.copy();
+    L.gettable(-3, true);
     collector(__L);
+    L.pop();
+    L.push();
+    L.settable(-3, true);
     L.pop();
     return 0;
 }
@@ -369,6 +362,12 @@ void Balau::Lua::open_debug() {
 void Balau::Lua::open_jit() {
     int n = gettop();
     luaopen_jit(L);
+    while (n < gettop()) remove(n);
+}
+
+void Balau::Lua::open_ffi() {
+    int n = gettop();
+    luaopen_ffi(L);
     while (n < gettop()) remove(n);
 }
 
@@ -779,6 +778,15 @@ void Balau::Lua::showstack(int level) {
         case LUA_TFUNCTION:
             t = "(Function)";
             break;
+        case LUA_TUSERDATA:
+            t = "(Userdata)";
+            break;
+        case LUA_TLIGHTUSERDATA:
+            t = "(Lightuserdata)";
+            break;
+        case LUA_TTHREAD:
+            t = "(Thread)";
+            break;
         default:
             t = "Unknown";
         }
@@ -796,42 +804,41 @@ void Balau::Lua::showerror() {
 void Balau::LuaObjectFactory::push(Lua & L) {
     AAssert(!(m_pushed && m_wantsDestruct), "Error: object is owned by the LUA script and can not be pushed.");
     L.newtable();
-    pushMembers(L);
+    pushObjectAndMembers(L);
     m_pushed = true;
 }
 
-void Balau::LuaObjectFactory::pushMe(Lua & L, void * o, const char * objname, bool obj) {
-    ObjData * u;
+void Balau::LuaObjectFactory::pushMe(Lua & L, LuaObjectBase * o, const char * objname) {
     L.push("__obj");
-    u = (ObjData *) L.newuser(sizeof(ObjData));
-    u->ptr = o;
-    u->isObj = obj;
+    L.insert(-2);
+    pushMeta(L, "__gc", LuaStatics::collector);
     L.settable(-3, true);
     if (objname && *objname) {
         L.push("__objname");
         L.push(objname);
         L.settable(-3, true);
     }
+    pushIt(L, "destroy", LuaStatics::destructor);
+    if (!m_wantsDestruct)
+        o->detach();
 }
 
-void * Balau::LuaObjectFactory::getMeInternal(Lua & L, int i) {
-    ObjData * u = NULL;
+Balau::LuaObjectBase * Balau::LuaObjectFactory::getMeInternal(Lua & L, int i) {
+    LuaObjectBase * o;
 
     if (L.istable(i)) {
         L.push("__obj");
         L.gettable(i, true);
-        if (!(u = (ObjData *) L.touserdata()))
+        if (!(o = (LuaObjectBase *) L.touserdata()))
             L.error("Table is not an object.");
-        if (!u->ptr)
-            L.error("Object already destroyed.");
         L.pop();
     } else if (L.isnil(i)) {
-        u = NULL;
+        o = NULL;
     } else {
         L.error("Not an object (not even a table).");
     }
 
-    return u ? u->ptr : NULL;
+    return o;
 }
 
 void Balau::LuaObjectFactory::pushIt(Lua & L, const char * s, lua_CFunction f) {
@@ -851,12 +858,6 @@ void Balau::LuaObjectFactory::pushMeta(Lua & L, const char * s, lua_CFunction f)
 
 void Balau::LuaObjectFactory::pushDestruct(Lua & L) {
     AAssert(!m_pushed, "Error: can't push destructor, object already pushed");
-    push(L);
-    L.push("__obj");
-    L.gettable(-2, true);
-    pushMeta(L, "__gc", LuaStatics::collector);
-    L.pop();
-    pushIt(L, "destroy", LuaStatics::destructor);
-
     m_wantsDestruct = true;
+    push(L);
 }
