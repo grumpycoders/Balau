@@ -91,10 +91,9 @@ class HPrinter : public Handle {
 };
 
 class IOBase {
-  public:
+  protected:
       IOBase() : m_h(NULL) { }
       ~IOBase() { if (m_h) m_h->delRef(); }
-  protected:
     void setHandle(Handle * h) { m_h = h; if (m_h) m_h->addRef(); }
     Handle * m_h;
     template<class T>
