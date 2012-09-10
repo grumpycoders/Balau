@@ -218,7 +218,7 @@ struct lua_functypes_t {
         enumvar, \
         L, \
         sLua_##classname::classname##_proceed, \
-        0, \
+        NULL, \
         classname##_methods, \
         true); \
     }
@@ -227,7 +227,7 @@ struct lua_functypes_t {
     return LuaHelpers<classname>::method_multiplex( \
         enumvar, \
         L, \
-        0, \
+        NULL, \
         sLua_##classname::classname##_proceed_statics, \
         classname##_functions, \
         false); \
