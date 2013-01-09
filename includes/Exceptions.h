@@ -10,9 +10,10 @@ namespace Balau {
 
 class GeneralException {
   public:
-      GeneralException(const char * msg, const char * details = NULL) : m_msg(::strdup(msg)) { setDetails(details); genTrace(); }
-      GeneralException(const String & msg, const char * details = NULL) : m_msg(msg.strdup()) { setDetails(details); genTrace(); }
+      GeneralException(const char * msg, const char * details = NULL, bool notrace = false) : m_msg(::strdup(msg)) { setDetails(details); if (!notrace) genTrace(); }
+      GeneralException(const String & msg, const char * details = NULL, bool notrace = false) : m_msg(msg.strdup()) { setDetails(details); if (!notrace) genTrace(); }
       GeneralException(const GeneralException & e) : m_msg(strdup(e.m_msg)), m_trace(e.m_trace) { setDetails(e.m_details); }
+      GeneralException(GeneralException && e) : m_msg(e.m_msg), m_trace(e.m_trace), m_details(e.m_details) { e.m_msg = e.m_details = NULL; }
       ~GeneralException() { if (m_msg) free(m_msg); }
     const char * getMsg() const { return m_msg; }
     const char * getDetails() const { return m_details; }
