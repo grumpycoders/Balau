@@ -197,15 +197,15 @@ all: dep lib
 
 tests: $(TESTS)
 ifneq ($(CROSSCOMPILE),true)
-	$(foreach b, $(TESTS), ./$(b) && ) exit 0 || exit -1
+	$(foreach b, $(TESTS), ./$(b) && ) exit 0 || exit 1
 else
 ifeq ($(SYSTEM),MINGW32)
-	$(foreach b, $(TESTS), wine ./$(b) && ) exit 0 || exit -1
+	$(foreach b, $(TESTS), wine ./$(b) && ) exit 0 || exit 1
 endif
 endif
 
 strip: $(TESTS)
-	$(foreach b, $(TESTS), $(STRIP) ./$(b) && ) exit 0 || exit -1
+	$(foreach b, $(TESTS), $(STRIP) ./$(b) && ) exit 0 || exit 1
 
 lib: $(LIB)
 
