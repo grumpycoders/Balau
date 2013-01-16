@@ -15,7 +15,7 @@ namespace Events { class BaseEvent; };
 
 class EAgain : public GeneralException {
   public:
-      EAgain(Events::BaseEvent * evt) : GeneralException("Try Again", NULL, true), m_evt(evt) { }
+      EAgain(Events::BaseEvent * evt) : GeneralException(), m_evt(evt) { }
     Events::BaseEvent * getEvent() { return m_evt; }
   private:
     Events::BaseEvent * m_evt;
@@ -23,7 +23,7 @@ class EAgain : public GeneralException {
 
 class TaskSwitch : public GeneralException {
   public:
-      TaskSwitch() : GeneralException("Task Switch", NULL, true) { }
+      TaskSwitch() : GeneralException() { }
 };
 
 class TaskMan;

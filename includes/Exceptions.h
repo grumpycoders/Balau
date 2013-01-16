@@ -8,24 +8,38 @@
 
 namespace Balau {
 
+class ClassName {
+  public:
+      template<typename T> ClassName(T * ptr);
+      ~ClassName() { free(m_demangled); }
+    const char * c_str() const { return m_demangled; }
+  private:
+    char * m_demangled;
+};
+
 class GeneralException {
   public:
-      GeneralException(const char * msg, const char * details = NULL, bool notrace = false) : m_msg(::strdup(msg)) { setDetails(details); if (!notrace) genTrace(); }
+      GeneralException(const char * msg, const char * details = NULL, bool notrace = false) : m_msg(msg ? ::strdup(msg) : NULL) { setDetails(details); if (!notrace) genTrace(); }
       GeneralException(const String & msg, const char * details = NULL, bool notrace = false) : m_msg(msg.strdup()) { setDetails(details); if (!notrace) genTrace(); }
-      GeneralException(const GeneralException & e) : m_msg(strdup(e.m_msg)), m_trace(e.m_trace) { setDetails(e.m_details); }
+      GeneralException(const GeneralException & e) : m_msg(e.m_msg ? strdup(e.m_msg) : NULL), m_trace(e.m_trace) { setDetails(e.m_details); }
       GeneralException(GeneralException && e) : m_msg(e.m_msg), m_trace(e.m_trace), m_details(e.m_details) { e.m_msg = e.m_details = NULL; }
-      ~GeneralException() { if (m_msg) free(m_msg); }
-    const char * getMsg() const { return m_msg; }
+      // don't hate me, this is to generate typeinfo in the getMsg() case where there's no message.
+      virtual ~GeneralException() { if (m_msg) free(m_msg); if (m_details) free(m_details); }
+    const char * getMsg() const {
+        if (!m_msg)
+            m_msg = ::strdup(ClassName(this).c_str());
+        return m_msg;
+    }
     const char * getDetails() const { return m_details; }
     const std::vector<String> getTrace() const { return m_trace; }
 
   protected:
-      GeneralException() : m_msg(0) { }
+      GeneralException() : m_msg(NULL), m_details(NULL) { }
     void setMsg(char * msg) { if (m_msg) free(m_msg); m_msg = msg; }
     void genTrace();
 
   private:
-    char * m_msg;
+    mutable char * m_msg;
     char * m_details;
     std::vector<String> m_trace;
 
@@ -98,15 +112,6 @@ class TestException : public GeneralException {
 static inline void TestHelper(const String & msg) throw (TestException) {
     throw TestException(msg);
 }
-
-class ClassName {
-  public:
-      template<typename T> ClassName(T * ptr);
-      ~ClassName() { free(m_demangled); }
-    const char * c_str() const { return m_demangled; }
-  private:
-    char * m_demangled;
-};
 
 template<typename T>
 ClassName::ClassName(T * ptr) {
