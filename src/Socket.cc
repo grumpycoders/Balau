@@ -186,20 +186,24 @@ static const char * inet_ntop(int af, const void * src, char * dst, socklen_t si
 
 #endif
 
-namespace {
+namespace Balau {
 
 struct DNSRequest {
     struct addrinfo * res;
     int error;
+    Balau::Events::Custom evt;
 };
+
+};
+
+namespace {
 
 class AsyncOpResolv : public Balau::AsyncOperation {
   public:
-      AsyncOpResolv(const char * name, const char * service, struct addrinfo * hints, Balau::Events::Custom * evt, struct DNSRequest * request)
+      AsyncOpResolv(const char * name, const char * service, struct addrinfo * hints, Balau::DNSRequest * request)
         : m_name(name)
         , m_service(service)
         , m_hints(hints)
-        , m_evt(evt)
         , m_request(request)
         { }
     virtual bool needsMainQueue() { return false; }
@@ -208,27 +212,21 @@ class AsyncOpResolv : public Balau::AsyncOperation {
         m_request->error = getaddrinfo(m_name, m_service, m_hints, &m_request->res);
     }
     virtual void done() {
-        m_evt->doSignal();
+        m_request->evt.doSignal();
         delete this;
     }
   private:
     const char * m_name;
     const char * m_service;
     struct addrinfo * m_hints;
-    Balau::Events::Custom * m_evt;
-    struct DNSRequest * m_request;
+    Balau::DNSRequest * m_request;
 };
 
 };
 
-static DNSRequest resolveName(const char * name, const char * service = NULL, struct addrinfo * hints = NULL) {
-    DNSRequest req;
-    Balau::Events::Custom evt;
-    memset(&req, 0, sizeof(req));
-
-    createAsyncOp(new AsyncOpResolv(name, service, hints, &evt, &req));
-    Balau::Task::operationYield(&evt);
-
+static Balau::DNSRequest * resolveName(const char * name, const char * service = NULL, struct addrinfo * hints = NULL) {
+    Balau::DNSRequest * req = new Balau::DNSRequest();
+    createAsyncOp(new AsyncOpResolv(name, service, hints, req));
     return req;
 }
 
@@ -311,21 +309,32 @@ bool Balau::Socket::canRead() { return true; }
 bool Balau::Socket::canWrite() { return true; }
 const char * Balau::Socket::getName() { return m_name.to_charp(); }
 
+bool Balau::Socket::resolved() {
+    return m_req && m_req->evt.gotSignal();
+}
+
 bool Balau::Socket::setLocal(const char * hostname, int port) {
     AAssert(m_localAddr.sin6_family == 0, "Can't call setLocal twice");
 
-    if (hostname && hostname[0]) {
+    if (hostname && hostname[0] && !m_req) {
         struct addrinfo hints;
         memset(&hints, 0, sizeof(hints));
         hints.ai_family = AF_INET6;
         hints.ai_flags = AI_V4MAPPED;
 
-        DNSRequest req = resolveName(hostname, NULL, &hints);
-        struct addrinfo * res = req.res;
-        if (req.error != 0) {
-            Printer::elog(E_SOCKET, "Got a resolution error for host %s: %s (%i)", hostname, gai_strerror(req.error), req.error);
+        m_req = resolveName(hostname, NULL, &hints);
+        Task::operationYield(&m_req->evt, Task::INTERRUPTIBLE);
+    }
+
+    if (m_req) {
+        AAssert(m_req->evt.gotSignal(), "Please don't call setLocal after a EAgain without checking its resolution status first.");
+        struct addrinfo * res = m_req->res;
+        if (m_req->error != 0) {
+            Printer::elog(E_SOCKET, "Got a resolution error for host %s: %s (%i)", hostname, gai_strerror(m_req->error), m_req->error);
             if (res)
                 freeaddrinfo(res);
+            delete m_req;
+            m_req = NULL;
             return false;
         }
         IAssert(res, "That really shouldn't happen...");
@@ -334,6 +343,8 @@ bool Balau::Socket::setLocal(const char * hostname, int port) {
         EAssert(res->ai_addrlen == sizeof(sockaddr_in6), "getaddrinfo returned an addrlen which isn't that of sizeof(sockaddr_in6); %i", res->ai_addrlen);
         memcpy(&m_localAddr.sin6_addr, &((sockaddr_in6 *) res->ai_addr)->sin6_addr, sizeof(struct in6_addr));
         freeaddrinfo(res);
+        delete m_req;
+        m_req = NULL;
     } else {
         m_localAddr.sin6_addr = in6addr_any;
     }
@@ -359,7 +370,7 @@ bool Balau::Socket::connect(const char * hostname, int port) {
     AAssert(hostname, "You can't call Socket::connect() without a hostname");
     AAssert(m_fd >= 0, "You can't call Socket::connect() on a closed socket");
 
-    if (!m_connecting) {
+    if (!m_connecting && !m_req) {
         Printer::elog(E_SOCKET, "Resolving %s", hostname);
         IAssert(m_remoteAddr.sin6_family == 0, "That shouldn't happen...; family = %i", m_remoteAddr.sin6_family);
 
@@ -368,12 +379,19 @@ bool Balau::Socket::connect(const char * hostname, int port) {
         hints.ai_family = AF_INET6;
         hints.ai_flags = AI_V4MAPPED;
 
-        DNSRequest req = resolveName(hostname, NULL, &hints);
-        struct addrinfo * res = req.res;
-        if (req.error != 0) {
-            Printer::elog(E_SOCKET, "Got a resolution error for host %s: %s (%i)", hostname, gai_strerror(req.error), req.error);
+        m_req = resolveName(hostname, NULL, &hints);
+        Task::operationYield(&m_req->evt, Task::INTERRUPTIBLE);
+    }
+
+    if (!m_connecting && m_req) {
+        AAssert(m_req->evt.gotSignal(), "Please don't call connect after a EAgain without checking its resolution status first.");
+        struct addrinfo * res = m_req->res;
+        if (m_req->error != 0) {
+            Printer::elog(E_SOCKET, "Got a resolution error for host %s: %s (%i)", hostname, gai_strerror(m_req->error), m_req->error);
             if (res)
                 freeaddrinfo(res);
+            delete m_req;
+            m_req = NULL;
             return false;
         }
         IAssert(res, "That really shouldn't happen...");
@@ -389,6 +407,8 @@ bool Balau::Socket::connect(const char * hostname, int port) {
         m_connecting = true;
 
         freeaddrinfo(res);
+        delete m_req;
+        m_req = NULL;
     } else {
         // if we end up there, it means our yield earlier threw an EAgain exception.
         AAssert(m_evtR->gotSignal(), "Please don't call connect after a EAgain without checking its signal first.");

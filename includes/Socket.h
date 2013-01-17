@@ -14,6 +14,8 @@
 
 namespace Balau {
 
+struct DNSRequest;
+
 class Socket : public Handle {
   public:
 
@@ -33,6 +35,7 @@ class Socket : public Handle {
     bool gotW() { return m_evtW->gotSignal(); }
     IO<Socket> accept() throw (GeneralException);
     bool listen();
+    bool resolved();
   private:
       Socket(int fd);
     class SocketEvent : public Events::BaseEvent {
@@ -55,6 +58,7 @@ class Socket : public Handle {
     bool m_listening = false;
     sockaddr_in6 m_localAddr, m_remoteAddr;
     SocketEvent * m_evtR, * m_evtW;
+    DNSRequest * m_req = NULL;
 };
 
 class ListenerBase : public Task {
