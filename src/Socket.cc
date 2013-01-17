@@ -325,13 +325,12 @@ bool Balau::Socket::setLocal(const char * hostname, int port) {
         DNSRequest req = resolveName(hostname, NULL, &hints);
         struct addrinfo * res = req.res;
         if (req.error != 0) {
-            freeaddrinfo(res);
+            Printer::elog(E_SOCKET, "Got a resolution error for host %s: %s (%i)", hostname, gai_strerror(req.error), req.error);
+            if (res)
+                freeaddrinfo(res);
             return false;
         }
-        if (!res) {
-            freeaddrinfo(res);
-            return false;
-        }
+        IAssert(res, "That really shouldn't happen...");
         EAssert(res->ai_family == AF_INET6, "getaddrinfo returned a familiy which isn't AF_INET6; %i", res->ai_family);
         EAssert(res->ai_protocol == IPPROTO_TCP, "getaddrinfo returned a protocol which isn't IPPROTO_TCP; %i", res->ai_protocol);
         EAssert(res->ai_addrlen == sizeof(sockaddr_in6), "getaddrinfo returned an addrlen which isn't that of sizeof(sockaddr_in6); %i", res->ai_addrlen);
@@ -376,13 +375,12 @@ bool Balau::Socket::connect(const char * hostname, int port) {
         DNSRequest req = resolveName(hostname, NULL, &hints);
         struct addrinfo * res = req.res;
         if (req.error != 0) {
-            freeaddrinfo(res);
+            Printer::elog(E_SOCKET, "Got a resolution error for host %s: %s (%i)", hostname, gai_strerror(req.error), req.error);
+            if (res)
+                freeaddrinfo(res);
             return false;
         }
-        if (!res) {
-            freeaddrinfo(res);
-            return false;
-        }
+        IAssert(res, "That really shouldn't happen...");
         Printer::elog(E_SOCKET, "Got a resolution answer");
         EAssert(res->ai_family == AF_INET6, "getaddrinfo returned a familiy which isn't AF_INET6; %i", res->ai_family);
         EAssert(res->ai_protocol == IPPROTO_TCP, "getaddrinfo returned a protocol which isn't IPPROTO_TCP; %i", res->ai_protocol);
