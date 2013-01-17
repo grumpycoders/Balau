@@ -394,7 +394,7 @@ bool Balau::Socket::connect(const char * hostname, int port) {
 
         freeaddrinfo(res);
     } else {
-        // if we end up there, it means our yield earlier thrown a EAgain exception.
+        // if we end up there, it means our yield earlier threw an EAgain exception.
         AAssert(m_evtR->gotSignal(), "Please don't call connect after a EAgain without checking its signal first.");
     }
 
