@@ -50,7 +50,7 @@ void MainTask::Do() {
     i->rseek(0, SEEK_SET);
     char * buf1 = (char *) malloc(i->getSize());
     ssize_t r = i->read(buf1, s + 15);
-    Printer::log(M_STATUS, "Read %li bytes (instead of %lli)", r, s + 15);
+    Printer::log(M_STATUS, "Read %zi bytes (instead of %lli)", r, s + 15);
     TAssert(i->isEOF())
 
     char * buf2 = (char *) malloc(i->getSize());

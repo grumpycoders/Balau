@@ -52,7 +52,7 @@ void Balau::GeneralException::genTrace() {
 
     String line;
     for (int i = 0; i < n; i++)
-        line += String().set("%08lx ", (uintptr_t) trace[i]);
+        line += String().set("%08zx ", (uintptr_t) trace[i]);
 
     m_trace.push_back(line);
     Dl_info info;
@@ -68,7 +68,7 @@ void Balau::GeneralException::genTrace() {
         } else {
             demangled = NULL;
         }
-        line.set("%i: %s(%s%c0x%lx) [0x%08lx]", i, info.dli_fname, info.dli_sname ? (demangled ? (status == 0 ? demangled : info.dli_sname) : info.dli_sname) : "??", dist < 0 ? '-' : '+', dist < 0 ? -dist : dist, (uintptr_t) trace[i]);
+        line.set("%i: %s(%s%c0x%lx) [0x%08zx]", i, info.dli_fname, info.dli_sname ? (demangled ? (status == 0 ? demangled : info.dli_sname) : info.dli_sname) : "??", dist < 0 ? '-' : '+', dist < 0 ? -dist : dist, (uintptr_t) trace[i]);
         m_trace.push_back(line);
         if (demangled)
             free(demangled);

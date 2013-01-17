@@ -62,7 +62,7 @@ static inline void * malloc(size_t size) {
     void * r = ::malloc(size);
 
     if (!r && size)
-        ExitHelper("Failed to allocate memory", "%li bytes", size);
+        ExitHelper("Failed to allocate memory", "%zu bytes", size);
 
     return r;
 }
@@ -71,7 +71,7 @@ static inline void * calloc(size_t count, size_t size) {
     void * r = ::calloc(count, size);
 
     if (!r && ((count * size) != 0))
-        ExitHelper("Failed to allocate memory", "%li * %li = %li bytes", count, size, count * size);
+        ExitHelper("Failed to allocate memory", "%zu * %zu = %zu bytes", count, size, count * size);
 
     return r;
 }
@@ -80,7 +80,7 @@ static inline void * realloc(void * previous, size_t size) {
     void * r = ::realloc(previous, size);
 
     if (!r && size)
-        ExitHelper("Failed to re-allocate memory", "%li bytes", size);
+        ExitHelper("Failed to re-allocate memory", "%zu bytes", size);
 
     return r;
 }
