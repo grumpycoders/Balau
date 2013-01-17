@@ -320,6 +320,8 @@ bool Balau::Socket::setLocal(const char * hostname, int port) {
         struct addrinfo hints;
         memset(&hints, 0, sizeof(hints));
         hints.ai_family = AF_INET6;
+        hints.ai_socktype = SOCK_STREAM;
+        hints.ai_protocol = IPPROTO_TCP;
         hints.ai_flags = AI_V4MAPPED;
 
         m_req = resolveName(hostname, NULL, &hints);
@@ -377,6 +379,8 @@ bool Balau::Socket::connect(const char * hostname, int port) {
         struct addrinfo hints;
         memset(&hints, 0, sizeof(hints));
         hints.ai_family = AF_INET6;
+        hints.ai_socktype = SOCK_STREAM;
+        hints.ai_protocol = IPPROTO_TCP;
         hints.ai_flags = AI_V4MAPPED;
 
         m_req = resolveName(hostname, NULL, &hints);
