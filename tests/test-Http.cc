@@ -130,9 +130,7 @@ void MainTask::Do() {
     s->setLocal("localhost");
     s->start();
 
-    Events::Timeout timeout(1);
-    waitFor(&timeout);
-    yield();
+    sleep(1);
 
     Events::TaskEvent stopperEvent;
     Task * stopper = TaskMan::registerTask(new Stopper, &stopperEvent);

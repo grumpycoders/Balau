@@ -170,6 +170,7 @@ class Task {
     }
     virtual void Do() = 0;
     void waitFor(Events::BaseEvent * event);
+    void sleep(double timeout);
     bool setOkayToEAgain(bool enable) {
         if (m_stackless) {
             AAssert(enable, "You can't make a task go not-okay-to-eagain if it's stackless.");

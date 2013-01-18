@@ -39,9 +39,7 @@ class Client : public Task {
   public:
     virtual const char * getName() const { return "Test client"; }
     virtual void Do() {
-        Events::Timeout evt(0.1);
-        waitFor(&evt);
-        yield();
+        sleep(0.1);
 
         char x, y;
         IO<Socket> s(new Socket());

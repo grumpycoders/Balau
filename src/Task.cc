@@ -174,6 +174,13 @@ struct ev_loop * Balau::Task::getLoop() {
     return getTaskMan()->getLoop();
 }
 
+void Balau::Task::sleep(double timeout) {
+    AAssert(!m_stackless && !m_okayToEAgain, "You can only call sleep on simple tasks.");
+    Events::Timeout evt(timeout);
+    waitFor(&evt);
+    yield();
+}
+
 void Balau::Events::BaseEvent::doSignal() {
     Printer::elog(E_TASK, "Event at %p (%s) is signaled with cb %p and task %p", this, ClassName(this).c_str(), m_cb, m_task);
     m_signal = true;
