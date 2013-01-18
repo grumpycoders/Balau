@@ -10,6 +10,7 @@
 #include <Handle.h>
 #include <TaskMan.h>
 #include <Task.h>
+#include <StacklessTask.h>
 #include <Printer.h>
 
 namespace Balau {
@@ -61,7 +62,7 @@ class Socket : public Handle {
     DNSRequest * m_req = NULL;
 };
 
-class ListenerBase : public Task {
+class ListenerBase : public StacklessTask {
   public:
     virtual void Do();
     void stop();

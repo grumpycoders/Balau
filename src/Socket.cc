@@ -201,24 +201,25 @@ namespace {
 class AsyncOpResolv : public Balau::AsyncOperation {
   public:
       AsyncOpResolv(const char * name, const char * service, struct addrinfo * hints, Balau::DNSRequest * request)
-        : m_name(name)
-        , m_service(service)
-        , m_hints(hints)
+        : m_name(name ? ::strdup(name) : NULL)
+        , m_service(service ? ::strdup(service) : NULL)
+        , m_hints(*hints)
         , m_request(request)
         { }
+      virtual ~AsyncOpResolv() { free(m_name); free(m_service); }
     virtual bool needsMainQueue() { return false; }
     virtual bool needsFinishWorker() { return true; }
     virtual void run() {
-        m_request->error = getaddrinfo(m_name, m_service, m_hints, &m_request->res);
+        m_request->error = getaddrinfo(m_name, m_service, &m_hints, &m_request->res);
     }
     virtual void done() {
         m_request->evt.doSignal();
         delete this;
     }
   private:
-    const char * m_name;
-    const char * m_service;
-    struct addrinfo * m_hints;
+    char * m_name;
+    char * m_service;
+    struct addrinfo m_hints;
     Balau::DNSRequest * m_request;
 };
 
@@ -629,25 +630,20 @@ void Balau::ListenerBase::stop() {
 }
 
 void Balau::ListenerBase::Do() {
-    bool r = m_listener->setLocal(m_local.to_charp(), m_port);
-    EAssert(r, "Couldn't set the local IP/port to listen to");
-    r = m_listener->listen();
-    EAssert(r, "Couldn't listen on the given IP/port");
-    setName();
-    setOkayToEAgain(true);
-    waitFor(&m_evt);
+    bool r;
+    IO<Socket> io;
     while (!m_stop) {
-        IO<Socket> io;
-        try {
-            io = m_listener->accept();
-        }
-        catch (EAgain) {
-            Printer::elog(E_SOCKET, "Listener task at %p (%s) got an EAgain - stop = %s", this, m_name.to_charp(), m_stop ? "true" : "false");
-            if (m_stop)
-                return;
-            yield();
-            continue;
-        }
+        StacklessBegin();
+        StacklessOperation(r = m_listener->setLocal(m_local.to_charp(), m_port));
+        EAssert(r, "Couldn't set the local IP/port to listen to");
+        r = m_listener->listen();
+        EAssert(r, "Couldn't listen on the given IP/port");
+        setName();
+        waitFor(&m_evt);
+        StacklessOperationOrCond(io = m_listener->accept(), m_stop);
+        if (m_stop)
+            return;
         factory(io, m_opaque);
+        StacklessEnd();
     }
 }
