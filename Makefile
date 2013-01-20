@@ -155,6 +155,7 @@ iconv.c \
 localcharset.c \
 relocatable.c \
 msvc-regex.c \
+win32-vsscanf.c \
 
 endif
 

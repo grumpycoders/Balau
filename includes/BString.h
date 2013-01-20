@@ -12,6 +12,10 @@
 #include <string>
 #include <vector>
 
+#ifdef _WIN32
+int vsscanf(const char *, const char *, va_list);
+#endif
+
 namespace Balau {
 
 class String : private std::string {
