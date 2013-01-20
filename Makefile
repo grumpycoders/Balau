@@ -26,6 +26,7 @@ endif
 
 INCLUDES = includes libcoro libev LuaJIT/src
 LIBS = z
+DEFINES = _LARGEFILE64_SOURCE
 
 ifeq ($(SYSTEM),Darwin)
     CC = clang
@@ -103,7 +104,7 @@ ifeq ($(SYSTEM),Linux)
 endif
 
 CPPFLAGS_NO_ARCH += $(addprefix -I, $(INCLUDES)) -fexceptions -imacros $(CONFIG_H)
-CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS)
+CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS) $(addprefix -D, $(DEFINES))
 
 CXXFLAGS += -Wno-deprecated -std=gnu++0x
 
