@@ -98,8 +98,10 @@ ifeq ($(SYSTEM),Linux)
     LDFLAGS += -fPIC -rdynamic
     LIBS += pthread dl
     CONFIG_H = linux-config.h
+ifeq ($(WANTS32BITS),true)
     ARCH_FLAGS = -march=i686 -m32
     ASFLAGS = -march=i686 --32
+endif
     STRIP = strip --strip-unneeded
 endif
 
