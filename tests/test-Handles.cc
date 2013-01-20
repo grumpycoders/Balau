@@ -30,7 +30,7 @@ void MainTask::Do() {
     TAssert(failed);
     IO<Handle> i(new Input("tests/rtest.txt"));
     Printer::log(M_STATUS, "Opened file %s:", i->getName());
-    Printer::log(M_STATUS, " - size = %lli", i->getSize());
+    Printer::log(M_STATUS, " - size = %" PRIi64, i->getSize());
 
     char mtimestr[32];
     time_t mtime = i->getMTime();
@@ -50,7 +50,7 @@ void MainTask::Do() {
     i->rseek(0, SEEK_SET);
     char * buf1 = (char *) malloc(i->getSize());
     ssize_t r = i->read(buf1, s + 15);
-    Printer::log(M_STATUS, "Read %zi bytes (instead of %lli)", r, s + 15);
+    Printer::log(M_STATUS, "Read %zi bytes (instead of %" PRIi64 ")", r, s + 15);
     TAssert(i->isEOF())
 
     char * buf2 = (char *) malloc(i->getSize());

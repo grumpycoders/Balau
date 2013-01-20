@@ -1,5 +1,7 @@
 #pragma once
 
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
 #include <stdarg.h>
 #include <string.h>
 #include <stdint.h>
@@ -20,10 +22,10 @@ class String : private std::string {
       String(const char (&str)[L]) : std::string(str, L - 1) { }
       String(const char * str, size_t n) : std::string(str ? str : "", str ? n : 0) { }
       String(char c) { set("%c", c); }
-      String(int32_t i) { set("%i", i); }
-      String(uint32_t i) { set("%u", i); }
-      String(int64_t i) { set("%lli", i); }
-      String(uint64_t i) { set("%llu", i); }
+      String(int32_t i) { set("%" PRIi32, i); }
+      String(uint32_t i) { set("%" PRIu32, i); }
+      String(int64_t i) { set("%" PRIi64, i); }
+      String(uint64_t i) { set("%" PRIu64, i); }
       String(double d) { set("%g", d); }
       String(const String & s) : std::string(s) { }
       String(const std::string & s) : std::string(s) { }

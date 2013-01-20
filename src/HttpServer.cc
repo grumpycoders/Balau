@@ -221,7 +221,7 @@ void Balau::HttpWorker::sendError(int error, const char * msg, const char * deta
 "Content-Type: text/html; charset=UTF-8\r\n"
 "Connection: keep-alive\r\n"
 "Server: %s\r\n"
-"Content-Length: %lli\r\n",
+"Content-Length: %" PRIu64 "\r\n",
             error, errorMsg, m_server->getServerName().to_charp(), length);
         for (String & str : extraHeaders)
             headers += str + "\r\n";
