@@ -106,7 +106,7 @@ endif
 CPPFLAGS_NO_ARCH += $(addprefix -I, $(INCLUDES)) -fexceptions -imacros $(CONFIG_H)
 CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS) $(addprefix -D, $(DEFINES))
 
-CXXFLAGS += -Wno-deprecated -std=gnu++0x
+CXXFLAGS += -Wno-deprecated -std=c++11
 
 LDFLAGS += $(ARCH_FLAGS)
 LDLIBS = $(addprefix -l, $(LIBS))
