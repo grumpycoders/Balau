@@ -53,6 +53,9 @@ Balau::String & Balau::String::do_rtrim() {
     unsigned int i, l = length(), p = l;
     const char * buffer = data();
 
+    if (l == 0)
+        return *this;
+
     for (i = l - 1; i > 0; i--)
         if (isspace(buffer[i]))
             p--;
