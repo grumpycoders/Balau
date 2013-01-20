@@ -5,6 +5,7 @@
 #ifdef _WIN32
 
 #include <windows.h>
+#include <dbghelp.h>
 
 void Balau::GeneralException::genTrace() {
     // taken from http://stackoverflow.com/questions/5693192/win32-backtrace-from-c-code
