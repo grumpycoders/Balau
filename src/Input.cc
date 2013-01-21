@@ -81,9 +81,12 @@ void Balau::Input::open() throw (GeneralException) {
     Printer::elog(E_INPUT, "Opening file %s", m_fname.to_charp());
 
     cbResults_t * cbResults;
+
     if (!m_pendingOp) {
         m_pendingOp = cbResults = new cbResults_t;
         cbResults->type = cbResults_t::NONE;
+    } else {
+        cbResults = (cbResults_t *) m_pendingOp;
     }
 
     try {
@@ -159,10 +162,14 @@ class AsyncOpClose : public Balau::AsyncOperation {
 void Balau::Input::close() throw (GeneralException) {
     if ((m_fd < 0) && !m_pendingOp)
         return;
+
     cbResults_t * cbResults;
+
     if (!m_pendingOp) {
         m_pendingOp = cbResults = new cbResults_t;
         cbResults->type = cbResults_t::NONE;
+    } else {
+        cbResults = (cbResults_t *) m_pendingOp;
     }
 
     try {
@@ -226,9 +233,12 @@ ssize_t Balau::Input::read(void * buf, size_t count) throw (GeneralException) {
     ssize_t result;
 
     cbResults_t * cbResults;
+
     if (!m_pendingOp) {
         m_pendingOp = cbResults = new cbResults_t;
         cbResults->type = cbResults_t::NONE;
+    } else {
+        cbResults = (cbResults_t *) m_pendingOp;
     }
 
     try {
