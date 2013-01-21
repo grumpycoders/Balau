@@ -2,6 +2,7 @@
 
 #include <zlib.h>
 #include <Handle.h>
+#include <Async.h>
 
 namespace Balau {
 
@@ -24,13 +25,28 @@ class ZStream : public Handle {
     void detach() { m_detached = true; }
     void flush() { doFlush(false); }
     void setUseAsyncOp(bool useAsyncOp) { m_useAsyncOp = useAsyncOp; }
-  private:
+    virtual bool isPendingComplete();
     void finish() { doFlush(true); }
     void doFlush(bool finish);
+  private:
     IO<Handle> m_h;
     z_stream m_zin, m_zout;
     String m_name;
-    uint8_t * m_in = NULL;
+    uint8_t * m_buf = NULL;
+    uint8_t * m_wptr;
+    enum {
+        IDLE,
+        READING,
+        WRITING,
+        COMPRESSING,
+        COMPRESSING_IDLE,
+        DECOMPRESSING,
+        DECOMPRESSING_IDLE,
+        CLOSING,
+    } m_phase = IDLE;
+    size_t m_total, m_count, m_compressed;
+    AsyncOperation * m_op = NULL;
+    ssize_t m_status;
     bool m_detached = false, m_closed = false, m_eof = false, m_useAsyncOp = true;
 };
 

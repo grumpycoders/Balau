@@ -15,7 +15,7 @@ class Input : public SeekableHandle {
     virtual const char * getName();
     virtual off_t getSize();
     virtual time_t getMTime();
-    bool isPendingComplete();
+    virtual bool isPendingComplete();
     const char * getFName() { return m_fname.to_charp(); }
   private:
     int m_fd = -1;

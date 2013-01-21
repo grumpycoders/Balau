@@ -52,6 +52,7 @@ class Handle {
     virtual off_t wtell() throw (GeneralException);
     virtual off_t getSize();
     virtual time_t getMTime();
+    virtual bool isPendingComplete() { return true; }
     ssize_t forceRead(void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException);
     ssize_t forceWrite(const void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException);
     ssize_t write(const String & str) { return write(str.to_charp(), str.strlen()); }
