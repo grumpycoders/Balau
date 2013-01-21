@@ -15,6 +15,7 @@ class Input : public SeekableHandle {
     virtual const char * getName();
     virtual off_t getSize();
     virtual time_t getMTime();
+    bool isPendingComplete();
     const char * getFName() { return m_fname.to_charp(); }
   private:
     int m_fd = -1;
@@ -22,6 +23,7 @@ class Input : public SeekableHandle {
     String m_fname;
     off_t m_size = -1;
     time_t m_mtime = -1;
+    void * m_pendingOp = NULL;
 };
 
 };
