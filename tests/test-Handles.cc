@@ -22,13 +22,15 @@ void MainTask::Do() {
 
     bool failed = false;
     try {
-        IO<Handle> i(new Input("SomeInexistantFile.txt"));
+        IO<Input> i(new Input("SomeInexistantFile.txt"));
+        i->open();
     }
     catch (ENoEnt e) {
         failed = true;
     }
     TAssert(failed);
-    IO<Handle> i(new Input("tests/rtest.txt"));
+    IO<Input> i(new Input("tests/rtest.txt"));
+    i->open();
     Printer::log(M_STATUS, "Opened file %s:", i->getName());
     Printer::log(M_STATUS, " - size = %" PRIi64, i->getSize());
 
@@ -64,7 +66,8 @@ void MainTask::Do() {
     TAssert(r == (s - 5));
     TAssert(memcmp(buf1, buf2, s) == 0);
 
-    IO<Handle> o(new Output("tests/out.txt"));
+    IO<Output> o(new Output("tests/out.txt"));
+    o->open();
     s = o->wtell();
     TAssert(s == 0);
     s = o->getSize();
@@ -106,6 +109,7 @@ void MainTask::Do() {
 
     {
         IO<Output> o(new Output("tests/out.z"));
+        o->open();
         IO<ZStream> z(new ZStream(o));
         z->detach();
         z->writeString("foobar\n");
@@ -113,6 +117,7 @@ void MainTask::Do() {
 
     {
         IO<Output> o(new Output("tests/out.gz"));
+        o->open();
         IO<ZStream> z(new ZStream(o, Z_BEST_COMPRESSION, ZStream::GZIP));
         z->detach();
         z->writeString("foobar\n");
@@ -120,6 +125,7 @@ void MainTask::Do() {
 
     {
         IO<Output> o(new Output("tests/out.raw"));
+        o->open();
         IO<ZStream> z(new ZStream(o, Z_BEST_COMPRESSION, ZStream::RAW));
         z->detach();
         z->writeString("foobar\n");
@@ -127,6 +133,7 @@ void MainTask::Do() {
 
     {
         IO<Input> i(new Input("tests/out.z"));
+        i->open();
         IO<ZStream> z(new ZStream(i));
         IO<BStream> s(new BStream(z));
         z->detach();
@@ -137,6 +144,7 @@ void MainTask::Do() {
 
     {
         IO<Input> i(new Input("tests/out.gz"));
+        i->open();
         IO<ZStream> z(new ZStream(i, Z_BEST_COMPRESSION, ZStream::GZIP));
         IO<BStream> s(new BStream(z));
         z->detach();
@@ -147,6 +155,7 @@ void MainTask::Do() {
 
     {
         IO<Input> i(new Input("tests/out.raw"));
+        i->open();
         IO<ZStream> z(new ZStream(i, Z_BEST_COMPRESSION, ZStream::RAW));
         IO<BStream> s(new BStream(z));
         z->detach();

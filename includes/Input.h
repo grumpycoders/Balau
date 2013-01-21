@@ -6,7 +6,8 @@ namespace Balau {
 
 class Input : public SeekableHandle {
   public:
-      Input(const char * fname) throw (GeneralException);
+      Input(const char * fname);
+    void open() throw (GeneralException);
     virtual void close() throw (GeneralException);
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException);
     virtual bool isClosed();

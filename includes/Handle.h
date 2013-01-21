@@ -15,6 +15,7 @@ class FileSystem {
 class ENoEnt : public GeneralException {
   public:
       ENoEnt(const char * name) : GeneralException(String("No such file or directory: `") + name + "'") { }
+      ENoEnt(const String & name) : ENoEnt(name.to_charp()) { }
 };
 
 class IOBase;

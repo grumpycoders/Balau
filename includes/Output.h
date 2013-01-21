@@ -6,7 +6,8 @@ namespace Balau {
 
 class Output : public SeekableHandle {
   public:
-      Output(const char * fname, bool truncate = true) throw (GeneralException);
+      Output(const char * fname);
+    void open(bool truncate = true) throw (GeneralException);
     virtual void close() throw (GeneralException);
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException);
     virtual bool isClosed();

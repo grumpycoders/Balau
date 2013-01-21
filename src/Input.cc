@@ -68,18 +68,20 @@ class AsyncOpStat : public Balau::AsyncOperation {
 
 };
 
-Balau::Input::Input(const char * fname) throw (GeneralException) {
+Balau::Input::Input(const char * fname) {
     m_name.set("Input(%s)", fname);
     m_fname = fname;
+}
 
-    Printer::elog(E_INPUT, "Opening file %s", fname);
+void Balau::Input::open() throw (GeneralException) {
+    Printer::elog(E_INPUT, "Opening file %s", m_fname.to_charp());
 
     cbResults_t cbResults;
-    createAsyncOp(new AsyncOpOpen(fname, &cbResults));
+    createAsyncOp(new AsyncOpOpen(m_fname.to_charp(), &cbResults));
     Task::operationYield(&cbResults.evt);
     if (cbResults.result < 0) {
         if (cbResults.errorno == ENOENT) {
-            throw ENoEnt(fname);
+            throw ENoEnt(m_fname);
         } else {
             char str[4096];
             throw GeneralException(String("Unable to open file ") + m_name + " for reading: " + strerror_r(cbResults.errorno, str, sizeof(str)) + " (err#" + cbResults.errorno + ")");
