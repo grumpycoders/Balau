@@ -258,7 +258,6 @@ ssize_t Balau::Input::read(void * buf, size_t count) throw (GeneralException) {
             delete cbResults;
             m_pendingOp = NULL;
             return result;
-            break;
         default:
             AAssert(false, "Don't switch operations while one is still not complete.");
         }
@@ -274,6 +273,8 @@ ssize_t Balau::Input::read(void * buf, size_t count) throw (GeneralException) {
         m_pendingOp = NULL;
         throw;
     }
+
+    IAssert(false, "Shouldn't end up there.");
 }
 
 bool Balau::Input::isClosed() {
