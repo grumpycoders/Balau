@@ -45,6 +45,7 @@ class TestStackless : public StacklessTask {
     virtual const char * getName() const { return "TestStackless"; }
   private:
     virtual void Do() {
+        ssize_t r;
         StacklessBegin();
         m_operation = new TestOperation();
         StacklessOperation(m_operation->Do());
@@ -52,13 +53,14 @@ class TestStackless : public StacklessTask {
         delete m_operation;
         m_handle = new Input("tests/rtest.txt");
         StacklessOperation(m_handle->open());
-        StacklessOperation(m_handle->read(buf, 10));
+        StacklessOperation(r = m_handle->read(buf, 25));
+        TAssert(r == 10);
         StacklessOperation(m_handle->close());
         StacklessEnd();
     }
     TestOperation * m_operation;
     IO<Input> m_handle;
-    char buf[10];
+    char buf[25];
 };
 
 static void yieldingFunction() {
