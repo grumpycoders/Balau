@@ -110,8 +110,10 @@ class IO : public IOBase {
       IO(const IO<T> & io) { if (io.m_h) setHandle(io.m_h); }
       template<class U>
       IO(const IO<U> & io) { if (io.m_h) setHandle(io.m_h); }
-      template<class U>
-      bool isA() { return !!dynamic_cast<U *>(m_h); }
+    template<class U>
+    bool isA() { return !!dynamic_cast<U *>(m_h); }
+    template<class U>
+    IO<U> asA() { IO<U> h(dynamic_cast<U *>(m_h)); return h; }
     IO<T> & operator=(const IO<T> & io) { if (m_h) m_h->delRef(); setHandle(io.m_h); return *this; }
     T * operator->() {
         AAssert(m_h, "Can't use %s->() with a null Handle", ClassName(this).c_str());
