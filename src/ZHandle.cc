@@ -103,9 +103,12 @@ bool Balau::ZStream::isPendingComplete() {
     switch (m_phase) {
     case READING:
     case WRITING:
+    case WRITING_FINISH:
         return m_h->isPendingComplete();
     case COMPRESSING:
     case DECOMPRESSING:
+    case COMPRESSING_FINISH:
+    case DECOMPRESSING_FINISH:
         IAssert(async, "Shouldn't not have a cbResults here...");
         return async->gotSignal();
     default:
