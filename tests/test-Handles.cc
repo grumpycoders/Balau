@@ -267,16 +267,26 @@ class StacklessTaskTest : public StacklessTask {
 
 void StacklessTaskTest::Do() {
     StacklessBegin();
+
     h = new Output("tests/data.raw");
     StacklessOperation(h.asA<Output>()->open());
-    StacklessOperation(h->write(dg.getData(), dg.size));
+    StacklessOperation(r = h->write(dg.getData(), dg.size));
+    TAssert(r == dg.size);
     StacklessOperation(h->close());
+
+    h = new Input("tests/data.raw");
+    StacklessOperation(h.asA<Input>()->open());
+    StacklessOperation(r = h->read(data, dg.size));
+    TAssert(r == dg.size);
+    StacklessOperation(h->close());
+
     h = new Output("tests/data.gz");
     StacklessOperation(h.asA<Output>()->open());
     z = new ZStream(h, Z_BEST_COMPRESSION, ZStream::GZIP);
     StacklessOperation(r = z->write(dg.getData(), dg.size));
     TAssert(r == dg.size);
     StacklessOperation(z->close());
+
     h = new Input("tests/data.gz");
     StacklessOperation(h.asA<Input>()->open());
     z = new ZStream(h, Z_BEST_COMPRESSION, ZStream::GZIP);
@@ -284,6 +294,7 @@ void StacklessTaskTest::Do() {
     TAssert(r == dg.size);
     TAssert(memcmp(dg.getData(), data, dg.size) == 0);
     StacklessOperation(z->close());
+
     StacklessEnd();
 }
 
