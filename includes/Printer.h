@@ -77,6 +77,9 @@ class Printer {
   private:
     uint32_t m_verbosity = M_STATUS | M_WARNING | M_ERROR | M_ENGINE_DEBUG;
     bool m_detailledLogs = false;
+
+      Printer(const Printer &) = delete;
+    Printer & operator=(const Printer &) = delete;
 };
 
 };

@@ -43,6 +43,9 @@ class Main {
   private:
     Status m_status;
     static Main * s_application;
+
+      Main(const Main &) = delete;
+    Main & operator=(const Main &) = delete;
 };
 
 };

@@ -7,7 +7,7 @@ namespace Balau {
 class Buffer : public SeekableHandle {
   public:
       Buffer(const uint8_t * buffer, size_t s) : m_buffer(const_cast<uint8_t *>(buffer)), m_bufSize(s), m_fromConst(true) { }
-      Buffer() throw (GeneralException) : m_buffer(NULL), m_fromConst(false), m_bufSize(0), m_numBlocks(0) { }
+      Buffer() throw (GeneralException) { }
       virtual ~Buffer();
     virtual void close() throw (GeneralException);
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException);
@@ -22,9 +22,9 @@ class Buffer : public SeekableHandle {
     void reset();
     void rewind() { rseek(0); wseek(0); }
   private:
-    uint8_t * m_buffer;
-    bool m_fromConst;
-    off_t m_bufSize, m_numBlocks;
+    uint8_t * m_buffer = NULL;
+    bool m_fromConst = false;
+    off_t m_bufSize = 0, m_numBlocks = 0;
 };
 
 };

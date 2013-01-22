@@ -34,13 +34,13 @@ class GeneralException {
     const std::vector<String> getTrace() const { return m_trace; }
 
   protected:
-      GeneralException() : m_msg(NULL), m_details(NULL) { }
+      GeneralException() { }
     void setMsg(char * msg) { if (m_msg) free(m_msg); m_msg = msg; }
     void genTrace();
 
   private:
-    mutable char * m_msg;
-    char * m_details;
+    mutable char * m_msg = NULL;
+    char * m_details = NULL;
     std::vector<String> m_trace;
 
     void setDetails(const char * details) {

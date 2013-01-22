@@ -192,21 +192,23 @@ class Task {
     void switchTo();
     static void CALLBACK coroutineTrampoline(void *);
     void coroutine();
-    void * m_stack;
+    void * m_stack = NULL;
 #ifndef _WIN32
     coro_context m_ctx;
 #else
-    void * m_fiber;
+    void * m_fiber = NULL;
 #endif
-    TaskMan * m_taskMan;
-    Status m_status;
-    void * m_tls;
+    TaskMan * m_taskMan = NULL;
+    Status m_status = STARTING;
+    void * m_tls = NULL;
     friend class TaskMan;
     friend class Events::TaskEvent;
     Lock m_eventLock;
     typedef std::list<Events::TaskEvent *> waitedByList_t;
     waitedByList_t m_waitedBy;
-    bool m_okayToEAgain, m_stackless;
+    bool m_okayToEAgain = false, m_stackless = false;
+      Task(const Task &) = delete;
+    Task & operator=(const Task &) = delete;
 };
 
 class QueueBase {

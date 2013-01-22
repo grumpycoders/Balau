@@ -275,6 +275,8 @@ ssize_t Balau::Output::write(const void * buf, size_t count) throw (GeneralExcep
     }
 
     IAssert(false, "Shouldn't end up there.");
+
+    return -1;
 }
 
 bool Balau::Output::isClosed() {

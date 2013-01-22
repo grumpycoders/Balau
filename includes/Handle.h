@@ -59,7 +59,7 @@ class Handle {
     ssize_t forceWrite(const String & str) { return forceWrite(str.to_charp(), str.strlen()); }
     uint8_t readU8() { uint8_t r; read(&r, 1); return r; }
   protected:
-      Handle() : m_refCount(0) { }
+      Handle() { }
   private:
     void addRef() { Atomic::Increment(&m_refCount); }
     void delRef() {
@@ -73,7 +73,7 @@ class Handle {
     template<class T>
     friend class IO;
 
-    volatile int m_refCount;
+    volatile int m_refCount = 0;
 
       Handle(const Handle &) = delete;
     Handle & operator=(const Handle &) = delete;
@@ -87,17 +87,17 @@ class HPrinter : public Handle {
     virtual bool canWrite() { return true; }
     virtual const char * getName() { return "HPrinter"; }
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) {
-        Printer::print("%s", (const char *) buf);
+        Printer::print("%*s", (int) count, (const char *) buf);
         return count;
     }
 };
 
 class IOBase {
-  protected:
-      IOBase() : m_h(NULL) { }
+  private:
+      IOBase() { }
       ~IOBase() { if (m_h) m_h->delRef(); }
     void setHandle(Handle * h) { m_h = h; if (m_h) m_h->addRef(); }
-    Handle * m_h;
+    Handle * m_h = NULL;
     template<class T>
     friend class IO;
 };
@@ -108,8 +108,11 @@ class IO : public IOBase {
       IO() { }
       IO(T * h) { setHandle(h); }
       IO(const IO<T> & io) { if (io.m_h) setHandle(io.m_h); }
+      IO(IO<T> && io) { m_h = io.m_h; io.m_h = NULL; }
       template<class U>
       IO(const IO<U> & io) { if (io.m_h) setHandle(io.m_h); }
+      template<class U>
+      IO(IO<U> && io) { m_h = io.m_h; io.m_h = NULL; }
     template<class U>
     bool isA() { return !!dynamic_cast<U *>(m_h); }
     template<class U>

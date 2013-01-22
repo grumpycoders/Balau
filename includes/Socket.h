@@ -19,7 +19,6 @@ struct DNSRequest;
 
 class Socket : public Handle {
   public:
-
       Socket() throw (GeneralException);
     virtual void close() throw (GeneralException);
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException);
@@ -49,7 +48,7 @@ class Socket : public Handle {
         virtual void gotOwner(Task * task);
 
         ev::io m_evt;
-        Task * m_task;
+        Task * m_task = NULL;
     };
 
     int m_fd;
@@ -77,8 +76,8 @@ class ListenerBase : public StacklessTask {
     Events::Async m_evt;
     volatile bool m_stop;
     String m_local;
-    int m_port;
-    void * m_opaque;
+    int m_port = 0;
+    void * m_opaque = NULL;
 };
 
 template<class Worker>

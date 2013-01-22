@@ -17,7 +17,7 @@ class SimpleMustache {
             Context & operator[](const char * str);
           private:
               Proxy(Context * parent, ssize_t idx) : m_parent(parent), m_idx(idx) { }
-            Context * m_parent;
+            Context * m_parent = NULL;
             ssize_t m_idx;
             friend class Context;
         };
@@ -71,6 +71,9 @@ class SimpleMustache {
 
         friend class Proxy;
         friend class SimpleMustache;
+
+          Context(const Context &) = delete;
+        Context & operator=(const Context &) = delete;
     };
 
     void setTemplate(IO<Handle> h);
@@ -87,6 +90,7 @@ class SimpleMustache {
     void render(IO<Handle> h, Context * ctx) const { AAssert(ctx, "Please pass on a context to render"); render_r(h, ctx, "", m_fragments.begin(), false, -1); }
     void empty() { while (!m_fragments.empty()) { delete m_fragments.front(); m_fragments.pop_front(); } }
     void checkTemplate() { Fragments::const_iterator end = checkTemplate_r(m_fragments.begin()); AAssert(end == m_fragments.end(), "The template wasn't fully checked; possibly mismatched sections"); }
+      SimpleMustache() { }
       ~SimpleMustache() { empty(); }
   private:
     struct Fragment {
@@ -108,6 +112,9 @@ class SimpleMustache {
     static String escape(const String & s);
 
     Fragments::const_iterator checkTemplate_r(Fragments::const_iterator begin, const String & endSection = "") const;
+
+      SimpleMustache(const SimpleMustache &) = delete;
+    SimpleMustache & operator=(const SimpleMustache &) = delete;
 };
 
 };

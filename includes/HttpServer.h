@@ -39,6 +39,9 @@ class HttpServer {
         String m_type;
         std::list<String> m_extraHeaders;
         bool m_flushed;
+
+          Response(const Response &) = delete;
+        Response & operator=(const Response &) = delete;
     };
 
     class Action {
@@ -56,6 +59,8 @@ class HttpServer {
       private:
         const Regex m_regex, m_host;
         volatile int m_refCount;
+          Action(const Action &) = delete;
+        Action & operator=(const Action &) = delete;
     };
 
       HttpServer() : m_started(false), m_listenerPtr(NULL), m_port(80) { }
@@ -82,6 +87,9 @@ class HttpServer {
     RWLock m_actionsLock;
 
     friend class HttpWorker;
+
+      HttpServer(const HttpServer &) = delete;
+    HttpServer & operator=(const HttpServer &) = delete;
 };
 
 };

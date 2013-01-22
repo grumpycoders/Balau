@@ -6,8 +6,12 @@ namespace Balau {
 
 class TLSManager {
   public:
+      TLSManager() { }
     virtual void * getTLS();
     virtual void * setTLS(void * val);
+  private:
+      TLSManager(const TLSManager &) = delete;
+    TLSManager & operator=(const TLSManager &) = delete;
 };
 
 class PThreadsTLSManager : public TLSManager {

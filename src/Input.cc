@@ -275,6 +275,8 @@ ssize_t Balau::Input::read(void * buf, size_t count) throw (GeneralException) {
     }
 
     IAssert(false, "Shouldn't end up there.");
+
+    return -1;
 }
 
 bool Balau::Input::isClosed() {

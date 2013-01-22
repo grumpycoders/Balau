@@ -35,10 +35,9 @@ Balau::String Balau::Regex::getError(int err) const {
     char * t;
 
     s = regerror(err, &m_regex, NULL, 0);
-    t = (char *) malloc(s);
+    t = (char *) alloca(s);
     regerror(err, &m_regex, t, s);
     String r(t, s - 1);
-    free(t);
 
     return r;
 }

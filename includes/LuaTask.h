@@ -24,6 +24,9 @@ class LuaExecCell {
     bool m_detached = false;
     bool m_gotError = false;
     friend class LuaTask;
+
+      LuaExecCell(const LuaExecCell &) = delete;
+    LuaExecCell & operator=(const LuaExecCell &) = delete;
 };
 
 class LuaExecString : public LuaExecCell {
