@@ -85,6 +85,9 @@ int Balau::BStream::peekNextByte() {
 }
 
 Balau::String Balau::BStream::readString(bool putNL) {
+    if (m_h.isA<BStream>())
+        return m_h.asA<BStream>()->readString(putNL);
+
     peekNextByte();
     uint8_t * cr, * lf, * nl;
     String ret;
