@@ -261,6 +261,7 @@ class StacklessTaskTest : public StacklessTask {
     const char * getName() const { return "StacklessTaskTest"; }
     IO<Handle> h;
     IO<ZStream> z;
+    uint8_t data[dg.size];
 };
 
 void StacklessTaskTest::Do() {
@@ -273,6 +274,12 @@ void StacklessTaskTest::Do() {
     StacklessOperation(h.asA<Output>()->open());
     z = new ZStream(h, Z_BEST_COMPRESSION, ZStream::GZIP);
     StacklessOperation(z->write(dg.getData(), dg.size));
+    StacklessOperation(z->close());
+    h = new Input("tests/data.gz");
+    StacklessOperation(h.asA<Input>()->open());
+    z = new ZStream(h, Z_BEST_COMPRESSION, ZStream::GZIP);
+    StacklessOperation(z->read(data, dg.size));
+    TAssert(memcmp(dg.getData(), data, dg.size) == 0);
     StacklessOperation(z->close());
     StacklessEnd();
 }
