@@ -1,6 +1,6 @@
 #include "BRegex.h"
 
-Balau::Regex::Regex(const char * regex, bool icase) throw (GeneralException) {
+Balau::Regex::Regex(const char * regex, bool icase) throw (GeneralException) : m_regexStr(regex), m_icase(icase) {
     int r = regcomp(&m_regex, regex, REG_EXTENDED | (icase ? REG_ICASE : 0));
     if (r)
         throw GeneralException(getError(r));
@@ -28,10 +28,6 @@ Balau::Regex::Captures Balau::Regex::match(const char * str) const throw (Genera
     }
 
     return ret;
-}
-
-Balau::Regex::~Regex() {
-    regfree(&m_regex);
 }
 
 Balau::String Balau::Regex::getError(int err) const {

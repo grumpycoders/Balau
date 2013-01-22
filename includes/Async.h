@@ -14,6 +14,7 @@ typedef void (*IdleReadyCallback_t)(void *);
 
 class AsyncOperation {
   protected:
+      AsyncOperation() { }
     virtual void run() { }
     virtual void finish() { }
     virtual void done() { }
@@ -27,6 +28,8 @@ class AsyncOperation {
     IdleReadyCallback_t m_idleReadyCallback = NULL;
     void * m_idleReadyParam = NULL;
     void finalize();
+      AsyncOperation(const AsyncOperation &) = delete;
+    AsyncOperation & operator=(const AsyncOperation &) = delete;
 
     friend class AsyncManager;
     friend class AsyncFinishWorker;
@@ -35,6 +38,10 @@ class AsyncOperation {
 class AsyncFinishWorker : public Thread {
   public:
       AsyncFinishWorker(AsyncManager * async, Queue<AsyncOperation> * queue) : m_async(async), m_queue(queue) { }
+    bool stopped() { return m_stopped; }
+  private:
+      AsyncFinishWorker(const AsyncFinishWorker &) = delete;
+    AsyncOperation & operator=(const AsyncFinishWorker &) = delete;
     virtual void * proc();
     AsyncManager * m_async;
     Queue<AsyncOperation> * m_queue;
@@ -44,6 +51,7 @@ class AsyncFinishWorker : public Thread {
 
 class AsyncManager : public Thread {
   public:
+      AsyncManager() { }
     void setFinishers(int minIdle, int maxIdle) {
         AAssert(minIdle < maxIdle, "Minimum number of threads needs to be less than maximum number of threads.");
         m_minIdle = minIdle;
@@ -58,6 +66,8 @@ class AsyncManager : public Thread {
     virtual void threadExit();
 
   private:
+      AsyncManager(const AsyncManager &) = delete;
+      AsyncManager & operator=(const AsyncManager &) = delete;
     void checkIdle();
     void killOneFinisher();
     void startOneFinisher();

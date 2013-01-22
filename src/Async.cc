@@ -67,7 +67,7 @@ void Balau::AsyncManager::startOneFinisher() {
 void Balau::AsyncManager::joinStoppedFinishers() {
     for (auto i = m_workers.begin(); i != m_workers.end(); i++) {
         AsyncFinishWorker * worker = *i;
-        if (!worker->m_stopped)
+        if (!worker->stopped())
             continue;
         Printer::elog(E_ASYNC, "Joining stopped worker at %p", worker);
         m_numFinishers--;
