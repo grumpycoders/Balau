@@ -49,7 +49,7 @@ class ZStream : public Handle {
     } m_phase = IDLE;
     size_t m_total, m_count, m_compressed;
     AsyncOperation * m_op = NULL;
-    ssize_t m_status;
+    ssize_t m_status = IDLE;
     bool m_detached = false, m_closed = false, m_eof = false, m_useAsyncOp = true;
 };
 

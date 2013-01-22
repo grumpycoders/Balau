@@ -32,7 +32,7 @@ class TaskMan {
         virtual void * proc();
         void stopMe(int code = 0) { m_taskMan->stopMe(code); }
       private:
-        TaskMan * m_taskMan;
+        TaskMan * m_taskMan = NULL;
     };
 
       TaskMan();
@@ -92,6 +92,9 @@ class TaskMan {
     int m_stopCode = 0;
     bool m_stopped = false;
     bool m_allowedToSignal = false;
+
+      TaskMan(const TaskMan &) = delete;
+    TaskMan & operator=(const TaskMan &) = delete;
 };
 
 template<class T>

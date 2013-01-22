@@ -37,6 +37,8 @@ class Callback {
   protected:
     virtual void gotEvent(BaseEvent *) = 0;
     friend class BaseEvent;
+      Callback(const Callback &) = delete;
+    Callback & operator=(const Callback &) = delete;
 };
 
 class BaseEvent {
@@ -62,9 +64,11 @@ class BaseEvent {
   protected:
     virtual void gotOwner(Task * task) { }
   private:
-    Callback * m_cb;
-    bool m_signal;
-    Task * m_task;
+    Callback * m_cb = NULL;
+    bool m_signal = false;
+    Task * m_task = NULL;
+      BaseEvent(const BaseEvent &) = delete;
+    BaseEvent & operator=(const BaseEvent &) = delete;
 };
 
 class Timeout : public BaseEvent {
