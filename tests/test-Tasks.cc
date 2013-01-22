@@ -2,7 +2,6 @@
 #include <Task.h>
 #include <TaskMan.h>
 #include <StacklessTask.h>
-#include <Input.h>
 
 using namespace Balau;
 
@@ -51,16 +50,9 @@ class TestStackless : public StacklessTask {
         StacklessOperation(m_operation->Do());
         TAssert(m_operation->completed());
         delete m_operation;
-        m_handle = new Input("tests/rtest.txt");
-        StacklessOperation(m_handle->open());
-        StacklessOperation(r = m_handle->read(buf, 25));
-        TAssert(r == 10);
-        StacklessOperation(m_handle->close());
         StacklessEnd();
     }
     TestOperation * m_operation;
-    IO<Input> m_handle;
-    char buf[25];
 };
 
 static void yieldingFunction() {

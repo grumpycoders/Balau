@@ -4,6 +4,8 @@
 #include <Buffer.h>
 #include <BStream.h>
 #include <ZHandle.h>
+#include <TaskMan.h>
+#include <StacklessTask.h>
 
 #ifdef _WIN32
 void ctime_r(const time_t * t, char * str) {
@@ -74,11 +76,41 @@ class DiscreteCos {
 
 DiscreteCos dc;
 
+class DataGenerator {
+  public:
+      DataGenerator() { generate(); }
+    static const size_t size = 128 * 1024;
+    const uint8_t * getData() { return (uint8_t *) m_data; }
+
+  private:
+    static const int nEntries = size / 4;
+    void generate() {
+        for (int i = 0; i < nEntries; i++) {
+            int64_t c = dc.cos(i);
+            // This version is actually too hardcore, and generates
+            // uncompressible data. Fun!
+//          c *= ((int64_t(i) * 100) << 24) / nEntries;
+            // this one is technically wrong, but at least it produces
+            // compressible data, so who cares about maths.
+            c *= i % (10 * 1024);
+            c >>= 24;
+            m_data[i] = c;
+        }
+    }
+
+    int32_t m_data[nEntries];
+};
+
+DataGenerator dg;
+
 using namespace Balau;
 
-void MainTask::Do() {
-    Printer::log(M_STATUS, "Test::Handles running.");
+class SimpleTaskTest : public Task {
+    virtual void Do();
+    const char * getName() const { return "SimpleTaskTest"; }
+};
 
+void SimpleTaskTest::Do() {
     bool failed = false;
     try {
         IO<Input> i(new Input("SomeInexistantFile.txt"));
@@ -109,12 +141,12 @@ void MainTask::Do() {
     TAssert(s == i->getSize());
 
     i->rseek(0, SEEK_SET);
-    char * buf1 = (char *) malloc(i->getSize());
+    char * buf1 = (char *) Balau::malloc(i->getSize());
     ssize_t r = i->read(buf1, s + 15);
     Printer::log(M_STATUS, "Read %zi bytes (instead of %" PRIi64 ")", r, s + 15);
     TAssert(i->isEOF())
 
-    char * buf2 = (char *) malloc(i->getSize());
+    char * buf2 = (char *) Balau::malloc(i->getSize());
     i->rseek(0, SEEK_SET);
     TAssert(!i->isEOF());
     TAssert(i->rtell() == 0);
@@ -222,6 +254,47 @@ void MainTask::Do() {
         String f = s->readString();
         TAssert(f == "foobar");
     }
+}
+
+class StacklessTaskTest : public StacklessTask {
+    virtual void Do();
+    const char * getName() const { return "StacklessTaskTest"; }
+    IO<Handle> h;
+    IO<ZStream> z;
+};
+
+void StacklessTaskTest::Do() {
+    StacklessBegin();
+    h = new Output("tests/data.raw");
+    StacklessOperation(h.asA<Output>()->open());
+    StacklessOperation(h->write(dg.getData(), dg.size));
+    StacklessOperation(h->close());
+    h = new Output("tests/data.gz");
+    StacklessOperation(h.asA<Output>()->open());
+    z = new ZStream(h, Z_BEST_COMPRESSION, ZStream::GZIP);
+    StacklessOperation(z->write(dg.getData(), dg.size));
+    StacklessOperation(z->close());
+    StacklessEnd();
+}
+
+void MainTask::Do() {
+    Printer::log(M_STATUS, "Test::Handles running.");
+
+    Events::TaskEvent taskEvt;
+
+    TaskMan::registerTask(new SimpleTaskTest(), &taskEvt);
+    waitFor(&taskEvt);
+    TAssert(!taskEvt.gotSignal());
+    yield();
+    TAssert(taskEvt.gotSignal());
+    taskEvt.ack();
+
+    TaskMan::registerTask(new StacklessTaskTest(), &taskEvt);
+    waitFor(&taskEvt);
+    TAssert(!taskEvt.gotSignal());
+    yield();
+    TAssert(taskEvt.gotSignal());
+    taskEvt.ack();
 
     Printer::log(M_STATUS, "Test::Handles passed.");
 }
