@@ -259,8 +259,7 @@ void SimpleTaskTest::Do() {
 class StacklessTaskTest : public StacklessTask {
     virtual void Do();
     const char * getName() const { return "StacklessTaskTest"; }
-    IO<Handle> h;
-    IO<ZStream> z;
+    IO<Handle> h, s;
     uint8_t data[dg.size];
     ssize_t r;
 };
@@ -282,18 +281,18 @@ void StacklessTaskTest::Do() {
 
     h = new Output("tests/data.gz");
     StacklessOperation(h.asA<Output>()->open());
-    z = new ZStream(h, Z_BEST_COMPRESSION, ZStream::GZIP);
-    StacklessOperation(r = z->write(dg.getData(), dg.size));
+    s = new ZStream(h, Z_BEST_COMPRESSION, ZStream::GZIP);
+    StacklessOperation(r = s->write(dg.getData(), dg.size));
     TAssert(r == dg.size);
-    StacklessOperation(z->close());
+    StacklessOperation(s->close());
 
     h = new Input("tests/data.gz");
     StacklessOperation(h.asA<Input>()->open());
-    z = new ZStream(h, Z_BEST_COMPRESSION, ZStream::GZIP);
-    StacklessOperation(r = z->read(data, dg.size));
+    s = new ZStream(h, Z_BEST_COMPRESSION, ZStream::GZIP);
+    StacklessOperation(r = s->read(data, dg.size));
     TAssert(r == dg.size);
     TAssert(memcmp(dg.getData(), data, dg.size) == 0);
-    StacklessOperation(z->close());
+    StacklessOperation(s->close());
 
     StacklessEnd();
 }
