@@ -15,6 +15,65 @@ void ctime_r(const time_t * t, char * str) {
 }
 #endif
 
+// this may look weird for a dumb test, but I always
+// struggle to remember this formula, so I'm going
+// to put it here as a "data generator" and then
+// I'll know where to find it if I ever need it.
+
+class DiscreteCos {
+  public:
+      DiscreteCos() { generate(); }
+    static const unsigned int DC_2PI = 2048;
+    static const unsigned int DC_PI  = 1024;
+    static const unsigned int DC_PI2 = 512;
+
+    int32_t cos(unsigned int t) {
+        t %= DC_2PI;
+        int32_t r;
+
+        if (t < DC_PI2) {
+            r = m_cosTable[t];
+        } else if (t < DC_PI) {
+            r = -m_cosTable[DC_PI - 1 - t];
+        } else if (t < (DC_PI + DC_PI2)) {
+            r = -m_cosTable[t - DC_PI];
+        } else {
+            r = m_cosTable[DC_2PI - 1 - t];
+        }
+
+        return r;
+    }
+
+    // sin(x) = cos(x - pi / 2)
+    int32_t sin(unsigned int t) {
+        t %= DC_2PI;
+
+        if (t < DC_PI2)
+            return cos(t + DC_2PI - DC_PI2);
+
+        return cos(t - DC_PI2);
+    }
+
+  private:
+    int32_t m_cosTable[512] = {
+        16777216, // 2^24 * cos(0 * 2pi / 2048)
+        16777137, // 2^24 * cos(1 * 2pi / 2048) = C = f(1)
+    };
+
+    // f(n) = cos(n * 2pi / 2048)
+    // f(n) = 2 * f(1) * f(n - 1) - f(n - 2)
+    void generate() {
+        int64_t C = m_cosTable[1];
+
+        for (int i = 2; i < 512; i++)
+            m_cosTable[i] = ((C * m_cosTable[i - 1]) >> 23) - m_cosTable[i - 2];
+
+        m_cosTable[511] = 0;
+    }
+};
+
+DiscreteCos dc;
+
 using namespace Balau;
 
 void MainTask::Do() {
