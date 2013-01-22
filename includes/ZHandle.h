@@ -42,6 +42,9 @@ class ZStream : public Handle {
         COMPRESSING_IDLE,
         DECOMPRESSING,
         DECOMPRESSING_IDLE,
+        WRITING_FINISH,
+        COMPRESSING_FINISH,
+        COMPRESSING_FINISH_IDLE,
         CLOSING,
     } m_phase = IDLE;
     size_t m_total, m_count, m_compressed;

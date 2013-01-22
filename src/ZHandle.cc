@@ -26,8 +26,9 @@ Balau::ZStream::ZStream(const IO<Handle> & h, int level, header_t header) : m_h(
 void Balau::ZStream::close() throw (GeneralException) {
     switch (m_phase) {
     case IDLE:
-    case WRITING:
-    case COMPRESSING:
+    case WRITING_FINISH:
+    case COMPRESSING_FINISH:
+    case COMPRESSING_FINISH_IDLE:
         if (m_h->canWrite())
             finish();
         inflateEnd(&m_zin);
@@ -254,25 +255,25 @@ void Balau::ZStream::doFlush(bool finish) {
             m_zout.next_out = (Bytef *) m_buf;
             m_zout.avail_out = block_size;
             if (m_useAsyncOp) {
-                m_phase = DECOMPRESSING;
+                m_phase = COMPRESSING_FINISH;
                 createAsyncOp(m_op = async = new AsyncOpZlib(&m_zout, true, finish ? Z_FINISH : Z_SYNC_FLUSH));
                 async->yield();
-    case DECOMPRESSING:
+    case COMPRESSING_FINISH:
                 m_status = async->getR();
                 delete async;
                 m_op = async = NULL;
             } else {
                 m_status = deflate(&m_zout, finish ? Z_FINISH : Z_SYNC_FLUSH);
-                m_phase = DECOMPRESSING_IDLE;
+                m_phase = COMPRESSING_FINISH_IDLE;
                 Task::operationYield(NULL, Task::INTERRUPTIBLE);
             }
-    case DECOMPRESSING_IDLE:
+    case COMPRESSING_FINISH_IDLE:
             EAssert((m_status == Z_OK) || ((m_status == Z_STREAM_END) && finish), "deflate() didn't return Z_OK or Z_STREAM_END, but %zi (finish = %s)", m_status, finish ? "true" : "false");
             m_compressed = block_size - m_zout.avail_out;
-            m_phase = WRITING;
+            m_phase = WRITING_FINISH;
             m_wptr = m_buf;
             while (m_compressed) {
-    case WRITING:
+    case WRITING_FINISH:
                 w = m_h->write(m_wptr, m_compressed);
                 if (w <= 0) {
                     m_phase = IDLE;
