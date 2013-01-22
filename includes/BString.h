@@ -33,6 +33,7 @@ class String : private std::string {
       String(double d) { set("%g", d); }
       String(const String & s) : std::string(s) { }
       String(const std::string & s) : std::string(s) { }
+      String(String && s) : std::string(s) { }
 
     String & set(const char * fmt, va_list) __attribute__((format(printf, 2, 0)));
     String & set(const char * fmt, ...) __attribute__((format(printf, 2, 3))) { va_list ap; va_start(ap, fmt); set(fmt, ap); va_end(ap); return *this; }
