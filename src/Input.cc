@@ -35,7 +35,7 @@ class AsyncOpOpen : public Balau::AsyncOperation {
   public:
       AsyncOpOpen(const char * path, cbResults_t * results) : m_path(path), m_results(results) { }
     virtual void run() {
-        int r = m_results->result = open(m_path, O_RDONLY);
+        const ssize_t r = m_results->result = open(m_path, O_RDONLY);
         m_results->errorno = r < 0 ? errno : 0;
     }
     virtual void done() {
@@ -51,7 +51,7 @@ class AsyncOpStat : public Balau::AsyncOperation {
   public:
       AsyncOpStat(int fd, cbResults_t * results) : m_fd(fd), m_results(results) { }
     virtual void run() {
-        int r = m_results->result = fstat(m_fd, &m_results->statdata);
+        const ssize_t r = m_results->result = fstat(m_fd, &m_results->statdata);
         m_results->errorno = r < 0 ? errno : 0;
     }
     virtual void done() {
@@ -83,7 +83,7 @@ void Balau::Input::open() throw (GeneralException) {
     cbResults_t * cbResults;
 
     if (!m_pendingOp) {
-        m_pendingOp = cbResults = new cbResults_t;
+        m_pendingOp = cbResults = new cbResults_t();
         cbResults->type = cbResults_t::NONE;
     } else {
         cbResults = (cbResults_t *) m_pendingOp;
@@ -109,7 +109,7 @@ void Balau::Input::open() throw (GeneralException) {
             }
 
             delete cbResults;
-            m_pendingOp = cbResults = new cbResults_t;
+            m_pendingOp = cbResults = new cbResults_t();
             cbResults->type = cbResults_t::STAT;
             createAsyncOp(new AsyncOpStat(m_fd, cbResults));
             Task::operationYield(&cbResults->evt, Task::INTERRUPTIBLE);
@@ -145,7 +145,7 @@ class AsyncOpClose : public Balau::AsyncOperation {
   public:
       AsyncOpClose(int fd, cbResults_t * results) : m_fd(fd), m_results(results) { }
     virtual void run() {
-        int r = m_results->result = close(m_fd);
+        const ssize_t r = m_results->result = close(m_fd);
         m_results->errorno = r < 0 ? errno : 0;
     }
     virtual void done() {
@@ -211,7 +211,7 @@ class AsyncOpRead : public Balau::AsyncOperation {
   public:
       AsyncOpRead(int fd, void * buf, size_t count, off_t offset, cbResults_t * results) : m_fd(fd), m_buf(buf), m_count(count), m_offset(offset), m_results(results) { }
     virtual void run() {
-        ssize_t r = m_results->result = pread(m_fd, m_buf, m_count, m_offset);
+        const ssize_t r = m_results->result = pread(m_fd, m_buf, m_count, m_offset);
         m_results->errorno = r < 0 ? errno : 0;
     }
     virtual void done() {
