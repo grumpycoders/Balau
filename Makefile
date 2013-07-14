@@ -38,59 +38,6 @@ ifeq ($(SYSTEM),Darwin)
     ARCH_FLAGS = -arch i386
     LD = clang++ -arch i386
     STRIP = strip -x
-    ifeq ($(TRUESYSTEM),Linux)
-        CROSSCOMPILE = true
-        ARCH_FLAGS =
-        CC = i686-apple-darwin9-gcc
-        CXX = i686-apple-darwin9-g++
-        LD = i686-apple-darwin9-g++ -arch i386 -mmacosx-version-min=10.5
-        STRIP = i686-apple-darwin9-strip -x
-        AS = i686-apple-darwin9-as -arch i386
-        AR = i686-apple-darwin9-ar rcs
-    endif
-endif
-
-ifeq ($(SYSTEM),MINGW32)
-    BINEXT = exe
-    COMPILE_PTHREADS = true
-    CONFIG_H = mingw32-config.h
-    INCLUDES += win32/iconv win32/pthreads-win32 win32/regex win32/dbghelp
-    LIBS += ws2_32 ntdll
-    ifeq ($(TRUESYSTEM),Linux)
-        ifeq ($(DISTRIB),CentOS)
-            CROSSCOMPILE = true
-            CC = i686-pc-mingw32-gcc
-            CXX = i686-pc-mingw32-g++
-            LD = i686-pc-mingw32-g++
-            AS = i686-pc-mingw32-gcc -c
-            STRIP = i686-pc-mingw32-strip --strip-unneeded
-            WINDRES = i686-pc-mingw32-windres
-            AR = i686-pc-mingw32-ar rcs
-            LUAJIT_CROSS = i686-pc-mingw32-
-        else
-            CROSSCOMPILE = true
-            CC = i586-mingw32msvc-gcc
-            CXX = i586-mingw32msvc-g++
-            LD = i586-mingw32msvc-g++
-            AS = i586-mingw32msvc-gcc -c
-            STRIP = i586-mingw32msvc-strip --strip-unneeded
-            WINDRES = i586-mingw32msvc-windres
-            AR = i586-mingw32msvc-ar rcs
-            LUAJIT_CROSS = i586-mingw32msvc-
-        endif
-        LUAJIT_TARGET = Windows
-    endif
-
-    ifeq ($(TRUESYSTEM),Darwin)
-        CROSSCOMPILE = true
-        CC = i386-mingw32-gcc
-        CXX = i386-mingw32-g++
-        LD = i386-mingw32-g++
-        AS = i386-mingw32-gcc -c
-        STRIP = i386-mingw32-strip --strip-unneeded
-        WINDRES = i386-mingw32-windres
-        AR = i386-mingw32-ar rcs
-    endif
 endif
 
 ifeq ($(SYSTEM),Linux)
@@ -98,10 +45,8 @@ ifeq ($(SYSTEM),Linux)
     LDFLAGS += -fPIC -rdynamic
     LIBS += pthread dl
     CONFIG_H = linux-config.h
-ifeq ($(WANTS32BITS),true)
     ARCH_FLAGS = -march=i686 -m32
     ASFLAGS = -march=i686 --32
-endif
     STRIP = strip --strip-unneeded
 endif
 
