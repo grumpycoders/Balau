@@ -1,10 +1,10 @@
 ifeq ($(SYSTEM),)
-    SYSTEM = $(shell uname | cut -f 1 -d_)
+    SYSTEM := $(shell uname | cut -f 1 -d_)
 endif
 
-TRUESYSTEM = $(shell uname)
-MACHINE = $(shell uname -m)
-DISTRIB = $(shell cat /etc/issue | cut -f 1 -d\  | head -1)
+TRUESYSTEM := $(shell uname)
+MACHINE := $(shell uname -m)
+DISTRIB := $(shell cat /etc/issue | cut -f 1 -d\  | head -1)
 
 CC = gcc
 CXX = g++
@@ -35,8 +35,8 @@ ifeq ($(SYSTEM),Darwin)
     LDFLAGS += -fPIC
     LIBS += pthread iconv
     CONFIG_H = darwin-config.h
-    ARCH_FLAGS = -arch i386
-    LD = clang++ -arch i386
+    ARCH_FLAGS =
+    LD = clang++
     STRIP = strip -x
 endif
 
@@ -45,9 +45,27 @@ ifeq ($(SYSTEM),Linux)
     LDFLAGS += -fPIC -rdynamic
     LIBS += pthread dl
     CONFIG_H = linux-config.h
-    ARCH_FLAGS = -march=i686 -m32
-    ASFLAGS = -march=i686 --32
+    ARCH_FLAGS =
+    ASFLAGS =
     STRIP = strip --strip-unneeded
+
+    GCC_VERSION := $(shell g++ -dumpversion)
+    GCC_VERSION_4 := $(shell expr `g++ -dumpversion | cut -f1 -d.` \>= 4)
+    GCC_VERSION_x_8 := $(shell expr `g++ -dumpversion | cut -f2 -d.` >= 8)
+
+    ifneq ($(GCC_VERSION_4),1)
+        USE_CLANG = true
+    else
+        ifneq ($(GCC_VERSION_x_8),1)
+            USE_CLANG = true
+        endif
+    endif
+
+    ifeq ($(USE_CLANG),true)
+        CC = clang
+        CXX = clang++
+        LD = clang++
+    endif
 endif
 
 CPPFLAGS_NO_ARCH += $(addprefix -I, $(INCLUDES)) -fexceptions -imacros $(CONFIG_H)
