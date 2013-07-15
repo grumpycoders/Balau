@@ -2,3 +2,9 @@
 *.o
 *.a
 *.bin
+tests/data.gz
+tests/data.raw
+tests/out.gz
+tests/out.raw
+tests/out.txt
+tests/out.z
