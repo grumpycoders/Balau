@@ -128,14 +128,16 @@ strip: $(TESTS)
 
 lib: $(LIB)
 
-LuaJIT:
+LuaJIT: LuaJIT/src/libluajit.a
+
+LuaJIT/src/libluajit.a:
 ifeq ($(CROSSCOMPILE),true)
 	$(MAKE) -C LuaJIT HOST_CC="gcc -m32" CROSS=$(LUAJIT_CROSS) TARGET_SYS=$(LUAJIT_TARGET) BUILDMODE=static
 else
 	$(MAKE) -C LuaJIT CC="$(CC) $(ARCH_FLAGS)" BUILDMODE=static
 endif
 
-libBalau.a: LuaJIT $(BALAU_OBJECTS)
+libBalau.a: LuaJIT/src/libluajit.a $(BALAU_OBJECTS)
 ifeq ($(SYSTEM),Darwin)
 ifneq ($(CROSSCOMPILE),true)
 	rm -f libBalau.a
