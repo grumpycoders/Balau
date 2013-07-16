@@ -51,6 +51,8 @@ Buffer.cc \
 BStream.cc \
 ZHandle.cc \
 \
+StdIO.cc \
+\
 Task.cc \
 TaskMan.cc \
 \
