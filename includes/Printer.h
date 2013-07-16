@@ -27,6 +27,7 @@ enum {
 #undef E_INPUT
 #undef E_SOCKET
 #undef E_THREAD
+#undef E_SELECT
 
 enum {
     E_STRING = 1,
@@ -39,6 +40,7 @@ enum {
     E_OUTPUT = 128,
     E_HTTPSERVER = 256,
     E_ASYNC = 512,
+    E_SELECT = 1024,
 };
 
 class Printer {

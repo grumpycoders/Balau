@@ -8,6 +8,7 @@
 #include <netdb.h>
 #endif
 #include <Handle.h>
+#include <Selectable.h>
 #include <TaskMan.h>
 #include <Task.h>
 #include <StacklessTask.h>
@@ -17,47 +18,32 @@ namespace Balau {
 
 struct DNSRequest;
 
-class Socket : public Handle {
+class Socket : public Selectable {
   public:
       Socket() throw (GeneralException);
-    virtual void close() throw (GeneralException);
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException);
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException);
-    virtual bool isClosed();
-    virtual bool isEOF();
+    virtual void close() throw (GeneralException);
     virtual bool canRead();
     virtual bool canWrite();
     virtual const char * getName();
 
     bool setLocal(const char * hostname = NULL, int port = 0);
     bool connect(const char * hostname, int port);
-    bool gotR() { return m_evtR->gotSignal(); }
-    bool gotW() { return m_evtW->gotSignal(); }
     IO<Socket> accept() throw (GeneralException);
     bool listen();
     bool resolved();
   private:
       Socket(int fd);
-    class SocketEvent : public Events::BaseEvent {
-      public:
-          SocketEvent(int fd, int evt = ev::READ | ev::WRITE) : m_task(NULL) { Printer::elog(E_SOCKET, "Got a new SocketEvent at %p", this); m_evt.set<SocketEvent, &SocketEvent::evt_cb>(this); m_evt.set(fd, evt); }
-          virtual ~SocketEvent() { Printer::elog(E_SOCKET, "Destroying a SocketEvent at %p", this); m_evt.stop(); }
-          void stop() { Printer::elog(E_SOCKET, "Stopping a SocketEvent at %p", this); reset(); m_evt.stop(); }
-      private:
-        void evt_cb(ev::io & w, int revents) { Printer::elog(E_SOCKET, "Got a libev callback on a SocketEvent at %p", this); doSignal(); }
-        virtual void gotOwner(Task * task);
 
-        ev::io m_evt;
-        Task * m_task = NULL;
-    };
+    virtual ssize_t recv(int sockfd, void *buf, size_t len, int flags);
+    virtual ssize_t send(int sockfd, const void *buf, size_t len, int flags);
 
-    int m_fd;
     String m_name;
     bool m_connected = false;
     bool m_connecting = false;
     bool m_listening = false;
     sockaddr_in6 m_localAddr, m_remoteAddr;
-    SocketEvent * m_evtR, * m_evtW;
     DNSRequest * m_req = NULL;
 };
 

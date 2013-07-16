@@ -46,6 +46,7 @@ Handle.cc \
 Input.cc \
 Output.cc \
 Socket.cc \
+Selectable.cc \
 Buffer.cc \
 BStream.cc \
 ZHandle.cc \
