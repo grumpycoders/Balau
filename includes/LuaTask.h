@@ -12,10 +12,11 @@ class LuaMainTask;
 class LuaExecCell {
   public:
       LuaExecCell();
-      virtual ~LuaExecCell() { }
+      virtual ~LuaExecCell() { if (m_exception) delete m_exception; }
     void detach() { m_detached = true; }
     void exec(LuaMainTask * mainTask);
-    bool gotError() { return m_gotError; }
+    bool gotError() { return m_gotError || m_exception; }
+    void throwError() throw (GeneralException);
   protected:
     virtual void run(Lua &) = 0;
     void setError() { m_gotError = true; }
@@ -23,6 +24,7 @@ class LuaExecCell {
     Events::Async m_event;
     bool m_detached = false;
     bool m_gotError = false;
+    GeneralException * m_exception = NULL;
     friend class LuaTask;
 
       LuaExecCell(const LuaExecCell &) = delete;

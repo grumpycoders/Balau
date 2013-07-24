@@ -474,12 +474,19 @@ Balau::String Balau::Lua::tostring(int i) {
 struct LoadF {
     Balau::IO<Balau::Handle> f;
     char buff[BUFFERSIZE];
+    Balau::GeneralException * exception = NULL;
 };
 
 const char * Balau::LuaStatics::getF(lua_State * L, void * ud, size_t * size) {
     LoadF * lf = (LoadF *)ud;
 
-    *size = lf->f->read(lf->buff, BUFFERSIZE);
+    try {
+        *size = lf->f->read(lf->buff, BUFFERSIZE);
+    }
+    catch (GeneralException e) {
+        lf->exception = new GeneralException(e);
+        AssertHelper("LuaJIT is lame.");
+    }
     return (*size > 0) ? lf->buff : NULL;
 }
 
@@ -522,9 +529,15 @@ void Balau::Lua::load(IO<Handle> h, bool docall) throw (GeneralException) {
     status = lua_load(L, LuaStatics::getF, &lf, name.to_charp());
 
     if (status) {
-        pushLuaContext();
-        showerror();
-        throw LuaException(String("Error loading lua chunk from Handle `") + h->getName() + "'");
+        if (lf.exception) {
+            GeneralException copy(*lf.exception);
+            delete lf.exception;
+            throw copy;
+        } else {
+            pushLuaContext();
+            showerror();
+            throw LuaException(String("Error loading lua chunk from Handle `") + h->getName() + "'");
+        }
     }
 
     if (docall)

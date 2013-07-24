@@ -60,6 +60,9 @@ void Balau::LuaTask::Do() {
     try {
         m_cell->run(L);
     }
+    catch (GeneralException e) {
+        m_cell->m_exception = new GeneralException(e);
+    }
     catch (...) {
         m_cell->setError();
     }
@@ -75,6 +78,20 @@ void Balau::LuaExecCell::exec(LuaMainTask * mainTask) {
     mainTask->exec(this);
     if (!m_detached)
         Task::operationYield(&m_event);
+}
+
+void Balau::LuaExecCell::throwError() throw (GeneralException) {
+    if (!gotError())
+        return;
+
+    if (m_exception) {
+        GeneralException copy(*m_exception);
+        delete m_exception;
+        m_exception = NULL;
+        throw copy;
+    } else {
+        throw GeneralException("Unknown error");
+    }
 }
 
 void Balau::LuaExecString::run(Lua & L) {
