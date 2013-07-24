@@ -249,7 +249,7 @@ ssize_t Balau::Input::read(void * buf, size_t count) throw (GeneralException) {
             Task::operationYield(&cbResults->evt, Task::INTERRUPTIBLE);
         case cbResults_t::READ:
             result = cbResults->result;
-            if (result > 0) {
+            if (result >= 0) {
                 rseek(result, SEEK_CUR);
             } else {
                 char str[4096];
