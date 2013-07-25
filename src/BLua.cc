@@ -216,9 +216,10 @@ int Balau::LuaStatics::callwrap(lua_State * __L, lua_CFunction func) {
     catch (Balau::GeneralException e) {
         L.error(String("GeneralException: ") + e.getMsg());
     }
-    catch (...) {
-        L.error("Unknown C++ exception");
-    }
+// LuaJIT sucks sometime.
+//    catch (...) {
+//        L.error("Unknown C++ exception");
+//    }
 
     return 0;
 }
@@ -311,7 +312,7 @@ void Balau::Lua::open_base() {
     push("print");
     push(LuaStatics::print);
     settable();
-    while (n < gettop()) remove(n);
+    while (n < gettop()) remove(-1);
     push("mkdir");
     push(LuaStatics::mkdir);
     settable(LUA_GLOBALSINDEX);
@@ -335,7 +336,7 @@ void Balau::Lua::open_base() {
 void Balau::Lua::open_table() {
     int n = gettop();
     luaopen_table(L);
-    while (n < gettop()) remove(n);
+    while (n < gettop()) remove(-1);
 }
 
 void Balau::Lua::open_string() {
@@ -344,37 +345,37 @@ void Balau::Lua::open_string() {
     push("iconv");
     push(LuaStatics::iconv);
     settable();
-    while (n < gettop()) remove(n);
+    while (n < gettop()) remove(-1);
 }
 
 void Balau::Lua::open_math() {
     int n = gettop();
     luaopen_math(L);
-    while (n < gettop()) remove(n);
+    while (n < gettop()) remove(-1);
 }
 
 void Balau::Lua::open_debug() {
     int n = gettop();
     luaopen_debug(L);
-    while (n < gettop()) remove(n);
+    while (n < gettop()) remove(-1);
 }
 
 void Balau::Lua::open_jit() {
     int n = gettop();
     luaopen_jit(L);
-    while (n < gettop()) remove(n);
+    while (n < gettop()) remove(-1);
 }
 
 void Balau::Lua::open_ffi() {
     int n = gettop();
     luaopen_ffi(L);
-    while (n < gettop()) remove(n);
+    while (n < gettop()) remove(-1);
 }
 
 void Balau::Lua::open_bit() {
     int n = gettop();
     luaopen_bit(L);
-    while (n < gettop()) remove(n);
+    while (n < gettop()) remove(-1);
 }
 
 void Balau::Lua::declareFunc(const char * name, lua_CFunction f, int i) {
