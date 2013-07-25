@@ -139,12 +139,9 @@ class Lua {
     void load(const String &, bool docall = true) throw (GeneralException);
     void dumpvars(IO<Handle> out, const String & prefix, int idx = -1);
     Lua thread(bool saveit = true);
-    Lua thread(const String &, int nargs = 0, bool saveit = true);
-    Lua thread(IO<Handle> in, int nargs = 0, bool saveit = true);
     int yield(int nresults = 0) { return lua_yield(L, nresults); }
+    bool yielded() { return lua_status(L) == LUA_YIELD; }
     bool resume(int nargs = 0) throw (GeneralException);
-    bool resume(const String &, int nargs = 0);
-    bool resume(IO<Handle> in, int nargs = 0);
     void showstack(int level = M_INFO);
     void showerror();
     int getmetatable(int i = -1) { checkstack(); return lua_getmetatable(L, i); }
@@ -273,76 +270,25 @@ struct lua_functypes_t {
 template <class T>
 T * LuaObjectFactory::getMe(Lua & L, int idx) { return L.recast<T>(idx); }
 
+class LuaHelpersBase {
+  protected:
+    static void validate(const lua_functypes_t & entry, bool method, int n, Lua & L, const char * className);
+};
+
 template <class T>
-class LuaHelpers {
+class LuaHelpers : public LuaHelpersBase {
   public:
     static int method_multiplex(int caller, lua_State * __L, int (*proceed)(Lua & L, int n, T * obj, int caller), int (*proceed_static)(Lua & L, int n, int caller), lua_functypes_t * tab, bool method) {
         Lua L(__L);
         int add = method ? 1 : 0;
         int n = L.gettop() - add;
         T * obj = 0;
-        int i, j, mask;
-        bool invalid = false, arg_valid;
+        static ClassName cn = ClassName((T *) 0);
 
         if (method)
             obj = LuaObjectFactory::getMe<T>(L);
 
-        if ((n < tab[caller].minargs) || (n > tab[caller].maxargs)) {
-            invalid = true;
-        } else {
-            for (i = 0; i < tab[caller].maxargs && !invalid; i++) {
-                if (n >= (i + 1)) {
-                    arg_valid = false;
-                    for (j = 0; j < MAX_TYPE && !arg_valid; j++) {
-                        mask = 1 << j;
-                        if (tab[caller].argtypes[i] & mask) {
-                            switch(mask) {
-                                case BLUA_OBJECT:
-                                    if (L.istable(i + 1 + add)) {
-                                        L.push("__obj");
-                                        L.gettable(i + 1 + add);
-                                        arg_valid = L.isuserdata();
-                                        L.pop();
-                                    } else {
-                                        arg_valid = L.isnil(i + 1 + add);
-                                    }
-                                    break;
-                                case BLUA_TABLE:
-                                    arg_valid = L.istable(i + 1 + add);
-                                    break;
-                                case BLUA_BOOLEAN:
-                                    arg_valid = L.isboolean(i + 1 + add);
-                                    break;
-                                case BLUA_NUMBER:
-                                    arg_valid = L.isnumber(i + 1 + add);
-                                    break;
-                                case BLUA_STRING:
-                                    arg_valid = L.isstring(i + 1 + add);
-                                    break;
-                                case BLUA_FUNCTION:
-                                    arg_valid = L.isfunction(i + 1 + add);
-                                    break;
-                                case BLUA_NIL:
-                                    arg_valid = L.isnil(i + 1 + add);
-                                    break;
-                                case BLUA_USERDATA:
-                                    arg_valid = L.isuserdata(i + 1 + add) || L.islightuserdata(i + 1 + add);
-                                    break;
-                            }
-                        }
-                    }
-                    invalid = !arg_valid;
-                }
-            }
-        }
-
-        if (invalid) {
-            if (method) {
-                L.error(String("Invalid arguments to method `") + typeid(T).name() + "::" + tab[caller].name + "'");
-            } else {
-                L.error(String("Invalid arguments to function `") + typeid(T).name() + " " + tab[caller].name + "'");
-            }
-        }
+        validate(tab[caller], method, n, L, cn.c_str());
 
         if (method) {
             return proceed(L, n, obj, caller);

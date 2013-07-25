@@ -699,18 +699,6 @@ Balau::Lua Balau::Lua::thread(bool saveit) {
     return Lua(L1);
 }
 
-Balau::Lua Balau::Lua::thread(const String & code, int nargs, bool saveit) {
-    Lua L1 = thread(saveit);
-    L1.resume(code, nargs);
-    return L1;
-}
-
-Balau::Lua Balau::Lua::thread(IO<Handle> h, int nargs, bool saveit) {
-    Lua L1 = thread(saveit);
-    L1.resume(h, nargs);
-    return L1;
-}
-
 bool Balau::Lua::resume(int nargs) throw (GeneralException) {
     int r;
 
@@ -738,24 +726,6 @@ bool Balau::Lua::resume(int nargs) throw (GeneralException) {
     default:
         throw LuaException(String("Unknow error while running LUA code (err code: ") + String(r) + ")");
     }
-}
-
-bool Balau::Lua::resume(IO<Handle> h, int nargs) {
-    bool r;
-
-    load(h, false);
-    r = resume(nargs);
-
-    return r;
-}
-
-bool Balau::Lua::resume(const String & s, int nargs) {
-    bool r;
-
-    load(s, false);
-    r = resume(nargs);
-
-    return r;
 }
 
 void Balau::Lua::showstack(int level) {
@@ -873,4 +843,67 @@ void Balau::LuaObjectFactory::pushDestruct(Lua & L) {
     AAssert(!m_pushed, "Error: can't push destructor, object already pushed");
     m_wantsDestruct = true;
     push(L);
+}
+
+void Balau::LuaHelpersBase::validate(const lua_functypes_t & entry, bool method, int n, Lua & L, const char * className) {
+    bool invalid = false, arg_valid;
+    int i, j, mask;
+    int add = method ? 1 : 0;
+
+    if ((n < entry.minargs) || (n > entry.maxargs)) {
+        invalid = true;
+    } else {
+        for (i = 0; i < entry.maxargs && !invalid; i++) {
+            if (n >= (i + 1)) {
+                arg_valid = false;
+                for (j = 0; j < MAX_TYPE && !arg_valid; j++) {
+                    mask = 1 << j;
+                    if (entry.argtypes[i] & mask) {
+                        switch(mask) {
+                            case BLUA_OBJECT:
+                                if (L.istable(i + 1 + add)) {
+                                    L.push("__obj");
+                                    L.gettable(i + 1 + add);
+                                    arg_valid = L.isuserdata();
+                                    L.pop();
+                                } else {
+                                    arg_valid = L.isnil(i + 1 + add);
+                                }
+                                break;
+                            case BLUA_TABLE:
+                                arg_valid = L.istable(i + 1 + add);
+                                break;
+                            case BLUA_BOOLEAN:
+                                arg_valid = L.isboolean(i + 1 + add);
+                                break;
+                            case BLUA_NUMBER:
+                                arg_valid = L.isnumber(i + 1 + add);
+                                break;
+                            case BLUA_STRING:
+                                arg_valid = L.isstring(i + 1 + add);
+                                break;
+                            case BLUA_FUNCTION:
+                                arg_valid = L.isfunction(i + 1 + add);
+                                break;
+                            case BLUA_NIL:
+                                arg_valid = L.isnil(i + 1 + add);
+                                break;
+                            case BLUA_USERDATA:
+                                arg_valid = L.isuserdata(i + 1 + add) || L.islightuserdata(i + 1 + add);
+                                break;
+                        }
+                    }
+                }
+                invalid = !arg_valid;
+            }
+        }
+    }
+
+    if (invalid) {
+        if (method) {
+            L.error(String("Invalid arguments to method `") + className + "::" + entry.name + "'");
+        } else {
+            L.error(String("Invalid arguments to function `") + className + " " + entry.name + "'");
+        }
+    }
 }
