@@ -908,3 +908,54 @@ void Balau::LuaHelpersBase::validate(const lua_functypes_t & entry, bool method,
         }
     }
 }
+
+static char s_signature = 'B';
+
+void Balau::LuaHelpersBase::pushContext(Lua & L, std::function<int(Lua & L)> context, Events::BaseEvent * evt) {
+    L.push(new LuaHelpersBase(context, evt));
+    L.push((void *) &s_signature);
+}
+
+bool Balau::LuaHelpersBase::resume(Lua & L) {
+    if (L.gettop() < 2)
+        return false;
+
+    if (!L.islightuserdata())
+        return false;
+
+    char * sig = (char *) L.touserdata();
+    if (sig != &s_signature)
+        return false;
+
+    L.remove(-1);
+
+    LuaHelpersBase * b = (LuaHelpersBase *) L.touserdata();
+    L.remove(-1);
+
+    int r = b->m_context(L);
+
+    delete b;
+
+    if (r < 0)
+        return true;
+
+    L.resume(r);
+
+    return true;
+}
+
+Balau::Events::BaseEvent * Balau::LuaHelpersBase::getEvent(Lua & L) {
+    if (L.gettop() < 2)
+        return NULL;
+
+    if (!L.islightuserdata())
+        return NULL;
+
+    char * sig = (char *) L.touserdata();
+    if (sig != &s_signature)
+        return NULL;
+
+    LuaHelpersBase * b = (LuaHelpersBase *) L.touserdata(-2);
+
+    return b->m_evt;
+}

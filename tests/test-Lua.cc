@@ -24,6 +24,7 @@ enum ObjectTest_methods_t {
 enum ObjectTest_functions_t {
     OBJECTTEST_CREATEOBJECTTEST,
     OBJECTTEST_SOMEFUNCTION,
+    OBJECTTEST_YIELDTEST,
 };
 
 struct lua_functypes_t ObjectTest_methods[] = {
@@ -35,6 +36,7 @@ struct lua_functypes_t ObjectTest_methods[] = {
 struct lua_functypes_t ObjectTest_functions[] = {
     { OBJECTTEST_CREATEOBJECTTEST,      "createObjectTest",     0, 0, { } },
     { OBJECTTEST_SOMEFUNCTION,          "ObjectTestFunction",   0, 0, { } },
+    { OBJECTTEST_YIELDTEST,             "yieldTest",            1, 1, { BLUA_NUMBER } },
     { -1, 0, 0, 0, 0 },
 };
 
@@ -45,9 +47,10 @@ class sLua_ObjectTest {
 
     DECLARE_FUNCTION(ObjectTest, OBJECTTEST_CREATEOBJECTTEST);
     DECLARE_FUNCTION(ObjectTest, OBJECTTEST_SOMEFUNCTION);
+    DECLARE_FUNCTION(ObjectTest, OBJECTTEST_YIELDTEST);
   private:
     static int ObjectTest_proceed(Lua & L, int n, ObjectTest * obj, int caller);
-    static int ObjectTest_proceed_statics(Lua & L, int n, int caller);
+    static int ObjectTest_proceed_statics(Lua & L, int n, int caller) throw (GeneralException);
 };
 
 class LuaObjectTestFactory : public LuaObjectFactory {
@@ -59,6 +62,7 @@ class LuaObjectTestFactory : public LuaObjectFactory {
 
         PUSH_FUNCTION(ObjectTest, OBJECTTEST_CREATEOBJECTTEST);
         PUSH_FUNCTION(ObjectTest, OBJECTTEST_SOMEFUNCTION);
+        PUSH_FUNCTION(ObjectTest, OBJECTTEST_YIELDTEST);
     }
   private:
     void pushObjectAndMembers(Lua & L) {
@@ -85,7 +89,11 @@ int sLua_ObjectTest::ObjectTest_proceed(Lua & L, int n, ObjectTest * obj, int ca
     return 0;
 }
 
-int sLua_ObjectTest::ObjectTest_proceed_statics(Lua & L, int n, int caller) {
+Events::Timeout * evt = NULL;
+
+int sLua_ObjectTest::ObjectTest_proceed_statics(Lua & L, int n, int caller) throw (GeneralException) {
+    int y;
+
     switch (caller) {
     case OBJECTTEST_CREATEOBJECTTEST:
         {
@@ -98,6 +106,20 @@ int sLua_ObjectTest::ObjectTest_proceed_statics(Lua & L, int n, int caller) {
 
     case OBJECTTEST_SOMEFUNCTION:
         ObjectTest::someFunction();
+        break;
+
+    case OBJECTTEST_YIELDTEST:
+        y = L.tonumber();
+        L.remove();
+        L.push((lua_Number) y + 1);
+        Printer::log(M_STATUS, "yield %i", y);
+        if (evt)
+            delete evt;
+        evt = NULL;
+        if (y < 5) {
+            evt = new Events::Timeout(1.0f);
+            throw EAgain(evt);
+        }
         break;
     }
 
@@ -163,6 +185,14 @@ void MainTask::Do() {
     TAssert(L.gettop() == 0);
 
     TAssert(callCount == 3);
+
+    L.load("yieldTest(0)");
+    while (L.yielded()) {
+        waitFor(LuaHelpersBase::getEvent(L));
+        yield();
+        LuaHelpersBase::resume(L);
+    }
+    TAssert(L.gettop() == 0);
 
     TAssert(objGotDestroyed == 0);
     L.load("obj2 = createObjectTest() obj2:destroy()");

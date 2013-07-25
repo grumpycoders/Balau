@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -7,6 +9,7 @@ extern "C" {
 
 #include <Exceptions.h>
 #include <Handle.h>
+#include <Task.h>
 
 namespace Balau {
 
@@ -271,8 +274,16 @@ template <class T>
 T * LuaObjectFactory::getMe(Lua & L, int idx) { return L.recast<T>(idx); }
 
 class LuaHelpersBase {
+  public:
+    static bool resume(Lua & L);
+    static Events::BaseEvent * getEvent(Lua & L);
   protected:
     static void validate(const lua_functypes_t & entry, bool method, int n, Lua & L, const char * className);
+    static void pushContext(Lua & L, std::function<int(Lua & L)> context, Events::BaseEvent * evt);
+  private:
+      LuaHelpersBase(std::function<int(Lua & L)> context, Events::BaseEvent * evt) : m_context(context), m_evt(evt) { }
+    std::function<int(Lua & L)> m_context;
+    Events::BaseEvent * m_evt;
 };
 
 template <class T>
@@ -280,6 +291,39 @@ class LuaHelpers : public LuaHelpersBase {
   public:
     static int method_multiplex(int caller, lua_State * __L, int (*proceed)(Lua & L, int n, T * obj, int caller), int (*proceed_static)(Lua & L, int n, int caller), lua_functypes_t * tab, bool method) {
         Lua L(__L);
+        return method_multiplex(caller, L, proceed, proceed_static, tab, method);
+    }
+
+  private:
+    static int method_multiplex(int caller, Lua & L, int (*proceed)(Lua & L, int n, T * obj, int caller), int (*proceed_static)(Lua & L, int n, int caller), lua_functypes_t * tab, bool method) {
+        int r;
+
+        try {
+            r = method_multiplex_internal(caller, L, proceed, proceed_static, tab, method);
+        }
+        catch (EAgain e) {
+            pushContext(L, [caller, proceed, proceed_static, tab, method](Lua & L) -> int { return method_multiplex_resume(caller, L, proceed, proceed_static, tab, method); }, e.getEvent());
+            r = L.yield(L.gettop());
+        }
+
+        return r;
+    }
+
+    static int method_multiplex_resume(int caller, Lua & L, int (*proceed)(Lua & L, int n, T * obj, int caller), int (*proceed_static)(Lua & L, int n, int caller), lua_functypes_t * tab, bool method) {
+        int r;
+
+        try {
+            r = method_multiplex_internal(caller, L, proceed, proceed_static, tab, method);
+        }
+        catch (EAgain e) {
+            pushContext(L, [caller, proceed, proceed_static, tab, method](Lua & L) -> int { return method_multiplex_resume(caller, L, proceed, proceed_static, tab, method); }, e.getEvent());
+            r = -1;
+        }
+
+        return r;
+    }
+
+    static int method_multiplex_internal(int caller, Lua & L, int (*proceed)(Lua & L, int n, T * obj, int caller), int (*proceed_static)(Lua & L, int n, int caller), lua_functypes_t * tab, bool method) {
         int add = method ? 1 : 0;
         int n = L.gettop() - add;
         T * obj = 0;

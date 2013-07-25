@@ -57,19 +57,32 @@ void Balau::LuaMainTask::Do() {
 }
 
 void Balau::LuaTask::Do() {
-    try {
-        m_cell->run(L);
+    while(true) {
+        try {
+            if (L.yielded())
+                LuaHelpersBase::resume(L);
+            else
+                m_cell->run(L);
+        }
+        catch (GeneralException e) {
+            m_cell->m_exception = new GeneralException(e);
+        }
+        catch (...) {
+            m_cell->setError();
+        }
+        if (L.yielded()) {
+            Events::BaseEvent * evt = LuaHelpersBase::getEvent(L);
+            IAssert(evt, "We need an event for now here.");
+            waitFor(evt);
+            yield();
+            continue;
+        }
+        if (m_cell->m_detached)
+            delete m_cell;
+        else
+            m_cell->m_event.trigger();
+        break;
     }
-    catch (GeneralException e) {
-        m_cell->m_exception = new GeneralException(e);
-    }
-    catch (...) {
-        m_cell->setError();
-    }
-    if (m_cell->m_detached)
-        delete m_cell;
-    else
-        m_cell->m_event.trigger();
 }
 
 void Balau::LuaExecCell::exec(LuaMainTask * mainTask) {
