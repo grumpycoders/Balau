@@ -24,6 +24,7 @@ Balau::LuaMainTask::LuaMainTask() {
     L.open_debug();
     L.open_bit();
     L.open_jit();
+    L.open_ffi();
 }
 
 Balau::LuaMainTask::~LuaMainTask() {
