@@ -117,7 +117,7 @@ int sLua_ObjectTest::ObjectTest_proceed_statics(Lua & L, int n, int caller) thro
             delete evt;
         evt = NULL;
         if (y < 5) {
-            evt = new Events::Timeout(1.0f);
+            evt = new Events::Timeout(0.1f);
             throw EAgain(evt);
         }
         break;
