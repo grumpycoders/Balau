@@ -223,7 +223,27 @@ struct lua_functypes_t {
         true); \
     }
 
+#define DECLARE_CONSTRUCTOR(classname, enumvar) static int constructor(lua_State * L) { \
+    return LuaHelpers<classname>::method_multiplex( \
+        enumvar, \
+        L, \
+        NULL, \
+        sLua_##classname::classname##_proceed_statics, \
+        classname##_functions, \
+        false); \
+    }
+
 #define DECLARE_FUNCTION(classname, enumvar) static int function_##enumvar(lua_State * L) { \
+    return LuaHelpers<classname>::method_multiplex( \
+        enumvar, \
+        L, \
+        NULL, \
+        sLua_##classname::classname##_proceed_statics, \
+        classname##_functions, \
+        false); \
+    }
+
+#define DECLARE_STATIC(classname, enumvar) static int static_##enumvar(lua_State * L) { \
     return LuaHelpers<classname>::method_multiplex( \
         enumvar, \
         L, \
@@ -243,6 +263,21 @@ struct lua_functypes_t {
     String("__") + classname##_methods[enumvar].name, \
     sLua_##classname::method_##enumvar)
 
+#define PUSH_CONSTRUCTOR(classname, enumvar) \
+    bool constructorPushed = true; \
+    L.newtable(); \
+    L.push(#classname); \
+    L.copy(-2); \
+    L.setvar(); \
+    L.declareFunc("new", sLua_##classname::constructor, -1)
+
+#define PUSH_STATIC(classname, enumvar) \
+    AAssert(constructorPushed, "Please call PUSH_CONSTRUCTOR first"); \
+    L.declareFunc( \
+    classname##_functions[enumvar].name, \
+    sLua_##classname::static_##enumvar, \
+    -1)
+
 #define PUSH_FUNCTION(classname, enumvar) L.declareFunc( \
     classname##_functions[enumvar].name, \
     sLua_##classname::function_##enumvar)
@@ -251,6 +286,8 @@ struct lua_functypes_t {
     classname##_functions[enumvar].name, \
     sLua_##classname::function_##enumvar, \
     array)
+
+#define PUSH_CLASS_DONE() L.pop()
 
 #define CHECK_METHODS(classname) { \
     int i = 0; \

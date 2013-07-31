@@ -15,6 +15,7 @@ class ObjectTest {
     void someMethod1() { Printer::log(M_DEBUG, "ObjectTest::someMethod1() called on %p.", this); callCount++; }
     int someMethod2(int p) { Printer::log(M_DEBUG, "ObjectTest::someMethod2() called on %p.", this); callCount++; return p * 2; }
     static void someFunction() { Printer::log(M_DEBUG, "ObjectTest::someFunction() called."); callCount++; }
+    static void someStatic() { Printer::log(M_DEBUG, "ObjectTest::someStatic() called."); callCount++; }
 };
 
 enum ObjectTest_methods_t {
@@ -23,8 +24,9 @@ enum ObjectTest_methods_t {
 };
 
 enum ObjectTest_functions_t {
-    OBJECTTEST_CREATEOBJECTTEST,
+    OBJECTTEST_CONSTRUCTOR,
     OBJECTTEST_SOMEFUNCTION,
+    OBJECTTEST_SOMESTATIC,
     OBJECTTEST_YIELDTEST,
 };
 
@@ -35,8 +37,9 @@ struct lua_functypes_t ObjectTest_methods[] = {
 };
 
 struct lua_functypes_t ObjectTest_functions[] = {
-    { OBJECTTEST_CREATEOBJECTTEST,      "createObjectTest",     0, 0, { } },
+    { OBJECTTEST_CONSTRUCTOR,           NULL,                   0, 0, { } },
     { OBJECTTEST_SOMEFUNCTION,          "ObjectTestFunction",   0, 0, { } },
+    { OBJECTTEST_SOMESTATIC,            "SomeStatic",           0, 0, { } },
     { OBJECTTEST_YIELDTEST,             "yieldTest",            1, 1, { BLUA_NUMBER } },
     { -1, 0, 0, 0, 0 },
 };
@@ -46,7 +49,8 @@ class sLua_ObjectTest {
     DECLARE_METHOD(ObjectTest, OBJECTTEST_SOMEMETHOD1);
     DECLARE_METHOD(ObjectTest, OBJECTTEST_SOMEMETHOD2);
 
-    DECLARE_FUNCTION(ObjectTest, OBJECTTEST_CREATEOBJECTTEST);
+    DECLARE_CONSTRUCTOR(ObjectTest, OBJECTTEST_CONSTRUCTOR);
+    DECLARE_STATIC(ObjectTest, OBJECTTEST_SOMESTATIC);
     DECLARE_FUNCTION(ObjectTest, OBJECTTEST_SOMEFUNCTION);
     DECLARE_FUNCTION(ObjectTest, OBJECTTEST_YIELDTEST);
   private:
@@ -61,9 +65,11 @@ class LuaObjectTestFactory : public LuaObjectFactory {
         CHECK_METHODS(ObjectTest);
         CHECK_FUNCTIONS(ObjectTest);
 
-        PUSH_FUNCTION(ObjectTest, OBJECTTEST_CREATEOBJECTTEST);
+        PUSH_CONSTRUCTOR(ObjectTest, OBJECTTEST_CONSTRUCTOR);
+        PUSH_STATIC(ObjectTest, OBJECTTEST_SOMESTATIC);
         PUSH_FUNCTION(ObjectTest, OBJECTTEST_SOMEFUNCTION);
         PUSH_FUNCTION(ObjectTest, OBJECTTEST_YIELDTEST);
+        PUSH_CLASS_DONE();
     }
   private:
     void pushObjectAndMembers(Lua & L) {
@@ -96,13 +102,17 @@ int sLua_ObjectTest::ObjectTest_proceed_statics(Lua & L, int n, int caller) thro
     int y;
 
     switch (caller) {
-    case OBJECTTEST_CREATEOBJECTTEST:
+    case OBJECTTEST_CONSTRUCTOR:
         {
             ObjectTest * ot = new ObjectTest;
             LuaObjectTestFactory factory(ot);
             factory.pushDestruct(L);
         }
         return 1;
+        break;
+
+    case OBJECTTEST_SOMESTATIC:
+        ObjectTest::someStatic();
         break;
 
     case OBJECTTEST_SOMEFUNCTION:
@@ -187,6 +197,11 @@ void MainTask::Do() {
 
     TAssert(callCount == 3);
 
+    L.load("ObjectTest.SomeStatic()");
+    TAssert(L.gettop() == 0);
+
+    TAssert(callCount == 4);
+
     L.load("yieldTest(0)");
     while (L.yielded()) {
         waitFor(LuaHelpersBase::getEvent(L));
@@ -201,9 +216,9 @@ void MainTask::Do() {
     TAssert(L.gettop() == 0);
 
     TAssert(objGotDestroyed == 0);
-    L.load("obj2 = createObjectTest() obj2:destroy()");
+    L.load("obj2 = ObjectTest.new() obj2:destroy()");
     TAssert(objGotDestroyed == 1);
-    L.load("createObjectTest() collectgarbage('collect')");
+    L.load("ObjectTest.new() collectgarbage('collect')");
     TAssert(objGotDestroyed == 2);
     L.close();
     TAssert(objGotDestroyed == 3);

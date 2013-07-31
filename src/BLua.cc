@@ -382,6 +382,8 @@ void Balau::Lua::declareFunc(const char * name, lua_CFunction f, int i) {
     checkstack(2);
     lua_pushstring(L, name);
     lua_pushcfunction(L, f);
+    if ((i < 0) && (i > LUA_REGISTRYINDEX))
+        i += 2;
     lua_settable(L, i);
 }
 
