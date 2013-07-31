@@ -264,26 +264,36 @@ struct lua_functypes_t {
     sLua_##classname::method_##enumvar)
 
 #define PUSH_CLASS(classname) \
-    bool constructorPushed = false; \
+    bool classPushed = true; \
 { \
     L.newtable(); \
+    L.push("name"); \
     L.push(#classname); \
-    L.copy(-2); \
+    L.copy(); \
+    L.copy(-4); \
     L.setvar(); \
+    L.settable(); \
 }
 
-#define PUSH_CONSTRUCTOR(classname, enumvar) \
-    bool constructorPushed = true; \
+#define PUSH_SUBCLASS(classname, parentname) \
+    bool classPushed = true; \
 { \
     L.newtable(); \
+    L.push("name"); \
     L.push(#classname); \
-    L.copy(-2); \
+    L.copy(); \
+    L.copy(-4); \
     L.setvar(); \
-    L.declareFunc("new", sLua_##classname::constructor, -1); \
+    L.settable(); \
+    L.push("parent"); \
+    L.getglobal(#parentname); \
+    L.settable(); \
 }
+
+#define PUSH_CONSTRUCTOR(classname, enumvar) L.declareFunc("new", sLua_##classname::constructor, -1)
 
 #define PUSH_STATIC(classname, enumvar) { \
-    AAssert(constructorPushed, "Please call PUSH_CONSTRUCTOR first"); \
+    AAssert(classPushed, "Please call PUSH_(SUB)CLASS first"); \
     L.declareFunc( \
     classname##_functions[enumvar].name, \
     sLua_##classname::static_##enumvar, \

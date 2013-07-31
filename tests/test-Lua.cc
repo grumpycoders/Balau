@@ -65,6 +65,7 @@ class LuaObjectTestFactory : public LuaObjectFactory {
         CHECK_METHODS(ObjectTest);
         CHECK_FUNCTIONS(ObjectTest);
 
+        PUSH_CLASS(ObjectTest);
         PUSH_CONSTRUCTOR(ObjectTest, OBJECTTEST_CONSTRUCTOR);
         PUSH_STATIC(ObjectTest, OBJECTTEST_SOMESTATIC);
         PUSH_FUNCTION(ObjectTest, OBJECTTEST_SOMEFUNCTION);
