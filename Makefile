@@ -1,11 +1,11 @@
 include common.mk
 
 ifeq ($(DEBUG),)
-CPPFLAGS += -g -O3 -DNDEBUG
-LDFLAGS += -g
+CPPFLAGS += -g3 -gdwarf-2 -O3 -DNDEBUG
+LDFLAGS += -g3 -gdwarf-2
 else
-CPPFLAGS += -g -DDEBUG -DEV_VERIFY=3
-LDFLAGS += -g
+CPPFLAGS += -g3 -gdwarf-2 -DDEBUG -DEV_VERIFY=3
+LDFLAGS += -g3 -gdwarf-2
 endif
 
 INCLUDES = includes libcoro libev LuaJIT/src
