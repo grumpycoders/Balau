@@ -44,18 +44,9 @@ struct lua_functypes_t ObjectTest_functions[] = {
     { -1, 0, 0, 0, 0 },
 };
 
-class sLua_ObjectTest {
-  public:
-    DECLARE_METHOD(ObjectTest, OBJECTTEST_SOMEMETHOD1);
-    DECLARE_METHOD(ObjectTest, OBJECTTEST_SOMEMETHOD2);
-
-    DECLARE_CONSTRUCTOR(ObjectTest, OBJECTTEST_CONSTRUCTOR);
-    DECLARE_STATIC(ObjectTest, OBJECTTEST_SOMESTATIC);
-    DECLARE_FUNCTION(ObjectTest, OBJECTTEST_SOMEFUNCTION);
-    DECLARE_FUNCTION(ObjectTest, OBJECTTEST_YIELDTEST);
-  private:
+struct sLua_ObjectTest {
     static int ObjectTest_proceed(Lua & L, int n, ObjectTest * obj, int caller);
-    static int ObjectTest_proceed_statics(Lua & L, int n, int caller) throw (GeneralException);
+    static int ObjectTest_proceed_static(Lua & L, int n, int caller) throw (GeneralException);
 };
 
 class LuaObjectTestFactory : public LuaObjectFactory {
@@ -99,7 +90,7 @@ int sLua_ObjectTest::ObjectTest_proceed(Lua & L, int n, ObjectTest * obj, int ca
 
 Events::Timeout * evt = NULL;
 
-int sLua_ObjectTest::ObjectTest_proceed_statics(Lua & L, int n, int caller) throw (GeneralException) {
+int sLua_ObjectTest::ObjectTest_proceed_static(Lua & L, int n, int caller) throw (GeneralException) {
     int y;
 
     switch (caller) {

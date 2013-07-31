@@ -47,8 +47,22 @@ class LuaObjectFactory {
     virtual void pushObjectAndMembers(Lua & L) = 0;
     template<class T>
     void pushObj(Lua & L, T * obj, const char * name = NULL);
-    static void pushIt(Lua & L, const char * name, lua_CFunction func);
-    static void pushMeta(Lua & L, const char * name, lua_CFunction func);
+    static void pushMethod(Lua & L, const String & name, lua_CFunction func, int upvalues = 0) {
+        pushMethod(L, name.to_charp(), name.strlen(), func, upvalues);
+    }
+    static void pushMeta(Lua & L, const String & name, lua_CFunction func, int upvalues = 0) {
+        pushMeta(L, name.to_charp(), name.strlen(), func, upvalues);
+    }
+    template<size_t S>
+    static void pushMethod(Lua & L, const char (&str)[S], lua_CFunction func, int upvalues = 0) {
+        pushMethod(L, str, S - 1, func, upvalues);
+    }
+    template<size_t S>
+    static void pushMeta(Lua & L, const char (&str)[S], lua_CFunction func, int upvalues = 0) {
+        pushMeta(L, str, S - 1, func, upvalues);
+    }
+    static void pushMethod(Lua & L, const char * name, int strSize, lua_CFunction func, int upvalues = 0);
+    static void pushMeta(Lua & L, const char * name, int strSize, lua_CFunction func, int upvalues = 0);
     static LuaObjectBase * getMeInternal(Lua & L, int idx);
     friend class Lua;
   private:
@@ -95,6 +109,8 @@ class Lua {
     void push(lua_Number n) { checkstack(); lua_pushnumber(L, n); }
     void push(const String & s) { checkstack(); lua_pushlstring(L, s.to_charp(), s.strlen()); }
     void push(bool b) { checkstack(); lua_pushboolean(L, b); }
+    template<size_t S>
+    void push(const char (&str)[S]) { checkstack(); lua_pushlstring(L, str, S - 1); }
     void push(const char * str, int size = -1) { if (size < 0) size = strlen(str); checkstack(); lua_pushlstring(L, str, size); }
     void push(void * p) { checkstack(); lua_pushlightuserdata(L, p); }
     void push(lua_CFunction f, int n = 0) { checkstack(); lua_pushcclosure(L, f, n); }
@@ -130,6 +146,8 @@ class Lua {
     bool isuserdata(int i = -1) { return lua_isuserdata(L, i); }
     bool islightuserdata(int i = -1) { return lua_islightuserdata(L, i); }
     bool isobject(int i = -1);
+
+    int upvalue(int i) { return lua_upvalueindex(i); }
 
     bool toboolean(int i = -1) { return lua_toboolean(L, i); }
     lua_Number tonumber(int i = -1) { return lua_tonumber(L, i); }
@@ -213,58 +231,8 @@ struct lua_functypes_t {
     int argtypes[MAXARGS];
 };
 
-#define DECLARE_METHOD(classname, enumvar) static int method_##enumvar(lua_State * L) { \
-    return LuaHelpers<classname>::method_multiplex( \
-        enumvar, \
-        L, \
-        sLua_##classname::classname##_proceed, \
-        NULL, \
-        classname##_methods, \
-        true); \
-    }
-
-#define DECLARE_CONSTRUCTOR(classname, enumvar) static int constructor(lua_State * L) { \
-    return LuaHelpers<classname>::method_multiplex( \
-        enumvar, \
-        L, \
-        NULL, \
-        sLua_##classname::classname##_proceed_statics, \
-        classname##_functions, \
-        false); \
-    }
-
-#define DECLARE_FUNCTION(classname, enumvar) static int function_##enumvar(lua_State * L) { \
-    return LuaHelpers<classname>::method_multiplex( \
-        enumvar, \
-        L, \
-        NULL, \
-        sLua_##classname::classname##_proceed_statics, \
-        classname##_functions, \
-        false); \
-    }
-
-#define DECLARE_STATIC(classname, enumvar) static int static_##enumvar(lua_State * L) { \
-    return LuaHelpers<classname>::method_multiplex( \
-        enumvar, \
-        L, \
-        NULL, \
-        sLua_##classname::classname##_proceed_statics, \
-        classname##_functions, \
-        false); \
-    }
-
-#define PUSH_METHOD(classname, enumvar) pushIt( \
-    L, \
-    classname##_methods[enumvar].name, \
-    sLua_##classname::method_##enumvar)
-
-#define PUSH_METAMETHOD(classname, enumvar) pushMeta( \
-    L, \
-    String("__") + classname##_methods[enumvar].name, \
-    sLua_##classname::method_##enumvar)
-
 #define PUSH_CLASS(classname) \
-    bool classPushed = true; \
+    bool callPushClassFirst = true; \
 { \
     L.newtable(); \
     L.push("name"); \
@@ -276,7 +244,7 @@ struct lua_functypes_t {
 }
 
 #define PUSH_SUBCLASS(classname, parentname) \
-    bool classPushed = true; \
+    bool callPushClassFirst = true; \
 { \
     L.newtable(); \
     L.push("name"); \
@@ -290,24 +258,62 @@ struct lua_functypes_t {
     L.settable(); \
 }
 
-#define PUSH_CONSTRUCTOR(classname, enumvar) L.declareFunc("new", sLua_##classname::constructor, -1)
-
-#define PUSH_STATIC(classname, enumvar) { \
-    AAssert(classPushed, "Please call PUSH_(SUB)CLASS first"); \
-    L.declareFunc( \
-    classname##_functions[enumvar].name, \
-    sLua_##classname::static_##enumvar, \
-    -1); \
+#define PUSH_METHOD(classname, enumvar) { \
+    L.push(String(classname##_methods[enumvar].name)); \
+    L.push((lua_Number) enumvar); \
+    L.push((void *) sLua_##classname::classname##_proceed); \
+    L.push((void *) NULL); \
+    L.push((void *) classname##_methods); \
+    L.push(true); \
+    L.push(LuaHelpers<classname>::method_multiplex_closure, 5); \
+    L.settable(); \
 }
 
-#define PUSH_FUNCTION(classname, enumvar) L.declareFunc( \
-    classname##_functions[enumvar].name, \
-    sLua_##classname::function_##enumvar)
+#define PUSH_METAMETHOD(classname, enumvar) { \
+    L.push(String("__") + classname##_methods[enumvar].name); \
+    L.push((lua_Number) enumvar); \
+    L.push((void *) sLua_##classname::classname##_proceed); \
+    L.push((void *) NULL); \
+    L.push((void *) classname##_methods); \
+    L.push(true); \
+    L.push(LuaHelpers<classname>::method_multiplex_closure, 5); \
+    L.settable(); \
+}
 
-#define PUSH_SUBFUNCTION(classname, enumvar, array) L.declareFunc( \
-    classname##_functions[enumvar].name, \
-    sLua_##classname::function_##enumvar, \
-    array)
+#define PUSH_CONSTRUCTOR(classname, enumvar) { \
+    callPushClassFirst = true; \
+    L.push("new"); \
+    L.push((lua_Number) enumvar); \
+    L.push((void *) NULL); \
+    L.push((void *) sLua_##classname::classname##_proceed_static); \
+    L.push((void *) classname##_functions); \
+    L.push(false); \
+    L.push(LuaHelpers<classname>::method_multiplex_closure, 5); \
+    L.settable(); \
+}
+
+#define PUSH_STATIC(classname, enumvar) { \
+    callPushClassFirst = true; \
+    L.push(classname##_functions[enumvar].name); \
+    L.push((lua_Number) enumvar); \
+    L.push((void *) NULL); \
+    L.push((void *) sLua_##classname::classname##_proceed_static); \
+    L.push((void *) classname##_functions); \
+    L.push(false); \
+    L.push(LuaHelpers<classname>::method_multiplex_closure, 5); \
+    L.settable(); \
+}
+
+#define PUSH_FUNCTION(classname, enumvar) { \
+    L.push(classname##_functions[enumvar].name); \
+    L.push((lua_Number) enumvar); \
+    L.push((void *) NULL); \
+    L.push((void *) sLua_##classname::classname##_proceed_static); \
+    L.push((void *) classname##_functions); \
+    L.push(false); \
+    L.push(LuaHelpers<classname>::method_multiplex_closure, 5); \
+    L.settable(LUA_GLOBALSINDEX); \
+}
 
 #define PUSH_CLASS_DONE() L.pop()
 
@@ -347,14 +353,28 @@ class LuaHelpersBase {
 
 template <class T>
 class LuaHelpers : public LuaHelpersBase {
+    typedef int (*proceed_t)(Lua & L, int n, T * obj, int caller);
+    typedef int (*proceed_static_t)(Lua & L, int n, int caller);
   public:
-    static int method_multiplex(int caller, lua_State * __L, int (*proceed)(Lua & L, int n, T * obj, int caller), int (*proceed_static)(Lua & L, int n, int caller), lua_functypes_t * tab, bool method) {
+    static int method_multiplex_closure(lua_State * __L) {
         Lua L(__L);
+        int caller;
+        proceed_t proceed;
+        proceed_static_t proceed_static;
+        lua_functypes_t * tab;
+        bool method;
+
+        caller = L.tonumber(L.upvalue(1));
+        proceed = (proceed_t) L.touserdata(L.upvalue(2));
+        proceed_static = (proceed_static_t) L.touserdata(L.upvalue(3));
+        tab = (lua_functypes_t *) L.touserdata(L.upvalue(4));
+        method = L.toboolean(L.upvalue(5));
+
         return method_multiplex(caller, L, proceed, proceed_static, tab, method);
     }
 
   private:
-    static int method_multiplex(int caller, Lua & L, int (*proceed)(Lua & L, int n, T * obj, int caller), int (*proceed_static)(Lua & L, int n, int caller), lua_functypes_t * tab, bool method) {
+    static int method_multiplex(int caller, Lua & L, proceed_t proceed, proceed_static_t proceed_static, lua_functypes_t * tab, bool method) {
         int r;
 
         try {
@@ -368,7 +388,7 @@ class LuaHelpers : public LuaHelpersBase {
         return r;
     }
 
-    static int method_multiplex_resume(int caller, Lua & L, int (*proceed)(Lua & L, int n, T * obj, int caller), int (*proceed_static)(Lua & L, int n, int caller), lua_functypes_t * tab, bool method) {
+    static int method_multiplex_resume(int caller, Lua & L, proceed_t proceed, proceed_static_t proceed_static, lua_functypes_t * tab, bool method) {
         int r;
 
         try {
@@ -382,7 +402,7 @@ class LuaHelpers : public LuaHelpersBase {
         return r;
     }
 
-    static int method_multiplex_internal(int caller, Lua & L, int (*proceed)(Lua & L, int n, T * obj, int caller), int (*proceed_static)(Lua & L, int n, int caller), lua_functypes_t * tab, bool method) {
+    static int method_multiplex_internal(int caller, Lua & L, proceed_t proceed, proceed_static_t proceed_static, lua_functypes_t * tab, bool method) {
         int add = method ? 1 : 0;
         int n = L.gettop() - add;
         T * obj = 0;

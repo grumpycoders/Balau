@@ -804,7 +804,7 @@ void Balau::LuaObjectFactory::pushMe(Lua & L, LuaObjectBase * o, const char * ob
         L.push(objname);
         L.settable(-3, true);
     }
-    pushIt(L, "destroy", LuaStatics::destructor);
+    pushMethod(L, "destroy", LuaStatics::destructor);
     if (!m_wantsDestruct)
         o->detach();
 }
@@ -827,17 +827,29 @@ Balau::LuaObjectBase * Balau::LuaObjectFactory::getMeInternal(Lua & L, int i) {
     return o;
 }
 
-void Balau::LuaObjectFactory::pushIt(Lua & L, const char * s, lua_CFunction f) {
-    L.push(s);
-    L.push(f);
+void Balau::LuaObjectFactory::pushMethod(Lua & L, const char * s, int strSize, lua_CFunction f, int upvalues) {
+    if (upvalues == 0) {
+        L.push(s, strSize);
+        L.push(f);
+    } else {
+        L.push(f, upvalues);
+        L.push(s, strSize);
+        L.insert(-2);
+    }
     L.settable(-3, true);
 }
 
-void Balau::LuaObjectFactory::pushMeta(Lua & L, const char * s, lua_CFunction f) {
+void Balau::LuaObjectFactory::pushMeta(Lua & L, const char * s, int strSize, lua_CFunction f, int upvalues) {
     if (!L.getmetatable())
         L.newtable();
-    L.push(s);
-    L.push(f);
+    if (upvalues == 0) {
+        L.push(s);
+        L.push(f);
+    } else {
+        L.push(f, upvalues);
+        L.push(s, strSize);
+        L.insert(-2);
+    }
     L.settable();
     L.setmetatable();
 }
