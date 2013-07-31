@@ -202,6 +202,13 @@ void MainTask::Do() {
     }
     TAssert(L.gettop() == 0);
 
+    L.load("return obj.__type.name == 'ObjectTest', obj.__type.new == ObjectTest.new");
+    TAssert(L.gettop() == 2);
+    TAssert(L.toboolean(1) == true);
+    TAssert(L.toboolean(2) == true);
+    L.pop();
+    L.pop();
+
     IO<Input> i = new Input("tests/test-Lua.lua");
     i->open();
     L.load(i);

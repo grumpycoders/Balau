@@ -800,8 +800,8 @@ void Balau::LuaObjectFactory::pushMe(Lua & L, LuaObjectBase * o, const char * ob
     pushMeta(L, "__gc", LuaStatics::collector);
     L.settable(-3, true);
     if (objname && *objname) {
-        L.push("__objname");
-        L.push(objname);
+        L.push("__type");
+        L.getglobal(objname);
         L.settable(-3, true);
     }
     pushMethod(L, "destroy", LuaStatics::destructor);
