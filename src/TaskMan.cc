@@ -1,3 +1,4 @@
+
 #include "Async.h"
 #include "TaskMan.h"
 #include "Task.h"
@@ -391,13 +392,13 @@ void * Balau::TaskMan::TaskManThread::proc() {
         m_taskMan->mainLoop();
         success = true;
     }
-    catch (Exit e) {
+    catch (Exit & e) {
         Printer::log(M_ERROR, "We shouldn't have gotten an Exit exception here... exitting anyway");
         auto trace = e.getTrace();
         for (String & str : trace)
             Printer::log(M_ERROR, "%s", str.to_charp());
     }
-    catch (RessourceException e) {
+    catch (RessourceException & e) {
         Printer::log(M_ERROR | M_ALERT, "The TaskMan thread got a ressource problem: %s", e.getMsg());
         const char * details = e.getDetails();
         if (details)
@@ -406,7 +407,7 @@ void * Balau::TaskMan::TaskManThread::proc() {
         for (String & str : trace)
             Printer::log(M_DEBUG, "%s", str.to_charp());
     }
-    catch (GeneralException e) {
+    catch (GeneralException & e) {
         Printer::log(M_ERROR | M_ALERT, "The TaskMan thread caused an exception: %s", e.getMsg());
         const char * details = e.getDetails();
         if (details)

@@ -50,13 +50,13 @@ void * Balau::ThreadHelper::threadProc(void * arg) {
         free(tls);
         success = true;
     }
-    catch (Exit e) {
+    catch (Exit & e) {
         Printer::log(M_ERROR, "We shouldn't have gotten an Exit exception here... exitting anyway");
         auto trace = e.getTrace();
         for (String & str : trace)
             Printer::log(M_ERROR, "%s", str.to_charp());
     }
-    catch (RessourceException e) {
+    catch (RessourceException & e) {
         Printer::log(M_ERROR | M_ALERT, "The Thread got a ressource problem: %s", e.getMsg());
         const char * details = e.getDetails();
         if (details)
@@ -65,7 +65,7 @@ void * Balau::ThreadHelper::threadProc(void * arg) {
         for (String & str : trace)
             Printer::log(M_DEBUG, "%s", str.to_charp());
     }
-    catch (GeneralException e) {
+    catch (GeneralException & e) {
         Printer::log(M_ERROR | M_ALERT, "The Thread caused an exception: %s", e.getMsg());
         const char * details = e.getDetails();
         if (details)

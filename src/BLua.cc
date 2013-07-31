@@ -210,10 +210,10 @@ int Balau::LuaStatics::callwrap(lua_State * __L, lua_CFunction func) {
     try {
         return func(__L);
     }
-    catch (LuaException e) {
+    catch (LuaException & e) {
         L.error(String("LuaException: ") + e.getMsg());
     }
-    catch (Balau::GeneralException e) {
+    catch (Balau::GeneralException & e) {
         L.error(String("GeneralException: ") + e.getMsg());
     }
 // LuaJIT sucks sometime.
@@ -486,7 +486,7 @@ const char * Balau::LuaStatics::getF(lua_State * L, void * ud, size_t * size) {
     try {
         *size = lf->f->read(lf->buff, BUFFERSIZE);
     }
-    catch (GeneralException e) {
+    catch (GeneralException & e) {
         lf->exception = new GeneralException(e);
         AssertHelper("LuaJIT is lame.");
     }

@@ -69,7 +69,7 @@ void Balau::LuaTask::Do() {
             else
                 m_cell->run(L);
         }
-        catch (GeneralException e) {
+        catch (GeneralException & e) {
             m_cell->m_exception = new GeneralException(e);
         }
         catch (...) {

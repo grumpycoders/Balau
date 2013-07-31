@@ -51,7 +51,7 @@ ssize_t Balau::Handle::forceRead(void * _buf, size_t count, Events::BaseEvent * 
         try {
             r = read(buf, count);
         }
-        catch (EAgain e) {
+        catch (EAgain & e) {
             if (evt && evt->gotSignal())
                 return total;
             Task::operationYield(e.getEvent());
@@ -78,7 +78,7 @@ ssize_t Balau::Handle::forceWrite(const void * _buf, size_t count, Events::BaseE
         try {
             r = write(buf, count);
         }
-        catch (EAgain e) {
+        catch (EAgain & e) {
             if (evt && evt->gotSignal())
                 return total;
             Task::operationYield(e.getEvent());

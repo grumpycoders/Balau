@@ -60,7 +60,7 @@ int Balau::Main::bootstrap(int argc, char ** argv) {
         r = TaskMan::getDefaultTaskMan()->mainLoop();
         m_status = STOPPING;
     }
-    catch (Exit e) {
+    catch (Exit & e) {
         m_status = STOPPING;
         Printer::log(M_ERROR, "We shouldn't have gotten an Exit exception here... exitting anyway");
         auto trace = e.getTrace();
@@ -68,7 +68,7 @@ int Balau::Main::bootstrap(int argc, char ** argv) {
             Printer::log(M_ERROR, "%s", str.to_charp());
         r = e.getCode();
     }
-    catch (RessourceException e) {
+    catch (RessourceException & e) {
         m_status = STOPPING;
         Printer::log(M_ERROR | M_ALERT, "The application got a ressource problem: %s", e.getMsg());
         const char * details = e.getDetails();
@@ -79,7 +79,7 @@ int Balau::Main::bootstrap(int argc, char ** argv) {
             Printer::log(M_DEBUG, "%s", str.to_charp());
         r = -1;
     }
-    catch (GeneralException e) {
+    catch (GeneralException & e) {
         m_status = STOPPING;
         Printer::log(M_ERROR | M_ALERT, "The application caused an exception: %s", e.getMsg());
         const char * details = e.getDetails();

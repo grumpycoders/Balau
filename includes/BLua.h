@@ -350,7 +350,7 @@ class LuaHelpers : public LuaHelpersBase {
         try {
             r = method_multiplex_internal(caller, L, proceed, proceed_static, tab, method);
         }
-        catch (EAgain e) {
+        catch (EAgain & e) {
             pushContext(L, [caller, proceed, proceed_static, tab, method](Lua & L) -> int { return method_multiplex_resume(caller, L, proceed, proceed_static, tab, method); }, e.getEvent());
             r = L.yield(L.gettop());
         }
@@ -364,7 +364,7 @@ class LuaHelpers : public LuaHelpersBase {
         try {
             r = method_multiplex_internal(caller, L, proceed, proceed_static, tab, method);
         }
-        catch (EAgain e) {
+        catch (EAgain & e) {
             pushContext(L, [caller, proceed, proceed_static, tab, method](Lua & L) -> int { return method_multiplex_resume(caller, L, proceed, proceed_static, tab, method); }, e.getEvent());
             r = -1;
         }

@@ -116,7 +116,7 @@ void SimpleTaskTest::Do() {
         IO<Input> i(new Input("SomeInexistantFile.txt"));
         i->open();
     }
-    catch (ENoEnt e) {
+    catch (ENoEnt & e) {
         failed = true;
     }
     TAssert(failed);
