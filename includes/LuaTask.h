@@ -3,6 +3,8 @@
 #include <c++11-surrogates.h>
 #include <BLua.h>
 #include <Task.h>
+#include <StacklessTask.h>
+#include <Buffer.h>
 
 namespace Balau {
 
@@ -19,6 +21,7 @@ class LuaExecCell {
     void throwError() throw (GeneralException);
   protected:
     virtual void run(Lua &) = 0;
+    virtual bool needsStack() { return false; }
     void setError() { m_gotError = true; }
   private:
     Events::Async m_event;
@@ -43,6 +46,7 @@ class LuaExecFile : public LuaExecCell {
   public:
       LuaExecFile(IO<Handle> file) : m_file(file) { }
   private:
+    virtual bool needsStack() { return !m_file.isA<Buffer>(); }
     virtual void run(Lua &);
     IO<Handle> m_file;
 };
@@ -52,14 +56,14 @@ class LuaTask : public Task {
       ~LuaTask() { L.weaken(); }
     virtual const char * getName() const { return "LuaTask"; }
   private:
-      LuaTask(Lua && __L, LuaExecCell * cell) : L(Move(__L)), m_cell(cell) { }
+      LuaTask(Lua && __L, LuaExecCell * cell) : L(Move(__L)), m_cell(cell) { if (!cell->needsStack()) setStackless(); }
     virtual void Do();
     Lua L;
     LuaExecCell * m_cell;
     friend class LuaMainTask;
 };
 
-class LuaMainTask : public Task {
+class LuaMainTask : public StacklessTask {
   public:
       LuaMainTask();
       ~LuaMainTask();

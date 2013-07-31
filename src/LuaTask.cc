@@ -42,18 +42,22 @@ void Balau::LuaMainTask::stop() {
 }
 
 void Balau::LuaMainTask::Do() {
+    LuaExecCell * cell = NULL;
     for (;;) {
-        LuaExecCell * cell;
         Printer::elog(E_TASK, "LuaMainTask at %p tries to pop an ExecCell", this);
-        while ((cell = m_queue.pop())) {
-            Printer::elog(E_TASK, "LuaMainTask at %p popped %p", this, cell);
-            if (dynamic_cast<LuaTaskStopper *>(cell)) {
-                Printer::elog(E_TASK, "LuaMainTask at %p is stopping", this);
-                delete cell;
-                return;
-            }
-            TaskMan::registerTask(new LuaTask(L.thread(), cell), this);
+        try {
+            cell = m_queue.pop();
         }
+        catch (Balau::EAgain & e) {
+            taskSwitch();
+        }
+        Printer::elog(E_TASK, "LuaMainTask at %p popped %p", this, cell);
+        if (dynamic_cast<LuaTaskStopper *>(cell)) {
+            Printer::elog(E_TASK, "LuaMainTask at %p is stopping", this);
+            delete cell;
+            return;
+        }
+        TaskMan::registerTask(new LuaTask(L.thread(), cell), this);
     }
 }
 
