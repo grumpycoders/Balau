@@ -1,5 +1,6 @@
 #include <Main.h>
 #include <BLua.h>
+#include <Input.h>
 
 using namespace Balau;
 
@@ -116,7 +117,7 @@ int sLua_ObjectTest::ObjectTest_proceed_statics(Lua & L, int n, int caller) thro
         if (evt)
             delete evt;
         evt = NULL;
-        if (y < 5) {
+        if (y < 2) {
             evt = new Events::Timeout(0.1f);
             throw EAgain(evt);
         }
@@ -192,6 +193,11 @@ void MainTask::Do() {
         yield();
         LuaHelpersBase::resume(L);
     }
+    TAssert(L.gettop() == 0);
+
+    IO<Input> i = new Input("tests/test-Lua.lua");
+    i->open();
+    L.load(i);
     TAssert(L.gettop() == 0);
 
     TAssert(objGotDestroyed == 0);
