@@ -263,20 +263,32 @@ struct lua_functypes_t {
     String("__") + classname##_methods[enumvar].name, \
     sLua_##classname::method_##enumvar)
 
-#define PUSH_CONSTRUCTOR(classname, enumvar) \
-    bool constructorPushed = true; \
+#define PUSH_CLASS(classname) \
+    bool constructorPushed = false; \
+{ \
     L.newtable(); \
     L.push(#classname); \
     L.copy(-2); \
     L.setvar(); \
-    L.declareFunc("new", sLua_##classname::constructor, -1)
+}
 
-#define PUSH_STATIC(classname, enumvar) \
+#define PUSH_CONSTRUCTOR(classname, enumvar) \
+    bool constructorPushed = true; \
+{ \
+    L.newtable(); \
+    L.push(#classname); \
+    L.copy(-2); \
+    L.setvar(); \
+    L.declareFunc("new", sLua_##classname::constructor, -1); \
+}
+
+#define PUSH_STATIC(classname, enumvar) { \
     AAssert(constructorPushed, "Please call PUSH_CONSTRUCTOR first"); \
     L.declareFunc( \
     classname##_functions[enumvar].name, \
     sLua_##classname::static_##enumvar, \
-    -1)
+    -1); \
+}
 
 #define PUSH_FUNCTION(classname, enumvar) L.declareFunc( \
     classname##_functions[enumvar].name, \
