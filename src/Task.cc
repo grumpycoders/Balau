@@ -296,7 +296,7 @@ void Balau::Task::operationYield(Events::BaseEvent * evt, enum OperationYieldTyp
     if (!evt)
         return;
 
-    if ((yieldType != SIMPLE) && t->m_okayToEAgain && !evt->gotSignal()) {
+    if ((yieldType != SIMPLE) && t->m_okayToEAgain && !gotSignal) {
         Printer::elog(E_TASK, "operation is throwing an exception.");
         throw EAgain(evt);
     }
