@@ -144,14 +144,14 @@ void Balau::Task::switchTo() {
     IAssert(m_status != RUNNING, "Task %s at %p is still running... ?", getName(), this);
 }
 
-void Balau::Task::yield(bool stillRunning) throw (GeneralException) {
+bool Balau::Task::yield(bool stillRunning) {
     Printer::elog(E_TASK, "Task %p - %s yielding", this, getName());
     if (stillRunning)
         m_status = YIELDED;
     else
         m_status = SLEEPING;
     if (m_stackless) {
-        throw EAgain(NULL);
+        return true;
     } else {
 #ifndef _WIN32
         coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
@@ -159,6 +159,7 @@ void Balau::Task::yield(bool stillRunning) throw (GeneralException) {
         SwitchToFiber(m_taskMan->m_fiber);
 #endif
     }
+    return false;
 }
 
 Balau::Task * Balau::Task::getCurrentTask() {
@@ -280,10 +281,10 @@ void Balau::Task::operationYield(Events::BaseEvent * evt, enum OperationYieldTyp
         AAssert(t->m_okayToEAgain, "You can't run a stackless operation from a non-okay-to-eagain task.");
     }
 
-    bool gotSignal;
+    bool gotSignal, doEAgain = false;
 
     do {
-        t->yield(evt == NULL);
+        doEAgain = t->yield(evt == NULL);
         static const char * YieldTypeToString[] = {
             "SIMPLE",
             "INTERRUPTIBLE",
@@ -296,7 +297,7 @@ void Balau::Task::operationYield(Events::BaseEvent * evt, enum OperationYieldTyp
     if (!evt)
         return;
 
-    if ((yieldType != SIMPLE) && t->m_okayToEAgain && !gotSignal) {
+    if ((yieldType != SIMPLE) && t->m_okayToEAgain && !gotSignal && doEAgain) {
         Printer::elog(E_TASK, "operation is throwing an exception.");
         throw EAgain(evt);
     }
