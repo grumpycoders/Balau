@@ -265,7 +265,7 @@ int Balau::TaskMan::mainLoop() {
 
         // libev's event "loop". We always runs it once though.
         m_allowedToSignal = true;
-        Printer::elog(E_TASK, "TaskMan at %p Going to libev main loop", this);
+        Printer::elog(E_TASK, "TaskMan at %p Going to libev main loop; stopped = %s", this, m_stopped ? "true" : "false");
         ev_run(m_loop, noWait || m_stopped ? EVRUN_NOWAIT : EVRUN_ONCE);
         Printer::elog(E_TASK, "TaskMan at %p Getting out of libev main loop", this);
 
