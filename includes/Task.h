@@ -167,9 +167,7 @@ class Task {
     struct ev_loop * getLoop();
     bool isStackless() { return m_stackless; }
   protected:
-    void yield(Events::BaseEvent * evt = NULL) throw (GeneralException) {
-        if (evt)
-            waitFor(evt);
+    void yield() throw (GeneralException) {
         if (yield(false))
             throw EAgain(NULL);
     }
@@ -191,6 +189,11 @@ class Task {
         m_okayToEAgain = true;
     }
   private:
+    void yield(Events::BaseEvent * evt) throw (GeneralException) {
+        waitFor(evt);
+        if (yield(false))
+            throw EAgain(NULL);
+    }
     bool yield(bool stillRunning);
     static size_t stackSize() { return 64 * 1024; }
     void setup(TaskMan * taskMan, void * stack);
