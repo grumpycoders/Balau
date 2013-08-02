@@ -8,6 +8,7 @@ static Balau::LocalTmpl<Balau::Task> localTask;
 
 Balau::Task::Task() : m_status(STARTING), m_okayToEAgain(false), m_stackless(false) {
     Printer::elog(E_TASK, "Created a Task at %p", this);
+    m_tls = Local::createTLS(g_tlsManager->getTLS());
 }
 
 bool Balau::Task::needsStacks() {
@@ -37,7 +38,6 @@ void Balau::Task::setup(TaskMan * taskMan, void * stack) {
 
     m_taskMan = taskMan;
 
-    m_tls = Local::createTLS();
     void * oldTLS = g_tlsManager->getTLS();
     g_tlsManager->setTLS(m_tls);
     localTask.set(this);

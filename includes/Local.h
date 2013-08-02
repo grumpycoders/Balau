@@ -28,7 +28,12 @@ extern TLSManager * g_tlsManager;
 class Local : public AtStart {
   public:
     static int getSize() { return s_size; }
-    static void * createTLS() { void * r = calloc(s_size * sizeof(void *), 1); return r; }
+    static void * createTLS(void * c = NULL) {
+        void * r = calloc(s_size * sizeof(void *), 1);
+        if (c)
+            memcpy(r, c, s_size * sizeof(void *));
+        return r;
+    }
   protected:
       Local() : AtStart(0) { }
     void * getGlobal() { return m_globals[m_idx]; }
