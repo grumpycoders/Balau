@@ -262,22 +262,48 @@ class QueueBase {
 };
 
 template<class R>
-struct Future {
+class Future {
+  public:
     typedef std::function<R()> func_t;
+      Future(func_t func) : m_func(func) { }
     R get();
-    func_t m_run;
+    void run();
+  private:
+    func_t m_func;
+    Events::BaseEvent * m_evt = NULL;
 };
 
 template<class R>
 R Future<R>::get() {
     R r;
     for (;;) {
+        if (m_evt && !m_evt->gotSignal())
+            continue;
+        m_evt = NULL;
         try {
-            r = m_run();
+            r = m_func();
             return r;
         }
         catch (EAgain & e) {
-            Task::operationYield(e.getEvent(), Task::INTERRUPTIBLE);
+            m_evt = e.getEvent();
+            Task::operationYield(m_evt, Task::INTERRUPTIBLE);
+        }
+    }
+}
+
+template<class R>
+void Future<R>::run() {
+    for (;;) {
+        if (m_evt && !m_evt->gotSignal())
+            continue;
+        m_evt = NULL;
+        try {
+            m_func();
+            return;
+        }
+        catch (EAgain & e) {
+            m_evt = e.getEvent();
+            Task::operationYield(m_evt, Task::INTERRUPTIBLE);
         }
     }
 }

@@ -96,14 +96,11 @@ ssize_t Balau::Handle::forceWrite(const void * _buf, size_t count, Events::BaseE
 
 Balau::Future<uint8_t> Balau::Handle::readU8() {
     IO<Handle> t(this);
-    auto func = [t]() mutable -> uint8_t {
-        uint8_t r;
-        t->read(&r, 1);
-        return r;
-    };
-    Future<uint8_t> r;
-    r.m_run = func;
-    return r;
+    return Future<uint8_t>([t]() mutable {
+        uint8_t b;
+        t->read(&b, 1);
+        return b;
+    });
 }
 
 void Balau::Handle::rseek(off_t offset, int whence) throw (GeneralException) {
