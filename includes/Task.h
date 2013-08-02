@@ -166,6 +166,13 @@ class Task {
     TaskMan * getTaskMan() const { return m_taskMan; }
     struct ev_loop * getLoop();
     bool isStackless() { return m_stackless; }
+    class SimpleContext {
+      public:
+          SimpleContext() : m_oldStatus(Task::getCurrentTask()->enterSimpleContext()) { }
+          ~SimpleContext() { Task::getCurrentTask()->leaveSimpleContext(m_oldStatus); }
+      private:
+        bool m_oldStatus;
+    };
   protected:
     void yield() throw (GeneralException) {
         if (yield(false))
@@ -201,6 +208,15 @@ class Task {
     void switchTo();
     static void CALLBACK coroutineTrampoline(void *);
     void coroutine();
+    bool enterSimpleContext() {
+        AAssert(!m_stackless, "You can't enter a simple context in a stackless task");
+        bool r = m_okayToEAgain;
+        m_okayToEAgain = false;
+        return r;
+    }
+    void leaveSimpleContext(bool oldStatus) {
+        m_okayToEAgain = oldStatus;
+    }
     void * m_stack = NULL;
 #ifndef _WIN32
     coro_context m_ctx;
