@@ -65,7 +65,7 @@ void Balau::LuaTask::Do() {
     while(true) {
         try {
             if (L.yielded())
-                LuaHelpersBase::resume(L);
+                L.resume();
             else
                 m_cell->run(L);
         }
@@ -76,9 +76,6 @@ void Balau::LuaTask::Do() {
             m_cell->setError();
         }
         if (L.yielded()) {
-            Events::BaseEvent * evt = LuaHelpersBase::getEvent(L);
-            IAssert(evt, "We need an event for now here.");
-            waitFor(evt);
             yield();
             continue;
         }

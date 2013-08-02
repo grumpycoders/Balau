@@ -79,6 +79,7 @@ class Lua {
       Lua();
       Lua(lua_State * __L) : L(__L) { }
       Lua(Lua && oL) : L(oL.L) { oL.L = NULL; }
+      Lua(const Lua & oL) : L(oL.L) { }
 
     Lua & operator=(Lua && oL);
 
@@ -96,7 +97,7 @@ class Lua {
     void open_bit();
     void open_jit();
     void open_ffi();
-    int wrap_open(openlualib_t open) { int n = gettop(); int r = open(L); while (n < gettop()) remove(n); return r; }
+    int wrap_open(openlualib_t open) { int n = gettop(); int r = open(L); while (n < gettop()) pop(); return r; }
     void openlib(const String & libname, const struct luaL_reg *l, int nup) { luaL_openlib(L, libname.to_charp(), l, nup); }
 
     void setCallWrap(lua_CallWrapper wrapper);
@@ -118,10 +119,10 @@ class Lua {
     int checkstack(int extra = 1) { return lua_checkstack(L, extra); }
 
     int next(int t = -2) { return lua_next(L, t); }
-    void copy(int n = -1) { checkstack(); lua_pushvalue(L, n); }
-    void remove(int n = 1) { lua_remove(L, n); }
-    void insert(int n = 1) { checkstack(); lua_insert(L, n); }
-    void replace(int n = 1) { lua_replace(L, n); }
+    void copy(int i = -1) { checkstack(); lua_pushvalue(L, i); }
+    void remove(int i = 1) { lua_remove(L, i); }
+    void insert(int i = 1) { checkstack(); lua_insert(L, i); }
+    void replace(int i = 1) { lua_replace(L, i); }
     void newtable() { checkstack(); lua_newtable(L); }
     void * newuser(size_t s) { checkstack(); return lua_newuserdata(L, s); }
     void settable(int tableIdx = -3, bool raw = false);
@@ -161,6 +162,7 @@ class Lua {
     void dumpvars(IO<Handle> out, const String & prefix, int idx = -1);
     Lua thread(bool saveit = true);
     int yield(int nresults = 0) { return lua_yield(L, nresults); }
+    int yield(Future<int>) throw (GeneralException) __attribute__((noreturn));
     bool yielded() { return lua_status(L) == LUA_YIELD; }
     bool resume(int nargs = 0) throw (GeneralException);
     void showstack(int level = M_INFO);
@@ -191,14 +193,14 @@ class Lua {
   protected:
 
   private:
+    void dumpvars_i(IO<Handle> out, const String & prefix, int idx);
     void dumpvars_r(IO<Handle> out, int idx, int depth = 0) throw (GeneralException);
+    bool resumeC();
+    bool yieldC() throw (GeneralException);
 
     lua_State * L;
 
     friend class LuaStatics;
-
-    Lua & operator=(const Lua &) = delete;
-      Lua(const Lua &) = delete;
 };
 
 class LuaException : public GeneralException {
@@ -339,16 +341,8 @@ template <class T>
 T * LuaObjectFactory::getMe(Lua & L, int idx) { return L.recast<T>(idx); }
 
 class LuaHelpersBase {
-  public:
-    static bool resume(Lua & L);
-    static Events::BaseEvent * getEvent(Lua & L);
   protected:
     static void validate(const lua_functypes_t & entry, bool method, int n, Lua & L, const char * className);
-    static void pushContext(Lua & L, std::function<int(Lua & L)> context, Events::BaseEvent * evt);
-  private:
-      LuaHelpersBase(std::function<int(Lua & L)> context, Events::BaseEvent * evt) : m_context(context), m_evt(evt) { }
-    std::function<int(Lua & L)> m_context;
-    Events::BaseEvent * m_evt;
 };
 
 template <class T>
@@ -375,34 +369,6 @@ class LuaHelpers : public LuaHelpersBase {
 
   private:
     static int method_multiplex(int caller, Lua & L, proceed_t proceed, proceed_static_t proceed_static, lua_functypes_t * tab, bool method) {
-        int r;
-
-        try {
-            r = method_multiplex_internal(caller, L, proceed, proceed_static, tab, method);
-        }
-        catch (EAgain & e) {
-            pushContext(L, [caller, proceed, proceed_static, tab, method](Lua & L) -> int { return method_multiplex_resume(caller, L, proceed, proceed_static, tab, method); }, e.getEvent());
-            r = L.yield(L.gettop());
-        }
-
-        return r;
-    }
-
-    static int method_multiplex_resume(int caller, Lua & L, proceed_t proceed, proceed_static_t proceed_static, lua_functypes_t * tab, bool method) {
-        int r;
-
-        try {
-            r = method_multiplex_internal(caller, L, proceed, proceed_static, tab, method);
-        }
-        catch (EAgain & e) {
-            pushContext(L, [caller, proceed, proceed_static, tab, method](Lua & L) -> int { return method_multiplex_resume(caller, L, proceed, proceed_static, tab, method); }, e.getEvent());
-            r = -1;
-        }
-
-        return r;
-    }
-
-    static int method_multiplex_internal(int caller, Lua & L, proceed_t proceed, proceed_static_t proceed_static, lua_functypes_t * tab, bool method) {
         int add = method ? 1 : 0;
         int n = L.gettop() - add;
         T * obj = 0;

@@ -2,6 +2,7 @@
 #include "BLua.h"
 #include "Printer.h"
 #include "Input.h"
+#include "Buffer.h"
 
 extern "C" {
 #include <lualib.h>
@@ -11,6 +12,16 @@ extern "C" {
 #ifndef BUFFERSIZE
 #define BUFFERSIZE 2048
 #endif
+
+namespace {
+
+class LuaYield : public Balau::GeneralException {
+  public:
+      LuaYield(Balau::Future<int> & f) : GeneralException(), m_f(f) { }
+    Balau::Future<int> m_f;
+};
+
+};
 
 namespace Balau {
 
@@ -204,14 +215,23 @@ int Balau::LuaStatics::print(lua_State * __L) {
     return 0;
 }
 
+static char s_signature = 'B';
+
 int Balau::LuaStatics::callwrap(lua_State * __L, lua_CFunction func) {
     Lua L(__L);
+    int r = 0;
 
     try {
-        return func(__L);
+        r = func(__L);
     }
     catch (LuaException & e) {
         L.error(String("LuaException: ") + e.getMsg());
+    }
+    catch (LuaYield & y) {
+        Future<int> * f = new Future<int>(y.m_f);
+        L.push((void *) f);
+        L.push((void *) &s_signature);
+        r = L.yield(L.gettop());
     }
     catch (Balau::GeneralException & e) {
         L.error(String("GeneralException: ") + e.getMsg());
@@ -221,7 +241,7 @@ int Balau::LuaStatics::callwrap(lua_State * __L, lua_CFunction func) {
 //        L.error("Unknown C++ exception");
 //    }
 
-    return 0;
+    return r;
 }
 
 int Balau::LuaStatics::collector(lua_State * __L) {
@@ -312,7 +332,7 @@ void Balau::Lua::open_base() {
     push("print");
     push(LuaStatics::print);
     settable();
-    while (n < gettop()) remove(-1);
+    while (n < gettop()) pop();
     push("mkdir");
     push(LuaStatics::mkdir);
     settable(LUA_GLOBALSINDEX);
@@ -336,7 +356,7 @@ void Balau::Lua::open_base() {
 void Balau::Lua::open_table() {
     int n = gettop();
     luaopen_table(L);
-    while (n < gettop()) remove(-1);
+    while (n < gettop()) pop();
 }
 
 void Balau::Lua::open_string() {
@@ -345,37 +365,37 @@ void Balau::Lua::open_string() {
     push("iconv");
     push(LuaStatics::iconv);
     settable();
-    while (n < gettop()) remove(-1);
+    while (n < gettop()) pop();
 }
 
 void Balau::Lua::open_math() {
     int n = gettop();
     luaopen_math(L);
-    while (n < gettop()) remove(-1);
+    while (n < gettop()) pop();
 }
 
 void Balau::Lua::open_debug() {
     int n = gettop();
     luaopen_debug(L);
-    while (n < gettop()) remove(-1);
+    while (n < gettop()) pop();
 }
 
 void Balau::Lua::open_jit() {
     int n = gettop();
     luaopen_jit(L);
-    while (n < gettop()) remove(-1);
+    while (n < gettop()) pop();
 }
 
 void Balau::Lua::open_ffi() {
     int n = gettop();
     luaopen_ffi(L);
-    while (n < gettop()) remove(-1);
+    while (n < gettop()) pop();
 }
 
 void Balau::Lua::open_bit() {
     int n = gettop();
     luaopen_bit(L);
-    while (n < gettop()) remove(-1);
+    while (n < gettop()) pop();
 }
 
 void Balau::Lua::declareFunc(const char * name, lua_CFunction f, int i) {
@@ -564,7 +584,15 @@ void Balau::Lua::load(const String & s, bool docall) throw (GeneralException) {
 }
 
 void Balau::Lua::dumpvars(IO<Handle> h, const String & prefix, int i) {
-    Task::SimpleContext sc;
+    if (h.isA<Buffer>()) {
+        dumpvars_i(h, prefix, i);
+    } else {
+        Task::SimpleContext sc;
+        dumpvars_i(h, prefix, i);
+    }
+}
+
+void Balau::Lua::dumpvars_i(IO<Handle> h, const String & prefix, int i) {
     h->writeString(prefix);
     h->writeString(" = {\n");
     dumpvars_r(h, i);
@@ -706,10 +734,22 @@ Balau::Lua Balau::Lua::thread(bool saveit) {
 bool Balau::Lua::resume(int nargs) throw (GeneralException) {
     int r;
 
+    if (resumeC()) {
+        if (yielded()) {
+            yieldC();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     r = lua_resume(L, nargs);
 
-    if ((r == 0) || (r == LUA_YIELD))
-        return 0;
+    if (r == LUA_YIELD)
+        return yieldC();
+
+    if (r == 0)
+        return false;
 
     pushLuaContext();
     showerror();
@@ -730,6 +770,90 @@ bool Balau::Lua::resume(int nargs) throw (GeneralException) {
     default:
         throw LuaException(String("Unknow error while running LUA code (err code: ") + String(r) + ")");
     }
+}
+
+bool Balau::Lua::resumeC() {
+    if (!yielded())
+        return false;
+
+    if (gettop() < 2)
+        return false;
+
+    if (!islightuserdata(-1))
+        return false;
+
+    if (!islightuserdata(-2))
+        return false;
+
+    void * s = touserdata();
+    if (s != &s_signature)
+        return false;
+
+    pop();
+
+    Future<int> * p = (Future<int> *) touserdata();
+    Future<int> f(*p);
+    delete p;
+    pop();
+
+    int nargs = 0;
+    bool yieldedAgain = false;
+
+    try {
+        nargs = f.get();
+    }
+    catch (LuaException & e) {
+        error(String("LuaException: ") + e.getMsg());
+    }
+    catch (EAgain & e) {
+        Future<int> * p = new Future<int>(f);
+        p->m_evt = e.getEvent();
+        push((void *) p);
+        push((void *) &s_signature);
+        yieldedAgain = true;
+    }
+    catch (LuaYield & y) {
+        Future<int> * p = new Future<int>(y.m_f);
+        push((void *) p);
+        push((void *) &s_signature);
+        yieldedAgain = true;
+    }
+    catch (Balau::GeneralException & e) {
+        error(String("GeneralException: ") + e.getMsg());
+    }
+    if (!yieldedAgain)
+        resume(nargs);
+    return true;
+}
+
+int Balau::Lua::yield(Future<int> f) throw (GeneralException) {
+    throw LuaYield(f);
+}
+
+bool Balau::Lua::yieldC() throw (GeneralException) {
+    if (!yielded())
+        return true;
+
+    if (gettop() < 2)
+        return true;
+
+    if (!islightuserdata(-1))
+        return true;
+
+    if (!islightuserdata(-2))
+        return true;
+
+    void * s = touserdata();
+    if (s != &s_signature)
+        return true;
+
+    Future<int> * p = (Future<int> *) touserdata(-2);
+
+    if (p->m_ranOnce)
+        throw EAgain(p->m_evt);
+
+    resumeC();
+    return yieldC();
 }
 
 void Balau::Lua::showstack(int level) {
@@ -922,55 +1046,4 @@ void Balau::LuaHelpersBase::validate(const lua_functypes_t & entry, bool method,
             L.error(String("Invalid arguments to function `") + className + " " + entry.name + "'");
         }
     }
-}
-
-static char s_signature = 'B';
-
-void Balau::LuaHelpersBase::pushContext(Lua & L, std::function<int(Lua & L)> context, Events::BaseEvent * evt) {
-    L.push(new LuaHelpersBase(context, evt));
-    L.push((void *) &s_signature);
-}
-
-bool Balau::LuaHelpersBase::resume(Lua & L) {
-    if (L.gettop() < 2)
-        return false;
-
-    if (!L.islightuserdata())
-        return false;
-
-    char * sig = (char *) L.touserdata();
-    if (sig != &s_signature)
-        return false;
-
-    L.remove(-1);
-
-    LuaHelpersBase * b = (LuaHelpersBase *) L.touserdata();
-    L.remove(-1);
-
-    int r = b->m_context(L);
-
-    delete b;
-
-    if (r < 0)
-        return true;
-
-    L.resume(r);
-
-    return true;
-}
-
-Balau::Events::BaseEvent * Balau::LuaHelpersBase::getEvent(Lua & L) {
-    if (L.gettop() < 2)
-        return NULL;
-
-    if (!L.islightuserdata())
-        return NULL;
-
-    char * sig = (char *) L.touserdata();
-    if (sig != &s_signature)
-        return NULL;
-
-    LuaHelpersBase * b = (LuaHelpersBase *) L.touserdata(-2);
-
-    return b->m_evt;
 }

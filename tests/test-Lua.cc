@@ -1,6 +1,8 @@
 #include <Main.h>
 #include <BLua.h>
 #include <Input.h>
+#include <StacklessTask.h>
+#include <TaskMan.h>
 
 using namespace Balau;
 
@@ -88,7 +90,8 @@ int sLua_ObjectTest::ObjectTest_proceed(Lua & L, int n, ObjectTest * obj, int ca
     return 0;
 }
 
-Events::Timeout * evt = NULL;
+static Events::Timeout * evt = NULL;
+static int yieldCount = 0;
 
 int sLua_ObjectTest::ObjectTest_proceed_static(Lua & L, int n, int caller) throw (GeneralException) {
     int y;
@@ -112,22 +115,56 @@ int sLua_ObjectTest::ObjectTest_proceed_static(Lua & L, int n, int caller) throw
         break;
 
     case OBJECTTEST_YIELDTEST:
-        y = L.tonumber();
-        L.remove();
-        L.push((lua_Number) y + 1);
-        Printer::log(M_STATUS, "yield %i", y);
-        if (evt)
-            delete evt;
-        evt = NULL;
-        if (y < 2) {
-            evt = new Events::Timeout(0.1f);
-            throw EAgain(evt);
-        }
+        L.yield(Future<int>([=]() mutable {
+            int y = L.tonumber();
+            L.pop();
+            L.push((lua_Number) y + 1);
+            Printer::log(M_STATUS, "yield %i", y);
+            if (evt)
+                delete evt;
+            evt = NULL;
+            yieldCount++;
+            if (y < 2) {
+                evt = new Events::Timeout(0.1f);
+                Task::operationYield(evt, Task::INTERRUPTIBLE);
+            }
+
+            L.push(true);
+            return 1;
+        }));
         break;
     }
 
     return 0;
 }
+
+class StacklessYieldTest : public StacklessTask {
+  public:
+      StacklessYieldTest(Lua & __L) : L(__L) { }
+    virtual const char * getName() const override { return "StacklessYieldTest"; }
+  private:
+    Lua & L;
+    bool ranOnce = false;
+    virtual void Do() override {
+        try {
+            if (ranOnce) {
+                L.resume();
+            } else {
+                ranOnce = true;
+                L.load("return yieldTest(0)");
+            }
+            TAssert(!L.yielded());
+            TAssert(L.gettop() == 1);
+            TAssert(L.isboolean());
+            TAssert(L.toboolean());
+            TAssert(yieldCount == 3);
+            L.pop();
+        }
+        catch (EAgain & e) {
+            taskSwitch();
+        }
+    }
+};
 
 void MainTask::Do() {
     Printer::log(M_STATUS, "Test::Lua running.");
@@ -194,13 +231,12 @@ void MainTask::Do() {
 
     TAssert(callCount == 4);
 
-    L.load("yieldTest(0)");
-    while (L.yielded()) {
-        waitFor(LuaHelpersBase::getEvent(L));
-        yield();
-        LuaHelpersBase::resume(L);
-    }
-    TAssert(L.gettop() == 0);
+    Task * syt = new StacklessYieldTest(L);
+    Events::TaskEvent evt(syt);
+    waitFor(&evt);
+    TaskMan::registerTask(syt, this);
+    yield();
+    evt.ack();
 
     L.load("return obj.__type.name == 'ObjectTest', obj.__type.new == ObjectTest.new");
     TAssert(L.gettop() == 2);

@@ -34,7 +34,7 @@ class GeneralException {
     const std::vector<String> getTrace() const { return m_trace; }
 
   protected:
-      GeneralException() { }
+      explicit GeneralException() { }
     void setMsg(char * msg) { if (m_msg) free(m_msg); m_msg = msg; }
     void genTrace();
 
