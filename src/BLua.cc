@@ -564,6 +564,7 @@ void Balau::Lua::load(const String & s, bool docall) throw (GeneralException) {
 }
 
 void Balau::Lua::dumpvars(IO<Handle> h, const String & prefix, int i) {
+    Task::SimpleContext sc;
     h->writeString(prefix);
     h->writeString(" = {\n");
     dumpvars_r(h, i);

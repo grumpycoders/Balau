@@ -488,7 +488,7 @@ bool Balau::HttpWorker::handleClient() {
 
             while (true) {
                 try {
-                    m_strm->forceRead(postData, length);
+                    m_strm->forceRead(postData, length, &evtTimeout);
                     break;
                 }
                 catch (EAgain) {
