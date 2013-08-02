@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdlib.h>
+#include <functional>
 #ifndef _WIN32
 #include <coro.h>
 #endif
@@ -259,6 +260,27 @@ class QueueBase {
     Cell * m_front = NULL, * m_back = NULL;
     pthread_cond_t m_cond;
 };
+
+template<class R>
+struct Future {
+    typedef std::function<R()> func_t;
+    R get();
+    func_t m_run;
+};
+
+template<class R>
+R Future<R>::get() {
+    R r;
+    for (;;) {
+        try {
+            r = m_run();
+            return r;
+        }
+        catch (EAgain & e) {
+            Task::operationYield(e.getEvent(), Task::INTERRUPTIBLE);
+        }
+    }
+}
 
 template<class T>
 class Queue : public QueueBase {
