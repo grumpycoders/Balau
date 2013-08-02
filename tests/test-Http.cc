@@ -25,13 +25,20 @@ const char htmlTemplateStr[] =
 "</html>\n"
 ;
 
-class TestHtmlTemplate : public AtStart {
-  public:
-      TestHtmlTemplate() : AtStart(10), htmlTemplate(m_template) { }
-    virtual void doStart() { m_template.setTemplate(htmlTemplateStr); }
+class TestHtmlTemplateTask : public Task {
+    virtual void Do() { m_template.setTemplate(htmlTemplateStr); }
+    virtual const char * getName() const { return "TestHtmlTemplateTask"; }
+    SimpleMustache & m_template;
+public:
+      TestHtmlTemplateTask(SimpleMustache & htmlTemplate) : m_template(htmlTemplate) { }
+};
 
+class TestHtmlTemplate : public AtStartAsTask {
+  public:
+      TestHtmlTemplate() : AtStartAsTask(10), htmlTemplate(m_template) { }
+    virtual Task * createStartTask() { return new TestHtmlTemplateTask(m_template); }
     const SimpleMustache & htmlTemplate;
-  private:
+  public:
     SimpleMustache m_template;
 };
 

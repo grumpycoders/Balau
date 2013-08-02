@@ -83,16 +83,23 @@ class HttpWorker : public Task {
 
 Balau::SimpleMustache Balau::HttpWorker::m_errorTemplate;
 
-class SetDefaultTemplate : public Balau::AtStart {
-  public:
-      SetDefaultTemplate() : AtStart(0) { }
-    virtual void doStart();
+namespace {
+
+class SetDefaultTemplateTask : public Balau::Task {
     static const Balau::String m_defaultErrorTemplate;
+    virtual const char * getName() const { return "SetDefaultTemplateTask"; }
+    virtual void Do() { Balau::HttpWorker::buildErrorTemplate(m_defaultErrorTemplate); }
+};
+
+class SetDefaultTemplate : public Balau::AtStartAsTask {
+  public:
+      SetDefaultTemplate() : AtStartAsTask(0) { }
+    virtual Balau::Task * createStartTask() { return new SetDefaultTemplateTask(); }
 };
 
 static SetDefaultTemplate setDefaultTemplate;
 
-const Balau::String SetDefaultTemplate::m_defaultErrorTemplate(
+const Balau::String SetDefaultTemplateTask::m_defaultErrorTemplate(
 "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"
 "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
@@ -116,9 +123,7 @@ const Balau::String SetDefaultTemplate::m_defaultErrorTemplate(
 "</html>\n"
 );
 
-void SetDefaultTemplate::doStart() {
-    Balau::HttpWorker::buildErrorTemplate(m_defaultErrorTemplate);
-}
+};
 
 Balau::HttpWorker::HttpWorker(IO<Handle> io, void * _server) : m_socket(new WriteOnly(io)), m_strm(new BStream(io)) {
     m_server = (HttpServer *) _server;

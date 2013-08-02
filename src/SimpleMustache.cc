@@ -116,6 +116,7 @@ void Balau::SimpleMustache::Context::empty(bool skipFirst) {
 static const Balau::Regex changing("^(.*) +(.*)$");
 
 void Balau::SimpleMustache::setTemplate(IO<Handle> _h) {
+    Task::SimpleContext simpleContext;
     empty();
     IO<BStream> h(new BStream(_h));
     h->detach();
