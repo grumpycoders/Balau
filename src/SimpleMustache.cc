@@ -149,7 +149,7 @@ void Balau::SimpleMustache::setTemplate(IO<Handle> _h) {
     bool beginning = false;
 
     while (!h->isEOF()) {
-        uint8_t c = h->readU8();
+        uint8_t c = h->readU8().get();
         switch (state) {
         case PLAIN:
             if (c != srtMarker[0]) {

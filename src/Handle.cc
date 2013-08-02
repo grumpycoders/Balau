@@ -94,6 +94,18 @@ ssize_t Balau::Handle::forceWrite(const void * _buf, size_t count, Events::BaseE
     return total;
 }
 
+Balau::Future<uint8_t> Balau::Handle::readU8() {
+    IO<Handle> t(this);
+    auto func = [t]() mutable -> uint8_t {
+        uint8_t r;
+        t->read(&r, 1);
+        return r;
+    };
+    Future<uint8_t> r;
+    r.m_run = func;
+    return r;
+}
+
 void Balau::Handle::rseek(off_t offset, int whence) throw (GeneralException) {
     if (canSeek())
         throw GeneralException(String("Handle ") + getName() + " can seek, but rseek() not implemented (missing in class " + ClassName(this).c_str() + ")");
