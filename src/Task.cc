@@ -290,7 +290,10 @@ void Balau::Task::operationYield(Events::BaseEvent * evt, enum OperationYieldTyp
             "INTERRUPTIBLE",
             "STACKLESS",
         };
-        Printer::elog(E_TASK, "operation back from yielding; yieldType = %s; okayToEAgain = %s", YieldTypeToString[yieldType], t->m_okayToEAgain ? "true" : "false");
+        if (doEAgain)
+            Printer::elog(E_TASK, "operation couldn't yield; yieldType = %s; okayToEAgain = %s", YieldTypeToString[yieldType], t->m_okayToEAgain ? "true" : "false");
+        else
+            Printer::elog(E_TASK, "operation back from yielding; yieldType = %s; okayToEAgain = %s", YieldTypeToString[yieldType], t->m_okayToEAgain ? "true" : "false");
         gotSignal = evt ? evt->gotSignal() : true;
     } while (((yieldType == SIMPLE) || !t->m_okayToEAgain) && !gotSignal);
 
@@ -298,7 +301,7 @@ void Balau::Task::operationYield(Events::BaseEvent * evt, enum OperationYieldTyp
         return;
 
     if ((yieldType != SIMPLE) && t->m_okayToEAgain && !gotSignal && doEAgain) {
-        Printer::elog(E_TASK, "operation is throwing an exception.");
+        Printer::elog(E_TASK, "operation is throwing an EAgain exception with event %p", evt);
         throw EAgain(evt);
     }
 }
