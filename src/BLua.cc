@@ -3,6 +3,7 @@
 #include "Printer.h"
 #include "Input.h"
 #include "Buffer.h"
+#include "HelperTasks.h"
 
 extern "C" {
 #include <lualib.h>
@@ -90,7 +91,26 @@ int Balau::LuaStatics::dumpvars(lua_State * __L) {
 
     IO<Handle> h(L.recast<Balau::Handle>());
 
-    L.dumpvars(h, prefix);
+    if (h.isA<Buffer>()) {
+        L.dumpvars(h, prefix);
+    } else {
+        IO<Handle> s(new Buffer());
+        L.dumpvars(h, prefix);
+        Task * t = new CopyTask(s, h);
+        Events::TaskEvent * evt = new Events::TaskEvent(t);
+        L.yield(Future<int>([evt, s]() mutable {
+            for (;;) {
+                if (evt->gotSignal()) {
+                    evt->ack();
+                    delete evt;
+                    s->close();
+                } else {
+                    Task::operationYield(evt, Task::INTERRUPTIBLE);
+                }
+            }
+            return 0;
+        }));
+    }
 
     return 0;
 }

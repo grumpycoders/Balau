@@ -56,6 +56,8 @@ StdIO.cc \
 Task.cc \
 TaskMan.cc \
 \
+HelperTasks.cc \
+\
 Http.cc \
 HttpServer.cc \
 SimpleMustache.cc \
