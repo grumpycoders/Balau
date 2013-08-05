@@ -301,6 +301,7 @@ void Balau::Task::operationYield(Events::BaseEvent * evt, enum OperationYieldTyp
         return;
 
     if ((yieldType != SIMPLE) && t->m_okayToEAgain && !gotSignal && doEAgain) {
+        AAssert(!t->m_cannotEAgain, "task at %p in simple context mode can't EAgain", t);
         Printer::elog(E_TASK, "operation is throwing an EAgain exception with event %p", evt);
         throw EAgain(evt);
     }

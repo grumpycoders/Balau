@@ -870,7 +870,7 @@ bool Balau::Lua::yieldC() throw (GeneralException) {
     Future<int> * p = (Future<int> *) touserdata(-2);
 
     if (p->m_ranOnce)
-        throw EAgain(p->m_evt);
+        Task::operationYield(p->m_evt, Task::STACKLESS);
 
     resumeC();
     return yieldC();

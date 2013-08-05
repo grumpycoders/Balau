@@ -14,12 +14,15 @@ namespace Balau {
 
 namespace Events { class BaseEvent; };
 
+class Task;
+
 class EAgain : public GeneralException {
   public:
-      EAgain(Events::BaseEvent * evt) : GeneralException(), m_evt(evt) { }
     Events::BaseEvent * getEvent() { return m_evt; }
   private:
+      EAgain(Events::BaseEvent * evt) : GeneralException(), m_evt(evt) { }
     Events::BaseEvent * m_evt;
+    friend class Task;
 };
 
 class TaskSwitch : public GeneralException {
@@ -28,7 +31,6 @@ class TaskSwitch : public GeneralException {
 };
 
 class TaskMan;
-class Task;
 
 namespace Events {
 
@@ -176,8 +178,10 @@ class Task {
     };
   protected:
     void yield() throw (GeneralException) {
-        if (yield(false))
+        if (yield(false)) {
+            AAssert(!m_cannotEAgain, "task at %p in simple context mode can't EAgain", this);
             throw EAgain(NULL);
+        }
     }
     virtual void Do() = 0;
     void waitFor(Events::BaseEvent * event);
@@ -199,8 +203,10 @@ class Task {
   private:
     void yield(Events::BaseEvent * evt) throw (GeneralException) {
         waitFor(evt);
-        if (yield(false))
+        if (yield(false)) {
+            AAssert(!m_cannotEAgain, "task at %p in simple context mode can't EAgain", this);
             throw EAgain(NULL);
+        }
     }
     bool yield(bool stillRunning);
     static size_t stackSize() { return 64 * 1024; }
@@ -210,13 +216,22 @@ class Task {
     static void CALLBACK coroutineTrampoline(void *);
     void coroutine();
     bool enterSimpleContext() {
-        AAssert(!m_stackless, "You can't enter a simple context in a stackless task");
-        bool r = m_okayToEAgain;
-        m_okayToEAgain = false;
+        bool r;
+        if (m_stackless) {
+            r = m_cannotEAgain;
+            m_cannotEAgain = true;
+        } else {
+            r = m_okayToEAgain;
+            m_okayToEAgain = false;
+        }
         return r;
     }
     void leaveSimpleContext(bool oldStatus) {
-        m_okayToEAgain = oldStatus;
+        if (m_stackless) {
+            m_cannotEAgain = oldStatus;
+        } else {
+            m_okayToEAgain = oldStatus;
+        }
     }
     void * m_stack = NULL;
 #ifndef _WIN32
@@ -232,7 +247,7 @@ class Task {
     Lock m_eventLock;
     typedef std::list<Events::TaskEvent *> waitedByList_t;
     waitedByList_t m_waitedBy;
-    bool m_okayToEAgain = false, m_stackless = false;
+    bool m_okayToEAgain = false, m_stackless = false, m_cannotEAgain = false;
       Task(const Task &) = delete;
     Task & operator=(const Task &) = delete;
 };
