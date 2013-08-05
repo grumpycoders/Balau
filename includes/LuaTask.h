@@ -69,6 +69,7 @@ class LuaMainTask : public StacklessTask {
       ~LuaMainTask();
     void stop();
     virtual const char * getName() const { return "LuaMainTask"; }
+    static LuaMainTask * getMainTask(Lua &);
   private:
     void exec(LuaExecCell * cell);
     virtual void Do();

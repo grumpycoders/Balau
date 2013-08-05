@@ -25,6 +25,9 @@ Balau::LuaMainTask::LuaMainTask() {
     L.open_bit();
     L.open_jit();
     L.open_ffi();
+    L.push("LuaMainTask");
+    L.push((void *) this);
+    L.settable(LUA_REGISTRYINDEX);
 }
 
 Balau::LuaMainTask::~LuaMainTask() {
@@ -59,6 +62,14 @@ void Balau::LuaMainTask::Do() {
         }
         TaskMan::registerTask(new LuaTask(L.thread(), cell), this);
     }
+}
+
+Balau::LuaMainTask * Balau::LuaMainTask::getMainTask(Lua & L) {
+    L.push("LuaMainTask");
+    L.gettable(LUA_REGISTRYINDEX);
+    LuaMainTask * r = (LuaMainTask *) L.touserdata();
+    L.pop();
+    return r;
 }
 
 void Balau::LuaTask::Do() {
