@@ -101,6 +101,10 @@ void Balau::Task::coroutine() {
             Printer::elog(E_TASK, "Stackless task %s at %p is task-switching.", getName(), this);
         }
     }
+    catch (EAgain & e) {
+        Printer::log(M_ERROR, "Task %s at %p threw an EAgain - you should catch it and yield; the app will crash now", getName(), this);
+        m_status = FAULTED;
+    }
     catch (GeneralException & e) {
         Printer::log(M_WARNING, "Task %s at %p caused an exception: `%s' - stopping.", getName(), this, e.getMsg());
         const char * details = e.getDetails();
