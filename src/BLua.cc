@@ -257,7 +257,7 @@ int Balau::LuaStatics::callwrap(lua_State * __L, lua_CFunction func) {
         L.error("The C callback from Lua has thrown an EAgain - you can't do that, you have to wrap it using Lua::yield. The application will now crash, because this task will stop, but the event in the EAgain will later try to wake it up.");
     }
     catch (GeneralException & e) {
-        L.error(String("GeneralException: ") + e.getMsg());
+        L.processException(e);
     }
 // LuaJIT sucks sometime.
 //    catch (...) {
@@ -479,10 +479,17 @@ void Balau::Lua::pushLuaContext() {
     } while (!got_error);
 }
 
-void Balau::Lua::error(const char * msg) {
+void Balau::Lua::error(const char * msg) throw (GeneralException) {
     push(msg);
 
-    lua_error(L);
+    if (yielded()) {
+        pushLuaContext();
+        showerror();
+
+        throw LuaException("Runtime error while running yielded C code.");
+    } else {
+        lua_error(L);
+    }
 }
 
 bool Balau::Lua::isobject(int i) {
@@ -845,7 +852,7 @@ bool Balau::Lua::resumeC() {
         yieldedAgain = true;
     }
     catch (Balau::GeneralException & e) {
-        error(String("GeneralException: ") + e.getMsg());
+        processException(e);
     }
     if (!yieldedAgain)
         resume(nargs);
@@ -880,6 +887,16 @@ bool Balau::Lua::yieldC() throw (GeneralException) {
 
     resumeC();
     return yieldC();
+}
+
+void Balau::Lua::processException(GeneralException & e) {
+    const char * details = e.getDetails();
+    if (details)
+        push(details);
+    auto trace = e.getTrace();
+    for (String & str : trace)
+        push(str);
+    error(String("General Exception: ") + e.getMsg());
 }
 
 void Balau::Lua::showstack(int level) {

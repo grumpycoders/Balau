@@ -133,7 +133,7 @@ class Lua {
     int gettop() { return lua_gettop(L); }
     void getglobal(const char * name) throw (GeneralException);
     void pushLuaContext();
-    void error(const char * msg);
+    void error(const char * msg) throw (GeneralException);
     void error(const String & msg) { error(msg.to_charp()); }
 
     int type(int i = -1) { return lua_type(L, i); }
@@ -197,6 +197,7 @@ class Lua {
     void dumpvars_r(IO<Handle> out, int idx, int depth = 0) throw (GeneralException);
     bool resumeC();
     bool yieldC() throw (GeneralException);
+    void processException(GeneralException & e);
 
     lua_State * L;
 
