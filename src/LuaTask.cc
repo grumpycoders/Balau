@@ -80,13 +80,15 @@ void Balau::LuaTask::Do() {
             else
                 m_cell->run(L);
         }
+        catch (EAgain & e) {
+        }
         catch (GeneralException & e) {
             m_cell->m_exception = new GeneralException(e);
         }
         catch (...) {
             m_cell->setError();
         }
-        if (L.yielded()) {
+        if (L.yielded() && !m_cell->m_exception) {
             yield();
             continue;
         }
