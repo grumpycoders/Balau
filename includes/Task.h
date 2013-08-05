@@ -287,7 +287,6 @@ class Future {
     friend class Lua;
     func_t m_func;
     Events::BaseEvent * m_evt = NULL;
-    bool m_ranOnce = false;
 };
 
 template<class R>
@@ -298,7 +297,6 @@ R Future<R>::get() {
             Task::operationYield(m_evt, Task::INTERRUPTIBLE);
         m_evt = NULL;
         try {
-            m_ranOnce = true;
             r = m_func();
             return r;
         }
@@ -316,7 +314,6 @@ void Future<R>::run() {
             Task::operationYield(m_evt, Task::INTERRUPTIBLE);
         m_evt = NULL;
         try {
-            m_ranOnce = true;
             m_func();
             return;
         }

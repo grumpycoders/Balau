@@ -162,7 +162,7 @@ class Lua {
     void dumpvars(IO<Handle> out, const String & prefix, int idx = -1);
     Lua thread(bool saveit = true);
     int yield(int nresults = 0) { return lua_yield(L, nresults); }
-    int yield(Future<int>) throw (GeneralException) __attribute__((noreturn));
+    int yield(Future<int>) throw (GeneralException);
     bool yielded() { return lua_status(L) == LUA_YIELD; }
     bool resume(int nargs = 0) throw (GeneralException);
     void showstack(int level = M_INFO);
@@ -195,8 +195,8 @@ class Lua {
   private:
     void dumpvars_i(IO<Handle> out, const String & prefix, int idx);
     void dumpvars_r(IO<Handle> out, int idx, int depth = 0) throw (GeneralException);
-    bool resumeC();
-    bool yieldC() throw (GeneralException);
+    bool resumeC(int & nargs);
+    void yieldC() throw (GeneralException);
     void processException(GeneralException & e);
 
     lua_State * L;

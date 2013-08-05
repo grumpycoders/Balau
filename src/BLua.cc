@@ -98,7 +98,7 @@ int Balau::LuaStatics::dumpvars(lua_State * __L) {
         L.dumpvars(h, prefix);
         Task * t = new CopyTask(s, h);
         Events::TaskEvent * evt = new Events::TaskEvent(t);
-        L.yield(Future<int>([evt, s]() mutable {
+        return L.yield(Future<int>([evt, s]() mutable {
             for (;;) {
                 if (evt->gotSignal()) {
                     evt->ack();
@@ -767,19 +767,15 @@ Balau::Lua Balau::Lua::thread(bool saveit) {
 bool Balau::Lua::resume(int nargs) throw (GeneralException) {
     int r;
 
-    if (resumeC()) {
-        if (yielded()) {
-            yieldC();
-            return true;
-        } else {
-            return false;
-        }
-    }
+    if (resumeC(nargs))
+        yieldC();
 
     r = lua_resume(L, nargs);
 
-    if (r == LUA_YIELD)
-        return yieldC();
+    if (r == LUA_YIELD) {
+        yieldC();
+        return true;
+    }
 
     if (r == 0)
         return false;
@@ -805,7 +801,7 @@ bool Balau::Lua::resume(int nargs) throw (GeneralException) {
     }
 }
 
-bool Balau::Lua::resumeC() {
+bool Balau::Lua::resumeC(int & nargs) {
     if (!yielded())
         return false;
 
@@ -829,9 +825,6 @@ bool Balau::Lua::resumeC() {
     delete p;
     pop();
 
-    int nargs = 0;
-    bool yieldedAgain = false;
-
     try {
         nargs = f.get();
     }
@@ -843,50 +836,54 @@ bool Balau::Lua::resumeC() {
         p->m_evt = e.getEvent();
         push((void *) p);
         push((void *) &s_signature);
-        yieldedAgain = true;
     }
     catch (LuaYield & y) {
         Future<int> * p = new Future<int>(y.m_f);
         push((void *) p);
         push((void *) &s_signature);
-        yieldedAgain = true;
     }
     catch (Balau::GeneralException & e) {
         processException(e);
     }
-    if (!yieldedAgain)
-        resume(nargs);
+
     return true;
 }
 
 int Balau::Lua::yield(Future<int> f) throw (GeneralException) {
-    throw LuaYield(f);
+    int r = 0;
+    try {
+        r = f.get();
+    }
+    catch (EAgain & e) {
+        LuaYield y(f);
+        y.m_f.m_evt = e.getEvent();
+        throw y;
+    }
+    return r;
 }
 
-bool Balau::Lua::yieldC() throw (GeneralException) {
+void Balau::Lua::yieldC() throw (GeneralException) {
     if (!yielded())
-        return true;
+        return;
 
     if (gettop() < 2)
-        return true;
+        return;
 
     if (!islightuserdata(-1))
-        return true;
+        return;
 
     if (!islightuserdata(-2))
-        return true;
+        return;
 
     void * s = touserdata();
     if (s != &s_signature)
-        return true;
+        return;
 
     Future<int> * p = (Future<int> *) touserdata(-2);
 
-    if (p->m_ranOnce)
-        Task::operationYield(p->m_evt, Task::STACKLESS);
-
-    resumeC();
-    return yieldC();
+    IAssert(p->m_evt, "There should always be an event here at that point...");
+    Task::operationYield(p->m_evt, Task::STACKLESS);
+    IAssert(false, "That point shouldn't be reached.");
 }
 
 void Balau::Lua::processException(GeneralException & e) {

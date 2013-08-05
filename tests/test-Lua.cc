@@ -115,7 +115,7 @@ int sLua_ObjectTest::ObjectTest_proceed_static(Lua & L, int n, int caller) throw
         break;
 
     case OBJECTTEST_YIELDTEST:
-        L.yield(Future<int>([=]() mutable {
+        return L.yield(Future<int>([=]() mutable {
             int y = L.tonumber();
             L.pop();
             L.push((lua_Number) y + 1);
