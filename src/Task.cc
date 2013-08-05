@@ -330,6 +330,8 @@ void * Balau::QueueBase::iPop(Events::Async * event, bool wait) {
             m_lock.leave();
             Task::operationYield(event, Task::INTERRUPTIBLE);
             m_lock.enter();
+            if (event->gotSignal())
+                event->reset();
         } else {
             pthread_cond_wait(&m_cond, &m_lock.m_lock);
         }
