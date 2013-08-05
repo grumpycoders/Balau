@@ -179,8 +179,8 @@ class Task {
   protected:
     void yield() throw (GeneralException) {
         if (yield(false)) {
-            AAssert(!m_cannotEAgain, "task at %p in simple context mode can't EAgain", this);
-            throw EAgain(NULL);
+            AAssert(!m_cannotEAgain, "task at %p in simple context mode can't TaskSwitch", this);
+            throw TaskSwitch();
         }
     }
     virtual void Do() = 0;
@@ -204,8 +204,8 @@ class Task {
     void yield(Events::BaseEvent * evt) throw (GeneralException) {
         waitFor(evt);
         if (yield(false)) {
-            AAssert(!m_cannotEAgain, "task at %p in simple context mode can't EAgain", this);
-            throw EAgain(NULL);
+            AAssert(!m_cannotEAgain, "task at %p in simple context mode can't TaskSwitch", this);
+            throw TaskSwitch();
         }
     }
     bool yield(bool stillRunning);
