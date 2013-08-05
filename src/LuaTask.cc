@@ -101,11 +101,18 @@ void Balau::LuaTask::Do() {
 }
 
 void Balau::LuaExecCell::exec(LuaMainTask * mainTask) {
+    if (m_running)
+        return;
+    m_running = true;
     if (!m_detached)
         Task::prepare(&m_event);
     mainTask->exec(this);
     if (!m_detached)
-        Task::operationYield(&m_event);
+        Task::operationYield(&m_event, Task::INTERRUPTIBLE);
+}
+
+void Balau::LuaExecCell::exec(Lua & L) {
+    exec(LuaMainTask::getMainTask(L));
 }
 
 void Balau::LuaExecCell::throwError() throw (GeneralException) {

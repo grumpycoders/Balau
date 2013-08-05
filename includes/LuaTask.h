@@ -16,6 +16,7 @@ class LuaExecCell {
       LuaExecCell();
       virtual ~LuaExecCell() { if (m_exception) delete m_exception; }
     void detach() { m_detached = true; }
+    void exec(Lua & L);
     void exec(LuaMainTask * mainTask);
     bool gotError() { return m_gotError || m_exception; }
     void throwError() throw (GeneralException);
@@ -27,6 +28,7 @@ class LuaExecCell {
     Events::Async m_event;
     bool m_detached = false;
     bool m_gotError = false;
+    bool m_running = false;
     GeneralException * m_exception = NULL;
     friend class LuaTask;
 
