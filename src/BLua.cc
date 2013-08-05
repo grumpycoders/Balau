@@ -572,7 +572,10 @@ void Balau::Lua::load(IO<Handle> h, bool docall) throw (GeneralException) {
     IO<Input> i = h;
     if (!i.isNull())
         name = String("@") + i->getFName();
-    status = lua_load(L, LuaStatics::getF, &lf, name.to_charp());
+    {
+        Task::SimpleContext sc;
+        status = lua_load(L, LuaStatics::getF, &lf, name.to_charp());
+    }
 
     if (status) {
         if (lf.exception) {
