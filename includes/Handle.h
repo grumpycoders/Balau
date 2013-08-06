@@ -33,35 +33,48 @@ class BaseEvent;
 class Handle {
   public:
       virtual ~Handle() { AAssert(m_refCount == 0, "Do not use handles directly; warp them in IO<>"); }
+
+    // things to implement when derivating
     virtual void close() throw (GeneralException) = 0;
     virtual bool isClosed() = 0;
     virtual bool isEOF() = 0;
+    virtual const char * getName() = 0;
+
+    // normal API
     virtual bool canSeek();
     virtual bool canRead();
     virtual bool canWrite();
-    virtual const char * getName() = 0;
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException);
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException);
     template <size_t L> void writeString(const char (&str)[L]) { writeString(str, L - 1); }
-    void writeString(const char * str, ssize_t len) { if (len < 0) len = strlen(str); forceWrite(str, len); }
-    void writeString(const String & str) { forceWrite(str.to_charp(), str.strlen()); }
-    void seek(off_t offset, int whence = SEEK_SET) { rseek(offset, whence); }
     virtual void rseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
     virtual void wseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
-    off_t tell() { return rtell(); }
     virtual off_t rtell() throw (GeneralException);
     virtual off_t wtell() throw (GeneralException);
     virtual off_t getSize();
     virtual time_t getMTime();
     virtual bool isPendingComplete() { return true; }
+
+    // helpers
+    ssize_t write(const String & str) { return write(str.to_charp(), str.strlen()); }
+    off_t tell() { return rtell(); }
+    void seek(off_t offset, int whence = SEEK_SET) { rseek(offset, whence); }
+
+    // there need to be more of these
+    Future<uint8_t> readU8();
+
+    // these need to be changed into Future<>s
+    void writeString(const char * str, ssize_t len) { if (len < 0) len = strlen(str); forceWrite(str, len); }
+    void writeString(const String & str) { forceWrite(str.to_charp(), str.strlen()); }
     ssize_t forceRead(void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException);
     ssize_t forceWrite(const void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException);
-    ssize_t write(const String & str) { return write(str.to_charp(), str.strlen()); }
     ssize_t forceWrite(const String & str) { return forceWrite(str.to_charp(), str.strlen()); }
-    Future<uint8_t> readU8();
+
   protected:
       Handle() { }
+
   private:
+    // the IO<> refcounting mechanism
     void addRef() { Atomic::Increment(&m_refCount); }
     void delRef() {
         if (Atomic::Decrement(&m_refCount) == 0) {
