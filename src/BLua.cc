@@ -1,3 +1,4 @@
+#include <memory>
 #include <stdlib.h>
 #include "BLua.h"
 #include "Printer.h"
@@ -97,15 +98,14 @@ int Balau::LuaStatics::dumpvars(lua_State * __L) {
         IO<Handle> s(new Buffer());
         L.dumpvars(h, prefix);
         Task * t = new CopyTask(s, h);
-        Events::TaskEvent * evt = new Events::TaskEvent(t);
+        std::shared_ptr<Events::TaskEvent> evt(new Events::TaskEvent(t));
         return L.yield(Future<int>([evt, s]() mutable {
             for (;;) {
                 if (evt->gotSignal()) {
                     evt->ack();
-                    delete evt;
                     s->close();
                 } else {
-                    Task::operationYield(evt, Task::INTERRUPTIBLE);
+                    Task::operationYield(evt.get(), Task::INTERRUPTIBLE);
                 }
             }
             return 0;
