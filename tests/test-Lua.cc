@@ -90,11 +90,11 @@ int sLua_ObjectTest::ObjectTest_proceed(Lua & L, int n, ObjectTest * obj, int ca
     return 0;
 }
 
-static Events::Timeout * evt = NULL;
 static int yieldCount = 0;
 
 int sLua_ObjectTest::ObjectTest_proceed_static(Lua & L, int n, int caller) throw (GeneralException) {
     int y;
+    Events::Timeout * evt = NULL;
 
     switch (caller) {
     case OBJECTTEST_CONSTRUCTOR:
