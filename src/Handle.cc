@@ -1,3 +1,4 @@
+#include <memory>
 #include <typeinfo>
 #include <errno.h>
 #include "ev++.h"
@@ -96,10 +97,10 @@ ssize_t Balau::Handle::forceWrite(const void * _buf, size_t count, Events::BaseE
 
 Balau::Future<uint8_t> Balau::Handle::readU8() {
     IO<Handle> t(this);
-    return Future<uint8_t>([t]() mutable {
-        uint8_t b;
-        t->read(&b, 1);
-        return b;
+    std::shared_ptr<uint8_t> b(new uint8_t);
+    return Future<uint8_t>([t, b]() mutable {
+        t->read(b.get(), 1);
+        return *b;
     });
 }
 
