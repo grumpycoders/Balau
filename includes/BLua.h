@@ -10,6 +10,7 @@ extern "C" {
 #include <Exceptions.h>
 #include <Handle.h>
 #include <Task.h>
+#include <StacklessTask.h>
 
 namespace Balau {
 
@@ -17,8 +18,9 @@ class Lua;
 
 class LuaObjectBase {
   public:
-      virtual void destroy() { }
+    virtual void destroy() = 0;
     void detach() { m_detached = true; }
+    virtual Task * spawnCollector() = 0;
   protected:
     bool isDetached() { return m_detached; }
   private:
@@ -26,11 +28,26 @@ class LuaObjectBase {
 };
 
 template<class T>
+class DeferredCollector : public StacklessTask {
+  public:
+      DeferredCollector(T * obj) : m_obj(obj) { }
+    virtual const char * getName() const override { return "DeferredCollector"; }
+    virtual void Do() override {
+        StacklessBegin();
+        StacklessOperation(delete m_obj);
+        StacklessEnd();
+    }
+  private:
+    T * m_obj;
+};
+
+template<class T>
 class LuaObject : public LuaObjectBase {
   public:
       LuaObject(T * obj) : m_obj(obj) { }
-      virtual void destroy() { if (!isDetached() && m_obj) delete m_obj; detach(); }
+    virtual void destroy() override { if (!isDetached() && m_obj) delete m_obj; detach(); }
     T * getObj() { return m_obj; }
+    virtual Task * spawnCollector() override { return isDetached() ? NULL : new DeferredCollector<T>(m_obj); }
   private:
     T * m_obj;
 };

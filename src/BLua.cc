@@ -5,6 +5,8 @@
 #include "Input.h"
 #include "Buffer.h"
 #include "HelperTasks.h"
+#include "StacklessTask.h"
+#include "TaskMan.h"
 
 extern "C" {
 #include <lualib.h>
@@ -267,10 +269,26 @@ int Balau::LuaStatics::callwrap(lua_State * __L, lua_CFunction func) {
     return r;
 }
 
+namespace {
+
+class CollectorTask : public Balau::StacklessTask {
+  public:
+      CollectorTask(Balau::LuaObjectBase * obj) : m_obj(obj) { }
+  private:
+    virtual const char * getName() const override { return "CollectorTask"; }
+    virtual void Do() override { delete m_obj; }
+    Balau::LuaObjectBase * m_obj;
+};
+
+};
+
 int Balau::LuaStatics::collector(lua_State * __L) {
     Lua L(__L);
     LuaObjectBase * o = (LuaObjectBase *) L.touserdata();
-    return L.yield(Future<int>([o]() { o->destroy(); return 0; }));
+    Task * collector = o->spawnCollector();
+    if (collector)
+        TaskMan::registerTask(collector);
+    return 0;
 }
 
 int Balau::LuaStatics::destructor(lua_State * __L) {
