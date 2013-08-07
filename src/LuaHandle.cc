@@ -9,11 +9,15 @@ typedef IOHandle IOInput;
 enum IOHandle_methods_t {
     IOHANDLE_CLOSE,
     IOHANDLE_READU8,
+    IOHANDLE_READU16,
+    IOHANDLE_READU32,
 };
 
 struct Balau::lua_functypes_t IOHandle_methods[] = {
     { IOHANDLE_CLOSE,           "close",          0, 0, { } },
     { IOHANDLE_READU8,          "readU8",         0, 0, { } },
+    { IOHANDLE_READU16,         "readU16",        0, 0, { } },
+    { IOHANDLE_READU32,         "readU32",        0, 0, { } },
     { -1, 0, 0, 0, 0 },
 };
 
@@ -35,6 +39,18 @@ int sLua_IOHandle::IOHandle_proceed(Balau::Lua & L, int n, IOHandle * obj, int c
             return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
         }
         break;
+    case IOHANDLE_READU16:
+        {
+            Balau::Future<uint16_t> c = h->readU16();
+            return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
+        }
+        break;
+    case IOHANDLE_READU32:
+        {
+            Balau::Future<uint32_t> c = h->readU32();
+            return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
+        }
+        break;
     }
 
     return r;
@@ -51,6 +67,8 @@ void Balau::LuaHandleFactory::pushObjectAndMembers(Lua & L) {
 
     PUSH_METHOD(IOHandle, IOHANDLE_CLOSE);
     PUSH_METHOD(IOHandle, IOHANDLE_READU8);
+    PUSH_METHOD(IOHandle, IOHANDLE_READU16);
+    PUSH_METHOD(IOHandle, IOHANDLE_READU32);
 }
 
 

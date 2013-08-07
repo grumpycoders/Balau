@@ -61,7 +61,10 @@ class Handle {
     void seek(off_t offset, int whence = SEEK_SET) { rseek(offset, whence); }
 
     // there need to be more of these
-    Future<uint8_t> readU8();
+    Future<uint8_t>  readU8();
+    Future<uint16_t> readU16();
+    Future<uint32_t> readU32();
+    Future<uint64_t> readU64();
 
     // these need to be changed into Future<>s
     void writeString(const char * str, ssize_t len) { if (len < 0) len = strlen(str); forceWrite(str, len); }

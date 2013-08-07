@@ -104,6 +104,45 @@ Balau::Future<uint8_t> Balau::Handle::readU8() {
     });
 }
 
+Balau::Future<uint16_t> Balau::Handle::readU16() {
+    IO<Handle> t(this);
+    std::shared_ptr<uint16_t> b(new uint16_t);
+    int c = 0;
+    return Future<uint16_t>([t, b, c]() mutable {
+        do {
+            int r = t->read(((uint8_t *) b.get()) + c, 2);
+            c += r;
+        } while (c < 2);
+        return *b;
+    });
+}
+
+Balau::Future<uint32_t> Balau::Handle::readU32() {
+    IO<Handle> t(this);
+    std::shared_ptr<uint32_t> b(new uint32_t);
+    int c = 0;
+    return Future<uint32_t>([t, b, c]() mutable {
+        do {
+            int r = t->read(((uint8_t *) b.get()) + c, 4);
+            c += r;
+        } while (c < 4);
+        return *b;
+    });
+}
+
+Balau::Future<uint64_t> Balau::Handle::readU64() {
+    IO<Handle> t(this);
+    std::shared_ptr<uint64_t> b(new uint64_t);
+    int c = 0;
+    return Future<uint64_t>([t, b, c]() mutable {
+        do {
+            int r = t->read(((uint8_t *) b.get()) + c, 8);
+            c += r;
+        } while (c < 8);
+        return *b;
+    });
+}
+
 void Balau::Handle::rseek(off_t offset, int whence) throw (GeneralException) {
     if (canSeek())
         throw GeneralException(String("Handle ") + getName() + " can seek, but rseek() not implemented (missing in class " + ClassName(this).c_str() + ")");
