@@ -183,6 +183,12 @@ class Task {
             throw TaskSwitch();
         }
     }
+    void yieldNoWait() throw (GeneralException) {
+        if (yield(true)) {
+            AAssert(!m_cannotEAgain, "task at %p in simple context mode can't TaskSwitch", this);
+            throw TaskSwitch();
+        }
+    }
     virtual void Do() = 0;
     void waitFor(Events::BaseEvent * event);
     void sleep(double timeout);
