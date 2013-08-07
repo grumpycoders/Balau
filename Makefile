@@ -64,6 +64,8 @@ SimpleMustache.cc \
 \
 BLua.cc \
 \
+LuaHandle.cc \
+\
 LuaTask.cc \
 \
 BRegex.cc \
