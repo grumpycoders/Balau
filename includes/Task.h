@@ -302,7 +302,7 @@ R Future<R>::get() {
         }
         catch (EAgain & e) {
             m_evt = e.getEvent();
-            Task::operationYield(m_evt, Task::INTERRUPTIBLE);
+            throw;
         }
     }
 }
@@ -319,7 +319,7 @@ void Future<R>::run() {
         }
         catch (EAgain & e) {
             m_evt = e.getEvent();
-            Task::operationYield(m_evt, Task::INTERRUPTIBLE);
+            throw;
         }
     }
 }
