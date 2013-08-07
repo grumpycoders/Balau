@@ -8,10 +8,12 @@ typedef IOHandle IOInput;
 
 enum IOHandle_methods_t {
     IOHANDLE_CLOSE,
+    IOHANDLE_READU8,
 };
 
 struct Balau::lua_functypes_t IOHandle_methods[] = {
     { IOHANDLE_CLOSE,           "close",          0, 0, { } },
+    { IOHANDLE_READU8,          "readU8",         0, 0, { } },
     { -1, 0, 0, 0, 0 },
 };
 
@@ -26,6 +28,12 @@ int sLua_IOHandle::IOHandle_proceed(Balau::Lua & L, int n, IOHandle * obj, int c
     switch (caller) {
     case IOHANDLE_CLOSE:
         return L.yield(Balau::Future<int>([h]() mutable { h->close(); return 0; }));
+        break;
+    case IOHANDLE_READU8:
+        {
+            Balau::Future<uint8_t> c = h->readU8();
+            return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
+        }
         break;
     }
 
@@ -42,6 +50,7 @@ void Balau::LuaHandleFactory::pushObjectAndMembers(Lua & L) {
     pushObj(L, m_obj, "Handle");
 
     PUSH_METHOD(IOHandle, IOHANDLE_CLOSE);
+    PUSH_METHOD(IOHandle, IOHANDLE_READU8);
 }
 
 
