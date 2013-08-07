@@ -270,8 +270,7 @@ int Balau::LuaStatics::callwrap(lua_State * __L, lua_CFunction func) {
 int Balau::LuaStatics::collector(lua_State * __L) {
     Lua L(__L);
     LuaObjectBase * o = (LuaObjectBase *) L.touserdata();
-    o->destroy();
-    return 0;
+    return L.yield(Future<int>([o]() { o->destroy(); return 0; }));
 }
 
 int Balau::LuaStatics::destructor(lua_State * __L) {
@@ -279,12 +278,12 @@ int Balau::LuaStatics::destructor(lua_State * __L) {
     L.push("__obj");
     L.copy();
     L.gettable(-3, true);
-    collector(__L);
+    LuaObjectBase * o = (LuaObjectBase *) L.touserdata();
     L.pop();
     L.push();
     L.settable(-3, true);
     L.pop();
-    return 0;
+    return L.yield(Future<int>([o]() { o->destroy(); return 0; }));
 }
 
 void Balau::Lua::setCallWrap(lua_CallWrapper wrapper) {

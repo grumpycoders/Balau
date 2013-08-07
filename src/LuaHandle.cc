@@ -22,7 +22,7 @@ int sLua_IOHandle::IOHandle_proceed(Balau::Lua & L, int n, Balau::IOHandle * obj
 
     switch (caller) {
     case IOHANDLE_CLOSE:
-        h->close();
+        return L.yield(Balau::Future<int>([h]() mutable { h->close(); return 0; }));
         break;
     }
 
