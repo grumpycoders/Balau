@@ -6,9 +6,6 @@
 
 namespace Balau {
 
-typedef IO<Handle> IOHandle;
-typedef IOHandle IOInput;
-
 class LuaHandleFactory : public LuaObjectFactory {
   public:
       LuaHandleFactory(IO<Handle> h) : m_obj(new IO<Handle>(h)) { }

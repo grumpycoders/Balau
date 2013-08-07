@@ -1,6 +1,9 @@
 #include "LuaHandle.h"
 #include "Handle.h"
 
+typedef Balau::IO<Balau::Handle> IOHandle;
+typedef IOHandle IOInput;
+
 // Handle exports
 
 enum IOHandle_methods_t {
@@ -13,10 +16,10 @@ struct Balau::lua_functypes_t IOHandle_methods[] = {
 };
 
 struct sLua_IOHandle {
-    static int IOHandle_proceed(Balau::Lua & L, int n, Balau::IOHandle * obj, int caller);
+    static int IOHandle_proceed(Balau::Lua & L, int n, IOHandle * obj, int caller);
 };
 
-int sLua_IOHandle::IOHandle_proceed(Balau::Lua & L, int n, Balau::IOHandle * obj, int caller) {
+int sLua_IOHandle::IOHandle_proceed(Balau::Lua & L, int n, IOHandle * obj, int caller) {
     int r = 0;
     Balau::IO<Balau::Handle> h = *obj;
 
@@ -64,7 +67,7 @@ struct Balau::lua_functypes_t IOInput_methods[] = {
 
 struct sLua_IOInput {
     static int IOInput_proceed_static(Balau::Lua & L, int n, int caller);
-    static int IOInput_proceed(Balau::Lua & L, int n, Balau::IOHandle * obj, int caller);
+    static int IOInput_proceed(Balau::Lua & L, int n, IOHandle * obj, int caller);
 };
 
 int sLua_IOInput::IOInput_proceed_static(Balau::Lua & L, int n, int caller) {
@@ -83,7 +86,7 @@ int sLua_IOInput::IOInput_proceed_static(Balau::Lua & L, int n, int caller) {
     return r;
 }
 
-int sLua_IOInput::IOInput_proceed(Balau::Lua & L, int n, Balau::IOHandle * obj, int caller) {
+int sLua_IOInput::IOInput_proceed(Balau::Lua & L, int n, IOInput * obj, int caller) {
     int r;
     Balau::IO<Balau::Input> h = *obj;
 
