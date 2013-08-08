@@ -95,53 +95,48 @@ ssize_t Balau::Handle::forceWrite(const void * _buf, size_t count, Events::BaseE
     return total;
 }
 
-Balau::Future<uint8_t> Balau::Handle::readU8() {
-    IO<Handle> t(this);
-    std::shared_ptr<uint8_t> b(new uint8_t);
-    return Future<uint8_t>([t, b]() mutable {
-        t->read(b.get(), 1);
+template<class T>
+Balau::Future<T> genericRead(Balau::IO<Balau::Handle> t) {
+    std::shared_ptr<T> b(new T);
+    int c = 0;
+    return Balau::Future<T>([t, b, c]() mutable {
+        do {
+            int r = t->read(((uint8_t *) b.get()) + c, sizeof(T));
+            c += r;
+        } while (c < sizeof(T));
         return *b;
     });
 }
 
-Balau::Future<uint16_t> Balau::Handle::readU16() {
-    IO<Handle> t(this);
-    std::shared_ptr<uint16_t> b(new uint16_t);
+Balau::Future<uint8_t>  Balau::Handle::readU8 () { return genericRead<uint8_t >(this); }
+Balau::Future<uint16_t> Balau::Handle::readU16() { return genericRead<uint16_t>(this); }
+Balau::Future<uint32_t> Balau::Handle::readU32() { return genericRead<uint32_t>(this); }
+Balau::Future<uint64_t> Balau::Handle::readU64() { return genericRead<uint64_t>(this); }
+Balau::Future<int8_t>   Balau::Handle::readI8 () { return genericRead<int8_t>  (this); }
+Balau::Future<int16_t>  Balau::Handle::readI16() { return genericRead<int16_t> (this); }
+Balau::Future<int32_t>  Balau::Handle::readI32() { return genericRead<int32_t> (this); }
+Balau::Future<int64_t>  Balau::Handle::readI64() { return genericRead<int64_t> (this); }
+
+template<class T>
+Balau::Future<void> genericWrite(Balau::IO<Balau::Handle> t, T val) {
+    std::shared_ptr<T> b(new T(val));
     int c = 0;
-    return Future<uint16_t>([t, b, c]() mutable {
+    return Balau::Future<void>([t, b, c]() mutable {
         do {
-            int r = t->read(((uint8_t *) b.get()) + c, 2);
+            int r = t->write(((uint8_t *) b.get()) + c, sizeof(T));
             c += r;
-        } while (c < 2);
-        return *b;
+        } while (c < sizeof(T));
     });
 }
 
-Balau::Future<uint32_t> Balau::Handle::readU32() {
-    IO<Handle> t(this);
-    std::shared_ptr<uint32_t> b(new uint32_t);
-    int c = 0;
-    return Future<uint32_t>([t, b, c]() mutable {
-        do {
-            int r = t->read(((uint8_t *) b.get()) + c, 4);
-            c += r;
-        } while (c < 4);
-        return *b;
-    });
-}
-
-Balau::Future<uint64_t> Balau::Handle::readU64() {
-    IO<Handle> t(this);
-    std::shared_ptr<uint64_t> b(new uint64_t);
-    int c = 0;
-    return Future<uint64_t>([t, b, c]() mutable {
-        do {
-            int r = t->read(((uint8_t *) b.get()) + c, 8);
-            c += r;
-        } while (c < 8);
-        return *b;
-    });
-}
+Balau::Future<void> Balau::Handle::writeU8 (uint8_t  v) { return genericWrite<uint8_t >(this, v); }
+Balau::Future<void> Balau::Handle::writeU16(uint16_t v) { return genericWrite<uint16_t>(this, v); }
+Balau::Future<void> Balau::Handle::writeU32(uint32_t v) { return genericWrite<uint32_t>(this, v); }
+Balau::Future<void> Balau::Handle::writeU64(uint64_t v) { return genericWrite<uint64_t>(this, v); }
+Balau::Future<void> Balau::Handle::writeI8 (int8_t   v) { return genericWrite<int8_t  >(this, v); }
+Balau::Future<void> Balau::Handle::writeI16(int16_t  v) { return genericWrite<int16_t >(this, v); }
+Balau::Future<void> Balau::Handle::writeI32(int32_t  v) { return genericWrite<int32_t >(this, v); }
+Balau::Future<void> Balau::Handle::writeI64(int64_t  v) { return genericWrite<int64_t >(this, v); }
 
 void Balau::Handle::rseek(off_t offset, int whence) throw (GeneralException) {
     if (canSeek())

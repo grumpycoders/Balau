@@ -56,17 +56,28 @@ class Handle {
     virtual bool isPendingComplete() { return true; }
 
     // helpers
-    ssize_t write(const String & str) { return write(str.to_charp(), str.strlen()); }
     off_t tell() { return rtell(); }
     void seek(off_t offset, int whence = SEEK_SET) { rseek(offset, whence); }
 
-    // there need to be more of these
     Future<uint8_t>  readU8();
     Future<uint16_t> readU16();
     Future<uint32_t> readU32();
     Future<uint64_t> readU64();
+    Future<int8_t>   readI8();
+    Future<int16_t>  readI16();
+    Future<int32_t>  readI32();
+    Future<int64_t>  readI64();
+    Future<void>     writeU8 (uint8_t);
+    Future<void>     writeU16(uint16_t);
+    Future<void>     writeU32(uint32_t);
+    Future<void>     writeU64(uint64_t);
+    Future<void>     writeI8 (int8_t);
+    Future<void>     writeI16(int16_t);
+    Future<void>     writeI32(int32_t);
+    Future<void>     writeI64(int64_t);
 
     // these need to be changed into Future<>s
+    ssize_t write(const String & str) { return write(str.to_charp(), str.strlen()); }
     void writeString(const char * str, ssize_t len) { if (len < 0) len = strlen(str); forceWrite(str, len); }
     void writeString(const String & str) { forceWrite(str.to_charp(), str.strlen()); }
     ssize_t forceRead(void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException);
