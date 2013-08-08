@@ -11,6 +11,15 @@ enum IOHandle_methods_t {
     IOHANDLE_READU8,
     IOHANDLE_READU16,
     IOHANDLE_READU32,
+    IOHANDLE_READI8,
+    IOHANDLE_READI16,
+    IOHANDLE_READI32,
+    IOHANDLE_WRITEU8,
+    IOHANDLE_WRITEU16,
+    IOHANDLE_WRITEU32,
+    IOHANDLE_WRITEI8,
+    IOHANDLE_WRITEI16,
+    IOHANDLE_WRITEI32,
 };
 
 struct Balau::lua_functypes_t IOHandle_methods[] = {
@@ -18,6 +27,15 @@ struct Balau::lua_functypes_t IOHandle_methods[] = {
     { IOHANDLE_READU8,          "readU8",         0, 0, { } },
     { IOHANDLE_READU16,         "readU16",        0, 0, { } },
     { IOHANDLE_READU32,         "readU32",        0, 0, { } },
+    { IOHANDLE_READI8,          "readI8",         0, 0, { } },
+    { IOHANDLE_READI16,         "readI16",        0, 0, { } },
+    { IOHANDLE_READI32,         "readI32",        0, 0, { } },
+    { IOHANDLE_WRITEU8,         "writeU8",        1, 1, { Balau::BLUA_NUMBER } },
+    { IOHANDLE_WRITEU16,        "writeU16",       1, 1, { Balau::BLUA_NUMBER } },
+    { IOHANDLE_WRITEU32,        "writeU32",       1, 1, { Balau::BLUA_NUMBER } },
+    { IOHANDLE_WRITEI8,         "writeI8",        1, 1, { Balau::BLUA_NUMBER } },
+    { IOHANDLE_WRITEI16,        "writeI16",       1, 1, { Balau::BLUA_NUMBER } },
+    { IOHANDLE_WRITEI32,        "writeI32",       1, 1, { Balau::BLUA_NUMBER } },
     { -1, 0, 0, 0, 0 },
 };
 
@@ -51,6 +69,60 @@ int sLua_IOHandle::IOHandle_proceed(Balau::Lua & L, int n, IOHandle * obj, int c
             return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
         }
         break;
+    case IOHANDLE_READI8:
+        {
+            Balau::Future<int8_t> c = h->readI8();
+            return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
+        }
+        break;
+    case IOHANDLE_READI16:
+        {
+            Balau::Future<int16_t> c = h->readI16();
+            return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
+        }
+        break;
+    case IOHANDLE_READI32:
+        {
+            Balau::Future<int32_t> c = h->readI32();
+            return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
+        }
+        break;
+    case IOHANDLE_WRITEU8:
+        {
+            Balau::Future<void> c = h->writeU8(L.tonumber());
+            return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+        }
+        break;
+    case IOHANDLE_WRITEU16:
+        {
+            Balau::Future<void> c = h->writeU16(L.tonumber());
+            return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+        }
+        break;
+    case IOHANDLE_WRITEU32:
+        {
+            Balau::Future<void> c = h->writeU32(L.tonumber());
+            return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+        }
+        break;
+    case IOHANDLE_WRITEI8:
+        {
+            Balau::Future<void> c = h->writeI8(L.tonumber());
+            return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+        }
+        break;
+    case IOHANDLE_WRITEI16:
+        {
+            Balau::Future<void> c = h->writeI16(L.tonumber());
+            return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+        }
+        break;
+    case IOHANDLE_WRITEI32:
+        {
+            Balau::Future<void> c = h->writeI32(L.tonumber());
+            return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+        }
+        break;
     }
 
     return r;
@@ -69,6 +141,15 @@ void Balau::LuaHandleFactory::pushObjectAndMembers(Lua & L) {
     PUSH_METHOD(IOHandle, IOHANDLE_READU8);
     PUSH_METHOD(IOHandle, IOHANDLE_READU16);
     PUSH_METHOD(IOHandle, IOHANDLE_READU32);
+    PUSH_METHOD(IOHandle, IOHANDLE_READI8);
+    PUSH_METHOD(IOHandle, IOHANDLE_READI16);
+    PUSH_METHOD(IOHandle, IOHANDLE_READI32);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITEU8);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITEU16);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITEU32);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITEI8);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITEI16);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITEI32);
 }
 
 
