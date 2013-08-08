@@ -10,3 +10,9 @@
 [submodule "LuaJIT"]
 	path = LuaJIT
 	url = http://luajit.org/git/luajit-2.0.git
+[submodule "libtomcrypt"]
+	path = libtomcrypt
+	url = https://github.com/libtom/libtomcrypt.git
+[submodule "libtommath"]
+	path = libtommath
+	url = https://github.com/libtom/libtommath.git

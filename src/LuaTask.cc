@@ -25,6 +25,7 @@ Balau::LuaMainTask::LuaMainTask() {
     L.open_bit();
     L.open_jit();
     L.open_ffi();
+    L.open_lcrypt();
     L.push("LuaMainTask");
     L.push((void *) this);
     L.settable(LUA_REGISTRYINDEX);

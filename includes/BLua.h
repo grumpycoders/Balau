@@ -114,6 +114,7 @@ class Lua {
     void open_bit();
     void open_jit();
     void open_ffi();
+    void open_lcrypt();
     int wrap_open(openlualib_t open) { int n = gettop(); int r = open(L); while (n < gettop()) pop(); return r; }
     void openlib(const String & libname, const struct luaL_reg *l, int nup) { luaL_openlib(L, libname.to_charp(), l, nup); }
 

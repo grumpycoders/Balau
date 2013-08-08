@@ -18,7 +18,7 @@ ifeq ($(SYSTEM),Darwin)
 endif
 
 ifeq ($(SYSTEM),Linux)
-    LIBS += pthread dl
+    LIBS += pthread dl util
     CONFIG_H = linux-config.h
 endif
 
@@ -135,8 +135,6 @@ strip: $(TESTS)
 
 lib: $(LIB)
 
-LuaJIT: LuaJIT/src/libluajit.a
-
 LuaJIT/src/libluajit.a:
 ifeq ($(CROSSCOMPILE),true)
 	$(MAKE) -C LuaJIT HOST_CC="gcc -m32" CROSS=$(LUAJIT_CROSS) TARGET_SYS=$(LUAJIT_TARGET) BUILDMODE=static
@@ -144,16 +142,33 @@ else
 	$(MAKE) -C LuaJIT CC="$(CC) $(ARCH_FLAGS)" BUILDMODE=static
 endif
 
-libBalau.a: LuaJIT/src/libluajit.a $(BALAU_OBJECTS)
+libtommath: libtommath/libtommath.a
+
+libtommath/libtommath.a:
+	$(MAKE) -C libtommath CC="$(CC) $(ARCH_FLAGS)"
+
+libtomcrypt: libtomcrypt/libtomcrypt.a
+
+libtomcrypt/libtomcrypt.a:
+	$(MAKE) -C libtomcrypt CC="$(CC) $(ARCH_FLAGS) -DLTM_DESC -DUSE_LTM -I../libtommath"
+
+lcrypt: lcrypt/lcrypt.o
+
+lcrypt/lcrypt.o:
+	LUA=../LuaJIT TOMCRYPT=../libtomcrypt $(MAKE) -C lcrypt CC="$(CC) $(ARCH_FLAGS)"
+
+LuaJIT: LuaJIT/src/libluajit.a
+
+libBalau.a: LuaJIT/src/libluajit.a libtommath/libtommath.a libtomcrypt/libtomcrypt.a lcrypt/lcrypt.o $(BALAU_OBJECTS)
 ifeq ($(SYSTEM),Darwin)
 ifneq ($(CROSSCOMPILE),true)
 	rm -f libBalau.a
 endif
 endif
-	$(AR) libBalau.a $(BALAU_OBJECTS)
+	$(AR) libBalau.a $(BALAU_OBJECTS) lcrypt/lcrypt.o
 
 %.$(BINEXT) : %.o $(LIB)
-	$(LD) $(LDFLAGS) -o $@ $< ./$(LIB) ./LuaJIT/src/libluajit.a $(LDLIBS)
+	$(LD) $(LDFLAGS) -o $@ $< ./$(LIB) ./LuaJIT/src/libluajit.a ./libtomcrypt/libtomcrypt.a ./libtommath/libtommath.a $(LDLIBS)
 
 dep: $(ALL_DEPS)
 
@@ -168,5 +183,8 @@ dep: $(ALL_DEPS)
 clean:
 	rm -f $(ALL_OBJECTS) $(TESTS) $(LIB) $(ALL_DEPS)
 	$(MAKE) -C LuaJIT clean
+	$(MAKE) -C libtommath clean
+	$(MAKE) -C libtomcrypt clean
+	$(MAKE) -C lcrypt clean
 
-.PHONY: lib tests clean strip LuaJIT
+.PHONY: lib tests clean strip LuaJIT libtommath libtomcrypt lcrypt

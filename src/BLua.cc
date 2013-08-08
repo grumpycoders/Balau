@@ -438,6 +438,16 @@ void Balau::Lua::open_bit() {
     while (n < gettop()) pop();
 }
 
+extern "C" {
+int luaopen_lcrypt(lua_State *L);
+}
+
+void Balau::Lua::open_lcrypt() {
+    int n = gettop();
+    luaopen_lcrypt(L);
+    while (n < gettop()) pop();
+}
+
 void Balau::Lua::declareFunc(const char * name, lua_CFunction f, int i) {
     checkstack(2);
     lua_pushstring(L, name);
