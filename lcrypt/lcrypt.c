@@ -221,20 +221,42 @@ static int lcrypt_time(lua_State *L)
 static int lcrypt_random(lua_State *L)
 {
   int len = luaL_checkint(L, 1);
-  FILE *fp;
   char *buffer = lcrypt_malloc(L, len);
-  if(unlikely((fp = fopen("/dev/urandom", "rb")) == NULL))
-  {
-    lua_pushstring(L, "Unable to open /dev/urandom.");
-    (void)lua_error(L);
-  }
-  if(unlikely(fread(buffer, len, 1, fp) != 1))
-  {
+  #ifdef _WIN32
+    HMODULE hLib = LoadLibrary("ADVAPI32.DLL");
+    if (unlikely(!hLib))
+    {
+      lua_pushstring(L, "Unable to open ADVAPI32.DLL");
+      (void)lua_error(L);
+    }
+    BOOLEAN (APIENTRY *pfn)(void *, ULONG) =
+      (BOOLEAN (APIENTRY *)(void *, ULONG)) GetProcAddress(hLib, "SystemFunction036");
+    if (unlikely(!pfn))
+    {
+      lua_pushstring(L, "Unable to open ADVAPI32.DLL");
+      (void)lua_error(L);
+    }
+    ULONG ulCbBuff = len;
+    if (unlikely(!pfn(buffer, ulCbBuff)))
+    {
+      lua_pushstring(L, "Call to SystemFunction036 failed.");
+      (void)lua_error(L);
+    }
+  #else
+    FILE *fp;
+    if(unlikely((fp = fopen("/dev/urandom", "rb")) == NULL))
+    {
+      lua_pushstring(L, "Unable to open /dev/urandom.");
+      (void)lua_error(L);
+    }
+    if(unlikely(fread(buffer, len, 1, fp) != 1))
+    {
+      fclose(fp);
+      lua_pushstring(L, "Unable to read /dev/urandom.");
+      (void)lua_error(L);
+    }
     fclose(fp);
-    lua_pushstring(L, "Unable to read /dev/urandom.");
-    (void)lua_error(L);
-  }
-  fclose(fp);
+  #endif
   lua_pushlstring(L, buffer, len);
   free(buffer);
   return 1;
