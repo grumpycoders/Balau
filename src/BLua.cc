@@ -450,13 +450,11 @@ void Balau::Lua::open_bit() {
 
 extern "C" {
 int luaopen_lcrypt(lua_State *L);
-extern const char * lcrypt_rsa;
 }
 
 void Balau::Lua::open_lcrypt() {
     int n = gettop();
     luaopen_lcrypt(L);
-    load(lcrypt_rsa);
     while (n < gettop()) pop();
 }
 
