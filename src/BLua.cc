@@ -225,11 +225,21 @@ int Balau::LuaStatics::print(lua_State * __L) {
     int i;
     for (i = 1; i <= n; i++) {
         const char *s;
-        s = lua_tostring(__L, i);
+        if (lua_isstring(__L, i)) {
+            s = lua_tostring(__L, i);
+        } else {
+            L.getglobal("tostring");
+            L.copy(i);
+            int r = lua_pcall(__L, 1, 1, 0);
+            s = lua_tostring(__L, -1);
+            if (r != 0)
+                s = NULL;
+            L.pop();
+        }
         if (s == NULL)
             L.error("`tostring' must return a string to `print'");
         if (i > 1)
-            Printer::print("\t");
+            Printer::print(" ");
         Printer::print("%s", s);
         L.pop();
     }
