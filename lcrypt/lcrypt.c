@@ -45,7 +45,6 @@ static void* lcrypt_malloc(lua_State *L, size_t size)
 #include "lcrypt_hashes.c"
 #include "lcrypt_math.c"
 #include "lcrypt_bits.c"
-#include "lcrypt_rsa.c"
 
 static int lcrypt_tohex(lua_State *L)
 {
