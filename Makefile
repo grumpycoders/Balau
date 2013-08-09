@@ -18,7 +18,7 @@ ifeq ($(SYSTEM),Darwin)
 endif
 
 ifeq ($(SYSTEM),Linux)
-    LIBS += pthread dl util
+    LIBS += pthread dl
     CONFIG_H = linux-config.h
 endif
 
@@ -159,7 +159,7 @@ lcrypt/lcrypt.o:
 
 LuaJIT: LuaJIT/src/libluajit.a
 
-libBalau.a: LuaJIT/src/libluajit.a libtommath/libtommath.a libtomcrypt/libtomcrypt.a lcrypt/lcrypt.o $(BALAU_OBJECTS)
+libBalau.a: LuaJIT/src/libluajit.a libtommath/libtommath.a libtomcrypt/libtomcrypt.a lcrypt $(BALAU_OBJECTS)
 ifeq ($(SYSTEM),Darwin)
 ifneq ($(CROSSCOMPILE),true)
 	rm -f libBalau.a

@@ -11,16 +11,7 @@
 #include "lua.h"
 #include "lauxlib.h"
 #include "lualib.h"
-#include <tomcrypt.h>
-#include <termios.h>
-
-#ifdef USE_NCIPHER
-  #include "ncipher.h"
-  extern NFastApp_Connection nfast_conn;
-  extern NFast_AppHandle nfast_app;
-#else
-  #include <pty.h>
-#endif
+#include "tomcrypt.h"
 
 #define likely(x)       __builtin_expect((x),1)
 #define unlikely(x)     __builtin_expect((x),0)
@@ -217,12 +208,6 @@ static int lcrypt_xor(lua_State *L)
   return 1;
 }
 
-static int lcrypt_sleep(lua_State *L)
-{
-  usleep(1000000.0 * luaL_checknumber(L, 1));
-  return(0);
-}
-
 static int lcrypt_time(lua_State *L)
 {
   double ret;
@@ -236,274 +221,24 @@ static int lcrypt_time(lua_State *L)
 static int lcrypt_random(lua_State *L)
 {
   int len = luaL_checkint(L, 1);
-  #ifdef USE_NCIPHER
-    M_Command command;
-    M_Reply reply;
-    M_Status rc;
-    memset(&command, 0, sizeof(command));
-    memset(&reply, 0, sizeof(reply));
-    command.cmd = Cmd_GenerateRandom;
-    command.args.generaterandom.lenbytes = len;
-    if(unlikely((rc = NFastApp_Transact(nfast_conn, NULL, &command, &reply, NULL)) != Status_OK))
-    {
-      lua_pushstring(L, NF_Lookup(rc, NF_Status_enumtable));
-      (void)lua_error(L);
-    }
-    if(unlikely(reply.status != Status_OK))
-    {
-      lua_pushstring(L, NF_Lookup(reply.status, NF_Status_enumtable));
-      (void)lua_error(L);
-    }
-    if(unlikely(len != reply.reply.generaterandom.data.len))
-    {
-      lua_pushstring(L, "Wrong length returned");
-      (void)lua_error(L);
-    }
-    lua_pushlstring(L, reply.reply.generaterandom.data.ptr, len);
-    NFastApp_Free_Reply(nfast_app, NULL, NULL, &reply);
-  #else
-    FILE *fp;
-    char *buffer = lcrypt_malloc(L, len);
-    if(unlikely((fp = fopen("/dev/urandom", "rb")) == NULL))
-    {
-      lua_pushstring(L, "Unable to open /dev/urandom.");
-      (void)lua_error(L);
-    }
-    if(unlikely(fread(buffer, len, 1, fp) != 1))
-    {
-      fclose(fp);
-      lua_pushstring(L, "Unable to read /dev/urandom.");
-      (void)lua_error(L);
-    }
+  FILE *fp;
+  char *buffer = lcrypt_malloc(L, len);
+  if(unlikely((fp = fopen("/dev/urandom", "rb")) == NULL))
+  {
+    lua_pushstring(L, "Unable to open /dev/urandom.");
+    (void)lua_error(L);
+  }
+  if(unlikely(fread(buffer, len, 1, fp) != 1))
+  {
     fclose(fp);
-    lua_pushlstring(L, buffer, len);
-    free(buffer);
-  #endif
-  return 1;
-}
-
-static FILE *lgetfile(lua_State *L, int index)
-{
-  FILE **fp = lua_touserdata(L, index);
-  if(unlikely(fp == NULL)) return NULL;
-  if(lua_getmetatable(L, index))
-  {
-    lua_getfield(L, LUA_REGISTRYINDEX, LUA_FILEHANDLE);
-    if(lua_rawequal(L, -1, -2))
-    {
-      lua_pop(L, 2);
-      return *fp;
-    }
-    lua_pop(L, 2);
+    lua_pushstring(L, "Unable to read /dev/urandom.");
+    (void)lua_error(L);
   }
-  return NULL;
-}
-
-static int lcrypt_tcsetattr(lua_State* L)
-{
-  struct termios old, new;
-  FILE *fp = lgetfile(L, 1);
-  if(unlikely(fp == NULL)) return 0;
-  if(unlikely(tcgetattr(fileno(fp), &old) != 0)) return 0;
-  new = old;
-  new.c_iflag = luaL_optint(L, 2, old.c_iflag);
-  new.c_oflag = luaL_optint(L, 3, old.c_oflag);
-  new.c_cflag = luaL_optint(L, 4, old.c_cflag);
-  new.c_lflag = luaL_optint(L, 5, old.c_lflag);
-  if(unlikely(tcsetattr(fileno(fp), TCSAFLUSH, &new) != 0)) return 0;
-  lua_pushinteger(L, new.c_iflag);
-  lua_pushinteger(L, new.c_oflag);
-  lua_pushinteger(L, new.c_cflag);
-  lua_pushinteger(L, new.c_lflag);
-  return 4;
-}
-
-static int lcrypt_flag_add(lua_State *L)
-{
-  uint32_t a = luaL_checkint(L, 1);
-  uint32_t b = luaL_checkint(L, 2);
-  lua_pushinteger(L, a | b);
-  return 1;
-}
-
-static int lcrypt_flag_remove(lua_State *L)
-{
-  uint32_t a = luaL_checkint(L, 1);
-  uint32_t b = luaL_checkint(L, 2);
-  lua_pushinteger(L, a & ~b);
-  return 1;
-}
-
-#ifndef USE_NCIPHER
-
-typedef struct
-{
-  int fd;
-  int pid;
-  char *command;
-} lcrypt_spawn_t;
-
-static int lcrypt_spawn(lua_State *L)
-{
-  int fd, pid, argc;
-  #define MAX_ARGUMENT 128
-  const char *command = luaL_checkstring(L, 1); 
-  char *cmd = strdup(command);
-  char *pos = cmd, *p;
-  char *argv[MAX_ARGUMENT];
-  for(argc = 0; argc < MAX_ARGUMENT-1; argc++)
-  {
-    // eat whitespace
-    while(*pos == ' ' || *pos == '\t' || *pos == '\n' || *pos == '\r')
-    {
-      if(*pos == '\\') for(p = pos; *p != '\0'; p++) *p = *(p + 1);
-      pos++;
-    }
-    // start of argument found
-    argv[argc] = pos;
-    if(*argv[argc] == '"' || *argv[argc] == '\'') // quoted argument
-    {
-      pos++;
-      while(*pos != *argv[argc] && *pos != '\0')
-      {
-        if(*pos == '\\') for(p = pos; *p != '\0'; p++) *p = *(p + 1);
-        pos++;
-      }
-      argv[argc]++;
-    }
-    else // non-quoted argument
-    {
-      while(*pos != ' ' && *pos != '\t' && *pos != '\n' && *pos != '\r' && *pos != '\0')
-      {
-        if(*pos == '\\') for(p = pos; *p != '\0'; p++) *p = *(p + 1);
-        pos++;
-      }
-    }
-    if(*pos == '\0') break;
-    *pos++ = '\0';
-  }
-  argv[++argc] = NULL;
-
-  errno = 0;
-  pid = forkpty(&fd, NULL, NULL, NULL);
-  if(pid == 0) // child
-  {
-    execvp(argv[0], argv);
-    // if we get here, it's an error!
-    perror("'unable to spawn process");
-    return 0;
-  }
-  else if(errno != 0)
-  {
-    lua_pushnil(L);
-    lua_pushstring(L, strerror(errno));
-    return 2;
-  }
-  else
-  {
-    lcrypt_spawn_t *lsp = lua_newuserdata(L, sizeof(lcrypt_spawn_t));
-    lsp->fd = fd;
-    lsp->pid = pid;
-    lsp->command = cmd;
-    luaL_getmetatable(L, "LSPAWN");
-    (void)lua_setmetatable(L, -2);
-    return 1;
-  }
-}
-
-static int lcrypt_spawn_close(lua_State *L)
-{
-  lcrypt_spawn_t *lsp = (lcrypt_spawn_t*)luaL_checkudata(L, 1, "LSPAWN");
-  if(lsp->pid > 0)
-  {
-    (void)kill(lsp->pid, SIGQUIT);
-    lsp->pid = -1;
-  }
-  if(lsp->fd >= 0)
-  {
-    (void)close(lsp->fd);
-    lsp->fd = -1;
-  }
-  if(lsp->command != NULL)
-  {
-    free(lsp->command);
-    lsp->command = NULL;
-  }
-  return 0;
-}
-
-static int lcrypt_spawn_read(lua_State *L)
-{
-  lcrypt_spawn_t *lsp = (lcrypt_spawn_t*)luaL_checkudata(L, 1, "LSPAWN");
-  int count = luaL_optint(L, 2, 4096);
-  char *buffer;
-  if(lsp->fd < 0)
-  {
-    lua_pushstring(L, "Spawn closed");
-    lua_error(L);
-    return 0;
-  }
-  if((buffer = malloc(count)) == NULL)
-  {
-    lua_pushnil(L);
-    lua_pushstring(L, "Unable to allocate memory");
-    return 2;
-  }
-  count = read(lsp->fd, buffer, count);
-  if(errno != 0)
-  {
-    free(buffer);
-    lua_pushnil(L);
-    lua_pushstring(L, strerror(errno));
-    return 2;
-  }
-  lua_pushlstring(L, buffer, count);
+  fclose(fp);
+  lua_pushlstring(L, buffer, len);
   free(buffer);
   return 1;
 }
-
-static int lcrypt_spawn_write(lua_State *L)
-{
-  lcrypt_spawn_t *lsp = (lcrypt_spawn_t*)luaL_checkudata(L, 1, "LSPAWN");
-  size_t in_length = 0;
-  const char* in = luaL_checklstring(L, 2, &in_length);
-  if(lsp->fd < 0)
-  {
-    lua_pushstring(L, "closed");
-    lua_error(L);
-    return 0;
-  }
-  write(lsp->fd, in, in_length);
-  if(errno != 0)
-  {
-    lua_pushstring(L, strerror(errno));
-    return 1;
-  }
-  return 0;
-}
-
-static int lcrypt_spawn_index(lua_State *L)
-{
-  (void)luaL_checkudata(L, 1, "LSPAWN");
-  const char *index = luaL_checkstring(L, 2);
-  if(strcmp(index, "read") == 0)
-    lua_pushcfunction(L, lcrypt_spawn_read);
-  else if(strcmp(index, "write") == 0)
-    lua_pushcfunction(L, lcrypt_spawn_write);
-  else if(strcmp(index, "close") == 0)
-    lua_pushcfunction(L, lcrypt_spawn_close);
-  else
-    return 0;
-  return 1;
-}
-
-static const luaL_Reg lcrypt_spawn_flib[] =
-{
-  {"__gc",  lcrypt_spawn_close},
-  {NULL, NULL}
-};
-
-#endif
 
 static const luaL_Reg lcryptlib[] =
 {
@@ -514,30 +249,14 @@ static const luaL_Reg lcryptlib[] =
   {"base64_encode", lcrypt_base64_encode},
   {"base64_decode", lcrypt_base64_decode},
   {"xor",           lcrypt_xor},
-  {"sleep",         lcrypt_sleep},
   {"time",          lcrypt_time},
   {"random",        lcrypt_random},
-  {"tcsetattr",     lcrypt_tcsetattr},
-  {"flag_add",      lcrypt_flag_add},
-  {"flag_remove",   lcrypt_flag_remove},
-  #ifndef USE_NCIPHER
-    {"spawn",         lcrypt_spawn},
-  #endif
   {NULL, NULL}
 };
 
-int luaopen_lcrypt(lua_State *L);
 int luaopen_lcrypt(lua_State *L)
 {
   luaL_register(L, "lcrypt", lcryptlib);
-
-  #ifndef USE_NCIPHER
-    (void)luaL_newmetatable(L, "LSPAWN");
-    lua_pushliteral(L, "__index");
-    lua_pushcfunction(L, lcrypt_spawn_index);
-    lua_rawset(L, -3);
-    luaL_register(L, NULL, lcrypt_spawn_flib);
-  #endif
 
   lua_getglobal(L, "lcrypt");
 
@@ -545,60 +264,6 @@ int luaopen_lcrypt(lua_State *L)
   lcrypt_start_hashes(L);
   lcrypt_start_math(L);
   lcrypt_start_bits(L);
-
-  lua_pushstring(L, "iflag");
-  lua_newtable(L);
-  ADD_CONSTANT(L, IGNBRK);  ADD_CONSTANT(L, BRKINT);  ADD_CONSTANT(L, IGNPAR);  ADD_CONSTANT(L, PARMRK);
-  ADD_CONSTANT(L, INPCK);   ADD_CONSTANT(L, ISTRIP);  ADD_CONSTANT(L, INLCR);   ADD_CONSTANT(L, IGNCR);
-  ADD_CONSTANT(L, ICRNL);   ADD_CONSTANT(L, IXON);    ADD_CONSTANT(L, IXANY);   ADD_CONSTANT(L, IXOFF);
-  lua_settable(L, -3);
-
-  lua_pushstring(L, "oflag");
-  lua_newtable(L);
-  #ifdef OLCUC
-    ADD_CONSTANT(L, OLCUC);
-  #endif
-  #ifdef OFILL
-    ADD_CONSTANT(L, OFILL);
-  #endif
-  #ifdef OFDEL
-    ADD_CONSTANT(L, OFDEL);
-  #endif
-  #ifdef NLDLY
-    ADD_CONSTANT(L, NLDLY);
-  #endif
-  #ifdef CRDLY
-    ADD_CONSTANT(L, CRDLY);
-  #endif
-  #ifdef TABDLY
-    ADD_CONSTANT(L, TABDLY);
-  #endif
-  #ifdef BSDLY
-    ADD_CONSTANT(L, BSDLY);
-  #endif
-  #ifdef VTDLY
-    ADD_CONSTANT(L, VTDLY);
-  #endif
-  #ifdef FFDLY
-    ADD_CONSTANT(L, FFDLY);
-  #endif
-  ADD_CONSTANT(L, OPOST);   ADD_CONSTANT(L, ONLCR);   ADD_CONSTANT(L, OCRNL);   ADD_CONSTANT(L, ONOCR);
-  ADD_CONSTANT(L, ONLRET);
-  lua_settable(L, -3);
-
-  lua_pushstring(L, "cflag");
-  lua_newtable(L);
-  ADD_CONSTANT(L, CS5);     ADD_CONSTANT(L, CS6);     ADD_CONSTANT(L, CS7);     ADD_CONSTANT(L, CS8);
-  ADD_CONSTANT(L, CSTOPB);  ADD_CONSTANT(L, CREAD);   ADD_CONSTANT(L, PARENB);  ADD_CONSTANT(L, PARODD);
-  ADD_CONSTANT(L, HUPCL);   ADD_CONSTANT(L, CLOCAL);
-  lua_settable(L, -3);
-
-  lua_pushstring(L, "lflag");
-  lua_newtable(L);
-  ADD_CONSTANT(L, ISIG);    ADD_CONSTANT(L, ICANON);  ADD_CONSTANT(L, ECHO);    ADD_CONSTANT(L, ECHOE);
-  ADD_CONSTANT(L, ECHOK);   ADD_CONSTANT(L, ECHONL);  ADD_CONSTANT(L, NOFLSH);  ADD_CONSTANT(L, TOSTOP);
-  ADD_CONSTANT(L, IEXTEN);
-  lua_settable(L, -3);
 
   lua_pop(L, 1);
   return 1;
