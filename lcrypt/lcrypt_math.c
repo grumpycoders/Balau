@@ -180,10 +180,14 @@ static int lcrypt_bigint_index(lua_State *L)
     lua_pushboolean(L, (ret == LTC_MP_YES) ? 1 : 0);
     return 1;
   }
+  if(strcmp(index, "eq") == 0) { lua_pushcfunction(L, lcrypt_bigint_eq); return 1; }
+  if(strcmp(index, "lt") == 0) { lua_pushcfunction(L, lcrypt_bigint_lt); return 1; }
+  if(strcmp(index, "le") == 0) { lua_pushcfunction(L, lcrypt_bigint_le); return 1; }
   if(strcmp(index, "add") == 0) { lua_pushcfunction(L, lcrypt_bigint_add); return 1; }
   if(strcmp(index, "sub") == 0) { lua_pushcfunction(L, lcrypt_bigint_sub); return 1; }
   if(strcmp(index, "mul") == 0) { lua_pushcfunction(L, lcrypt_bigint_mul); return 1; }
-  if(strcmp(index, "div") == 0) { lua_pushcfunction(L, lcrypt_bigint_divmod); return 1; }
+  if(strcmp(index, "div") == 0) { lua_pushcfunction(L, lcrypt_bigint_div); return 1; }
+  if(strcmp(index, "divmod") == 0) { lua_pushcfunction(L, lcrypt_bigint_divmod); return 1; }
   if(strcmp(index, "mod") == 0) { lua_pushcfunction(L, lcrypt_bigint_mod); return 1; }
   if(strcmp(index, "gcd") == 0) { lua_pushcfunction(L, lcrypt_bigint_gcd); return 1; }
   if(strcmp(index, "lcm") == 0) { lua_pushcfunction(L, lcrypt_bigint_lcm); return 1; }
@@ -249,28 +253,58 @@ static int lcrypt_bigint_create(lua_State *L)
   return 1;
 }
 
+static int lcrypt_bigint_isbigint(lua_State *L)
+{
+  luaL_checkudata(L, 1, "LCRYPT_BIGINT");
+  return 0;
+}
+
 static const struct luaL_reg lcrypt_bigint_flib[] =
 {
   { "__index", lcrypt_bigint_index },
-  { "__add", lcrypt_bigint_add },
-  { "__sub", lcrypt_bigint_sub },
-  { "__mul", lcrypt_bigint_mul },
-  { "__div", lcrypt_bigint_div },
-  { "__mod", lcrypt_bigint_mod },
   { "__unm", lcrypt_bigint_unm },
-  { "__eq", lcrypt_bigint_eq },
-  { "__lt", lcrypt_bigint_lt },
-  { "__le", lcrypt_bigint_le },
   { "__tostring", lcrypt_bigint_tostring },
   { "__gc", lcrypt_bigint_gc },
   { NULL, NULL }
 };
 
+#define METAMETHOD_WRAPPER(L, f) \
+    lua_pushstring(L, "__" #f); \
+    luaL_dostring(L, "" \
+"return function(a, b) \n" \
+"    local aisb = pcall(lcrypt.isbigint, a) \n" \
+"    local bisb = pcall(lcrypt.isbigint, b) \n" \
+"    if not aisb then \n" \
+"        a = lcrypt.bigint(a) \n" \
+"    end \n" \
+"    if not bisb then \n" \
+"        b = lcrypt.bigint(b) \n" \
+"    end \n" \
+"    return a:" #f "(b) \n" \
+"end \n" \
+    ""); \
+    lua_settable(L, -3)
+
 static void lcrypt_start_math(lua_State *L)
 {
-  (void)luaL_newmetatable(L, "LCRYPT_BIGINT");  (void)luaL_register(L, NULL, lcrypt_bigint_flib);  lua_pop(L, 1);
+  luaL_newmetatable(L, "LCRYPT_BIGINT");
+  luaL_register(L, NULL, lcrypt_bigint_flib);
+  METAMETHOD_WRAPPER(L, add);
+  METAMETHOD_WRAPPER(L, sub);
+  METAMETHOD_WRAPPER(L, mul);
+  METAMETHOD_WRAPPER(L, div);
+  METAMETHOD_WRAPPER(L, mod);
+  METAMETHOD_WRAPPER(L, eq);
+  METAMETHOD_WRAPPER(L, lt);
+  METAMETHOD_WRAPPER(L, le);
+  lua_pop(L, 1);
 
   ltc_mp = ltm_desc;
 
-  lua_pushstring(L, "bigint"); lua_pushcfunction(L, lcrypt_bigint_create); lua_settable(L, -3);
+  lua_pushstring(L, "bigint");
+  lua_pushcfunction(L, lcrypt_bigint_create);
+  lua_settable(L, -3);
+  lua_pushstring(L, "isbigint");
+  lua_pushcfunction(L, lcrypt_bigint_isbigint);
+  lua_settable(L, -3);
 }
