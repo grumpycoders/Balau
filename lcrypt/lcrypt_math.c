@@ -271,22 +271,35 @@ static const struct luaL_reg lcrypt_bigint_flib[] =
 #define METAMETHOD_WRAPPER(L, f) \
     lua_pushstring(L, "__" #f); \
     luaL_dostring(L, "" \
-"return function(a, b) \n" \
-"    local aisb = pcall(lcrypt.isbigint, a) \n" \
-"    local bisb = pcall(lcrypt.isbigint, b) \n" \
-"    if not aisb then \n" \
-"        a = lcrypt.bigint(a) \n" \
+"return function(isbigint, bigint, op) return function(a, b) \n" \
+"    if not pcall(isbigint, a) then \n" \
+"        a = bigint(a) \n" \
 "    end \n" \
-"    if not bisb then \n" \
-"        b = lcrypt.bigint(b) \n" \
+"    if not pcall(isbigint, b) then \n" \
+"        b = bigint(b) \n" \
 "    end \n" \
-"    return a:" #f "(b) \n" \
-"end \n" \
+"    return op(a, b) \n" \
+"end end \n" \
     ""); \
+    lua_pushcfunction(L, lcrypt_bigint_isbigint); \
+    lua_pushcfunction(L, lcrypt_bigint_create); \
+    lua_pushcfunction(L, lcrypt_bigint_##f); \
+    lua_pcall(L, 3, LUA_MULTRET, 0); \
     lua_settable(L, -3)
 
 static void lcrypt_start_math(lua_State *L)
 {
+  ltc_mp = ltm_desc;
+
+  lua_pushstring(L, "bigint");
+  lua_pushcfunction(L, lcrypt_bigint_create);
+  lua_settable(L, -3);
+  lua_pushstring(L, "isbigint");
+  luaL_dostring(L, "return function (cisbigint) return function(a) return pcall(cisbigint, a) end end");
+  lua_pushcfunction(L, lcrypt_bigint_isbigint);
+  lua_pcall(L, 1, LUA_MULTRET, 0);
+  lua_settable(L, -3);
+
   luaL_newmetatable(L, "LCRYPT_BIGINT");
   luaL_register(L, NULL, lcrypt_bigint_flib);
   METAMETHOD_WRAPPER(L, add);
@@ -299,12 +312,4 @@ static void lcrypt_start_math(lua_State *L)
   METAMETHOD_WRAPPER(L, le);
   lua_pop(L, 1);
 
-  ltc_mp = ltm_desc;
-
-  lua_pushstring(L, "bigint");
-  lua_pushcfunction(L, lcrypt_bigint_create);
-  lua_settable(L, -3);
-  lua_pushstring(L, "isbigint");
-  lua_pushcfunction(L, lcrypt_bigint_isbigint);
-  lua_settable(L, -3);
 }
