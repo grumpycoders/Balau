@@ -8,9 +8,9 @@ CPPFLAGS += -g3 -gdwarf-2 -DDEBUG -DEV_VERIFY=3
 LDFLAGS += -g3 -gdwarf-2
 endif
 
-INCLUDES = includes libcoro libev LuaJIT/src
+INCLUDES = includes libcoro libev LuaJIT/src lcrypt libtommath libtomcrypt/src/headers
 LIBS = z
-DEFINES = _LARGEFILE64_SOURCE
+DEFINES = _LARGEFILE64_SOURCE LITTLE_ENDIAN LTM_DESC LTC_SOURCE USE_LTM
 
 ifeq ($(SYSTEM),Darwin)
     LIBS += pthread iconv
@@ -29,7 +29,7 @@ LDFLAGS += $(ARCH_FLAGS)
 LDLIBS = $(addprefix -l, $(LIBS))
 
 vpath %.cc src:tests
-vpath %.c libcoro:libev:win32/pthreads-win32:win32/iconv:win32/regex
+vpath %.c libcoro:libev:win32/pthreads-win32:win32/iconv:win32/regex:lcrypt
 
 BALAU_SOURCES = \
 Exceptions.cc \
@@ -69,6 +69,8 @@ LuaHandle.cc \
 LuaTask.cc \
 \
 BRegex.cc \
+\
+lcrypt.c \
 
 ifeq ($(SYSTEM),MINGW32)
 WIN32_SOURCES = \
@@ -152,20 +154,15 @@ libtomcrypt: libtomcrypt/libtomcrypt.a
 libtomcrypt/libtomcrypt.a:
 	$(MAKE) -C libtomcrypt CC="$(CC) $(ARCH_FLAGS) -DLTM_DESC -DUSE_LTM -I../libtommath"
 
-lcrypt: lcrypt/lcrypt.o
-
-lcrypt/lcrypt.o:
-	LUA=../LuaJIT TOMCRYPT=../libtomcrypt $(MAKE) -C lcrypt CC="$(CC) $(ARCH_FLAGS)"
-
 LuaJIT: LuaJIT/src/libluajit.a
 
-libBalau.a: LuaJIT/src/libluajit.a libtommath/libtommath.a libtomcrypt/libtomcrypt.a lcrypt $(BALAU_OBJECTS)
+libBalau.a: LuaJIT/src/libluajit.a libtommath/libtommath.a libtomcrypt/libtomcrypt.a $(BALAU_OBJECTS)
 ifeq ($(SYSTEM),Darwin)
 ifneq ($(CROSSCOMPILE),true)
 	rm -f libBalau.a
 endif
 endif
-	$(AR) libBalau.a $(BALAU_OBJECTS) lcrypt/lcrypt.o
+	$(AR) libBalau.a $(BALAU_OBJECTS)
 
 %.$(BINEXT) : %.o $(LIB)
 	$(LD) $(LDFLAGS) -o $@ $< ./$(LIB) ./LuaJIT/src/libluajit.a ./libtomcrypt/libtomcrypt.a ./libtommath/libtommath.a $(LDLIBS)
@@ -185,6 +182,5 @@ clean:
 	$(MAKE) -C LuaJIT clean
 	$(MAKE) -C libtommath clean
 	$(MAKE) -C libtomcrypt clean
-	$(MAKE) -C lcrypt clean
 
-.PHONY: lib tests clean strip LuaJIT libtommath libtomcrypt lcrypt
+.PHONY: lib tests clean strip LuaJIT libtommath libtomcrypt
