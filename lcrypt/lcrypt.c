@@ -43,7 +43,7 @@ static void* lcrypt_malloc(lua_State *L, size_t size)
 
 #include "lcrypt_ciphers.c"
 #include "lcrypt_hashes.c"
-#include "lcrypt_math.c"
+//#include "lcrypt_math.c"
 #include "lcrypt_bits.c"
 #include "lcrypt_rsa.c"
 
@@ -262,7 +262,7 @@ int luaopen_lcrypt(lua_State *L)
 
   lcrypt_start_ciphers(L);
   lcrypt_start_hashes(L);
-  lcrypt_start_math(L);
+//  lcrypt_start_math(L);
   lcrypt_start_bits(L);
 
   lua_pop(L, 1);
