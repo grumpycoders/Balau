@@ -91,7 +91,7 @@ class BigInt {
     BigInt & do_modinv(const BigInt & m) throw (GeneralException);
     BigInt & do_modpow(const BigInt & a, const BigInt & m) throw (GeneralException);
 
-    bool isPrime() const;
+    bool isPrime() const throw (GeneralException);
 
     String toString(int radix = 10) const;
     char * makeString(int radix = 10) const;

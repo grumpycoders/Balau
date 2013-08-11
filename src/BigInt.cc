@@ -487,6 +487,13 @@ Balau::BigInt & Balau::BigInt::do_modpow(const BigInt & a, const BigInt & m) thr
     return *this;
 }
 
+bool Balau::BigInt::isPrime() const throw (GeneralException) {
+    int r = 0;
+    if (mp_prime_is_prime(m_bi, NULL, &r) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_prime_is_prime");
+    return r == LTC_MP_YES;
+}
+
 Balau::String Balau::BigInt::toString(int radix) const {
     char * out = (char *) alloca(mp_count_bits(m_bi) / (radix >= 10 ? 3 : 1) + 3);
     mp_toradix(m_bi, out, radix);
