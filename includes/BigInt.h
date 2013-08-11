@@ -54,6 +54,7 @@ class BigInt {
 
     enum comp_t { LT, GT, EQ };
     comp_t comp(const BigInt &) const throw (GeneralException);
+    comp_t comp(unsigned int) const throw (GeneralException);
 
     BigInt & neg() throw (GeneralException);
 
@@ -63,11 +64,17 @@ class BigInt {
     BigInt gcd(const BigInt &) const throw (GeneralException);
     BigInt lcm(const BigInt &) const throw (GeneralException);
 
+    bool operator==(unsigned int) const;
     bool operator==(const BigInt &) const;
+    bool operator!=(unsigned int) const;
     bool operator!=(const BigInt &) const;
+    bool operator<=(unsigned int) const;
     bool operator<=(const BigInt &) const;
+    bool operator>=(unsigned int) const;
     bool operator>=(const BigInt &) const;
+    bool operator<(unsigned int) const;
     bool operator<(const BigInt &) const;
+    bool operator>(unsigned int) const;
     bool operator>(const BigInt &) const;
 
     BigInt modadd(const BigInt & a, const BigInt & m) const throw (GeneralException);

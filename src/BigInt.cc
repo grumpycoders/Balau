@@ -335,6 +335,20 @@ Balau::BigInt::comp_t Balau::BigInt::comp(const BigInt & a) const throw (General
     }
 }
 
+Balau::BigInt::comp_t Balau::BigInt::comp(unsigned int a) const throw (GeneralException) {
+    int r = mp_cmp_d(m_bi, a);
+    switch (r) {
+    case LTC_MP_LT:
+        return LT;
+    case LTC_MP_GT:
+        return GT;
+    case LTC_MP_EQ:
+        return EQ;
+    default:
+        throw GeneralException("Unknown result from mp_cmp_d");
+    }
+}
+
 bool Balau::BigInt::operator==(const BigInt & a) const {
     comp_t r = comp(a);
     return r == EQ;
@@ -361,6 +375,36 @@ bool Balau::BigInt::operator<(const BigInt & a) const {
 }
 
 bool Balau::BigInt::operator>(const BigInt & a) const {
+    comp_t r = comp(a);
+    return r == GT;
+}
+
+bool Balau::BigInt::operator==(unsigned int a) const {
+    comp_t r = comp(a);
+    return r == EQ;
+}
+
+bool Balau::BigInt::operator!=(unsigned int a) const {
+    comp_t r = comp(a);
+    return r != EQ;
+}
+
+bool Balau::BigInt::operator<=(unsigned int a) const {
+    comp_t r = comp(a);
+    return r == LT || r == EQ;
+}
+
+bool Balau::BigInt::operator>=(unsigned int a) const {
+    comp_t r = comp(a);
+    return r == GT || r == EQ;
+}
+
+bool Balau::BigInt::operator<(unsigned int a) const {
+    comp_t r = comp(a);
+    return r == LT;
+}
+
+bool Balau::BigInt::operator>(unsigned int a) const {
     comp_t r = comp(a);
     return r == GT;
 }
