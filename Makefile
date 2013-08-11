@@ -41,6 +41,8 @@ Async.cc \
 BString.cc \
 Main.cc \
 Printer.cc \
+BigInt.cc \
+BRegex.cc \
 \
 Handle.cc \
 Input.cc \
@@ -63,12 +65,8 @@ HttpServer.cc \
 SimpleMustache.cc \
 \
 BLua.cc \
-\
 LuaHandle.cc \
-\
 LuaTask.cc \
-\
-BRegex.cc \
 \
 lcrypt.c \
 
@@ -101,6 +99,7 @@ event.c \
 
 TEST_SOURCES = \
 test-Sanity.cc \
+test-BigInt.cc \
 test-String.cc \
 test-Tasks.cc \
 test-Threads.cc \
