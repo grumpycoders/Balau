@@ -70,6 +70,22 @@ class BigInt {
     bool operator<(const BigInt &) const;
     bool operator>(const BigInt &) const;
 
+    BigInt modadd(const BigInt & a, const BigInt & m) const throw (GeneralException);
+    BigInt modsub(const BigInt & a, const BigInt & m) const throw (GeneralException);
+    BigInt modmul(const BigInt & a, const BigInt & m) const throw (GeneralException);
+    BigInt modsqr(const BigInt & m) const throw (GeneralException);
+    BigInt modinv(const BigInt & m) const throw (GeneralException);
+    BigInt modpow(const BigInt & a, const BigInt & m) const throw (GeneralException);
+
+    BigInt & do_modadd(const BigInt & a, const BigInt & m) throw (GeneralException);
+    BigInt & do_modsub(const BigInt & a, const BigInt & m) throw (GeneralException);
+    BigInt & do_modmul(const BigInt & a, const BigInt & m) throw (GeneralException);
+    BigInt & do_modsqr(const BigInt & m) throw (GeneralException);
+    BigInt & do_modinv(const BigInt & m) throw (GeneralException);
+    BigInt & do_modpow(const BigInt & a, const BigInt & m) throw (GeneralException);
+
+    bool isPrime() const;
+
     String toString(int radix = 10) const;
     char * makeString(int radix = 10) const;
 

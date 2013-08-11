@@ -365,6 +365,84 @@ bool Balau::BigInt::operator>(const BigInt & a) const {
     return r == GT;
 }
 
+Balau::BigInt Balau::BigInt::modadd(const BigInt & a, const BigInt & m) const throw (GeneralException) {
+    BigInt r;
+    if (mp_addmod(m_bi, a.m_bi, m.m_bi, r.m_bi) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_addmod");
+    return r;
+}
+
+Balau::BigInt Balau::BigInt::modsub(const BigInt & a, const BigInt & m) const throw (GeneralException) {
+    BigInt r;
+    if (mp_submod(m_bi, a.m_bi, m.m_bi, r.m_bi) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_submod");
+    return r;
+}
+
+Balau::BigInt Balau::BigInt::modmul(const BigInt & a, const BigInt & m) const throw (GeneralException) {
+    BigInt r;
+    if (mp_mulmod(m_bi, a.m_bi, m.m_bi, r.m_bi) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_mulmod");
+    return r;
+}
+
+Balau::BigInt Balau::BigInt::modsqr(const BigInt & m) const throw (GeneralException) {
+    BigInt r;
+    if (mp_sqrmod(m_bi, m.m_bi, r.m_bi) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_sqrmod");
+    return r;
+}
+
+Balau::BigInt Balau::BigInt::modinv(const BigInt & m) const throw (GeneralException) {
+    BigInt r;
+    if (mp_invmod(m_bi, m.m_bi, r.m_bi) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_invmod");
+    return r;
+}
+
+Balau::BigInt Balau::BigInt::modpow(const BigInt & a, const BigInt & m) const throw (GeneralException) {
+    BigInt r;
+    if (mp_exptmod(m_bi, a.m_bi, m.m_bi, r.m_bi) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_exptmod");
+    return r;
+}
+
+Balau::BigInt & Balau::BigInt::do_modadd(const BigInt & a, const BigInt & m) throw (GeneralException) {
+    if (mp_addmod(m_bi, a.m_bi, m.m_bi, m_bi) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_addmod");
+    return *this;
+}
+
+Balau::BigInt & Balau::BigInt::do_modsub(const BigInt & a, const BigInt & m) throw (GeneralException) {
+    if (mp_submod(m_bi, a.m_bi, m.m_bi, m_bi) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_submod");
+    return *this;
+}
+
+Balau::BigInt & Balau::BigInt::do_modmul(const BigInt & a, const BigInt & m) throw (GeneralException) {
+    if (mp_mulmod(m_bi, a.m_bi, m.m_bi, m_bi) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_mulmod");
+    return *this;
+}
+
+Balau::BigInt & Balau::BigInt::do_modsqr(const BigInt & m) throw (GeneralException) {
+    if (mp_sqrmod(m_bi, m.m_bi, m_bi) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_sqrmod");
+    return *this;
+}
+
+Balau::BigInt & Balau::BigInt::do_modinv(const BigInt & m) throw (GeneralException) {
+    if (mp_invmod(m_bi, m.m_bi, m_bi) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_invmod");
+    return *this;
+}
+
+Balau::BigInt & Balau::BigInt::do_modpow(const BigInt & a, const BigInt & m) throw (GeneralException) {
+    if (mp_exptmod(m_bi, a.m_bi, m.m_bi, m_bi) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_exptmod");
+    return *this;
+}
+
 Balau::String Balau::BigInt::toString(int radix) const {
     char * out = (char *) alloca(mp_count_bits(m_bi) / (radix >= 10 ? 3 : 1) + 3);
     mp_toradix(m_bi, out, radix);
