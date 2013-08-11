@@ -56,7 +56,8 @@ class BigInt {
     comp_t comp(const BigInt &) const throw (GeneralException);
     comp_t comp(unsigned int) const throw (GeneralException);
 
-    BigInt & neg() throw (GeneralException);
+    BigInt neg() const throw (GeneralException);
+    BigInt & do_neg() throw (GeneralException);
 
     BigInt sqrt() const throw (GeneralException);
     BigInt & do_sqrt() throw (GeneralException);
@@ -92,6 +93,10 @@ class BigInt {
     BigInt & do_modpow(const BigInt & a, const BigInt & m) throw (GeneralException);
 
     bool isPrime() const throw (GeneralException);
+
+    size_t exportSize() const;
+    void exportBin(void *) const throw (GeneralException);
+    void importBin(const void *, size_t) throw (GeneralException);
 
     String toString(int radix = 10) const;
     char * makeString(int radix = 10) const;

@@ -82,7 +82,7 @@ void Balau::BigInt::set(int64_t v) {
     } else {
         v = -v;
         set((uint64_t) v);
-        neg();
+        do_neg();
     }
 }
 
@@ -97,7 +97,7 @@ void Balau::BigInt::set(int32_t v) {
     } else {
         v = -v;
         set((uint32_t) v);
-        neg();
+        do_neg();
     }
 }
 
@@ -262,9 +262,7 @@ Balau::BigInt & Balau::BigInt::operator>>=(unsigned int a) {
 }
 
 Balau::BigInt Balau::BigInt::operator-() const throw (GeneralException) {
-    BigInt r(*this);
-    r.neg();
-    return r;
+    return neg();
 }
 
 Balau::BigInt & Balau::BigInt::operator++() {
@@ -289,9 +287,17 @@ Balau::BigInt Balau::BigInt::operator--(int) {
     return r;
 }
 
-Balau::BigInt & Balau::BigInt::neg() throw (GeneralException) {
+Balau::BigInt Balau::BigInt::neg() const throw (GeneralException) {
+    BigInt r;
+    if (mp_neg(m_bi, r.m_bi) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_neg");
+    return r;
+}
+
+Balau::BigInt & Balau::BigInt::do_neg() throw (GeneralException) {
     if (mp_neg(m_bi, m_bi) != CRYPT_OK)
         throw GeneralException("Error while calling mp_neg");
+    return *this;
 }
 
 Balau::BigInt Balau::BigInt::sqrt() const throw (GeneralException) {
@@ -492,6 +498,26 @@ bool Balau::BigInt::isPrime() const throw (GeneralException) {
     if (mp_prime_is_prime(m_bi, NULL, &r) != CRYPT_OK)
         throw GeneralException("Error while calling mp_prime_is_prime");
     return r == LTC_MP_YES;
+}
+
+size_t Balau::BigInt::exportSize() const {
+    return mp_unsigned_bin_size(m_bi) + 1;
+}
+
+void Balau::BigInt::exportBin(void * _buf) const throw (GeneralException) {
+    unsigned char * buf = (unsigned char *) _buf;
+    buf[0] = comp(0) == LT ? 0xff : 0;
+    if (mp_to_unsigned_bin(m_bi, buf + 1) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_to_unsigned_bin");
+}
+
+void Balau::BigInt::importBin(const void * _buf, size_t size) throw (GeneralException) {
+    unsigned char * buf = (unsigned char *) _buf;
+    bool isNeg = buf[0] != 0;
+    if (mp_read_unsigned_bin(m_bi, buf + 1, size - 1) != CRYPT_OK)
+        throw GeneralException("Error while calling mp_read_unsigned_bin");
+    if (isNeg)
+        do_neg();
 }
 
 Balau::String Balau::BigInt::toString(int radix) const {
