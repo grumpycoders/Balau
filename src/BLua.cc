@@ -1140,10 +1140,13 @@ void Balau::LuaHelpersBase::validate(const lua_functypes_t & entry, bool method,
     }
 
     if (invalid) {
+        const char * name = entry.name;
+        if (!name)
+            name = "new";
         if (method) {
-            L.error(String("Invalid arguments to method `") + className + "::" + entry.name + "'");
+            L.error(String("Invalid arguments to method `") + className + "::" + name + "'");
         } else {
-            L.error(String("Invalid arguments to function `") + className + " " + entry.name + "'");
+            L.error(String("Invalid arguments to function `") + className + " " + name + "'");
         }
     }
 }
