@@ -12,6 +12,8 @@ class BigInt {
       BigInt(const BigInt &) throw (GeneralException);
       BigInt(BigInt &&);
       ~BigInt();
+      template<class T>
+      BigInt(const T & v) : BigInt() { set(v); }
 
     BigInt & operator=(const BigInt &) throw (GeneralException);
 
@@ -22,6 +24,11 @@ class BigInt {
     void set(double) throw (GeneralException);
     void set(const String &, int radix = 10) throw (GeneralException);
     void set2expt(int i) throw (GeneralException);
+
+    uint64_t to_uint64() const throw (GeneralException);
+    int64_t to_int64() const throw (GeneralException);
+    uint32_t to_uint32() const throw (GeneralException);
+    int32_t to_int32() const throw (GeneralException);
 
     BigInt operator+(unsigned int) const throw (GeneralException);
     BigInt operator+(const BigInt &) const throw (GeneralException);

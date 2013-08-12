@@ -146,14 +146,13 @@ int Balau::Main::bootstrap(int argc, char ** argv) {
     int r = 0;
     m_status = STARTING;
 
-    for (AtStart * ptr = AtStart::s_head; ptr; ptr = ptr->m_next)
-        ptr->doStart();
-
     try {
+        for (AtStart * ptr = AtStart::s_head; ptr; ptr = ptr->m_next)
+            ptr->doStart();
+
         m_status = RUNNING;
         TaskMan::registerTask(new BootstrapTask(argc, argv, NULL));
         r = TaskMan::getDefaultTaskMan()->mainLoop();
-        m_status = STOPPING;
     }
     catch (Exit & e) {
         m_status = STOPPING;
