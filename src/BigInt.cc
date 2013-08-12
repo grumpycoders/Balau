@@ -11,8 +11,6 @@ class InitMP : public Balau::AtStart {
       InitMP() : AtStart(20) { }
     void doStart() {
         ltc_mp = ltm_desc;
-        IAssert(MP_DIGIT_BIT >= 32, "The code needs at least 32 bits digits.");
-        IAssert(MP_DIGIT_BIT <= 64, "The code needs at most 64 bits digits.");
         IAssert(!m_initialized, "doStart should only be called once.");
         m_initialized = true;
 
@@ -136,45 +134,55 @@ void Balau::BigInt::set2expt(int i) throw (GeneralException) {
 }
 
 uint64_t Balau::BigInt::to_uint64() const throw (GeneralException) {
-    if (mp_get_digit_count(m_bi) > 2)
+    if (mp_count_bits(m_bi) > 64)
         throw GeneralException("BigInt too big to fit in a uint64");
-    if (MP_DIGIT_BIT == 64)
-        return mp_get_digit(m_bi, 0);
-    uint64_t low = mp_get_digit(m_bi, 0);
-    uint64_t high = mp_get_digit(m_bi, 1);
-    uint64_t highest = 1 << (64 - MP_DIGIT_BIT);
-    if (high >= highest)
-        throw GeneralException("BigInt too big to fit in a uint64");
-    return low | (high << MP_DIGIT_BIT);
+    uint64_t v = 0;
+    int shift = 0;
+    int digit = 0;
+    while (shift <= 64) {
+        v |= mp_get_digit(m_bi, digit++) << shift;
+        shift += MP_DIGIT_BIT;
+    }
+    return v;
 }
 
 int64_t Balau::BigInt::to_int64() const throw (GeneralException) {
-    uint64_t v = to_uint64();
-    if (v & 0x8000000000000000ULL)
+    if (mp_count_bits(m_bi) > 63)
         throw GeneralException("BigInt too big to fit in a int64");
-    if (comp(0) == LT)
-        return -v;
-    else
-        return v;
+    uint64_t v = 0;
+    int shift = 0;
+    int digit = 0;
+    while (shift <= 63) {
+        v |= mp_get_digit(m_bi, digit++) << shift;
+        shift += MP_DIGIT_BIT;
+    }
+    return comp(0) == LT ? -v : v;
 }
 
 uint32_t Balau::BigInt::to_uint32() const throw (GeneralException) {
-    if (mp_get_digit_count(m_bi) > 1)
+    if (mp_count_bits(m_bi) > 32)
         throw GeneralException("BigInt too big to fit in a uint32");
-    uint64_t v = mp_get_digit(m_bi, 0);
-    if (v >= 0x100000000ULL)
-        throw GeneralException("BigInt too big to fit in a uint32");
+    uint64_t v = 0;
+    int shift = 0;
+    int digit = 0;
+    while (shift <= 32) {
+        v |= mp_get_digit(m_bi, digit++) << shift;
+        shift += MP_DIGIT_BIT;
+    }
     return v;
 }
 
 int32_t Balau::BigInt::to_int32() const throw (GeneralException) {
-    uint32_t v = to_uint32();
-    if (v & 0x80000000)
-        throw GeneralException("BigInt too big to fit in a int32");
-    if (comp(0) == LT)
-        return -v;
-    else
-        return v;
+    if (mp_count_bits(m_bi) > 31)
+        throw GeneralException("BigInt too big to fit in a uint32");
+    uint64_t v = 0;
+    int shift = 0;
+    int digit = 0;
+    while (shift <= 31) {
+        v |= mp_get_digit(m_bi, digit++) << shift;
+        shift += MP_DIGIT_BIT;
+    }
+    return comp(0) == LT ? -v : v;
 }
 
 Balau::BigInt Balau::BigInt::operator+(unsigned int i) const throw (GeneralException) {
