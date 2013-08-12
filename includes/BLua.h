@@ -123,6 +123,7 @@ class Lua {
 
     void call(const char * funcName, int tableIdx = LUA_GLOBALSINDEX, int nArgs = 0);
     void call(int nArgs = 0) { resume(nArgs); }
+    void pcall(int nArgs = 0) throw (GeneralException);
 
     void push() { checkstack(); lua_pushnil(L); }
     void push(lua_Number n) { checkstack(); lua_pushnumber(L, n); }
@@ -191,7 +192,7 @@ class Lua {
     void weaken();
 
     template<class T>
-    T * recast(int n = 1) {
+    T * recast(int n = -1) {
         LuaObjectBase * b;
         LuaObject<T> * r;
 

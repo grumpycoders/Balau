@@ -65,6 +65,7 @@ HttpServer.cc \
 SimpleMustache.cc \
 \
 BLua.cc \
+LuaBigInt.cc \
 LuaHandle.cc \
 LuaTask.cc \
 \

@@ -838,6 +838,29 @@ bool Balau::Lua::resume(int nargs) throw (GeneralException) {
     }
 }
 
+void Balau::Lua::pcall(int nargs) throw (GeneralException) {
+    int r = lua_pcall(L, nargs, LUA_MULTRET, 0);
+
+    if (r == 0)
+        return;
+
+    pushLuaContext();
+    showerror();
+
+    switch(r) {
+    case LUA_ERRRUN:
+        throw LuaException("Runtime error while running LUA code.");
+    case LUA_ERRMEM:
+        throw LuaException("Memory allocation error while running LUA code.");
+    case LUA_ERRERR:
+        throw LuaException("Error in Error function.");
+    case LUA_ERRSYNTAX:
+        throw LuaException("Syntax error in Lua code.");
+    default:
+        throw LuaException(String("Unknow error while running LUA code (err code: ") + String(r) + ")");
+    }
+}
+
 bool Balau::Lua::resumeC(int & nargs) {
     if (!yielded())
         return false;
@@ -1016,7 +1039,7 @@ Balau::LuaObjectBase * Balau::LuaObjectFactory::getMeInternal(Lua & L, int i) {
 
     if (L.istable(i)) {
         L.push("__obj");
-        L.gettable(i, true);
+        L.gettable(i < 0 ? i - 1 : i, true);
         if (!(o = (LuaObjectBase *) L.touserdata()))
             L.error("Table is not an object.");
         L.pop();
