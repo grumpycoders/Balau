@@ -53,10 +53,15 @@ enum BigInt_methods_t {
     BIGINT_DO_MODSQR,
     BIGINT_DO_MODINV,
     BIGINT_DO_MODPOW,
+
+    BIGINT_ISPRIME,
+    BIGINT_ISNEG,
+    BIGINT_ISZERO,
+    BIGINT_ISPOS,
 };
 
 struct lua_functypes_t BigInt_functions[] = {
-    { BIGINT_CONSTRUCTOR,     NULL,             0, 2, { BLUA_STRING | BLUA_NUMBER, BLUA_NUMBER } },
+    { BIGINT_CONSTRUCTOR,     NULL,             0, 2, { BLUA_OBJECT | BLUA_STRING | BLUA_NUMBER, BLUA_NUMBER } },
     { -1, 0, 0, 0, 0 },
 };
 
@@ -108,6 +113,11 @@ struct lua_functypes_t BigInt_methods[] = {
     { BIGINT_DO_MODINV,       "do_modinv",      1, 1, { BLUA_OBJECT } },
     { BIGINT_DO_MODPOW,       "do_modpow",      2, 2, { BLUA_OBJECT, BLUA_OBJECT } },
 
+    { BIGINT_ISPRIME,         "isPrime",        0, 0, { } },
+    { BIGINT_ISNEG,           "isNeg",          0, 0, { } },
+    { BIGINT_ISZERO,          "isZero",         0, 0, { } },
+    { BIGINT_ISPOS,           "isPos",          0, 0, { } },
+
     { -1, 0, 0, 0, 0 },
 };
 
@@ -124,15 +134,26 @@ int sLua_BigInt::BigInt_proceed_static(Lua & L, int n, int caller) {
     switch (caller) {
     case BIGINT_CONSTRUCTOR:
         {
-            BigInt * a = new BigInt();
+            BigInt * a;
             if (L.type() == LUA_TSTRING) {
+                a = new BigInt();
                 s = L.tostring(1);
                 if (n == 2)
                     radix = L.tonumber(-1);
                 a->set(s, radix);
+            } else if (n == 1) {
+                if (L.istable()) {
+                    BigInt * b = L.recast<BigInt>();
+                    a = new BigInt(*b);
+                } else {
+                    a = new BigInt();
+                    lua_Number f = L.tonumber();
+                    a->set(f);
+                }
+            } else if (n == 0) {
+                a = new BigInt();
             } else {
-                lua_Number f = L.tonumber();
-                a->set(f);
+                L.error("Invalid arguments to BigInt:new");
             }
             LuaBigIntFactory o(a);
             o.pushDestruct(L);
@@ -399,6 +420,22 @@ int sLua_BigInt::BigInt_proceed(Lua & L, int n, BigInt * a, int caller) {
         b = L.recast<BigInt>(-2);
         m = L.recast<BigInt>(-1);
         a->do_modpow(*b, *m);
+        break;
+    case BIGINT_ISPRIME:
+        L.push(a->isPrime());
+        r = 1;
+        break;
+    case BIGINT_ISNEG:
+        L.push(*a < 0);
+        r = 1;
+        break;
+    case BIGINT_ISZERO:
+        L.push(*a == 0);
+        r = 1;
+        break;
+    case BIGINT_ISPOS:
+        L.push(*a > 0);
+        r = 1;
         break;
     }
 
