@@ -146,17 +146,6 @@ int sLua_BigInt::BigInt_proceed(Lua & L, int n, BigInt * a, int caller) {
 #define METAMETHOD_WRAPPER(op) \
 L.push("__" #op); \
 L.load("" \
-"return function(bigint) return function(a) \n" \
-"    return a:" #op "() \n" \
-"end end\n" \
-""); \
-L.copy(-5); \
-L.pcall(1); \
-L.settable() \
-
-#define METAMETHOD_WRAPPER2(op) \
-L.push("__" #op); \
-L.load("" \
 "return function(bigint) return function(a, b) \n" \
 "    if type(a) ~= 'table' or a.__type ~= bigint then \n" \
 "        a = bigint.new(a) \n" \
@@ -174,17 +163,22 @@ L.settable() \
 void LuaBigIntFactory::pushStatics(Lua & L) {
     CHECK_FUNCTIONS(BigInt);
     CHECK_METHODS(BigInt);
+
     PUSH_CLASS(BigInt);
     PUSH_CONSTRUCTOR(BigInt, BIGINT_CONSTRUCTOR);
+
     L.push("BIGINT_METAS");
+
     L.newtable();
-    METAMETHOD_WRAPPER2(add);
-    METAMETHOD_WRAPPER2(sub);
-    METAMETHOD_WRAPPER2(div);
-    METAMETHOD_WRAPPER2(mul);
-    METAMETHOD_WRAPPER2(mod);
-    METAMETHOD_WRAPPER(tostring);
+    METAMETHOD_WRAPPER(add);
+    METAMETHOD_WRAPPER(sub);
+    METAMETHOD_WRAPPER(div);
+    METAMETHOD_WRAPPER(mul);
+    METAMETHOD_WRAPPER(mod);
+    PUSH_METAMETHOD(BigInt, BIGINT_TOSTRING);
+
     L.settable(LUA_REGISTRYINDEX);
+
     PUSH_CLASS_DONE();
 }
 
