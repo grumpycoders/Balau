@@ -77,7 +77,7 @@ class Handle {
 
     // these need to be changed into Future<>s
     template <size_t L>
-    ssize_t writeString(const char (&str)[L]) { return writeString(str, L - 1); }
+    ssize_t writeString(const char (&str)[L]) __attribute__((warn_unused_result));
     ssize_t writeString(const String & str) __attribute__((warn_unused_result)) { return forceWrite(str.to_charp(), str.strlen()); }
     ssize_t writeString(const char * str, ssize_t len) __attribute__((warn_unused_result)) { return forceWrite(str, len); }
     ssize_t forceRead(void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException) __attribute__((warn_unused_result));
@@ -105,6 +105,9 @@ class Handle {
       Handle(const Handle &) = delete;
     Handle & operator=(const Handle &) = delete;
 };
+
+template <size_t L>
+ssize_t Handle::writeString(const char (&str)[L]) { return writeString(str, L - 1); }
 
 class HPrinter : public Handle {
   public:
