@@ -333,6 +333,7 @@ int Balau::TaskMan::mainLoop() {
             for (auto iH = stopped.begin(); iH != stopped.end(); iH++) {
                 Task * t = *iH;
                 IAssert((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED), "Task %p in stopped list but isn't stopped.", t);
+                t->m_eventLock.enter();
                 if (t->m_waitedBy.size() == 0) {
                     freeStack(t->m_stack);
                     stopped.erase(iH);
@@ -340,10 +341,13 @@ int Balau::TaskMan::mainLoop() {
                     IAssert(iH != m_tasks.end(), "Task %p in stopped list but not in m_tasks...", t);
                     m_tasks.erase(iH);
                     IAssert(yielded.find(t) == yielded.end(), "Task %p is deleted but is in yielded list... ?", t);
+                    t->m_eventLock.leave();
                     delete t;
                     didDelete = true;
                     break;
                 }
+                if (!didDelete)
+                    t->m_eventLock.leave();
             }
         } while (didDelete);
 

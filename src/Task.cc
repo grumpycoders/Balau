@@ -250,8 +250,9 @@ void Balau::Events::TaskEvent::ack() {
             break;
         }
     }
-    t->m_eventLock.leave();
     Printer::elog(E_TASK, "TaskEvent at %p being ack; removing from the 'waited by' list of %p (%s - %s); deleted = %s", this, t, t->getName(), ClassName(t).c_str(), deleted ? "true" : "false");
+    t->m_eventLock.leave();
+    t = NULL;
     IAssert(deleted, "We didn't find task %p in the waitedBy lists... ?", this);
     m_ack = true;
     reset();
