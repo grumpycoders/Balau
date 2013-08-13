@@ -44,9 +44,8 @@ class Handle {
     virtual bool canSeek();
     virtual bool canRead();
     virtual bool canWrite();
-    virtual ssize_t read(void * buf, size_t count) throw (GeneralException);
-    virtual ssize_t write(const void * buf, size_t count) throw (GeneralException);
-    template <size_t L> void writeString(const char (&str)[L]) { writeString(str, L - 1); }
+    virtual ssize_t read(void * buf, size_t count) throw (GeneralException) __attribute__((warn_unused_result));
+    virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) __attribute__((warn_unused_result));
     virtual void rseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
     virtual void wseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
     virtual off_t rtell() throw (GeneralException);
@@ -77,12 +76,12 @@ class Handle {
     Future<void>     writeI64(int64_t);
 
     // these need to be changed into Future<>s
-    ssize_t write(const String & str) { return write(str.to_charp(), str.strlen()); }
-    void writeString(const char * str, ssize_t len) { if (len < 0) len = strlen(str); forceWrite(str, len); }
-    void writeString(const String & str) { forceWrite(str.to_charp(), str.strlen()); }
-    ssize_t forceRead(void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException);
-    ssize_t forceWrite(const void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException);
-    ssize_t forceWrite(const String & str) { return forceWrite(str.to_charp(), str.strlen()); }
+    template <size_t L>
+    ssize_t writeString(const char (&str)[L]) { return writeString(str, L - 1); }
+    ssize_t writeString(const String & str) __attribute__((warn_unused_result)) { return forceWrite(str.to_charp(), str.strlen()); }
+    ssize_t writeString(const char * str, ssize_t len) __attribute__((warn_unused_result)) { return forceWrite(str, len); }
+    ssize_t forceRead(void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException) __attribute__((warn_unused_result));
+    ssize_t forceWrite(const void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException) __attribute__((warn_unused_result));
 
   protected:
       Handle() { }

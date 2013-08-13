@@ -213,7 +213,7 @@ void Balau::HttpWorker::sendError(int error, const char * msg, const char * deta
         for (String & str : extraHeaders)
             headers += str + "\r\n";
         headers += "\r\n";
-        m_socket->forceWrite(headers);
+        m_socket->writeString(headers);
         if (m_socket->isClosed()) return;
         tpl->render(m_socket, &ctx);
     } else {
@@ -231,7 +231,7 @@ void Balau::HttpWorker::sendError(int error, const char * msg, const char * deta
         for (String & str : extraHeaders)
             headers += str + "\r\n";
         headers += "\r\n";
-        m_socket->forceWrite(headers);
+        m_socket->writeString(headers);
         if (m_socket->isClosed()) return;
         m_socket->forceWrite(errorText->getBuffer(), length);
     }
@@ -676,7 +676,7 @@ void Balau::HttpServer::Response::Flush() {
     String response(m_responseCode);
     headers->writeString(response);
     headers->writeString(" ");
-    headers->writeString(Http::getStatusMsg(m_responseCode), -1);
+    headers->writeString(Http::getStatusMsg(m_responseCode));
     headers->writeString("\r\nContent-Type: ");
     headers->writeString(m_type);
     headers->writeString("\r\nContent-Length: ");

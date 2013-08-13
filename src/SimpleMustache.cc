@@ -376,7 +376,7 @@ Balau::SimpleMustache::Fragments::const_iterator Balau::SimpleMustache::render_r
         for (cur = begin; cur != end; cur++) {
             Fragment * fr = *cur;
             if(fr->type == Fragment::STRING)
-                h->write(fr->str);
+                h->writeString(fr->str);
         }
         return end;
     }
@@ -395,16 +395,16 @@ Balau::SimpleMustache::Fragments::const_iterator Balau::SimpleMustache::render_r
             IAssert(fr->type != Fragment::END_SECTION, "Processing an end section tag... ?");
             switch (fr->type) {
             case Fragment::STRING:
-                h->write(fr->str);
+                h->writeString(fr->str);
                 break;
             case Fragment::VARIABLE:
                 f = sCtx->find(fr->str);
                 if (f != sCtx->end()) {
                     Context * var = f->second;
                     if (var->m_type == Context::STRING)
-                        h->write(escape(var->m_str));
+                        h->writeString(escape(var->m_str));
                     else if (var->m_type == Context::BOOLSEC)
-                        h->write(var->m_bool ? "true" : "false");
+                        h->writeString(var->m_bool ? "true" : "false");
                 }
                 break;
             case Fragment::NOESCAPE:
@@ -412,9 +412,9 @@ Balau::SimpleMustache::Fragments::const_iterator Balau::SimpleMustache::render_r
                 if (f != sCtx->end()) {
                     Context * var = f->second;
                     if (var->m_type == Context::STRING)
-                        h->write(var->m_str);
+                        h->writeString(var->m_str);
                     else if (var->m_type == Context::BOOLSEC)
-                        h->write(var->m_bool ? "true" : "false");
+                        h->writeString(var->m_bool ? "true" : "false");
                 }
                 break;
             case Fragment::SECTION:
