@@ -181,8 +181,8 @@ void Balau::Input::close() throw (GeneralException) {
         case cbResults_t::CLOSE:
             m_fd = -1;
             if (cbResults->result < 0) {
-                char str[4096];
-                strerror_r(cbResults->errorno, str, sizeof(str));
+                char buf[4096];
+                char * str = strerror_r(cbResults->errorno, buf, sizeof(buf));
                 throw GeneralException(String("Unable to close file ") + m_name + ": " + str);
             }
             delete cbResults;
