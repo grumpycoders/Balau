@@ -57,15 +57,13 @@ class DiscreteCos {
     }
 
   private:
-    int32_t m_cosTable[512] = {
-        16777216, // 2^24 * cos(0 * 2pi / 2048)
-        16777137, // 2^24 * cos(1 * 2pi / 2048) = C = f(1)
-    };
+    int32_t m_cosTable[512];
 
     // f(n) = cos(n * 2pi / 2048)
     // f(n) = 2 * f(1) * f(n - 1) - f(n - 2)
     void generate() {
-        int64_t C = m_cosTable[1];
+        m_cosTable[0]             = 16777216; // 2^24 * cos(0 * 2pi / 2048)
+        int64_t C = m_cosTable[1] = 16777137; // 2^24 * cos(1 * 2pi / 2048) = C = f(1);
 
         for (int i = 2; i < 512; i++)
             m_cosTable[i] = ((C * m_cosTable[i - 1]) >> 23) - m_cosTable[i - 2];
