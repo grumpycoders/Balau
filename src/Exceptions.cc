@@ -27,11 +27,16 @@ void Balau::GeneralException::genTrace() {
     for (i = 0; i < frames; i++) {
         SymFromAddr(process, (DWORD64)(stack[i]), 0, symbol);
 
-        int status;
+        int status = 0;
         String line;
+#ifndef _MSC_VER
         char * demangled = abi::__cxa_demangle(symbol->Name, 0, 0, &status);
-        line.set("%i: 0x%08x (%s)", i, symbol->Address, status == 0 ? demangled : symbol->Name);
-        free(demangled);
+#else
+		char * demangled = NULL;
+#endif
+		line.set("%i: 0x%08x (%s)", i, symbol->Address, status == 0 && demangled ? demangled : symbol->Name);
+		if (demangled)
+	        free(demangled);
         m_trace.push_back(line);
     }
 

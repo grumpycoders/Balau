@@ -5,6 +5,10 @@
 #include "Main.h"
 #include "Local.h"
 
+#ifdef _MSC_VER
+#include <Windows.h>
+#endif
+
 static Balau::AsyncManager s_async;
 
 namespace {

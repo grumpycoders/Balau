@@ -3,7 +3,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#else
+#include <io.h>
+#endif
 #include "Async.h"
 #include "Input.h"
 #include "Task.h"
@@ -35,7 +39,11 @@ class AsyncOpOpen : public Balau::AsyncOperation {
   public:
       AsyncOpOpen(const char * path, cbResults_t * results) : m_path(path), m_results(results) { }
     virtual void run() {
+#ifdef _MSC_VER
+        const ssize_t r = m_results->result = _open(m_path, O_RDONLY);
+#else
         const ssize_t r = m_results->result = open(m_path, O_RDONLY);
+#endif
         m_results->errorno = r < 0 ? errno : 0;
     }
     virtual void done() {
@@ -182,7 +190,7 @@ void Balau::Input::close() throw (GeneralException) {
             m_fd = -1;
             if (cbResults->result < 0) {
                 char buf[4096];
-                char * str = strerror_r(cbResults->errorno, buf, sizeof(buf));
+                const char * str = strerror_r(cbResults->errorno, buf, sizeof(buf));
                 throw GeneralException(String("Unable to close file ") + m_name + ": " + str);
             }
             delete cbResults;
@@ -211,7 +219,12 @@ class AsyncOpRead : public Balau::AsyncOperation {
   public:
       AsyncOpRead(int fd, void * buf, size_t count, off_t offset, cbResults_t * results) : m_fd(fd), m_buf(buf), m_count(count), m_offset(offset), m_results(results) { }
     virtual void run() {
+#ifdef _MSC_VER
+        IAssert(0, "Not yet implemented");
+        const ssize_t r = 0;
+#else
         const ssize_t r = m_results->result = pread(m_fd, m_buf, m_count, m_offset);
+#endif
         m_results->errorno = r < 0 ? errno : 0;
     }
     virtual void done() {

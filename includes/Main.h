@@ -39,7 +39,7 @@ class Main {
       Main() : m_status(UNKNOWN) { IAssert(s_application == NULL, "There can't be two main apps"); s_application = this; }
     static Status getStatus() { return s_application->m_status; }
     int bootstrap(int _argc, char ** _argv);
-    static bool hasMain() { return s_application; }
+    static bool hasMain() { return !!s_application; }
   private:
     Status m_status;
     static Main * s_application;

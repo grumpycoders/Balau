@@ -12,7 +12,14 @@
 #include <string>
 #include <vector>
 
-#ifdef _WIN32
+#ifdef _MSC_VER
+typedef size_t ssize_t;
+#define printfwarning(a, b)
+#else
+#define printfwarning(a, b) __attribute__((format(printf, a, b)))
+#endif
+
+#if defined(_WIN32) && !defined(_MSC_VER)
 int vsscanf(const char *, const char *, va_list);
 #endif
 
@@ -35,12 +42,12 @@ class String : private std::string {
       String(const std::string & s) : std::string(s) { }
       String(String && s) : std::string(s) { }
 
-    String & set(const char * fmt, va_list) __attribute__((format(printf, 2, 0)));
-    String & set(const char * fmt, ...) __attribute__((format(printf, 2, 3))) { va_list ap; va_start(ap, fmt); set(fmt, ap); va_end(ap); return *this; }
+    String & set(const char * fmt, va_list) printfwarning(2, 0);
+    String & set(const char * fmt, ...) printfwarning(2, 3) { va_list ap; va_start(ap, fmt); set(fmt, ap); va_end(ap); return *this; }
     String & set(const String & fmt, ...) { va_list ap; va_start(ap, fmt); set(fmt.to_charp(), ap); va_end(ap); return *this; }
 
     int scanf(const char * fmt, va_list ap) const { return ::vsscanf(c_str(), fmt, ap); }
-    int scanf(const char * fmt, ...) const __attribute__((format(scanf, 2, 3))) { va_list ap; va_start(ap, fmt); int r = scanf(fmt, ap); va_end(ap); return r; }
+    int scanf(const char * fmt, ...) const printfwarning(2, 3) { va_list ap; va_start(ap, fmt); int r = scanf(fmt, ap); va_end(ap); return r; }
     int scanf(const String & fmt, ...) const { va_list ap; va_start(ap, fmt); int r = scanf(fmt.to_charp(), ap); va_end(ap); return r; }
 
     const char * to_charp(size_t begin = 0) const { return c_str() + begin; }

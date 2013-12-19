@@ -2,7 +2,11 @@
 
 #include <stdarg.h>
 #include <typeinfo>
+
+#ifndef _MSC_VER
 #include <cxxabi.h>
+#endif
+
 #include <BString.h>
 #include <vector>
 
@@ -56,7 +60,7 @@ class RessourceException : public GeneralException {
       RessourceException(const String & msg, const char * details) : GeneralException(msg, details) { }
 };
 
-void ExitHelper(const String & msg, const char * fmt = NULL, ...) __attribute__((format(printf, 2, 3)));
+void ExitHelper(const String & msg, const char * fmt = NULL, ...) printfwarning(2, 3);
 
 static inline void * malloc(size_t size) {
     void * r = ::malloc(size);
@@ -89,7 +93,7 @@ static inline void AssertHelperInner(const String & msg, const char * details = 
     throw GeneralException(msg, details);
 }
 
-static inline void AssertHelper(const String & msg, const char * fmt, ...) __attribute__((format(printf, 2, 3)));
+static inline void AssertHelper(const String & msg, const char * fmt, ...) printfwarning(2, 3);
 
 static inline void AssertHelper(const String & msg, const char * fmt, ...) {
     String details;
@@ -115,40 +119,52 @@ static inline void TestHelper(const String & msg) throw (TestException) {
 
 template<typename T>
 ClassName::ClassName(T * ptr) {
-    int status;
-    m_demangled = abi::__cxa_demangle(typeid(*ptr).name(), 0, 0, &status);
+#ifdef _MSC_VER
+	m_demangled = strdup(typeid(*ptr).name());
+#else
+	int status;
+	m_demangled = abi::__cxa_demangle(typeid(*ptr).name(), 0, 0, &status);
+#endif
 }
 
 };
 
+#ifdef _MSC_VER
+#define likely(expr)    (expr)
+#define unlikely(expr)  (expr)
+#else
+#define likely(expr)    __builtin_expect((expr), !0)
+#define unlikely(expr)  __builtin_expect((expr), 0)
+#endif
+
 #define Failure(msg) Balau::AssertHelper(msg);
 #define FailureDetails(msg, ...) Balau::AssertHelper(msg, __VA_ARGS__);
 
-#define IAssert(c, ...) if (!__builtin_expect(!!(c), 0)) { \
+#define IAssert(c, ...) if (unlikely(!(c))) { \
     Balau::String msg; \
     msg.set("Internal Assertion " #c " failed at %s:%i", __FILE__, __LINE__); \
     Balau::AssertHelper(msg, __VA_ARGS__); \
 }
 
-#define AAssert(c, ...) if (!__builtin_expect(!!(c), 0)) { \
+#define AAssert(c, ...) if (unlikely(!(c))) { \
     Balau::String msg; \
     msg.set("API Assertion " #c " failed at %s:%i", __FILE__, __LINE__); \
     Balau::AssertHelper(msg, __VA_ARGS__); \
 }
 
-#define RAssert(c, ...) if (!__builtin_expect(!!(c), 0)) { \
+#define RAssert(c, ...) if (unlikely(!(c))) { \
     Balau::String msg; \
     msg.set("Ressource Assertion " #c " failed at %s:%i", __FILE__, __LINE__); \
     Balau::ExitHelper(msg, __VA_ARGS__); \
 }
 
-#define EAssert(c, ...) if (!__builtin_expect(!!(c), 0)) { \
+#define EAssert(c, ...) if (unlikely(!(c))) { \
     Balau::String msg; \
     msg.set("Execution Assertion " #c " failed at %s:%i", __FILE__, __LINE__); \
     Balau::AssertHelper(msg, __VA_ARGS__); \
 }
 
-#define TAssert(c) if (!__builtin_expect(!!(c), 0)) { \
+#define TAssert(c) if (unlikely(!(c))) { \
     Balau::String msg; \
     msg.set("UnitTest Assert " #c " failed at %s:%i", __FILE__, __LINE__); \
     Balau::TestHelper(msg); \

@@ -63,7 +63,7 @@ Balau::String & Balau::String::do_rtrim() {
             break;
 
     if ((i == 0) && isspace(buffer[0]))
-        assign("", 0);
+        clear();
     else
         erase(p);
 

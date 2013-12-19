@@ -5,14 +5,20 @@
 #include <coro.h>
 #endif
 #include <ev++.h>
+#ifdef _MSC_VER
+#include <hash_set>
+#else
 #include <ext/hash_set>
+#endif
 #include <queue>
 #include <Async.h>
 #include <Threads.h>
 #include <Exceptions.h>
 #include <Task.h>
 
+#ifndef _MSC_VER
 namespace gnu = __gnu_cxx;
+#endif
 
 namespace Balau {
 
@@ -81,8 +87,12 @@ class TaskMan {
     friend class TaskScheduler;
     template<class T>
     friend T * createAsyncOp(T * op);
-    struct taskHasher { size_t operator()(const Task * t) const { return reinterpret_cast<uintptr_t>(t); } };
+#ifdef _MSC_VER
+	typedef stdext::hash_set<Task *> taskHash_t;
+#else
+	struct taskHasher { size_t operator()(const Task * t) const { return reinterpret_cast<uintptr_t>(t); } };
     typedef gnu::hash_set<Task *, taskHasher> taskHash_t;
+#endif
     taskHash_t m_tasks, m_signaledTasks;
     Queue<Task> m_pendingAdd;
     struct ev_loop * m_loop;

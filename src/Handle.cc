@@ -8,6 +8,11 @@
 #include "Printer.h"
 #include "Async.h"
 
+#ifdef _MSC_VER
+#include <direct.h>
+typedef int mode_t;
+#endif
+
 #ifdef _WIN32
 static const char * strerror_r(int errorno, char * buf, size_t bufsize) {
 #ifdef _MSVC
@@ -237,7 +242,11 @@ class AsyncOpMkdir : public Balau::AsyncOperation {
   public:
       AsyncOpMkdir(const char * path, mode_t mode, cbResults_t * results) : m_path(path), m_mode(mode), m_results(results) { }
     virtual void run() {
+#ifdef _MSC_VER
+        int r = m_results->result = mkdir(m_path);
+#else
         int r = m_results->result = mkdir(m_path, m_mode);
+#endif
         m_results->errorno = r < 0 ? errno : 0;
     }
     virtual void done() {

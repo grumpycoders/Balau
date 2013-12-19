@@ -30,7 +30,7 @@ void Balau::Task::setup(TaskMan * taskMan, void * stack) {
         m_stack = stack;
         coro_create(&m_ctx, coroutineTrampoline, this, m_stack, size);
 #else
-        Assert(!stack, "We shouldn't allocate stacks with Fibers");
+        IAssert(!stack, "We shouldn't allocate stacks with Fibers");
         m_stack = NULL;
         m_fiber = CreateFiber(size, coroutineTrampoline, this);
 #endif

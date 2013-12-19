@@ -30,6 +30,12 @@ class BaseEvent;
 
 };
 
+#ifdef _MSC_VER
+#define WARN_UNUSED_RESULT
+#else
+#define WARN_UNUSED_RESULT __attribute__((warn_unused_result))
+#endif
+
 class Handle {
   public:
       virtual ~Handle() { AAssert(m_refCount == 0, "Do not use handles directly; warp them in IO<>"); }
@@ -44,8 +50,8 @@ class Handle {
     virtual bool canSeek();
     virtual bool canRead();
     virtual bool canWrite();
-    virtual ssize_t read(void * buf, size_t count) throw (GeneralException) __attribute__((warn_unused_result));
-    virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) __attribute__((warn_unused_result));
+    virtual ssize_t read(void * buf, size_t count) throw (GeneralException) WARN_UNUSED_RESULT;
+    virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) WARN_UNUSED_RESULT;
     virtual void rseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
     virtual void wseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
     virtual off_t rtell() throw (GeneralException);
@@ -77,11 +83,11 @@ class Handle {
 
     // these need to be changed into Future<>s
     template <size_t L>
-    ssize_t writeString(const char (&str)[L]) __attribute__((warn_unused_result));
-    ssize_t writeString(const String & str) __attribute__((warn_unused_result)) { return forceWrite(str.to_charp(), str.strlen()); }
-    ssize_t writeString(const char * str, ssize_t len) __attribute__((warn_unused_result)) { return forceWrite(str, len); }
-    ssize_t forceRead(void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException) __attribute__((warn_unused_result));
-    ssize_t forceWrite(const void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException) __attribute__((warn_unused_result));
+    ssize_t writeString(const char (&str)[L]) WARN_UNUSED_RESULT;
+    ssize_t writeString(const String & str) WARN_UNUSED_RESULT { return forceWrite(str.to_charp(), str.strlen()); }
+    ssize_t writeString(const char * str, ssize_t len) WARN_UNUSED_RESULT { return forceWrite(str, len); }
+    ssize_t forceRead(void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException) WARN_UNUSED_RESULT;
+    ssize_t forceWrite(const void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException) WARN_UNUSED_RESULT;
 
   protected:
       Handle() : m_refCount(0) { }

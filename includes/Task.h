@@ -10,6 +10,10 @@
 #include <Exceptions.h>
 #include <Printer.h>
 
+#ifdef _MSC_VER
+#include <Windows.h> // for CALLBACK
+#endif
+
 namespace Balau {
 
 namespace Events { class BaseEvent; };
