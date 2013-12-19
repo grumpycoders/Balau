@@ -106,14 +106,30 @@ Balau::Future<T> genericRead(Balau::IO<Balau::Handle> t) {
     int c = 0;
     return Balau::Future<T>([t, b, c]() mutable {
         do {
-            int r = t->read(((uint8_t *) b.get()) + c, sizeof(T));
+            int r = t->read(((uint8_t *) b.get()) + c, sizeof(T) - c);
             c += r;
         } while (c < sizeof(T));
         return *b;
     });
 }
 
-Balau::Future<uint8_t>  Balau::Handle::readU8 () { return genericRead<uint8_t >(this); }
+template<class T>
+Balau::Future<T> genericReadBE(Balau::IO<Balau::Handle> t) {
+	std::shared_ptr<T> b(new T);
+	int c = 0;
+	*b.get() = 0;
+	return Balau::Future<T>([t, b, c]() mutable {
+		do {
+			uint8_t v = t->readU8().get();
+			*b.get() <<= 8;
+			*b.get() += v;
+			c++;
+		} while (c < sizeof(T));
+		return *b;
+	});
+}
+
+Balau::Future<uint8_t>  Balau::Handle::readU8()  { return genericRead<uint8_t> (this); }
 Balau::Future<uint16_t> Balau::Handle::readU16() { return genericRead<uint16_t>(this); }
 Balau::Future<uint32_t> Balau::Handle::readU32() { return genericRead<uint32_t>(this); }
 Balau::Future<uint64_t> Balau::Handle::readU64() { return genericRead<uint64_t>(this); }
@@ -121,6 +137,15 @@ Balau::Future<int8_t>   Balau::Handle::readI8 () { return genericRead<int8_t>  (
 Balau::Future<int16_t>  Balau::Handle::readI16() { return genericRead<int16_t> (this); }
 Balau::Future<int32_t>  Balau::Handle::readI32() { return genericRead<int32_t> (this); }
 Balau::Future<int64_t>  Balau::Handle::readI64() { return genericRead<int64_t> (this); }
+
+Balau::Future<uint8_t>  Balau::Handle::readBEU8()  { return genericReadBE<uint8_t> (this); }
+Balau::Future<uint16_t> Balau::Handle::readBEU16() { return genericReadBE<uint16_t>(this); }
+Balau::Future<uint32_t> Balau::Handle::readBEU32() { return genericReadBE<uint32_t>(this); }
+Balau::Future<uint64_t> Balau::Handle::readBEU64() { return genericReadBE<uint64_t>(this); }
+Balau::Future<int8_t>   Balau::Handle::readBEI8()  { return genericReadBE<int8_t>  (this); }
+Balau::Future<int16_t>  Balau::Handle::readBEI16() { return genericReadBE<int16_t> (this); }
+Balau::Future<int32_t>  Balau::Handle::readBEI32() { return genericReadBE<int32_t> (this); }
+Balau::Future<int64_t>  Balau::Handle::readBEI64() { return genericReadBE<int64_t> (this); }
 
 template<class T>
 Balau::Future<void> genericWrite(Balau::IO<Balau::Handle> t, T val) {
