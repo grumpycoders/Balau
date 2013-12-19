@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Atomic.h>
+#include <atomic>
 #include <Exceptions.h>
 #include <Local.h>
 #include <Threads.h>
@@ -37,7 +37,7 @@ class AsyncOperation {
 
 class AsyncFinishWorker : public Thread {
   public:
-      AsyncFinishWorker(AsyncManager * async, Queue<AsyncOperation> * queue) : m_async(async), m_queue(queue) { }
+      AsyncFinishWorker(AsyncManager * async, Queue<AsyncOperation> * queue) : m_async(async), m_queue(queue), m_stopped(false) { }
     bool stopped() { return m_stopped; }
   private:
       AsyncFinishWorker(const AsyncFinishWorker &) = delete;
@@ -46,12 +46,12 @@ class AsyncFinishWorker : public Thread {
     AsyncManager * m_async;
     Queue<AsyncOperation> * m_queue;
     bool m_stopping = false;
-    volatile bool m_stopped = false;
+    std::atomic<bool> m_stopped;
 };
 
 class AsyncManager : public Thread {
   public:
-      AsyncManager() { }
+      AsyncManager() : m_numTLSes(0), m_ready(false), m_stopperPushed(false) { }
     void setFinishers(int minIdle, int maxIdle) {
         AAssert(minIdle < maxIdle, "Minimum number of threads needs to be less than maximum number of threads.");
         m_minIdle = minIdle;
@@ -85,14 +85,14 @@ class AsyncManager : public Thread {
             tls = new TLS();
             m_tlsManager.setTLS(tls);
             m_TLSes.push(tls);
-            Atomic::Increment(&m_numTLSes);
+            ++m_numTLSes;
         }
         return tls;
     }
     Queue<AsyncOperation> m_queue;
     Queue<AsyncOperation> m_finished;
     Queue<TLS> m_TLSes;
-    volatile int m_numTLSes = 0;
+    std::atomic<int> m_numTLSes;
     PThreadsTLSManager m_tlsManager;
     std::list<AsyncFinishWorker *> m_workers;
     int m_numFinishers = 0;
@@ -100,11 +100,11 @@ class AsyncManager : public Thread {
     int m_minIdle = 1;
     int m_maxIdle = 4;
     bool m_stopping = false;
-    volatile bool m_ready = false;
-    volatile bool m_stopperPushed = false;
+    std::atomic<bool> m_ready;
+    std::atomic<bool> m_stopperPushed;
 
-    void incIdle() { Atomic::Increment(&m_numFinishersIdle); }
-    void decIdle() { Atomic::Decrement(&m_numFinishersIdle); }
+    void incIdle() { m_numFinishersIdle++; }
+    void decIdle() { m_numFinishersIdle--; }
 
     friend class AsyncFinishWorker;
 };

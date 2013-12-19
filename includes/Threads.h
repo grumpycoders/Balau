@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <AtStartExit.h>
 #include <pthread.h>
 
@@ -78,7 +79,7 @@ class Thread {
       Thread(const Thread &) = delete;
     Thread & operator=(const Thread &) = delete;
     pthread_t m_thread;
-    volatile bool m_joined;
+    std::atomic<bool> m_joined;
 
     friend class ThreadHelper;
 };

@@ -2,8 +2,8 @@
 
 #include <map>
 #include <list>
+#include <atomic>
 
-#include <Atomic.h>
 #include <BString.h>
 #include <BRegex.h>
 #include <Exceptions.h>
@@ -52,13 +52,13 @@ class HttpServer {
             Regex::Captures uri, host;
         };
         ActionMatch matches(const char * uri, const char * host);
-        void unref() { if (Atomic::Decrement(&m_refCount) == 0) delete this; }
-        void ref() { Atomic::Increment(&m_refCount); }
+        void unref() { if (--m_refCount == 0) delete this; }
+        void ref() { ++m_refCount; }
         void registerMe(HttpServer * server) { server->registerAction(this); }
         virtual bool Do(HttpServer * server, Http::Request & req, ActionMatch & match, IO<Handle> out) throw (GeneralException) = 0;
       private:
         const Regex m_regex, m_host;
-        volatile int m_refCount;
+        std::atomic<int> m_refCount;
           Action(const Action &) = delete;
         Action & operator=(const Action &) = delete;
     };

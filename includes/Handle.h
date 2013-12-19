@@ -1,10 +1,10 @@
 #pragma once
 
+#include <atomic>
 #include <Task.h>
 #include <Exceptions.h>
 #include <Printer.h>
 #include <BString.h>
-#include <Atomic.h>
 
 namespace Balau {
 
@@ -84,13 +84,13 @@ class Handle {
     ssize_t forceWrite(const void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException) __attribute__((warn_unused_result));
 
   protected:
-      Handle() { }
+      Handle() : m_refCount(0) { }
 
   private:
     // the IO<> refcounting mechanism
-    void addRef() { Atomic::Increment(&m_refCount); }
+    void addRef() { ++m_refCount; }
     void delRef() {
-        if (Atomic::Decrement(&m_refCount) == 0) {
+        if (--m_refCount == 0) {
             if (!isClosed())
                 close();
             delete this;
@@ -100,7 +100,7 @@ class Handle {
     template<class T>
     friend class IO;
 
-    volatile int m_refCount = 0;
+    std::atomic<int> m_refCount;
 
       Handle(const Handle &) = delete;
     Handle & operator=(const Handle &) = delete;

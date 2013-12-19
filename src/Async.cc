@@ -103,7 +103,7 @@ void * Balau::AsyncManager::proc() {
     stopAllWorkers();
 
     Printer::elog(E_ASYNC, "Async thread waits for all idle queues to empty");
-    while (Atomic::Prefetch::Decrement(&m_numTLSes)) {
+    while (m_numTLSes--) {
         TLS * tls = m_TLSes.pop();
         while (!tls->idleQueue.isEmpty());
     }
@@ -166,7 +166,7 @@ void Balau::AsyncManager::idle() {
 
 void Balau::AsyncManager::threadExit() {
     Printer::elog(E_ASYNC, "AsyncManager thread is being asked to stop; creating stopper");
-    if (Atomic::CmpXChgBool(&m_stopperPushed, true, false))
+    if (!m_stopperPushed.exchange(true))
         m_queue.push(new AsyncStopper());
 }
 
