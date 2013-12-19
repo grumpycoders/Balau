@@ -1,12 +1,12 @@
 [submodule "libcoro"]
 	path = libcoro
-	url = git.grumpycoder.net:/pub/repo.git/libcoro
+	url = ../libcoro
 [submodule "libev"]
 	path = libev
-	url = git.grumpycoder.net:/pub/repo.git/libev
+	url = ../libev
 [submodule "win32/pthreads-win32"]
 	path = win32/pthreads-win32
-	url = git.grumpycoder.net:/pub/repo.git/pthreads-win32
+	url = ../pthreads-win32
 [submodule "LuaJIT"]
 	path = LuaJIT
 	url = http://luajit.org/git/luajit-2.0.git
