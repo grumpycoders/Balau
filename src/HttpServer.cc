@@ -5,6 +5,12 @@
 #include "SimpleMustache.h"
 #include "Main.h"
 
+#ifdef _MSC_VER
+// FU, MICROSOFT!
+#undef DELETE
+#undef ERROR
+#endif
+
 class OutputCheck : public Balau::Handle {
   public:
       OutputCheck(Balau::IO<Balau::Handle> h) : m_h(h), m_wrote(false) { IAssert(m_h->canWrite(), "We haven't been passed a writable Handle to our HttpWorker... ?"); m_name.set("OutputCheck(%s)", m_h->getName()); }

@@ -4,6 +4,12 @@
 #include <BString.h>
 #include <Handle.h>
 
+#ifdef _MSC_VER
+// SERIOUSLY ?!
+#undef DELETE
+#undef ERROR
+#endif
+
 namespace Balau {
 
 namespace Http {

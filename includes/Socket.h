@@ -1,7 +1,9 @@
 #pragma once
 
 #ifdef _WIN32
+#ifndef _MSC_VER
 #include <windows.h>
+#endif
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #else

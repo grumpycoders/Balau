@@ -1,8 +1,43 @@
+#ifdef _MSC_VER
+#include <windows.h> // for CALLBACK
+#endif
+#ifndef _WIN32
+#define CALLBACK
+#endif
+
 #include "Task.h"
 #include "TaskMan.h"
 #include "Exceptions.h"
 #include "Printer.h"
 #include "Local.h"
+#include "Main.h"
+
+typedef void (*trampoline_t)(void *);
+
+static trampoline_t s_trampoline = NULL;
+
+namespace {
+
+class RegisterTrampoline : public Balau::AtStart {
+  public:
+      RegisterTrampoline() : AtStart(0) { }
+    void doStart() {
+        Balau::Task::registerTrampoline();
+    }
+};
+
+static RegisterTrampoline registerTrampoline;
+
+}
+
+static void CALLBACK trampoline(void * arg) {
+    s_trampoline(arg);
+}
+
+void Balau::Task::registerTrampoline() {
+    AAssert(s_trampoline == NULL, "Don't call registerTrampoline directly");
+    s_trampoline = coroutineTrampoline;
+}
 
 static Balau::LocalTmpl<Balau::Task> localTask;
 
@@ -28,11 +63,11 @@ void Balau::Task::setup(TaskMan * taskMan, void * stack) {
 #ifndef _WIN32
         IAssert(stack, "Can't setup a coroutine without a stack");
         m_stack = stack;
-        coro_create(&m_ctx, coroutineTrampoline, this, m_stack, size);
+        coro_create(&m_ctx, trampoline, this, m_stack, size);
 #else
         IAssert(!stack, "We shouldn't allocate stacks with Fibers");
         m_stack = NULL;
-        m_fiber = CreateFiber(size, coroutineTrampoline, this);
+        m_fiber = CreateFiber(size, trampoline, this);
 #endif
     }
 

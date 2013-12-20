@@ -57,8 +57,6 @@ class SimpleMustache {
             LAMBDA,
         } m_type = CONTEXTLIST;
           Context(ContextType type) : m_type(type), m_root(false) { }
-          Context(Context & c) { Failure("You can't copy a Context; use references"); }
-          Context & operator=(Context & c) { Failure("You can't assign a Context; use references"); return *this; }
         String m_str;
         bool m_bool;
         typedef std::map<String, Context *> SubContext;

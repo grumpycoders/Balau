@@ -44,3 +44,9 @@ Balau::String Balau::Regex::getError(int err) const {
 
 Balau::Regex const Balau::Regexes::any(".*");
 Balau::Regex const Balau::Regexes::empty("^$");
+
+#ifdef _MSC_VER
+extern "C" {
+void printchar(int) { }
+};
+#endif

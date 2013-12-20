@@ -10,10 +10,6 @@
 #include <Exceptions.h>
 #include <Printer.h>
 
-#ifdef _MSC_VER
-#include <Windows.h> // for CALLBACK
-#endif
-
 namespace Balau {
 
 namespace Events { class BaseEvent; };
@@ -119,10 +115,6 @@ class Async : public BaseEvent {
     ev::async m_evt;
 };
 
-#ifndef _WIN32
-#define CALLBACK
-#endif
-
 class Custom : public BaseEvent {
   public:
     void doSignal() { BaseEvent::doSignal(); ev_break(m_loop, EVBREAK_ALL); }
@@ -180,6 +172,7 @@ class Task {
       private:
         bool m_oldStatus;
     };
+    static void registerTrampoline();
   protected:
     void yield() throw (GeneralException) {
         if (yield(false)) {
@@ -223,7 +216,7 @@ class Task {
     void setup(TaskMan * taskMan, void * stack);
     static bool needsStacks();
     void switchTo();
-    static void CALLBACK coroutineTrampoline(void *);
+    static void coroutineTrampoline(void *);
     void coroutine();
     bool enterSimpleContext() {
         bool r;

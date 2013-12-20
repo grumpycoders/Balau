@@ -4078,7 +4078,7 @@ re_match_2 (bufp, string1, size1, string2, size2, pos, regs, stop)
                `pop_failure_point'.  */
             unsigned dummy_low_reg, dummy_high_reg;
             unsigned char *pdummy;
-            const char *sdummy;
+            const char *sdummy = NULL;
 
             DEBUG_PRINT1 ("EXECUTING pop_failure_jump.\n");
             POP_FAILURE_POINT (sdummy, pdummy,

@@ -29,14 +29,9 @@ Balau::Lock::Lock() {
 
 Balau::RWLock::RWLock() {
     int r;
-    pthread_rwlockattr_t attr;
 
-    r = pthread_rwlockattr_init(&attr);
-    RAssert(r == 0, "Couldn't initialize rwlock attribute; r = %i", r);
-    r = pthread_rwlock_init(&m_lock, &attr);
-    RAssert(r == 0, "Couldn't initialize mutex; r = %i", r);
-    r = pthread_rwlockattr_destroy(&attr);
-    RAssert(r == 0, "Couldn't destroy rwlock attribute; r = %i", r);
+    r = pthread_rwlock_init(&m_lock, NULL);
+    RAssert(r == 0, "Couldn't initialize read write lock; r = %i", r);
 }
 
 void * Balau::ThreadHelper::threadProc(void * arg) {

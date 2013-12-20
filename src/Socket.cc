@@ -3,7 +3,10 @@
 #include <sys/socket.h>
 #endif
 #include <sys/types.h>
+#ifdef _MSC_VER
+#else
 #include <unistd.h>
+#endif
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -190,7 +193,7 @@ class AsyncOpResolv : public Balau::AsyncOperation {
 
 static Balau::DNSRequest * resolveName(const char * name, const char * service = NULL, struct addrinfo * hints = NULL) {
     Balau::DNSRequest * req = new Balau::DNSRequest();
-    createAsyncOp(new AsyncOpResolv(name, service, hints, req));
+    Balau::createAsyncOp(new AsyncOpResolv(name, service, hints, req));
     return req;
 }
 
@@ -242,7 +245,6 @@ void Balau::Socket::close() throw (GeneralException) {
         return;
 #ifdef _WIN32
     closesocket(getFD());
-    WSACleanup();
 #else
     ::close(getFD());
 #endif
@@ -415,7 +417,11 @@ bool Balau::Socket::connect(const char * hostname, int port) {
         }
 
 #ifdef _WIN32
+#ifdef _MSC_VER
+        if (err != WSAEWOULDBLOCK) {
+#else
         if (err != WSAWOULDBLOCK) {
+#endif
 #else
         if (err != EINPROGRESS) {
 #endif
@@ -483,7 +489,13 @@ Balau::IO<Balau::Socket> Balau::Socket::accept() throw (GeneralException) {
         int s = ::accept(getFD(), (sockaddr *) &remoteAddr, &len);
 
         if (s < 0) {
-            if ((errno == EAGAIN) || (errno == EINTR) || (errno == EWOULDBLOCK)) {
+            int err = errno;
+#ifdef _WIN32
+            err = WSAGetLastError();
+            if (err == WSAEWOULDBLOCK)
+                err = EAGAIN;
+#endif
+            if ((err == EAGAIN) || (err == EINTR) || (err == EWOULDBLOCK)) {
                 Task::operationYield(m_evtR, Task::INTERRUPTIBLE);
             } else {
                 String msg = getErrorMessage();
@@ -508,11 +520,11 @@ ssize_t Balau::Socket::write(const void * buf, size_t count) throw (GeneralExcep
 }
 
 ssize_t Balau::Socket::recv(int sockfd, void *buf, size_t len, int flags) {
-    return ::recv(sockfd, buf, len, flags);
+    return ::recv(sockfd, (char *) buf, len, flags);
 }
 
 ssize_t Balau::Socket::send(int sockfd, const void *buf, size_t len, int flags) {
-    return ::send(sockfd, buf, len, flags);
+    return ::send(sockfd, (const char *) buf, len, flags);
 }
 
 Balau::ListenerBase::ListenerBase(int port, const char * local, void * opaque) : m_listener(new Socket()), m_stop(false), m_local(local), m_port(port), m_opaque(opaque) {
