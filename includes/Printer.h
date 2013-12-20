@@ -65,7 +65,7 @@ class Printer {
     static void print(const char * fmt, ...) printfwarning(1, 2) { va_list ap; va_start(ap, fmt); vprint(fmt, ap); va_end(ap); }
     static void vprint(const char * fmt, va_list ap) printfwarning(1, 0) { getPrinter()->_print(fmt, ap); }
 
-#ifdef DEBUG
+#ifdef FULLDEBUG
     static void elog(uint32_t engine, const char * fmt, ...) printfwarning(2, 3) { va_list ap; va_start(ap, fmt); getPrinter()->_log(M_ENGINE_DEBUG, fmt, ap); }
 #else
     static void elog(uint32_t engine, const char * fmt, ...) { }
