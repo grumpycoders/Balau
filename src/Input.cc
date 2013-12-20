@@ -40,7 +40,7 @@ class AsyncOpOpen : public Balau::AsyncOperation {
       AsyncOpOpen(const char * path, cbResults_t * results) : m_path(path), m_results(results) { }
     virtual void run() {
 #ifdef _MSC_VER
-        const ssize_t r = m_results->result = _open(m_path, O_RDONLY);
+        const ssize_t r = m_results->result = _open(m_path, O_RDONLY | O_BINARY);
 #else
         const ssize_t r = m_results->result = open(m_path, O_RDONLY);
 #endif
