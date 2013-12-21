@@ -1,4 +1,7 @@
 #pragma once
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 #include <Handle.h>
 #include <TaskMan.h>

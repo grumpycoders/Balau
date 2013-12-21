@@ -3,6 +3,9 @@
 #ifndef _MSC_VER
 #include <unistd.h>
 #endif
+#ifdef _WIN32
+#include <io.h>
+#endif
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -15,7 +18,11 @@
 #include "Task.h"
 #include "TaskMan.h"
 
-#ifndef _WIN32
+#ifdef _WIN32
+inline static SOCKET getSocket(int fd) { return _get_osfhandle(fd); }
+#else
+inline static int getSocket(int fd) { return fd; }
+
 namespace {
 
 class SigpipeBlocker : public Balau::AtStart {
@@ -60,7 +67,8 @@ void Balau::Selectable::setFD(int fd) throw (GeneralException) {
     m_evtW = new SelectableEvent(m_fd, ev::WRITE);
 #ifdef _WIN32
     u_long iMode = 1;
-    ioctlsocket(m_fd, FIONBIO, &iMode);
+    int r = ioctlsocket(_get_osfhandle(m_fd), FIONBIO, &iMode);
+    EAssert(r == NO_ERROR, "ioctlsocket FIONBIO failed with error %i", r);
 #else
     fcntl(m_fd, F_SETFL, O_NONBLOCK);
 #endif
@@ -85,7 +93,7 @@ ssize_t Balau::Selectable::read(void * buf, size_t count) throw (GeneralExceptio
     int spins = 0;
 
     do {
-        ssize_t r = recv(m_fd, (char *) buf, count, 0);
+        ssize_t r = recv(getSocket(m_fd), (char *) buf, count, 0);
 
         if (r >= 0) {
             if (r == 0)
@@ -93,7 +101,19 @@ ssize_t Balau::Selectable::read(void * buf, size_t count) throw (GeneralExceptio
             return r;
         }
 
-        if ((errno == EAGAIN) || (errno == EINTR) || (errno == EWOULDBLOCK)) {
+#ifndef _WIN32
+        int err = errno;
+#else
+        int err = WSAGetLastError();
+#ifdef _MSC_VER
+        if (err == WSAEWOULDBLOCK)
+#else
+        if (err == WSAWOULDBLOCK)
+#endif
+            err = EAGAIN;
+#endif
+
+        if ((err == EAGAIN) || (err == EINTR) || (err == EWOULDBLOCK)) {
             Task::operationYield(m_evtR, Task::INTERRUPTIBLE);
         } else {
             m_evtR->stop();
@@ -113,7 +133,7 @@ ssize_t Balau::Selectable::write(const void * buf, size_t count) throw (GeneralE
     int spins = 0;
 
     do {
-        ssize_t r = send(m_fd, (const char *) buf, count, 0);
+        ssize_t r = send(getSocket(m_fd), (const char *) buf, count, 0);
 
         EAssert(r != 0, "send() returned 0 (broken pipe ?)");
 
@@ -121,13 +141,22 @@ ssize_t Balau::Selectable::write(const void * buf, size_t count) throw (GeneralE
             return r;
 
 #ifndef _WIN32
-        if (errno == EPIPE) {
+        int err = errno;
+        if (err == EPIPE) {
             close();
             return 0;
         }
+#else
+        int err = WSAGetLastError();
+#ifdef _MSC_VER
+        if (err == WSAEWOULDBLOCK)
+#else
+        if (err == WSAWOULDBLOCK)
+#endif
+            err = EAGAIN;
 #endif
 
-        if ((errno == EAGAIN) || (errno == EINTR) || (errno == EWOULDBLOCK)) {
+        if ((err == EAGAIN) || (err == EINTR) || (err == EWOULDBLOCK)) {
             Task::operationYield(m_evtW, Task::INTERRUPTIBLE);
         } else {
             m_evtW->stop();

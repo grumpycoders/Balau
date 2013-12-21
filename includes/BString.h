@@ -13,7 +13,11 @@
 #include <vector>
 
 #ifdef _MSC_VER
-typedef size_t ssize_t;
+#ifdef _WIN64
+typedef __int64    ssize_t;
+#else  /* _WIN64 */
+typedef _W64 int   ssize_t;
+#endif  /* _WIN64 */
 #define printfwarning(a, b)
 #else
 #define printfwarning(a, b) __attribute__((format(printf, a, b)))

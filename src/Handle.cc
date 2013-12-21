@@ -47,7 +47,7 @@ ssize_t Balau::Handle::write(const void * buf, size_t count) throw (GeneralExcep
 }
 
 ssize_t Balau::Handle::forceRead(void * _buf, size_t count, Events::BaseEvent * evt) throw (GeneralException) {
-    ssize_t total;
+    ssize_t total = 0;
     uint8_t * buf = (uint8_t *) _buf;
     if (!canRead())
         throw GeneralException("Handle can't read");
@@ -74,7 +74,7 @@ ssize_t Balau::Handle::forceRead(void * _buf, size_t count, Events::BaseEvent * 
 }
 
 ssize_t Balau::Handle::forceWrite(const void * _buf, size_t count, Events::BaseEvent * evt) throw (GeneralException) {
-    ssize_t total;
+    ssize_t total = 0;
     const uint8_t * buf = (const uint8_t *) _buf;
     if (!canWrite())
         throw GeneralException("Handle can't write");

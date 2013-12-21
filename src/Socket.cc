@@ -1,6 +1,8 @@
 #ifndef _WIN32
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#else
+#include <io.h>
 #endif
 #include <sys/types.h>
 #ifdef _MSC_VER
@@ -18,6 +20,12 @@
 #include "Async.h"
 #include "Task.h"
 #include "TaskMan.h"
+
+#ifdef _WIN32
+inline static SOCKET getSocket(int fd) { return _get_osfhandle(fd); }
+#else
+inline static int getSocket(int fd) { return fd; }
+#endif
 
 static Balau::String getErrorMessage() {
     Balau::String msg;
@@ -198,7 +206,11 @@ static Balau::DNSRequest * resolveName(const char * name, const char * service =
 }
 
 Balau::Socket::Socket() throw (GeneralException) {
+#ifdef _WIN32
+    int fd = _open_osfhandle(WSASocket(AF_INET6, SOCK_STREAM, 0, 0, 0, 0), 0);
+#else
     int fd = socket(AF_INET6, SOCK_STREAM, 0);
+#endif
 
     m_name = "Socket(nonconnected)";
     RAssert(fd >= 0, "socket() returned %i", fd);
@@ -206,7 +218,7 @@ Balau::Socket::Socket() throw (GeneralException) {
     setFD(fd);
 
     int on = 0;
-    int r = setsockopt(fd, IPPROTO_IPV6, IPV6_V6ONLY, (char *) &on, sizeof(on));
+    int r = setsockopt(getSocket(fd), IPPROTO_IPV6, IPV6_V6ONLY, (char *)&on, sizeof(on));
     EAssert(r == 0, "setsockopt returned %i", r);
 
     memset(&m_localAddr, 0, sizeof(m_localAddr));
@@ -244,7 +256,7 @@ void Balau::Socket::close() throw (GeneralException) {
     if (isClosed())
         return;
 #ifdef _WIN32
-    closesocket(getFD());
+    _close(getFD());
 #else
     ::close(getFD());
 #endif
@@ -309,7 +321,7 @@ bool Balau::Socket::setLocal(const char * hostname, int port) {
     int enable = 1;
     setsockopt(getFD(), SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable));
 #endif
-    return bind(getFD(), (struct sockaddr *) &m_localAddr, sizeof(m_localAddr)) == 0;
+    return bind(getSocket(getFD()), (struct sockaddr *) &m_localAddr, sizeof(m_localAddr)) == 0;
 }
 
 #if defined(_WIN32) && !defined(EISCONN)
@@ -375,7 +387,7 @@ bool Balau::Socket::connect(const char * hostname, int port) {
         int r;
         int err;
         if (spins == 0) {
-            r = ::connect(getFD(), (sockaddr *) &m_remoteAddr, sizeof(m_remoteAddr));
+            r = ::connect(getSocket(getFD()), (sockaddr *)&m_remoteAddr, sizeof(m_remoteAddr));
 #ifdef _WIN32
             err = WSAGetLastError();
 #else
@@ -383,7 +395,7 @@ bool Balau::Socket::connect(const char * hostname, int port) {
 #endif
         } else {
             socklen_t sLen = sizeof(err);
-            int g = getsockopt(getFD(), SOL_SOCKET, SO_ERROR, (char *) &err, &sLen);
+            int g = getsockopt(getSocket(getFD()), SOL_SOCKET, SO_ERROR, (char *) &err, &sLen);
             EAssert(g == 0, "getsockopt failed; g = %i", g);
             r = err != 0 ? -1 : 0;
         }
@@ -394,10 +406,10 @@ bool Balau::Socket::connect(const char * hostname, int port) {
             socklen_t len;
 
             len = sizeof(m_localAddr);
-            getsockname(getFD(), (sockaddr *) &m_localAddr, &len);
+            getsockname(getSocket(getFD()), (sockaddr *)&m_localAddr, &len);
 
             len = sizeof(m_remoteAddr);
-            getpeername(getFD(), (sockaddr *) &m_remoteAddr, &len);
+            getpeername(getSocket(getFD()), (sockaddr *)&m_remoteAddr, &len);
 
             char prtLocal[INET6_ADDRSTRLEN], prtRemote[INET6_ADDRSTRLEN];
             const char * rLocal, * rRemote;
@@ -446,13 +458,13 @@ bool Balau::Socket::listen() {
     AAssert(!m_connected, "You can't call Socket::listen() on a connected socket");
     AAssert(!isClosed(), "You can't call Socket::listen() on a closed socket");
 
-    if (::listen(getFD(), 16) == 0) {
+    if (::listen(getSocket(getFD()), 16) == 0) {
         m_listening = true;
 
         socklen_t len;
 
         len = sizeof(m_localAddr);
-        getsockname(getFD(), (sockaddr *) &m_localAddr, &len);
+        getsockname(getSocket(getFD()), (sockaddr *)&m_localAddr, &len);
 
         char prtLocal[INET6_ADDRSTRLEN];
         const char * rLocal;
@@ -486,13 +498,24 @@ Balau::IO<Balau::Socket> Balau::Socket::accept() throw (GeneralException) {
         sockaddr_in6 remoteAddr;
         socklen_t len = sizeof(sockaddr_in6);
         Printer::elog(E_SOCKET, "Socket %i (%s) is going to accept()", getFD(), m_name.to_charp());
-        int s = ::accept(getFD(), (sockaddr *) &remoteAddr, &len);
+#ifdef _WIN32
+        SOCKET s;
+#else
+        int s;
+#endif
+        s = ::accept(getSocket(getFD()), (sockaddr *)&remoteAddr, &len);
 
+#ifndef _WIN32
         if (s < 0) {
             int err = errno;
-#ifdef _WIN32
-            err = WSAGetLastError();
+#else
+        if (s == INVALID_SOCKET) {
+            int err = WSAGetLastError();
+#ifdef _MSC_VER
             if (err == WSAEWOULDBLOCK)
+#else
+            if (err == WSAWOULDBLOCK)
+#endif
                 err = EAGAIN;
 #endif
             if ((err == EAGAIN) || (err == EINTR) || (err == EWOULDBLOCK)) {
@@ -504,7 +527,7 @@ Balau::IO<Balau::Socket> Balau::Socket::accept() throw (GeneralException) {
         } else {
             Printer::elog(E_SOCKET, "Listener at %p got a new connection", this);
             m_evtR->reset();
-            return IO<Socket>(new Socket(s));
+            return IO<Socket>(new Socket(_open_osfhandle(s, 0)));
         }
     }
 }

@@ -34,3 +34,5 @@
 #define HAVE_FLOOR 1
 
 #define EV_STAT_ENABLE 0
+
+#define EV_USE_WSASOCKET 1
