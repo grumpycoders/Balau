@@ -13,7 +13,7 @@ class BStream : public Handle {
     virtual bool canRead();
     virtual const char * getName();
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException);
-    virtual off_t getSize();
+    virtual off64_t getSize();
     int peekNextByte();
     String readString(bool putNL = false);
     bool isEmpty() { return m_availBytes == 0; }

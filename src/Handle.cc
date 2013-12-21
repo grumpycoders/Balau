@@ -27,7 +27,7 @@ static const char * strerror_r(int errorno, char * buf, size_t bufsize) {
 bool Balau::Handle::canSeek() { return false; }
 bool Balau::Handle::canRead() { return false; }
 bool Balau::Handle::canWrite() { return false; }
-off_t Balau::Handle::getSize() { return -1; }
+off64_t Balau::Handle::getSize() { return -1; }
 time_t Balau::Handle::getMTime() { return -1; }
 
 ssize_t Balau::Handle::read(void * buf, size_t count) throw (GeneralException) {
@@ -168,33 +168,33 @@ Balau::Future<void> Balau::Handle::writeI16(int16_t  v) { return genericWrite<in
 Balau::Future<void> Balau::Handle::writeI32(int32_t  v) { return genericWrite<int32_t >(this, v); }
 Balau::Future<void> Balau::Handle::writeI64(int64_t  v) { return genericWrite<int64_t >(this, v); }
 
-void Balau::Handle::rseek(off_t offset, int whence) throw (GeneralException) {
+void Balau::Handle::rseek(off64_t offset, int whence) throw (GeneralException) {
     if (canSeek())
         throw GeneralException(String("Handle ") + getName() + " can seek, but rseek() not implemented (missing in class " + ClassName(this).c_str() + ")");
     else
         throw GeneralException("Handle can't seek");
 }
 
-void Balau::Handle::wseek(off_t offset, int whence) throw (GeneralException) {
+void Balau::Handle::wseek(off64_t offset, int whence) throw (GeneralException) {
     rseek(offset, whence);
 }
 
-off_t Balau::Handle::rtell() throw (GeneralException) {
+off64_t Balau::Handle::rtell() throw (GeneralException) {
     if (canSeek())
         throw GeneralException(String("Handle ") + getName() + " can seek, but rtell() not implemented (missing in class " + ClassName(this).c_str() + ")");
     else
         throw GeneralException("Handle can't seek");
 }
 
-off_t Balau::Handle::wtell() throw (GeneralException) {
+off64_t Balau::Handle::wtell() throw (GeneralException) {
     return rtell();
 }
 
 bool Balau::SeekableHandle::canSeek() { return true; }
 
-void Balau::SeekableHandle::rseek(off_t offset, int whence) throw (GeneralException) {
+void Balau::SeekableHandle::rseek(off64_t offset, int whence) throw (GeneralException) {
     AAssert(canRead() || canWrite(), "Can't use a SeekableHandle with a Handle that can neither read or write...");
-    off_t size;
+    off64_t size;
     if (!canRead())
         wseek(offset, whence);
     switch (whence) {
@@ -215,9 +215,9 @@ void Balau::SeekableHandle::rseek(off_t offset, int whence) throw (GeneralExcept
         m_rOffset = 0;
 }
 
-void Balau::SeekableHandle::wseek(off_t offset, int whence) throw (GeneralException) {
+void Balau::SeekableHandle::wseek(off64_t offset, int whence) throw (GeneralException) {
     AAssert(canRead() || canWrite(), "Can't use a SeekableHandle with a Handle that can neither read or write...");
-    off_t size;
+    off64_t size;
     if (!canWrite())
         rseek(offset, whence);
     switch (whence) {
@@ -238,14 +238,14 @@ void Balau::SeekableHandle::wseek(off_t offset, int whence) throw (GeneralExcept
         m_wOffset = 0;
 }
 
-off_t Balau::SeekableHandle::rtell() throw (GeneralException) {
+off64_t Balau::SeekableHandle::rtell() throw (GeneralException) {
     AAssert(canRead() || canWrite(), "Can't use a SeekableHandle with a Handle that can neither read or write...");
     if (!canRead())
         return wtell();
     return m_rOffset;
 }
 
-off_t Balau::SeekableHandle::wtell() throw (GeneralException) {
+off64_t Balau::SeekableHandle::wtell() throw (GeneralException) {
     AAssert(canRead() || canWrite(), "Can't use a SeekableHandle with a Handle that can neither read or write...");
     if (!canWrite())
         return rtell();

@@ -217,7 +217,7 @@ namespace {
 
 class AsyncOpWrite : public Balau::AsyncOperation {
   public:
-      AsyncOpWrite(int fd, const void * buf, size_t count, off_t offset, cbResults_t * results) : m_fd(fd), m_buf(buf), m_count(count), m_offset(offset), m_results(results) { }
+      AsyncOpWrite(int fd, const void * buf, size_t count, off64_t offset, cbResults_t * results) : m_fd(fd), m_buf(buf), m_count(count), m_offset(offset), m_results(results) { }
     virtual void run() {
 #ifdef _MSC_VER
         IAssert(0, "Not yet implemented");
@@ -235,7 +235,7 @@ class AsyncOpWrite : public Balau::AsyncOperation {
     int m_fd;
     const void * m_buf;
     size_t m_count;
-    off_t m_offset;
+    off64_t m_offset;
     cbResults_t * m_results;
 };
 
@@ -300,7 +300,7 @@ const char * Balau::Output::getName() {
     return m_name.to_charp();
 }
 
-off_t Balau::Output::getSize() {
+off64_t Balau::Output::getSize() {
     return m_size;
 }
 

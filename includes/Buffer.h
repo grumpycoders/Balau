@@ -17,14 +17,14 @@ class Buffer : public SeekableHandle {
     virtual bool canRead();
     virtual bool canWrite();
     virtual const char * getName();
-    virtual off_t getSize();
+    virtual off64_t getSize();
     const uint8_t * getBuffer() { return m_buffer + rtell(); }
     void reset();
     void rewind() { rseek(0); wseek(0); }
   private:
     uint8_t * m_buffer = NULL;
     bool m_fromConst = false;
-    off_t m_bufSize = 0, m_numBlocks = 0;
+    off64_t m_bufSize = 0, m_numBlocks = 0;
 };
 
 };

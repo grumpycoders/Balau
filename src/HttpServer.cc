@@ -225,7 +225,7 @@ void Balau::HttpWorker::sendError(int error, const char * msg, const char * deta
     } else {
         IO<Buffer> errorText(new Buffer);
         tpl->render(errorText, &ctx);
-        off_t length = errorText->getSize();
+        off64_t length = errorText->getSize();
         String headers;
         headers.set(
 "HTTP/1.1 %i %s\r\n"
@@ -272,6 +272,7 @@ bool Balau::HttpWorker::handleClient() {
             yield();
             continue;
         }
+        Printer::log(M_DEBUG, "HTTPIN: %s", line.to_charp());
         // until we get a blank line
         if (line == "")
             break;

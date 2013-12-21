@@ -6,6 +6,10 @@
 #include <Printer.h>
 #include <BString.h>
 
+#ifdef _MSC_VER
+typedef __int64 off64_t;
+#endif
+
 namespace Balau {
 
 class FileSystem {
@@ -52,17 +56,17 @@ class Handle {
     virtual bool canWrite();
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException) WARN_UNUSED_RESULT;
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) WARN_UNUSED_RESULT;
-    virtual void rseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
-    virtual void wseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
-    virtual off_t rtell() throw (GeneralException);
-    virtual off_t wtell() throw (GeneralException);
-    virtual off_t getSize();
+    virtual void rseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException);
+    virtual void wseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException);
+    virtual off64_t rtell() throw (GeneralException);
+    virtual off64_t wtell() throw (GeneralException);
+    virtual off64_t getSize();
     virtual time_t getMTime();
     virtual bool isPendingComplete() { return true; }
 
     // helpers
-    off_t tell() { return rtell(); }
-    void seek(off_t offset, int whence = SEEK_SET) { rseek(offset, whence); }
+    off64_t tell() { return rtell(); }
+    void seek(off64_t offset, int whence = SEEK_SET) { rseek(offset, whence); }
 
     Future<uint8_t>  readU8();
     Future<uint16_t> readU16();
@@ -175,16 +179,16 @@ class SeekableHandle : public Handle {
   public:
       SeekableHandle() : m_wOffset(0), m_rOffset(0) { }
     virtual bool canSeek();
-    virtual void rseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
-    virtual void wseek(off_t offset, int whence = SEEK_SET) throw (GeneralException);
-    virtual off_t rtell() throw (GeneralException);
-    virtual off_t wtell() throw (GeneralException);
+    virtual void rseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException);
+    virtual void wseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException);
+    virtual off64_t rtell() throw (GeneralException);
+    virtual off64_t wtell() throw (GeneralException);
     virtual bool isEOF();
   protected:
-    off_t getWOffset() { return m_wOffset; }
-    off_t getROffset() { return m_rOffset; }
+    off64_t getWOffset() { return m_wOffset; }
+    off64_t getROffset() { return m_rOffset; }
   private:
-    off_t m_wOffset, m_rOffset;
+    off64_t m_wOffset, m_rOffset;
 };
 
 class ReadOnly : public Handle {
@@ -199,11 +203,11 @@ class ReadOnly : public Handle {
     virtual const char * getName() { return m_io->getName(); }
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException) { return m_io->read(buf, count); }
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) { throw GeneralException("Can't write"); }
-    virtual void rseek(off_t offset, int whence = SEEK_SET) throw (GeneralException) { m_io->rseek(offset, whence); }
-    virtual void wseek(off_t offset, int whence = SEEK_SET) throw (GeneralException) { throw GeneralException("Can't write"); }
-    virtual off_t rtell() throw (GeneralException) { return m_io->rtell(); }
-    virtual off_t wtell() throw (GeneralException) { throw GeneralException("Can't write"); }
-    virtual off_t getSize() { return m_io->getSize(); }
+    virtual void rseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException) { m_io->rseek(offset, whence); }
+    virtual void wseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException) { throw GeneralException("Can't write"); }
+    virtual off64_t rtell() throw (GeneralException) { return m_io->rtell(); }
+    virtual off64_t wtell() throw (GeneralException) { throw GeneralException("Can't write"); }
+    virtual off64_t getSize() { return m_io->getSize(); }
     virtual time_t getMTime() { return m_io->getMTime(); }
   private:
     IO<Handle> m_io;
@@ -221,11 +225,11 @@ class WriteOnly : public Handle {
     virtual const char * getName() { return m_io->getName(); }
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException) { throw GeneralException("Can't read"); }
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) { return m_io->write(buf, count); }
-    virtual void rseek(off_t offset, int whence = SEEK_SET) throw (GeneralException) { throw GeneralException("Can't read"); }
-    virtual void wseek(off_t offset, int whence = SEEK_SET) throw (GeneralException) { return m_io->wseek(offset, whence); }
-    virtual off_t rtell() throw (GeneralException) { throw GeneralException("Can't read"); }
-    virtual off_t wtell() throw (GeneralException) { return m_io->wtell(); }
-    virtual off_t getSize() { return m_io->getSize(); }
+    virtual void rseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException) { throw GeneralException("Can't read"); }
+    virtual void wseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException) { return m_io->wseek(offset, whence); }
+    virtual off64_t rtell() throw (GeneralException) { throw GeneralException("Can't read"); }
+    virtual off64_t wtell() throw (GeneralException) { return m_io->wtell(); }
+    virtual off64_t getSize() { return m_io->getSize(); }
     virtual time_t getMTime() { return m_io->getMTime(); }
   private:
     IO<Handle> m_io;

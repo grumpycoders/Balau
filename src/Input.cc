@@ -217,10 +217,10 @@ namespace {
 
 class AsyncOpRead : public Balau::AsyncOperation {
   public:
-      AsyncOpRead(int fd, void * buf, size_t count, off_t offset, cbResults_t * results) : m_fd(fd), m_buf(buf), m_count(count), m_offset(offset), m_results(results) { }
+      AsyncOpRead(int fd, void * buf, size_t count, off64_t offset, cbResults_t * results) : m_fd(fd), m_buf(buf), m_count(count), m_offset(offset), m_results(results) { }
     virtual void run() {
 #ifdef _MSC_VER
-        off_t offset = lseek(m_fd, m_offset, SEEK_SET);
+        off64_t offset = lseek(m_fd, m_offset, SEEK_SET);
         if (offset < 0) {
             m_results->errorno = errno;
             return;
@@ -239,7 +239,7 @@ class AsyncOpRead : public Balau::AsyncOperation {
     int m_fd;
     void * m_buf;
     size_t m_count;
-    off_t m_offset;
+    off64_t m_offset;
     cbResults_t * m_results;
 };
 
@@ -304,7 +304,7 @@ const char * Balau::Input::getName() {
     return m_name.to_charp();
 }
 
-off_t Balau::Input::getSize() {
+off64_t Balau::Input::getSize() {
     return m_size;
 }
 
