@@ -5,6 +5,8 @@
 
 #ifndef _MSC_VER
 #include <cxxabi.h>
+#else
+#include <intrin.h>
 #endif
 
 #include <BString.h>
@@ -90,6 +92,9 @@ static inline void * realloc(void * previous, size_t size) {
 }
 
 static inline void AssertHelperInner(const String & msg, const char * details = NULL) throw (GeneralException) {
+#if defined(_MSC_VER) && defined(DEBUG)
+    __debugbreak();
+#endif
     throw GeneralException(msg, details);
 }
 
