@@ -522,6 +522,7 @@ Balau::IO<Balau::Socket> Balau::Socket::accept() throw (GeneralException) {
                 Task::operationYield(m_evtR, Task::INTERRUPTIBLE);
             } else {
                 String msg = getErrorMessage();
+                m_evtR->stop();
                 throw GeneralException(String("Unexpected error accepting a connection: #") + errno + "(" + msg + ")");
             }
         } else {

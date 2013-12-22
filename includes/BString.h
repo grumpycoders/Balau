@@ -117,6 +117,8 @@ class String : private std::string {
 
     const char & operator[](ssize_t i) const { if (i < 0) i = strlen() + i; return at(i); }
     char & operator[](ssize_t i) { if (i < 0) i = strlen() + i; return at(i); }
+
+    void reserve(size_t s) { std::string::reserve(s); }
 };
 
 };

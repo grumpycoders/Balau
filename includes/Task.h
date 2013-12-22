@@ -50,6 +50,10 @@ class BaseEvent {
       virtual ~BaseEvent() { if (m_cb) delete m_cb; }
     bool gotSignal() { return m_signal; }
     void doSignal();
+    void resetMaybe() {
+        if (m_task)
+            reset();
+    }
     void reset() {
         // could be potentially changed into a simple return
         AAssert(m_task != NULL, "Can't reset an event that doesn't have a task");
@@ -60,12 +64,13 @@ class BaseEvent {
     void registerOwner(Task * task) {
         if (m_task == task)
             return;
-        AAssert(m_task == NULL, "Can't register an event for another task");
+        AAssert(m_task == NULL || relaxed(), "Can't register an event for another task");
         m_task = task;
         gotOwner(task);
     }
   protected:
     virtual void gotOwner(Task * task) { }
+    virtual bool relaxed() { return false; }
   private:
     Callback * m_cb = NULL;
     bool m_signal = false;

@@ -18,12 +18,16 @@ class OutputCheck : public Balau::Handle {
     virtual bool isClosed() { return m_h->isClosed(); }
     virtual bool isEOF() { return m_h->isEOF(); }
     virtual bool canWrite() { return true; }
+    virtual bool canRead() { return m_h->canRead(); }
     virtual const char * getName() { return m_name.to_charp(); }
     virtual ssize_t write(const void * buf, size_t count) throw (Balau::GeneralException) {
         if (!count)
             return 0;
         m_wrote = true;
         return m_h->write(buf, count);
+    }
+    virtual ssize_t read(void * buf, size_t count) throw (Balau::GeneralException) {
+        return m_h->read(buf, count);
     }
     bool wrote() { return m_wrote; }
   private:
@@ -131,7 +135,7 @@ const Balau::String SetDefaultTemplateTask::m_defaultErrorTemplate(
 
 };
 
-Balau::HttpWorker::HttpWorker(IO<Handle> io, void * _server) : m_socket(new WriteOnly(io)), m_strm(new BStream(io)) {
+Balau::HttpWorker::HttpWorker(IO<Handle> io, void * _server) : m_socket(io), m_strm(new BStream(io)) {
     m_server = (HttpServer *) _server;
     m_name.set("HttpWorker(%s)", m_socket->getName());
     // get stuff from server, such as port number, root document, base URL, default 400/404 actions, etc...
@@ -258,6 +262,7 @@ bool Balau::HttpWorker::handleClient() {
     Http::StringMap variables;
     Http::FileList files;
     bool persistent = false;
+    bool upgrade = false;
 
     // read client's request
     do {
@@ -439,6 +444,9 @@ bool Balau::HttpWorker::handleClient() {
                     persistent = true;
                 } else if (t == "TE") {
                     Printer::elog(E_HTTPSERVER, "%s got the 'TE' connection marker (which is still unknown)", m_name.to_charp());
+                } else if (t == "Upgrade") {
+                    upgrade = true;
+                    persistent = true;
                 } else {
                     Printer::elog(E_HTTPSERVER, "%s has an improper Connection HTTP header (%s)", m_name.to_charp(), t.to_charp());
                     send400();
@@ -551,6 +559,7 @@ bool Balau::HttpWorker::handleClient() {
 
     auto f = m_server->findAction(uri.to_charp(), host.to_charp());
     if (f.action) {
+        m_strm->detach();
         IO<OutputCheck> out(new OutputCheck(m_socket));
         Http::Request req;
         req.method = method;
@@ -560,6 +569,7 @@ bool Balau::HttpWorker::handleClient() {
         req.headers = httpHeaders;
         req.files = files;
         req.persistent = persistent;
+        req.upgrade = upgrade;
         req.version = httpVersion;
         try {
             if (!f.action->Do(m_server, req, f.matches, out))
@@ -684,17 +694,20 @@ void Balau::HttpServer::Response::Flush() {
     headers->writeString(response);
     headers->writeString(" ");
     headers->writeString(Http::getStatusMsg(m_responseCode));
-    headers->writeString("\r\nContent-Type: ");
-    headers->writeString(m_type);
-    headers->writeString("\r\nContent-Length: ");
-    String len(m_buffer->getSize());
-    headers->writeString(len);
+    if (m_type != "") {
+        headers->writeString("\r\nContent-Type: ");
+        headers->writeString(m_type);
+    }
+    if (!m_noSize) {
+        headers->writeString("\r\nContent-Length: ");
+        String len(m_buffer->getSize());
+        headers->writeString(len);
+    }
     headers->writeString("\r\nServer: ");
     headers->writeString(m_server->getServerName());
     headers->writeString("\r\n");
-    if ((m_req.version == "1.1") && !m_req.persistent) {
+    if ((m_req.version == "1.1") && !m_req.persistent)
         headers->writeString("Connection: close\r\n");
-    }
 
     while (!m_extraHeaders.empty()) {
         String s = m_extraHeaders.front();

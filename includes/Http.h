@@ -27,6 +27,7 @@ struct Request {
     StringMap headers;
     FileList files;
     bool persistent;
+    bool upgrade;
     String version;
 };
 

@@ -52,6 +52,8 @@ void Balau::Selectable::SelectableEvent::gotOwner(Task * task) {
     } else {
         Printer::elog(E_SELECT, "...with a new task (%p -> %p); stopping first", m_task, task);
         m_evt.stop();
+        m_evt.set<SelectableEvent, &SelectableEvent::evt_cb>(this);
+        m_evt.set(m_fd, m_evtType);
     }
     m_task = task;
     m_evt.set(task->getLoop());
@@ -96,6 +98,7 @@ ssize_t Balau::Selectable::read(void * buf, size_t count) throw (GeneralExceptio
         ssize_t r = recv(getSocket(m_fd), (char *) buf, count, 0);
 
         if (r >= 0) {
+            m_evtR->resetMaybe();
             if (r == 0)
                 close();
             return r;
@@ -137,8 +140,10 @@ ssize_t Balau::Selectable::write(const void * buf, size_t count) throw (GeneralE
 
         EAssert(r != 0, "send() returned 0 (broken pipe ?)");
 
-        if (r > 0)
+        if (r > 0) {
+            m_evtW->resetMaybe();
             return r;
+        }
 
 #ifndef _WIN32
         int err = errno;

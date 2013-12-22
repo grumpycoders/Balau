@@ -24,6 +24,7 @@ class HttpServer {
           Response(HttpServer * server, Http::Request req, IO<Handle> out) : m_server(server), m_req(req), m_out(out), m_buffer(new Buffer()), m_responseCode(200), m_type("text/html; charset=UTF-8"), m_flushed(false) { }
         void SetResponseCode(int code) { m_responseCode = code; }
         void SetContentType(const String & type) { m_type = type; }
+        void setNoSize() { m_noSize = true;  }
         IO<Buffer> get() { return m_buffer; }
         IO<Buffer> operator->() { return m_buffer; }
         void Flush();
@@ -39,6 +40,7 @@ class HttpServer {
         String m_type;
         std::list<String> m_extraHeaders;
         bool m_flushed;
+        bool m_noSize = false;
 
           Response(const Response &) = delete;
         Response & operator=(const Response &) = delete;
