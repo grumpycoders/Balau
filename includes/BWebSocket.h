@@ -15,8 +15,12 @@ class WebSocketWorker : public StacklessTask {
   protected:
       WebSocketWorker(IO<Handle> socket, const String & url) : m_socket(new BStream(socket)) { m_name = String("WebSocket:") + url + "/" + m_socket->getName(); }
       ~WebSocketWorker() { free(m_payload); }
-  private:
+    void disconnect() { m_socket->close(); }
+    virtual void receiveMessage(const uint8_t * msg, size_t len, bool binary) = 0;
+private:
     void processMessage();
+    void processPing();
+    void processPong();
     const char * getName() const { return m_name.to_charp(); }
     void Do();
     String m_name;
@@ -40,6 +44,14 @@ class WebSocketWorker : public StacklessTask {
     bool m_firstFragment = true;
     bool m_enforceServer = false;
     bool m_enforceClient = false;
+    enum {
+        OPCODE_CONT  =  0,
+        OPCODE_TEXT  =  1,
+        OPCODE_BIN   =  2,
+        OPCODE_CLOSE =  8,
+        OPCODE_PING  =  9,
+        OPCODE_PONG  = 10,
+    };
     friend class WebSocketActionBase;
 };
 
