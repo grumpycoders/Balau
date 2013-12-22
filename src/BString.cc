@@ -22,6 +22,24 @@ Balau::String & Balau::String::set(const char * fmt, va_list ap) {
     return *this;
 }
 
+Balau::String & Balau::String::append(const char * fmt, va_list ap) {
+    unsigned int l;
+#ifdef _WIN32
+    // Microsoft is stupid.
+    char tt[65536];
+    l = _vsnprintf(tt, sizeof(tt)-1, fmt, ap);
+    tt[65535] = 0;
+    std::string::append(tt, l);
+#else
+    char * t;
+    l = vasprintf(&t, fmt, ap);
+    std::string::append(t, l);
+    free(t);
+#endif
+
+    return *this;
+}
+
 int Balau::String::strchrcnt(char c) const {
     unsigned int l = length();
     int r = 0;
