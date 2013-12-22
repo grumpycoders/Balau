@@ -30,17 +30,19 @@ class WebSocketWorker : public StacklessTask {
   public:
     virtual bool parse(Http::Request & req) { return true; }
     void sendFrame(WebSocketFrame * frame) { m_sendQueue.push(frame); }
+    void enforceServer(void) throw (GeneralException);
+    void enforceClient(void) throw (GeneralException);
   protected:
       WebSocketWorker(IO<Handle> socket, const String & url) : m_socket(new BStream(socket)) { m_name = String("WebSocket:") + url + ":" + m_socket->getName(); }
       ~WebSocketWorker();
     void disconnect() { m_socket->close(); }
     virtual void receiveMessage(const uint8_t * msg, size_t len, bool binary) = 0;
-  private:
+    virtual void Do();
+private:
     void processMessage();
     void processPing();
     void processPong();
-    const char * getName() const { return m_name.to_charp(); }
-    void Do();
+    virtual const char * getName() const { return m_name.to_charp(); }
     String m_name;
     IO<BStream> m_socket;
     enum {

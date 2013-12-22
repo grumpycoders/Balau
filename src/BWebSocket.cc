@@ -121,10 +121,8 @@ void Balau::WebSocketWorker::Do() {
                 m_socket->read(&c, 1);
                 if (m_socket->isClosed()) return;
                 m_hasMask = c & 0x80;
-                if (m_enforceServer && !m_hasMask)
-                    goto error;
-                if (m_enforceClient && m_hasMask)
-                    goto error;
+                if (m_enforceServer && !m_hasMask) goto error;
+                if (m_enforceClient && m_hasMask) goto error;
                 m_payloadLen = c & 0x7f;
                 m_state = READ_PLL;
                 if (m_payloadLen == 126) {
@@ -167,8 +165,7 @@ void Balau::WebSocketWorker::Do() {
                 while (m_remainingBytes) {
                     int r = m_socket->read(m_payload + m_totalLen - m_remainingBytes, m_remainingBytes);
                     if (m_socket->isClosed()) return;
-                    if (r < 0)
-                        goto error;
+                    if (r < 0) goto error;
                     m_remainingBytes -= r;
                 }
 
@@ -216,11 +213,23 @@ void Balau::WebSocketWorker::processMessage() {
 }
 
 void Balau::WebSocketWorker::processPing() {
-
+    sendFrame(new WebSocketFrame(m_payload, m_payloadLen, OPCODE_PING, m_enforceClient));
 }
 
 void Balau::WebSocketWorker::processPong() {
 
+}
+
+void Balau::WebSocketWorker::enforceClient() throw (GeneralException) {
+    if (m_enforceClient || m_enforceServer)
+        throw GeneralException("Can't set client or server mode more than once");
+    m_enforceClient = true;
+}
+
+void Balau::WebSocketWorker::enforceServer() throw (GeneralException) {
+    if (m_enforceClient || m_enforceServer)
+        throw GeneralException("Can't set client or server mode more than once");
+    m_enforceServer = true;
 }
 
 void Balau::WebSocketServerBase::sendError(IO<Handle> out, const char * serverName) {
@@ -242,18 +251,14 @@ static const Balau::String magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 bool Balau::WebSocketServerBase::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
     WebSocketWorker * worker = NULL;
 
-    if (!req.upgrade)
-        goto error;
+    if (!req.upgrade) goto error;
 
-    if (req.headers["Upgrade"] != "websocket")
-        goto error;
+    if (req.headers["Upgrade"] != "websocket") goto error;
 
-    if (req.headers["Sec-WebSocket-Key"] == "")
-        goto error;
+    if (req.headers["Sec-WebSocket-Key"] == "") goto error;
 
     worker = spawnWorker(out, req.uri);
-    if (!worker->parse(req))
-        goto error;
+    if (!worker->parse(req)) goto error;
 
     TaskMan::registerTask(worker);
     {
