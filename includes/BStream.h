@@ -11,9 +11,11 @@ class BStream : public Handle {
     virtual bool isClosed();
     virtual bool isEOF();
     virtual bool canRead();
+    virtual bool canWrite() { return m_h->canWrite(); }
     virtual const char * getName();
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException);
-    virtual off64_t getSize();
+    virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) { return m_h->write(buf, count); }
+        virtual off64_t getSize();
     int peekNextByte();
     String readString(bool putNL = false);
     bool isEmpty() { return m_availBytes == 0; }

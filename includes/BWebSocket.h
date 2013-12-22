@@ -9,15 +9,33 @@ namespace Balau {
 
 class WebSocketActionBase;
 
+class WebSocketFrame {
+  public:
+      WebSocketFrame(const String & str, uint8_t opcode, bool mask = false) : WebSocketFrame((uint8_t *) str.to_charp(), str.strlen(), opcode, mask) { }
+      WebSocketFrame(size_t len, uint8_t opcode, bool mask = false) : WebSocketFrame(NULL, len, opcode, mask) { }
+      WebSocketFrame(const uint8_t * data, size_t len, uint8_t opcode, bool mask = false);
+      ~WebSocketFrame() { free(m_data); }
+    uint8_t & operator[](size_t idx);
+    uint8_t * getPtr() { return m_data + m_headerSize; }
+    void send(IO<Handle> socket);
+  private:
+    uint8_t * m_data = NULL;
+    size_t m_len = 0;
+    size_t m_headerSize = 0;
+    uint32_t m_mask = 'BLAH';
+    size_t m_bytesSent = 0;
+};
+
 class WebSocketWorker : public StacklessTask {
   public:
     virtual bool parse(Http::Request & req) { return true; }
+    void sendFrame(WebSocketFrame * frame) { m_sendQueue.push(frame); }
   protected:
-      WebSocketWorker(IO<Handle> socket, const String & url) : m_socket(new BStream(socket)) { m_name = String("WebSocket:") + url + "/" + m_socket->getName(); }
-      ~WebSocketWorker() { free(m_payload); }
+      WebSocketWorker(IO<Handle> socket, const String & url) : m_socket(new BStream(socket)) { m_name = String("WebSocket:") + url + ":" + m_socket->getName(); }
+      ~WebSocketWorker();
     void disconnect() { m_socket->close(); }
     virtual void receiveMessage(const uint8_t * msg, size_t len, bool binary) = 0;
-private:
+  private:
     void processMessage();
     void processPing();
     void processPong();
@@ -34,6 +52,8 @@ private:
     } m_status = READ_H;
     enum { MAX_WEBSOCKET_LIMIT = 4 * 1024 * 1024 };
     uint8_t * m_payload = NULL;
+    WebSocketFrame * m_sending = NULL;
+    TQueue<WebSocketFrame> m_sendQueue;
     uint64_t m_payloadLen;
     uint64_t m_totalLen;
     uint64_t m_remainingBytes;

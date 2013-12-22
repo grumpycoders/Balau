@@ -344,6 +344,7 @@ class TQueue : public QueueBase {
   public:
     void push(T * t) { iPush(t, &m_event); }
     T * pop() { return (T *) iPop(&m_event, true); }
+    Events::Async * getEvent() { return &m_event; }
   private:
     Events::Async m_event;
 };

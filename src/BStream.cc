@@ -14,6 +14,7 @@ void Balau::BStream::close() throw (Balau::GeneralException) {
     if (!m_detached)
         m_h->close();
     free(m_buffer);
+    m_buffer = NULL;
     m_availBytes = 0;
     m_cursor = 0;
 }
