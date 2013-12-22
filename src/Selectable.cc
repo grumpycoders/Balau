@@ -1,7 +1,8 @@
-#include <winsock2.h>
 #include <sys/types.h>
 #ifndef _MSC_VER
 #include <unistd.h>
+#else
+#include <winsock2.h>
 #endif
 #ifdef _WIN32
 #include <io.h>
