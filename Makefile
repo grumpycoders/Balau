@@ -63,6 +63,10 @@ HelperTasks.cc \
 Http.cc \
 HttpServer.cc \
 SimpleMustache.cc \
+BWebSocket.cc \
+\
+SHA1.cc \
+Base64.cc \
 \
 BLua.cc \
 LuaBigInt.cc \
