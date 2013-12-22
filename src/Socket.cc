@@ -528,7 +528,11 @@ Balau::IO<Balau::Socket> Balau::Socket::accept() throw (GeneralException) {
         } else {
             Printer::elog(E_SOCKET, "Listener at %p got a new connection", this);
             m_evtR->reset();
+#ifdef _MSC_VER
             return IO<Socket>(new Socket(_open_osfhandle(s, 0)));
+#else
+            return IO<Socket>(new Socket(s));
+#endif
         }
     }
 }
