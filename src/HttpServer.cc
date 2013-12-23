@@ -559,6 +559,7 @@ bool Balau::HttpWorker::handleClient() {
 
     auto f = m_server->findAction(uri.to_charp(), host.to_charp());
     if (f.action) {
+        setOkayToEAgain(false);
         m_strm->detach();
         IO<OutputCheck> out(new OutputCheck(m_socket));
         Http::Request req;

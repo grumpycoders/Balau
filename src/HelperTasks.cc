@@ -21,7 +21,7 @@ void Balau::CopyTask::Do() {
                 toread = std::min(toread, (ssize_t) COPY_BUFSIZE);
                 m_read = m_s->read(m_buffer, toread);
                 AAssert(m_read >= 0, "Error while reading");
-                if (m_s->isEOF() || !m_read)
+                if (!m_read)
                     return;
                 m_written = 0;
                 m_state = 1;
@@ -33,6 +33,8 @@ void Balau::CopyTask::Do() {
                 } while (m_read != m_written);
                 m_state = 0;
                 m_current += m_read;
+                if (m_s->isEOF())
+                    return;
             }
         }
     }

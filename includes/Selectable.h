@@ -26,7 +26,7 @@ class Selectable : public Handle {
       public:
           SelectableEvent(int fd, int evt = ev::READ | ev::WRITE) : m_task(NULL), m_evtType(evt), m_fd(fd) { Printer::elog(E_SELECT, "Got a new SelectableEvent at %p", this); m_evt.set<SelectableEvent, &SelectableEvent::evt_cb>(this); m_evt.set(fd, evt); }
           virtual ~SelectableEvent() { Printer::elog(E_SELECT, "Destroying a SelectableEvent at %p", this); m_evt.stop(); }
-        void stop() { Printer::elog(E_SELECT, "Stopping a SelectableEvent at %p", this); reset(); m_evt.stop(); }
+        void stop() { Printer::elog(E_SELECT, "Stopping a SelectableEvent at %p", this); resetMaybe(); m_evt.stop(); }
       private:
         void evt_cb(ev::io & w, int revents) { Printer::elog(E_SELECT, "Got a libev callback on a SelectableEvent at %p", this); doSignal(); }
         virtual void gotOwner(Task * task);
