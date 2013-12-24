@@ -436,15 +436,15 @@ bool Balau::HttpWorker::handleClient() {
             bool gotOne = false;
             for (auto j = connVals.begin(); j != connVals.end(); j++) {
                 String t = j->trim();
-                if ((t == "close") && (!gotOne)) {
+                if ((t.lower() == "close") && (!gotOne)) {
                     gotOne = true;
                     persistent = false;
-                } else if ((t == "keep-alive") && (!gotOne)) {
+                } else if ((t.lower() == "keep-alive") && (!gotOne)) {
                     gotOne = true;
                     persistent = true;
                 } else if (t == "TE") {
                     Printer::elog(E_HTTPSERVER, "%s got the 'TE' connection marker (which is still unknown)", m_name.to_charp());
-                } else if (t == "Upgrade") {
+                } else if (t.lower() == "upgrade") {
                     upgrade = true;
                     persistent = true;
                 } else {
@@ -559,6 +559,7 @@ bool Balau::HttpWorker::handleClient() {
 
     auto f = m_server->findAction(uri.to_charp(), host.to_charp());
     if (f.action) {
+        setOkayToEAgain(false);
         m_strm->detach();
         IO<OutputCheck> out(new OutputCheck(m_socket));
         Http::Request req;

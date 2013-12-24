@@ -50,6 +50,10 @@ class String : private std::string {
     String & set(const char * fmt, ...) printfwarning(2, 3) { va_list ap; va_start(ap, fmt); set(fmt, ap); va_end(ap); return *this; }
     String & set(const String & fmt, ...) { va_list ap; va_start(ap, fmt); set(fmt.to_charp(), ap); va_end(ap); return *this; }
 
+    String & append(const char * fmt, va_list) printfwarning(2, 0);
+    String & append(const char * fmt, ...) printfwarning(2, 3) { va_list ap; va_start(ap, fmt); append(fmt, ap); va_end(ap); return *this; }
+    String & append(const String & fmt, ...) { va_list ap; va_start(ap, fmt); append(fmt.to_charp(), ap); va_end(ap); return *this; }
+
     int scanf(const char * fmt, va_list ap) const { return ::vsscanf(c_str(), fmt, ap); }
     int scanf(const char * fmt, ...) const printfwarning(2, 3) { va_list ap; va_start(ap, fmt); int r = scanf(fmt, ap); va_end(ap); return r; }
     int scanf(const String & fmt, ...) const { va_list ap; va_start(ap, fmt); int r = scanf(fmt.to_charp(), ap); va_end(ap); return r; }
@@ -96,8 +100,8 @@ class String : private std::string {
 
     String operator+(const String & v) const { String r = *this; r += v; return r; }
     String operator+(const char * v) const { String r = *this; r += v; return r; }
-    String & operator+=(const String & v) { *this = append(v); return *this; }
-    String & operator+=(const char * v) { *this = append(v); return *this; }
+    String & operator+=(const String & v) { *this = std::string::append(v); return *this; }
+    String & operator+=(const char * v) { *this = std::string::append(v); return *this; }
 
     int compare(const String & v) const { return std::string::compare(v); }
     int compare(const char * v) const { return std::string::compare(v); }
