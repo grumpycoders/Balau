@@ -1,3 +1,5 @@
+#include <map>
+
 #include "Http.h"
 
 const char * Balau::Http::getStatusMsg(int httpStatus) {
@@ -45,4 +47,20 @@ const char * Balau::Http::getStatusMsg(int httpStatus) {
         case 505: return "HTTP Version Not Supported";
     }
     return "Unknown HTTP code";
+}
+
+static std::map<Balau::String, const char *> s_mimeMap {
+    std::make_pair("css", "text/css"),
+    std::make_pair("html", "text/html"),
+    std::make_pair("js", "application/javascript"),
+    std::make_pair("json", "application/json"),
+    std::make_pair("png", "image/png"),
+    std::make_pair("gif", "image/gif"),
+};
+
+const char * Balau::Http::getContentType(const String & extension) {
+    auto t = s_mimeMap.find(extension);
+    if (t == s_mimeMap.end())
+        return "application/octet-stream";
+    return t->second;
 }

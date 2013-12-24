@@ -16,6 +16,8 @@ namespace Http {
 
 const char * getStatusMsg(int httpStatus);
 
+const char * getContentType(const String & extension);
+
 typedef std::map<String, String> StringMap;
 typedef std::map<String, IO<Handle> > FileList;
 
