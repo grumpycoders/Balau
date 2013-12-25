@@ -63,6 +63,7 @@ HelperTasks.cc \
 \
 Http.cc \
 HttpServer.cc \
+HttpActionStatic.cc \
 SimpleMustache.cc \
 BWebSocket.cc \
 \
