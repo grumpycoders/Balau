@@ -11,9 +11,9 @@ class WebSocketActionBase;
 
 class WebSocketFrame {
   public:
-      WebSocketFrame(const String & str, uint8_t opcode, bool mask = false) : WebSocketFrame((uint8_t *) str.to_charp(), str.strlen(), opcode, mask) { }
-      WebSocketFrame(size_t len, uint8_t opcode, bool mask = false) : WebSocketFrame(NULL, len, opcode, mask) { }
-      WebSocketFrame(const uint8_t * data, size_t len, uint8_t opcode, bool mask = false);
+      WebSocketFrame(const String & str, uint8_t opcode = 1, bool mask = false) : WebSocketFrame((uint8_t *) str.to_charp(), str.strlen(), opcode, mask) { }
+      WebSocketFrame(size_t len, uint8_t opcode = 1, bool mask = false) : WebSocketFrame(NULL, len, opcode, mask) { }
+      WebSocketFrame(const uint8_t * data, size_t len, uint8_t opcode = 1, bool mask = false);
       ~WebSocketFrame() { free(m_data); }
     uint8_t & operator[](size_t idx);
     uint8_t * getPtr() { return m_data + m_headerSize; }
