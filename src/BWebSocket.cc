@@ -253,7 +253,7 @@ bool Balau::WebSocketServerBase::Do(HttpServer * server, Http::Request & req, Ht
 
     if (!req.upgrade) goto error;
 
-    if (req.headers["Upgrade"] != "websocket") goto error;
+    if (req.headers["Upgrade"].lower() != "websocket") goto error;
 
     if (req.headers["Sec-WebSocket-Key"] == "") goto error;
 
