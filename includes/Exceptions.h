@@ -2,6 +2,7 @@
 
 #include <stdarg.h>
 #include <typeinfo>
+#include <functional>
 
 #ifndef _MSC_VER
 #include <cxxabi.h>
@@ -174,3 +175,11 @@ ClassName::ClassName(T * ptr) {
     msg.set("UnitTest Assert " #c " failed at %s:%i", __FILE__, __LINE__); \
     Balau::TestHelper(msg); \
 }
+
+class ScopedLambda {
+  public:
+      ScopedLambda(std::function<void()> l) : m_l(l) { }
+      ~ScopedLambda() { m_l(); }
+  private:
+    std::function<void()> m_l;
+};
