@@ -8,7 +8,7 @@ CPPFLAGS += -g3 -gdwarf-2 -DDEBUG -DEV_VERIFY=3
 LDFLAGS += -g3 -gdwarf-2
 endif
 
-INCLUDES = includes libcoro libev LuaJIT/src lcrypt libtommath libtomcrypt/src/headers
+INCLUDES = includes libcoro libev LuaJIT/src lcrypt libtommath libtomcrypt/src/headers src/jsoncpp/include
 LIBS = z
 DEFINES = _LARGEFILE64_SOURCE LITTLE_ENDIAN LTM_DESC LTC_SOURCE USE_LTM
 
@@ -28,6 +28,7 @@ CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS) $(addprefix -D, $(DEFINES))
 LDFLAGS += $(ARCH_FLAGS)
 LDLIBS = $(addprefix -l, $(LIBS))
 
+vpath %.cpp src/jsoncpp/src
 vpath %.cc src:tests
 vpath %.c libcoro:libev:win32/pthreads-win32:win32/iconv:win32/regex:lcrypt
 
@@ -64,6 +65,10 @@ Http.cc \
 HttpServer.cc \
 SimpleMustache.cc \
 BWebSocket.cc \
+\
+json_reader.cpp \
+json_writer.cpp \
+json_value.cpp \
 \
 SHA1.cc \
 Base64.cc \
@@ -174,6 +179,9 @@ endif
 dep: $(ALL_DEPS)
 
 %.dep : %.cc
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS_NO_ARCH) -M $< > $@
+
+%.dep : %.cpp
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS_NO_ARCH) -M $< > $@
 
 %.dep : %.c
