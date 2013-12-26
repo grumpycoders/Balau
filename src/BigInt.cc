@@ -61,6 +61,8 @@ Balau::BigInt & Balau::BigInt::operator=(const BigInt & v) throw (GeneralExcepti
 
     if (mp_copy(v.m_bi, m_bi) != CRYPT_OK)
         throw GeneralException("Error while calling mp_init_copy");
+
+    return *this;
 }
 
 void Balau::BigInt::set(uint64_t v) throw (GeneralException) {
@@ -149,7 +151,7 @@ uint64_t Balau::BigInt::to_uint64() const throw (GeneralException) {
 int64_t Balau::BigInt::to_int64() const throw (GeneralException) {
     if (mp_count_bits(m_bi) > 63)
         throw GeneralException("BigInt too big to fit in a int64");
-    uint64_t v = 0;
+    int64_t v = 0;
     int shift = 0;
     int digit = 0;
     while (shift <= 63) {
@@ -175,7 +177,7 @@ uint32_t Balau::BigInt::to_uint32() const throw (GeneralException) {
 int32_t Balau::BigInt::to_int32() const throw (GeneralException) {
     if (mp_count_bits(m_bi) > 31)
         throw GeneralException("BigInt too big to fit in a uint32");
-    uint64_t v = 0;
+    int64_t v = 0;
     int shift = 0;
     int digit = 0;
     while (shift <= 31) {

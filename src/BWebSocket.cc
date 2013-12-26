@@ -1,5 +1,5 @@
 #include "BWebSocket.h"
-#include "SHA1.h"
+#include "BSHA1.h"
 #include "Base64.h"
 #include "TaskMan.h"
 

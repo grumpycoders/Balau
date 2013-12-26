@@ -71,7 +71,7 @@ json_reader.cpp \
 json_writer.cpp \
 json_value.cpp \
 \
-SHA1.cc \
+BSHA1.cc \
 Base64.cc \
 \
 BLua.cc \
