@@ -61,11 +61,22 @@ private:
     uint64_t m_remainingBytes;
     uint32_t m_mask;
     uint8_t m_opcode;
+
+    uint8_t * m_payloadCTRL = NULL;
+    uint64_t m_payloadLenCTRL;
+    uint64_t m_totalLenCTRL;
+    uint64_t m_remainingBytesCTRL;
+    uint32_t m_maskCTRL;
+    uint8_t m_opcodeCTRL;
+
     bool m_hasMask;
+    bool m_hasMaskCTRL;
+
     bool m_fin;
     bool m_firstFragment = true;
     bool m_enforceServer = false;
     bool m_enforceClient = false;
+    bool m_inCTRL = false;
     enum {
         OPCODE_CONT  =  0,
         OPCODE_TEXT  =  1,
