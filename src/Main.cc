@@ -200,7 +200,11 @@ int Balau::Main::bootstrap(int argc, char ** argv) {
 
 extern "C" {
 
-int main(int argc, char ** argv) {
+#ifndef BALAU_MAIN
+#define BALAU_MAIN main
+#endif
+
+int BALAU_MAIN(int argc, char ** argv) {
     setlocale(LC_ALL, "");
     Balau::Main mainClass;
     return mainClass.bootstrap(argc, argv);
