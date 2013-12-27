@@ -8,9 +8,9 @@ Balau::String & Balau::String::set(const char * fmt, va_list ap) {
     unsigned int l;
 #ifdef _WIN32
     // Microsoft is stupid.
-    char tt[65536];
+    char tt[4096];
     l = _vsnprintf(tt, sizeof(tt) - 1, fmt, ap);
-    tt[65535] = 0;
+    tt[4095] = 0;
     assign(tt, l);
 #else
     char * t;
@@ -26,9 +26,9 @@ Balau::String & Balau::String::append(const char * fmt, va_list ap) {
     unsigned int l;
 #ifdef _WIN32
     // Microsoft is stupid.
-    char tt[65536];
+    char tt[4096];
     l = _vsnprintf(tt, sizeof(tt)-1, fmt, ap);
-    tt[65535] = 0;
+    tt[4095] = 0;
     std::string::append(tt, l);
 #else
     char * t;
