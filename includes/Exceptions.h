@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdarg.h>
+#include <stdlib.h>
 #include <typeinfo>
 #include <functional>
 
@@ -65,6 +66,8 @@ class RessourceException : public GeneralException {
 
 void ExitHelper(const String & msg, const char * fmt = NULL, ...) printfwarning(2, 3);
 
+namespace Alloc {
+
 static inline void * malloc(size_t size) {
     void * r = ::malloc(size);
 
@@ -91,6 +94,8 @@ static inline void * realloc(void * previous, size_t size) {
 
     return r;
 }
+
+};
 
 static inline void AssertHelperInner(const String & msg, const char * details = NULL) throw (GeneralException) {
 #if defined(_MSC_VER) && defined(DEBUG)
