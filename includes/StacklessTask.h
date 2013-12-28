@@ -64,7 +64,7 @@ class StacklessTask : public Task {
 #define StacklessYield() \
         m_state = __LINE__; \
         try { \
-            yield(true); \
+            yieldNoWait(); \
         } \
         catch (Balau::EAgain & e) { \
             taskSwitch(); \
