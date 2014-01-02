@@ -28,6 +28,10 @@ void Balau::Printer::setLocal() {
     localPrinter.set(this);
 }
 
+void Balau::Printer::setGlobal() {
+    localPrinter.setGlobal(this);
+}
+
 Balau::Printer * Balau::Printer::getPrinter() { return localPrinter.get(); }
 
 void Balau::Printer::_log(uint32_t level, const char * fmt, va_list ap) {

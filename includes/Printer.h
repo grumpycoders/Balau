@@ -44,10 +44,6 @@ enum {
 };
 
 class Printer {
-  protected:
-    virtual void _print(const char * fmt, va_list ap);
-
-  private:
     void _print(const char * fmt, ...);
     void _log(uint32_t level, const char * fmt, va_list ap);
 
@@ -56,6 +52,7 @@ class Printer {
       Printer();
 
     void setLocal();
+    void setGlobal();
 
     static Printer * getPrinter();
     static void log(uint32_t level, const String & fmt, ...) { va_list ap; va_start(ap, fmt); vlog(level, fmt.to_charp(), ap); va_end(ap); }
@@ -75,6 +72,8 @@ class Printer {
     static void disable(uint32_t levels = M_ALL) { getPrinter()->m_verbosity &= ~levels; }
 
     static void setDetailled(bool enable) { getPrinter()->m_detailledLogs = enable; }
+
+    virtual void _print(const char * fmt, va_list ap);
 
   private:
     uint32_t m_verbosity = M_STATUS | M_WARNING | M_ERROR | M_ENGINE_DEBUG;
