@@ -222,12 +222,12 @@ void Balau::Task::sleep(double timeout) {
 }
 
 void Balau::Events::BaseEvent::doSignal() {
-    Printer::elog(E_TASK, "Event at %p (%s) is signaled with cb %p and task %p", this, ClassName(this).c_str(), m_cb, m_task);
+    Printer::elog(E_EVENT, "Event at %p (%s) is signaled with cb %p and task %p", this, ClassName(this).c_str(), m_cb, m_task);
     m_signal = true;
     if (m_cb)
         m_cb->gotEvent(this);
     if (m_task) {
-        Printer::elog(E_TASK, "Signaling task %p (%s - %s)", m_task, m_task->getName(), ClassName(m_task).c_str());
+        Printer::elog(E_EVENT, "Signaling task %p (%s - %s)", m_task, m_task->getName(), ClassName(m_task).c_str());
         m_task->getTaskMan()->signalTask(m_task);
     }
 }
@@ -285,7 +285,7 @@ void Balau::Events::TaskEvent::ack() {
             break;
         }
     }
-    Printer::elog(E_TASK, "TaskEvent at %p being ack; removing from the 'waited by' list of %p (%s - %s); deleted = %s", this, t, t->getName(), ClassName(t).c_str(), deleted ? "true" : "false");
+    Printer::elog(E_EVENT, "TaskEvent at %p being ack; removing from the 'waited by' list of %p (%s - %s); deleted = %s", this, t, t->getName(), ClassName(t).c_str(), deleted ? "true" : "false");
     t->m_eventLock.leave();
     t = NULL;
     IAssert(deleted, "We didn't find task %p in the waitedBy lists... ?", this);
