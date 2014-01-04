@@ -76,11 +76,9 @@ class Handle {
     Future<int16_t>  readI16();
     Future<int32_t>  readI32();
     Future<int64_t>  readI64();
-	Future<uint8_t>  readBEU8();
 	Future<uint16_t> readBEU16();
 	Future<uint32_t> readBEU32();
 	Future<uint64_t> readBEU64();
-	Future<int8_t>   readBEI8();
 	Future<int16_t>  readBEI16();
 	Future<int32_t>  readBEI32();
 	Future<int64_t>  readBEI64();

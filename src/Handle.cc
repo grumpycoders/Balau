@@ -138,11 +138,9 @@ Balau::Future<int16_t>  Balau::Handle::readI16() { return genericRead<int16_t> (
 Balau::Future<int32_t>  Balau::Handle::readI32() { return genericRead<int32_t> (this); }
 Balau::Future<int64_t>  Balau::Handle::readI64() { return genericRead<int64_t> (this); }
 
-Balau::Future<uint8_t>  Balau::Handle::readBEU8()  { return genericReadBE<uint8_t> (this); }
 Balau::Future<uint16_t> Balau::Handle::readBEU16() { return genericReadBE<uint16_t>(this); }
 Balau::Future<uint32_t> Balau::Handle::readBEU32() { return genericReadBE<uint32_t>(this); }
 Balau::Future<uint64_t> Balau::Handle::readBEU64() { return genericReadBE<uint64_t>(this); }
-Balau::Future<int8_t>   Balau::Handle::readBEI8()  { return genericReadBE<int8_t>  (this); }
 Balau::Future<int16_t>  Balau::Handle::readBEI16() { return genericReadBE<int16_t> (this); }
 Balau::Future<int32_t>  Balau::Handle::readBEI32() { return genericReadBE<int32_t> (this); }
 Balau::Future<int64_t>  Balau::Handle::readBEI64() { return genericReadBE<int64_t> (this); }
