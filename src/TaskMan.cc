@@ -295,7 +295,7 @@ int Balau::TaskMan::mainLoop() {
                 stopped.insert(t);
                 if (wasYielded) {
                     taskHash_t::iterator i = yielded.find(t);
-                    IAssert(i != yielded.end(), "Task at %p was yielded, but not in yielded list... ?", t);
+                    IAssert(i != yielded.end(), "Task %s of type %s at %p was yielded, but not in yielded list... ?", t->getName(), ClassName(t).c_str(), t);
                     yielded.erase(i);
                 }
             } else if (t->getStatus() == Task::YIELDED) {
@@ -307,7 +307,7 @@ int Balau::TaskMan::mainLoop() {
         // now let's make a round of yielded tasks
         for (Task * t : yielded) {
             Printer::elog(E_TASK, "TaskMan at %p Switching to task %p (%s - %s) that was yielded.", this, t, t->getName(), ClassName(t).c_str());
-            IAssert(t->getStatus() == Task::YIELDED, "Task %p was in yielded list, but wasn't yielded ?", t);
+            IAssert(t->getStatus() == Task::YIELDED, "Task %s of type %s at %p was in yielded list, but wasn't yielded ?", t->getName(), ClassName(t).c_str(), t);
             t->switchTo();
             if ((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED)) {
                 stopped.insert(t);
@@ -322,7 +322,7 @@ int Balau::TaskMan::mainLoop() {
         while (!m_pendingAdd.isEmpty()) {
             Printer::elog(E_TASK, "TaskMan at %p trying to pop a task...", this);
             Task * t = m_pendingAdd.pop();
-            Printer::elog(E_TASK, "TaskMan at %p popped task %p...", this, t);
+            Printer::elog(E_TASK, "TaskMan at %p popped task %s of type %s at %p...", this, t->getName(), ClassName(t).c_str(), t);
             IAssert(m_tasks.find(t) == m_tasks.end(), "TaskMan got task %p twice... ?", t);
             ev_now_update(m_loop);
             t->setup(this, t->isStackless() ? NULL : getStack());
@@ -342,9 +342,9 @@ int Balau::TaskMan::mainLoop() {
                     freeStack(t->m_stack);
                     stopped.erase(iH);
                     iH = m_tasks.find(t);
-                    IAssert(iH != m_tasks.end(), "Task %p in stopped list but not in m_tasks...", t);
+                    IAssert(iH != m_tasks.end(), "Task %s of type %s at %p in stopped list but not in m_tasks...", t->getName(), ClassName(t).c_str(), t);
                     m_tasks.erase(iH);
-                    IAssert(yielded.find(t) == yielded.end(), "Task %p is deleted but is in yielded list... ?", t);
+                    IAssert(yielded.find(t) == yielded.end(), "Task %s of type %s at %p is deleted but is in yielded list... ?", t->getName(), ClassName(t).c_str(), t);
                     t->m_eventLock.leave();
                     delete t;
                     didDelete = true;
@@ -383,7 +383,7 @@ void Balau::TaskMan::addToPending(Balau::Task * t) {
 }
 
 void Balau::TaskMan::signalTask(Task * t) {
-    AAssert(m_tasks.find(t) != m_tasks.end(), "Can't signal task %p that I don't own (me = %p)", t, this);
+    AAssert(m_tasks.find(t) != m_tasks.end(), "Can't signal task %s of type %s at %p that I don't own (me = %p)", t->getName(), ClassName(t).c_str(), t, this);
     AAssert(m_allowedToSignal, "I'm not allowed to signal (me = %p)", this);
     m_signaledTasks.insert(t);
 }
