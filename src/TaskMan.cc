@@ -289,17 +289,18 @@ int Balau::TaskMan::mainLoop() {
         for (Task * t : m_signaledTasks) {
             Printer::elog(E_TASK, "TaskMan at %p Switching to task %p (%s - %s) that got signaled somehow.", this, t, t->getName(), ClassName(t).c_str());
             IAssert(t->getStatus() == Task::SLEEPING || t->getStatus() == Task::YIELDED, "We're switching to a non-sleeping/yielded task at %p... ? status = %i", t, t->getStatus());
-            bool wasYielded = t->getStatus() == Task::YIELDED;
+            bool toRemoveFromYielded = t->getStatus() == Task::YIELDED;
             t->switchTo();
             if ((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED)) {
                 stopped.insert(t);
-                if (wasYielded) {
-                    taskHash_t::iterator i = yielded.find(t);
-                    IAssert(i != yielded.end(), "Task %s of type %s at %p was yielded, but not in yielded list... ?", t->getName(), ClassName(t).c_str(), t);
-                    yielded.erase(i);
-                }
             } else if (t->getStatus() == Task::YIELDED) {
                 yielded.insert(t);
+                toRemoveFromYielded = false;
+            }
+            if (toRemoveFromYielded) {
+                taskHash_t::iterator i = yielded.find(t);
+                IAssert(i != yielded.end(), "Task %s of type %s at %p was yielded, but not in yielded list... ?", t->getName(), ClassName(t).c_str(), t);
+                yielded.erase(i);
             }
         }
         m_signaledTasks.clear();
