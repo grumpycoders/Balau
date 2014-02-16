@@ -294,7 +294,9 @@ int Balau::TaskMan::mainLoop() {
             if ((t->getStatus() == Task::STOPPED) || (t->getStatus() == Task::FAULTED)) {
                 stopped.insert(t);
             } else if (t->getStatus() == Task::YIELDED) {
-                yielded.insert(t);
+                taskHash_t::iterator i = yielded.find(t);
+                if (i == yielded.end())
+                    yielded.insert(t);
                 toRemoveFromYielded = false;
             }
             if (toRemoveFromYielded) {
