@@ -64,6 +64,14 @@ class Handle {
     virtual time_t getMTime();
     virtual bool isPendingComplete() { return true; }
 
+    enum Endianness {
+        LITTLE_ENDIAN;
+        BIG_ENDIAN;
+    };
+
+    void setEndianness(Endianness endianness) { m_bigEndianMode = endianness == BIG_ENDIAN; }
+    Endianness getEndianness() { return m_bigEndianMode ? BIG_ENDIAN : LITTLE_ENDIAN; }
+
     // helpers
     off64_t tell() { return rtell(); }
     void seek(off64_t offset, int whence = SEEK_SET) { rseek(offset, whence); }
@@ -76,13 +84,22 @@ class Handle {
     Future<int16_t>  readI16();
     Future<int32_t>  readI32();
     Future<int64_t>  readI64();
-	Future<uint16_t> readBEU16();
-	Future<uint32_t> readBEU32();
-	Future<uint64_t> readBEU64();
-	Future<int16_t>  readBEI16();
-	Future<int32_t>  readBEI32();
-	Future<int64_t>  readBEI64();
-	Future<void>     writeU8(uint8_t);
+
+    Future<uint16_t> readBEU16();
+    Future<uint32_t> readBEU32();
+    Future<uint64_t> readBEU64();
+    Future<int16_t>  readBEI16();
+    Future<int32_t>  readBEI32();
+    Future<int64_t>  readBEI64();
+
+    Future<uint16_t> readLEU16();
+    Future<uint32_t> readLEU32();
+    Future<uint64_t> readLEU64();
+    Future<int16_t>  readLEI16();
+    Future<int32_t>  readLEI32();
+    Future<int64_t>  readLEI64();
+
+    Future<void>     writeU8(uint8_t);
     Future<void>     writeU16(uint16_t);
     Future<void>     writeU32(uint32_t);
     Future<void>     writeU64(uint64_t);
@@ -117,6 +134,8 @@ class Handle {
     friend class IO;
 
     std::atomic<int> m_refCount;
+
+    bool m_bigEndianMode = false;
 
       Handle(const Handle &) = delete;
     Handle & operator=(const Handle &) = delete;

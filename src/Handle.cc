@@ -115,28 +115,66 @@ Balau::Future<T> genericRead(Balau::IO<Balau::Handle> t) {
 
 template<class T>
 Balau::Future<T> genericReadBE(Balau::IO<Balau::Handle> t) {
-	std::shared_ptr<T> b(new T);
-	int c = 0;
-	*b.get() = 0;
-	return Balau::Future<T>([t, b, c]() mutable {
-		do {
-			uint8_t v = t->readU8().get();
-			*b.get() <<= 8;
-			*b.get() += v;
-			c++;
-		} while (c < sizeof(T));
-		return *b;
-	});
+    std::shared_ptr<T> b(new T);
+    int c = 0;
+    *b.get() = 0;
+    return Balau::Future<T>([t, b, c]() mutable {
+        do {
+            uint8_t v = t->readU8().get();
+            *b.get() <<= 8;
+            *b.get() += v;
+            c++;
+        } while (c < sizeof(T));
+        return *b;
+    });
 }
 
 Balau::Future<uint8_t>  Balau::Handle::readU8()  { return genericRead<uint8_t> (this); }
-Balau::Future<uint16_t> Balau::Handle::readU16() { return genericRead<uint16_t>(this); }
-Balau::Future<uint32_t> Balau::Handle::readU32() { return genericRead<uint32_t>(this); }
-Balau::Future<uint64_t> Balau::Handle::readU64() { return genericRead<uint64_t>(this); }
-Balau::Future<int8_t>   Balau::Handle::readI8 () { return genericRead<int8_t>  (this); }
-Balau::Future<int16_t>  Balau::Handle::readI16() { return genericRead<int16_t> (this); }
-Balau::Future<int32_t>  Balau::Handle::readI32() { return genericRead<int32_t> (this); }
-Balau::Future<int64_t>  Balau::Handle::readI64() { return genericRead<int64_t> (this); }
+Balau::Future<int8_t>   Balau::Handle::readI8()  { return genericRead<int8_t>  (this); }
+
+Balau::Future<uint16_t> Balau::Handle::readU16() {
+    if (m_bigEndianMode)
+        return readBEU16();
+    else
+        return readLEU16();
+}
+Balau::Future<uint32_t> Balau::Handle::readU32() {
+    if (m_bigEndianMode)
+        return readBEU32();
+    else
+        return readLEU32();
+}
+Balau::Future<uint64_t> Balau::Handle::readU64() {
+    if (m_bigEndianMode)
+        return readBEU64();
+    else
+        return readLEU64();
+}
+Balau::Future<int16_t>  Balau::Handle::readI16() {
+    if (m_bigEndianMode)
+        return readBEI16();
+    else
+        return readLEI16();
+}
+Balau::Future<int32_t>  Balau::Handle::readI32() {
+    if (m_bigEndianMode)
+        return readBEI32();
+    else
+        return readLEI32();
+}
+Balau::Future<int64_t>  Balau::Handle::readI64() {
+    if (m_bigEndianMode)
+        return readBEI64();
+    else
+        return readLEI64();
+}
+
+Balau::Future<uint16_t> Balau::Handle::readLEU16() { return genericRead<uint16_t>(this); }
+Balau::Future<uint32_t> Balau::Handle::readLEU32() { return genericRead<uint32_t>(this); }
+Balau::Future<uint64_t> Balau::Handle::readLEU64() { return genericRead<uint64_t>(this); }
+Balau::Future<int16_t>  Balau::Handle::readLEI16() { return genericRead<int16_t> (this); }
+Balau::Future<int32_t>  Balau::Handle::readLEI32() { return genericRead<int32_t> (this); }
+Balau::Future<int64_t>  Balau::Handle::readLEI64() { return genericRead<int64_t> (this); }
 
 Balau::Future<uint16_t> Balau::Handle::readBEU16() { return genericReadBE<uint16_t>(this); }
 Balau::Future<uint32_t> Balau::Handle::readBEU32() { return genericReadBE<uint32_t>(this); }
