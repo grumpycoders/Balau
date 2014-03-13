@@ -65,8 +65,8 @@ class Handle {
     virtual bool isPendingComplete() { return true; }
 
     enum Endianness {
-        LITTLE_ENDIAN;
-        BIG_ENDIAN;
+        LITTLE_ENDIAN,
+        BIG_ENDIAN,
     };
 
     void setEndianness(Endianness endianness) { m_bigEndianMode = endianness == BIG_ENDIAN; }
