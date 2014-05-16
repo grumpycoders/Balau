@@ -16,3 +16,6 @@
 [submodule "libtommath"]
 	path = libtommath
 	url = https://github.com/libtom/libtommath.git
+[submodule "win32/c-ares"]
+	path = win32/c-ares
+	url = https://github.com/bagder/c-ares.git
