@@ -65,12 +65,12 @@ class Handle {
     virtual bool isPendingComplete() { return true; }
 
     enum Endianness {
-        LITTLE_ENDIAN,
-        BIG_ENDIAN,
+        BALAU_LITTLE_ENDIAN,
+        BALAU_BIG_ENDIAN,
     };
 
-    void setEndianness(Endianness endianness) { m_bigEndianMode = endianness == BIG_ENDIAN; }
-    Endianness getEndianness() { return m_bigEndianMode ? BIG_ENDIAN : LITTLE_ENDIAN; }
+    void setEndianness(Endianness endianness) { m_bigEndianMode = endianness == BALAU_BIG_ENDIAN; }
+    Endianness getEndianness() { return m_bigEndianMode ? BALAU_BIG_ENDIAN : BALAU_LITTLE_ENDIAN; }
 
     // helpers
     off64_t tell() { return rtell(); }
