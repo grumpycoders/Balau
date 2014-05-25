@@ -52,7 +52,7 @@ void Balau::LuaMainTask::Do() {
         try {
             cell = m_queue.pop();
         }
-        catch (Balau::EAgain & e) {
+        catch (Balau::EAgain &) {
             taskSwitch();
         }
         Printer::elog(E_TASK, "LuaMainTask at %p popped %p", this, cell);
@@ -81,7 +81,7 @@ void Balau::LuaTask::Do() {
             else
                 m_cell->run(L);
         }
-        catch (EAgain & e) {
+        catch (EAgain &) {
         }
         catch (GeneralException & e) {
             m_cell->m_exception = new GeneralException(e);

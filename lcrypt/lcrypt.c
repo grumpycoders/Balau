@@ -1,20 +1,30 @@
 //  gcc -Wall -O3 -shared -fPIC -DLITTLE_ENDIAN -DLTM_DESC -DLTC_SOURCE -DUSE_LTM -I/usr/include/tomcrypt -I/usr/include/tommath -lz -lutil -ltomcrypt -ltommath lcrypt.c -o /usr/lib64/lua/5.1/lcrypt.so
+#ifdef _WIN32
+#include <windows.h>
+#else
 #include <unistd.h>
+#include <sys/time.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#include <malloc.h>
 #include <errno.h>
 #include <sys/types.h>
-#include <sys/time.h>
 #include <zlib.h>
 #include "lua.h"
 #include "lauxlib.h"
 #include "lualib.h"
 #include "tomcrypt.h"
 
+#ifdef _WIN32
+#define likely(x) (x)
+#define unlikely(x) (x)
+#else
 #define likely(x)       __builtin_expect((x),1)
 #define unlikely(x)     __builtin_expect((x),0)
+#endif
 
 #define ADD_FUNCTION(L,name) { lua_pushstring(L, #name); lua_pushcfunction(L, lcrypt_ ## name); lua_settable(L, -3); }
 #define ADD_CONSTANT(L,name) { lua_pushstring(L, #name); lua_pushinteger(L, name); lua_settable(L, -3); }
@@ -77,7 +87,7 @@ static int lcrypt_fromhex(lua_State *L)
 {
   size_t in_length;
   const unsigned char *in = (const unsigned char*)luaL_checklstring(L, 1, &in_length);
-  unsigned char result[in_length];
+  unsigned char * result = (unsigned char *)alloca(in_length);
   int i, d = -1, e = -1, pos = 0;
   for(i = 0; i < (int)in_length; i++)
   {
@@ -207,6 +217,28 @@ static int lcrypt_xor(lua_State *L)
   return 1;
 }
 
+#ifdef _WIN32
+
+static const unsigned __int64 epoch = 116444736000000000ULL;
+
+static int gettimeofday(struct timeval * tp, struct timezone * tzp)
+{
+  FILETIME       file_time;
+  SYSTEMTIME     system_time;
+  ULARGE_INTEGER ularge;
+
+  GetSystemTime(&system_time);
+  SystemTimeToFileTime(&system_time, &file_time);
+  ularge.LowPart = file_time.dwLowDateTime;
+  ularge.HighPart = file_time.dwHighDateTime;
+
+  tp->tv_sec = (long)((ularge.QuadPart - epoch) / 10000000L);
+  tp->tv_usec = (long)(system_time.wMilliseconds * 1000);
+
+  return 0;
+}
+#endif
+
 static int lcrypt_time(lua_State *L)
 {
   double ret;
@@ -217,12 +249,18 @@ static int lcrypt_time(lua_State *L)
   return(1);
 }
 
+#ifdef UNICODE
+#define _T(x) L##x
+#else
+#define _T(x) x
+#endif
+
 static int lcrypt_random(lua_State *L)
 {
   int len = luaL_checkint(L, 1);
   char *buffer = lcrypt_malloc(L, len);
   #ifdef _WIN32
-    HMODULE hLib = LoadLibrary("ADVAPI32.DLL");
+    HMODULE hLib = LoadLibrary((LPCTSTR)_T("ADVAPI32.DLL"));
     if (unlikely(!hLib))
     {
       lua_pushstring(L, "Unable to open ADVAPI32.DLL");

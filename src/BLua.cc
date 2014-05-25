@@ -1,3 +1,7 @@
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <memory>
 #include <stdlib.h>
 #include "BLua.h"
@@ -167,12 +171,28 @@ int Balau::LuaStatics::getenv(lua_State * __L) {
         L.error("Incorrect arguments to function `getenv'");
 
 #ifdef _WIN32
+#ifdef UNICODE
+    wchar_t wbuffer[BUFSIZ + 1];
+    String varStr = L.tostring(1).iconv("UTF-8", "UNICODE");
+    if (GetEnvironmentVariable((wchar_t *)varStr.to_charp(), wbuffer, BUFSIZ)) {
+        char buffer[BUFSIZ + 1];
+        const wchar_t * pwbuffer = wbuffer;
+        mbstate_t mbs;
+        mbrlen(NULL, 0, &mbs);
+        memset(buffer, 0, BUFSIZ + 1);
+        wcsrtombs(buffer, &pwbuffer, BUFSIZ, &mbs);
+        L.push(buffer);
+    } else {
+        L.push();
+    }
+#else
     char buffer[BUFSIZ + 1];
     if (GetEnvironmentVariable(L.tostring(1).to_charp(), buffer, BUFSIZ)) {
         L.push(buffer);
     } else {
         L.push();
     }
+#endif
 #else
     char * var = ::getenv(L.tostring(1).to_charp());
     if (var) {
@@ -194,7 +214,13 @@ int Balau::LuaStatics::setenv(lua_State * __L) {
     }
 
 #ifdef _WIN32
+#ifdef UNICODE
+    String varStr = L.tostring(1).iconv("UTF-8", "UNICODE");
+    String valStr = L.tostring(2).iconv("UTF-8", "UNICODE");
+    SetEnvironmentVariable((wchar_t *)varStr.to_charp(), (wchar_t *)valStr.to_charp());
+#else
     SetEnvironmentVariable(L.tostring(1).to_charp(), L.tostring(2).to_charp());
+#endif
 #else
     ::setenv(L.tostring(1).to_charp(), L.tostring(2).to_charp(), 1);
 #endif
@@ -210,7 +236,12 @@ int Balau::LuaStatics::unsetenv(lua_State * __L) {
         L.error("Incorrect arguments to function `unsetenv'");
 
 #ifdef _WIN32
+#ifdef UNICODE
+    String varStr = L.tostring(1).iconv("UTF-8", "UNICODE");
+    SetEnvironmentVariable((wchar_t *)varStr.to_charp(), NULL);
+#else
     SetEnvironmentVariable(L.tostring(1).to_charp(), NULL);
+#endif
 #else
     ::unsetenv(L.tostring(1).to_charp());
 #endif

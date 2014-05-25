@@ -262,7 +262,6 @@ int sLua_IOInput::IOInput_proceed_static(Balau::Lua & L, int n, int caller) {
 }
 
 int sLua_IOInput::IOInput_proceed(Balau::Lua & L, int n, IOInput * obj, int caller) {
-    int r;
     Balau::IO<Balau::Input> h = *obj;
 
     switch (caller) {
@@ -271,7 +270,7 @@ int sLua_IOInput::IOInput_proceed(Balau::Lua & L, int n, IOInput * obj, int call
         break;
     }
 
-    return r;
+    return 0;
 }
 
 void Balau::LuaInputFactory::pushStatics(Balau::Lua & L) {

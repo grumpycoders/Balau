@@ -21,7 +21,7 @@ static int lcrypt_hash_done(lua_State *L)
   lcrypt_hash *h = luaL_checkudata(L, 1, "LCRYPT_HASH_STATE");
   if(likely(h->hash >= 0))
   {
-    unsigned char out[hash_descriptor[h->hash].hashsize];
+    unsigned char * out = (unsigned char *)alloca(hash_descriptor[h->hash].hashsize);
     lcrypt_error(L, hash_descriptor[h->hash].done(&h->state, out), NULL);
     lua_pushlstring(L, (char*)out, hash_descriptor[h->hash].hashsize);
   }
@@ -35,7 +35,7 @@ static int lcrypt_hash_state_gc(lua_State *L)
   lcrypt_hash *h = luaL_checkudata(L, 1, "LCRYPT_HASH_STATE");
   if(likely(h->hash >= 0))
   {
-    unsigned char out[hash_descriptor[h->hash].hashsize];
+    unsigned char * out = (unsigned char *)alloca(hash_descriptor[h->hash].hashsize);
     lcrypt_error(L, hash_descriptor[h->hash].done(&h->state, out), NULL);
     memset(h, 0, sizeof(lcrypt_hash));
     h->hash = -1;
@@ -96,7 +96,7 @@ static int lcrypt_hmac_done(lua_State *L)
   if(likely(h->hash >= 0))
   {
     unsigned long out_length = hash_descriptor[h->hash].hashsize;
-    unsigned char out[out_length];
+    unsigned char * out = (unsigned char *)alloca(out_length);
     lcrypt_error(L, hmac_done(h, out, &out_length), NULL);
     lua_pushlstring(L, (char*)out, out_length);
     memset(h, 0, sizeof(hmac_state));
@@ -112,7 +112,7 @@ static int lcrypt_hmac_state_gc(lua_State *L)
   if(likely(h->hash >= 0))
   {
     unsigned long out_length = hash_descriptor[h->hash].hashsize;
-    unsigned char out[out_length];
+    unsigned char * out = (unsigned char *)alloca(out_length);
     lcrypt_error(L, hmac_done(h, out, &out_length), NULL);
     memset(h, 0, sizeof(hmac_state));
     h->hash = -1;

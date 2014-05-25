@@ -126,7 +126,7 @@ static int lcrypt_bget(lua_State *L)
     else if(type == B_STR)
     {
       int len = (bits + 7) / 8;
-      uint8_t data[len];
+      uint8_t * data = (uint8_t *)alloca(len);
       memset(data, 0, len);
       copy_bits(data, 0, in, offset, bits);
       lua_pushlstring(L, (char*)data, len);
@@ -176,7 +176,7 @@ static int lcrypt_bput(lua_State *L)
     len += bits;
   }
   len = (len + 7) / 8;
-  uint8_t ret[len];
+  uint8_t * ret = (uint8_t *)alloca(len);
   memset(ret, 0, len);
 
   for(i = 1; i <= argc; i += 3)

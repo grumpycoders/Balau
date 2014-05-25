@@ -26,7 +26,7 @@ class StacklessTask : public Task {
         try { \
             operation; \
         } \
-        catch (Balau::EAgain & e) { \
+        catch (Balau::EAgain &) { \
             taskSwitch(); \
         } \
 
@@ -40,7 +40,7 @@ class StacklessTask : public Task {
                 operation; \
             } \
         } \
-        catch (Balau::EAgain & e) { \
+        catch (Balau::EAgain &) { \
             taskSwitch(); \
         } \
 
@@ -66,7 +66,7 @@ class StacklessTask : public Task {
         try { \
             yieldNoWait(); \
         } \
-        catch (Balau::EAgain & e) { \
+        catch (Balau::EAgain &) { \
             taskSwitch(); \
         } \
     } \

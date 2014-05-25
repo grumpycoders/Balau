@@ -33,7 +33,7 @@ static int lcrypt_cipher_ ## name (lua_State *L)                                
 static int lcrypt_cipher_ ## _name ## _index(lua_State *L)                                      \
 {                                                                                               \
   symmetric_ ## NAME *skey = luaL_checkudata(L, 1, "LCRYPT_CIPHER_" #NAME);                     \
-  if(unlikely(skey->cipher < 0)) return 0;                                                      \
+  if(unlikely(skey->cipher < 0)) return 0;;                                                     \
   const char *index = luaL_checkstring(L, 2);                                                   \
   if(strcmp(index, "type") == 0) { lua_pushstring(L, "LCRYPT_CIPHER_" #NAME); return 1; }       \
   if(strcmp(index, "iv") == 0)                                                                  \
@@ -238,15 +238,15 @@ static int lcrypt_cipher_ctr(lua_State *L)
   return 1;
 }
 
-LCRYPT_CIPHER_XXX_ENCRYPT(CTR, ctr)
-LCRYPT_CIPHER_XXX_DECRYPT(CTR, ctr)
-LCRYPT_CIPHER_XXX_INDEX(CTR, ctr)
-LCRYPT_CIPHER_XXX_NEWINDEX(CTR, ctr)
-LCRYPT_CIPHER_XXX_GC(CTR, ctr)
+LCRYPT_CIPHER_XXX_ENCRYPT(CTR, ctr);
+LCRYPT_CIPHER_XXX_DECRYPT(CTR, ctr);
+LCRYPT_CIPHER_XXX_INDEX(CTR, ctr);
+LCRYPT_CIPHER_XXX_NEWINDEX(CTR, ctr);
+LCRYPT_CIPHER_XXX_GC(CTR, ctr);
 
-LCRYPT_CIPHER_XXX(CBC, cbc)
-LCRYPT_CIPHER_XXX(CFB, cfb)
-LCRYPT_CIPHER_XXX(OFB, ofb)
+LCRYPT_CIPHER_XXX(CBC, cbc);
+LCRYPT_CIPHER_XXX(CFB, cfb);
+LCRYPT_CIPHER_XXX(OFB, ofb);
 
 static int lcrypt_cipher_lrw(lua_State *L)
 {
@@ -274,11 +274,11 @@ static int lcrypt_cipher_lrw(lua_State *L)
   return 1;
 }
 
-LCRYPT_CIPHER_XXX_ENCRYPT(LRW, lrw)
-LCRYPT_CIPHER_XXX_DECRYPT(LRW, lrw)
-LCRYPT_CIPHER_XXX_INDEX(LRW, lrw)
-LCRYPT_CIPHER_XXX_NEWINDEX(LRW, lrw)
-LCRYPT_CIPHER_XXX_GC(LRW, lrw)
+LCRYPT_CIPHER_XXX_ENCRYPT(LRW, lrw);
+LCRYPT_CIPHER_XXX_DECRYPT(LRW, lrw);
+LCRYPT_CIPHER_XXX_INDEX(LRW, lrw);
+LCRYPT_CIPHER_XXX_NEWINDEX(LRW, lrw);
+LCRYPT_CIPHER_XXX_GC(LRW, lrw);
 
 static int lcrypt_cipher_f8(lua_State *L)
 {
@@ -301,11 +301,11 @@ static int lcrypt_cipher_f8(lua_State *L)
   return 1;
 }
 
-LCRYPT_CIPHER_XXX_ENCRYPT(F8, f8)
-LCRYPT_CIPHER_XXX_DECRYPT(F8, f8)
-LCRYPT_CIPHER_XXX_INDEX(F8, f8)
-LCRYPT_CIPHER_XXX_NEWINDEX(F8, f8)
-LCRYPT_CIPHER_XXX_GC(F8, f8)
+LCRYPT_CIPHER_XXX_ENCRYPT(F8, f8);
+LCRYPT_CIPHER_XXX_DECRYPT(F8, f8);
+LCRYPT_CIPHER_XXX_INDEX(F8, f8);
+LCRYPT_CIPHER_XXX_NEWINDEX(F8, f8);
+LCRYPT_CIPHER_XXX_GC(F8, f8);
 
 #undef LCRYPT_CIPHER_XXX
 #undef LCRYPT_CIPHER_XXX_START
