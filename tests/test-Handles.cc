@@ -139,12 +139,12 @@ void SimpleTaskTest::Do() {
     TAssert(s == i->getSize());
 
     i->rseek(0, SEEK_SET);
-    char * buf1 = (char *) Balau::malloc(i->getSize());
+    char * buf1 = (char *) malloc(i->getSize());
     ssize_t r = i->read(buf1, s + 15);
     Printer::log(M_STATUS, "Read %zi bytes (instead of %" PRIi64 ")", r, s + 15);
     TAssert(i->isEOF())
 
-    char * buf2 = (char *) Balau::malloc(i->getSize());
+    char * buf2 = (char *) malloc(i->getSize());
     i->rseek(0, SEEK_SET);
     TAssert(!i->isEOF());
     TAssert(i->rtell() == 0);
