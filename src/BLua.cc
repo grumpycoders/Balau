@@ -1066,7 +1066,7 @@ void Balau::LuaObjectFactory::pushMe(Lua & L, LuaObjectBase * o, const char * ob
 }
 
 Balau::LuaObjectBase * Balau::LuaObjectFactory::getMeInternal(Lua & L, int i) {
-    LuaObjectBase * o;
+    LuaObjectBase * o = NULL;
 
     if (L.istable(i)) {
         L.push("__obj");
@@ -1074,9 +1074,7 @@ Balau::LuaObjectBase * Balau::LuaObjectFactory::getMeInternal(Lua & L, int i) {
         if (!(o = (LuaObjectBase *) L.touserdata()))
             L.error("Table is not an object.");
         L.pop();
-    } else if (L.isnil(i)) {
-        o = NULL;
-    } else {
+    } else if (!L.isnil(i)) {
         L.error("Not an object (not even a table).");
     }
 

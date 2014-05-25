@@ -24,7 +24,7 @@ bool Balau::HttpActionStatic::Do(HttpServer * server, Http::Request & req, HttpS
         try {
             file->open();
         }
-        catch (ENoEnt & e) {
+        catch (ENoEnt &) {
             error = true;
         }
     }

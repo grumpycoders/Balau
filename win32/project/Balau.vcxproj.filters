@@ -1,0 +1,4412 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{7b1b87f2-e13b-43bb-a2f1-b83f138d4be6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{5469baf7-8215-412a-9a3f-50558e6bd272}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party">
+      <UniqueIdentifier>{893ad8e1-312b-4844-80e6-80e0720df61b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\zlib">
+      <UniqueIdentifier>{19946262-3fd0-4851-b477-258229f854db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\iconv">
+      <UniqueIdentifier>{8496db30-fa00-477c-9e7c-1b68c6956889}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\pthreads">
+      <UniqueIdentifier>{36efb68a-7dfa-472e-b797-26c9b8adfa10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\libev">
+      <UniqueIdentifier>{a5055a5d-6046-4233-b626-ae9b81fac69d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\regex">
+      <UniqueIdentifier>{9fa0f66c-9e4c-42d6-abb3-a108e0991a7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\jsoncpp">
+      <UniqueIdentifier>{590f1cba-186b-465c-b0d9-e2b68a9d9c34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tommath">
+      <UniqueIdentifier>{710b4743-23b2-45b7-afba-36991d953407}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt">
+      <UniqueIdentifier>{5bd9abad-0cad-4ac1-a4c2-0e259ff9618a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\prngs">
+      <UniqueIdentifier>{2f85e1d9-8e95-4270-826b-149d46911d07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\ciphers">
+      <UniqueIdentifier>{aa9b4d1a-0349-49e4-9c8e-d69927df4b4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\ciphers\aes">
+      <UniqueIdentifier>{d76256b0-e85e-4e98-a310-3b086fa969f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\ciphers\safer">
+      <UniqueIdentifier>{636e80f7-0560-4dd8-8e43-6dec8a79b3ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\ciphers\twofish">
+      <UniqueIdentifier>{67b3d10e-314e-4fc0-bf39-7e0d2ddca3d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\encauth">
+      <UniqueIdentifier>{c32aa7d0-19f8-4b1c-bb9d-9cd27d26ac0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\encauth\ccm">
+      <UniqueIdentifier>{a798d948-6a83-481c-8836-668e624b9fba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\encauth\eax">
+      <UniqueIdentifier>{fa808607-bdb9-4848-981a-94e02da68fbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\encauth\gcm">
+      <UniqueIdentifier>{6d7dd1d5-6199-4ec0-a7bc-fbd7567f240a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\encauth\ocb">
+      <UniqueIdentifier>{d66d64b5-0eec-4167-9c27-082503d0cfae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\hashes">
+      <UniqueIdentifier>{1aa28207-9525-4151-954c-0d574ccf52eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\hashes\helper">
+      <UniqueIdentifier>{35ebdf2a-ab76-463e-939a-919dc343a5e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\hashes\sha2">
+      <UniqueIdentifier>{3fe356e7-6e22-48a6-89e2-0ed45ec611cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\hashes\whirl">
+      <UniqueIdentifier>{bcfb212a-b6f6-4de8-9999-7e4f2d0f0ef1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\headers">
+      <UniqueIdentifier>{c6a470d2-77b6-4ad4-a98e-690283f10107}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\mac">
+      <UniqueIdentifier>{89aa962a-312c-472b-8428-917641b35789}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\mac\f9">
+      <UniqueIdentifier>{7b67d57a-6205-416e-911b-c15dd4050308}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\mac\hmac">
+      <UniqueIdentifier>{e9e1dfcb-ec5d-439f-b0ef-a147c760c0e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\mac\omac">
+      <UniqueIdentifier>{1f6b1830-8e32-4520-8ea7-831582eee2be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\mac\pelican">
+      <UniqueIdentifier>{5526b68e-fb21-4d39-aa71-716e50d04093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\mac\pmac">
+      <UniqueIdentifier>{3677fc5f-d0df-4af3-91a2-7581ab8aca63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\mac\xcbc">
+      <UniqueIdentifier>{d4a3a569-3e86-4d1d-8d17-0859432cc788}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\math">
+      <UniqueIdentifier>{596a16a3-0cb3-4d03-a16e-647328fbaf5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\math\fp">
+      <UniqueIdentifier>{472a4f66-af49-430c-95e0-b5cbd96b8c43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\misc">
+      <UniqueIdentifier>{dcc706b3-c62c-4c50-9119-5bc8b2d327aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\misc\base64">
+      <UniqueIdentifier>{fc944bd0-bf90-4e78-b8b9-ae48cde338ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\misc\crypt">
+      <UniqueIdentifier>{f2b7b243-e05f-471a-a057-6d5a82e3ea2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\misc\pkcs">
+      <UniqueIdentifier>{90a473db-6b9c-4fa4-88f6-dde2a8a86729}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes">
+      <UniqueIdentifier>{dcd58906-03ac-4088-a07e-71836a5305b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\cbc">
+      <UniqueIdentifier>{28477a2d-4965-4294-b5e0-b6f51b498d56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\cfb">
+      <UniqueIdentifier>{057f79bb-f093-4a1b-a335-8ed0e8c3c3bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\ctr">
+      <UniqueIdentifier>{e0d04ffe-cf83-4c0b-88f4-be70276d1be5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\ecb">
+      <UniqueIdentifier>{88130ec6-a814-4071-9566-0b93181efea7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\f8">
+      <UniqueIdentifier>{6cb1d7d0-b94c-468e-b84b-93180cef492c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\lrw">
+      <UniqueIdentifier>{663a5e98-a48c-420b-84aa-8db734b09168}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\ofb">
+      <UniqueIdentifier>{74501557-dbf8-4765-ac08-6e4d64182fba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\xts">
+      <UniqueIdentifier>{a5b53bb8-11f0-47e0-9682-e8d9a5c0d6dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk">
+      <UniqueIdentifier>{acd59211-4020-4f1b-a6f6-374194460ac6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1">
+      <UniqueIdentifier>{279c95d1-02ef-439f-b6ea-74fe58489fdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der">
+      <UniqueIdentifier>{5ba4a671-470a-4961-a242-fdd24841502a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\bit">
+      <UniqueIdentifier>{b0452063-c6a8-4063-904b-aece1880ae20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\boolean">
+      <UniqueIdentifier>{c6005fb2-d014-4501-854d-c27730bf04a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\choice">
+      <UniqueIdentifier>{3356d8a0-2405-417b-b19c-47505dc547e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\ia5">
+      <UniqueIdentifier>{271406bc-4184-4b4e-a022-10863a92e4fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\integer">
+      <UniqueIdentifier>{298f3a19-6051-4da5-87f2-66ea1b5ae24b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\object_identifier">
+      <UniqueIdentifier>{8f65cf88-7006-4db7-b0d1-bb92b0b40a41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\octet">
+      <UniqueIdentifier>{791aec85-b610-412e-99d3-d6e0c6edcf9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\printable_string">
+      <UniqueIdentifier>{bcd86e81-e6c8-4e77-ab62-9a726795aea4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\sequence">
+      <UniqueIdentifier>{55542eb7-cbca-481c-87a7-1028d971e041}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\set">
+      <UniqueIdentifier>{6a9f7194-c099-40a4-b89f-03baaec41dda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\short_integer">
+      <UniqueIdentifier>{e509bf62-b46b-44c7-ad1d-3860f9348aa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\utctime">
+      <UniqueIdentifier>{dc01a66a-0664-4af5-929a-265d7c13076f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\utf8">
+      <UniqueIdentifier>{e8d875b8-31dc-452a-9a96-9c6155ce2908}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\dsa">
+      <UniqueIdentifier>{2245674b-edb3-4087-8da5-3c0a9b3bde29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\ecc">
+      <UniqueIdentifier>{c33ec9a0-515b-46af-9c01-adc4a2f74e85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\katja">
+      <UniqueIdentifier>{6d93009b-5455-40f0-a9bf-5888560a1e8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\pkcs1">
+      <UniqueIdentifier>{07c909fc-ff84-41a9-95ea-5e7a9ae7bea6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\rsa">
+      <UniqueIdentifier>{c6a7108d-e583-4ba1-a876-a34155d6cdc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\dh">
+      <UniqueIdentifier>{73150948-3b85-4587-8ded-c645620e031c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\wxWidgets">
+      <UniqueIdentifier>{2ef049c1-1e42-4bec-afba-81debfd0b4f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\wxWidgets\includes">
+      <UniqueIdentifier>{d443d27a-c5a5-4607-810b-075c62f2a997}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\c-ares">
+      <UniqueIdentifier>{0a32a71e-247f-4acb-b691-501098c5b932}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\c-ares\sources">
+      <UniqueIdentifier>{82a71978-e9d2-4154-9607-fe1b6e553479}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\c-ares\includes">
+      <UniqueIdentifier>{432b204a-1cb9-4992-9eba-d7e48f4f3ad7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\lcrypt">
+      <UniqueIdentifier>{b7c1083c-5e02-4f73-b973-73dfb07f1a9f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\Async.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Base64.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BigInt.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BLua.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BRegex.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BStream.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BString.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Buffer.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BWebSocket.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Exceptions.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Handle.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\HelperTasks.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Http.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\HttpActionStatic.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\HttpServer.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Input.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Local.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\LuaBigInt.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\LuaHandle.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\LuaTask.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Main.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Output.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Printer.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Selectable.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\SimpleMustache.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Socket.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\StdIO.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Task.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\TaskMan.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Threads.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ZHandle.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\zlib\adler32.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\zlib\crc32.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\zlib\deflate.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\zlib\infback.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\zlib\inffast.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\zlib\inflate.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\zlib\inftrees.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\zlib\trees.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\zlib\uncompr.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\zlib\zutil.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iconv\iconv.c">
+      <Filter>Third Party\iconv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iconv\localcharset.c">
+      <Filter>Third Party\iconv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iconv\relocatable.c">
+      <Filter>Third Party\iconv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\attr.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\autostatic.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\barrier.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\cancel.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\cleanup.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\condvar.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\create.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\dll.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\errno.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\exit.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\fork.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\global.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\misc.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\mutex.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\nonportable.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\private.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_getdetachstate.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_getinheritsched.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_getschedparam.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_getschedpolicy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_getscope.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_getstackaddr.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_getstacksize.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_setdetachstate.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_setinheritsched.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_setschedparam.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_setschedpolicy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_setscope.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_setstackaddr.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_setstacksize.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_barrierattr_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_barrierattr_getpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_barrierattr_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_barrierattr_setpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_barrier_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_barrier_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_barrier_wait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_cancel.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_condattr_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_condattr_getpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_condattr_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_condattr_setpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_cond_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_cond_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_cond_signal.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_cond_wait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_delay_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_detach.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_equal.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_exit.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_getconcurrency.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_getschedparam.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_getspecific.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_getunique_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_getw32threadhandle_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_join.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_key_create.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_key_delete.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_kill.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_getkind_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_getpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_getrobust.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_gettype.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_setkind_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_setpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_setrobust.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_settype.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutex_consistent.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutex_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutex_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutex_lock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutex_timedlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutex_trylock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutex_unlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_num_processors_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_once.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlockattr_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlockattr_getpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlockattr_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlockattr_setpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_rdlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_timedrdlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_timedwrlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_tryrdlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_trywrlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_unlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_wrlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_self.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_setcancelstate.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_setcanceltype.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_setconcurrency.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_setschedparam.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_setspecific.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_spin_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_spin_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_spin_lock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_spin_trylock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_spin_unlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_testcancel.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_timechange_handler_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_win32_attach_detach_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_calloc.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_callUserDestroyRoutines.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_cond_check_need_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_getprocessors.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_is_attr.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_MCS_lock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_mutex_check_need_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_new.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_processInitialize.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_processTerminate.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_relmillisecs.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_reuse.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_rwlock_cancelwrwait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_rwlock_check_need_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_semwait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_spinlock_check_need_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_threadDestroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_threadStart.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_throw.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_timespec.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_tkAssocCreate.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_tkAssocDestroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\rwlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sched.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sched_getscheduler.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sched_get_priority_max.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sched_get_priority_min.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sched_setscheduler.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sched_yield.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\semaphore.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_close.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_getvalue.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_open.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_post.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_post_multiple.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_timedwait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_trywait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_unlink.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_wait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\signal.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\spin.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sync.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\tsd.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\w32_CancelableWait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libev\ev.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libev\event.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libev\ev_epoll.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libev\ev_kqueue.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libev\ev_poll.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libev\ev_port.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libev\ev_select.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libev\ev_win32.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regex\msvc-regex.c">
+      <Filter>Third Party\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\jsoncpp\src\json_reader.cpp">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\jsoncpp\src\json_value.cpp">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\jsoncpp\src\json_writer.cpp">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bncore.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_error.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_fast_mp_invmod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_fast_mp_montgomery_reduce.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_fast_s_mp_mul_digs.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_fast_s_mp_mul_high_digs.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_fast_s_mp_sqr.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_2expt.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_abs.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_add.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_addmod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_add_d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_and.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_clamp.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_clear.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_clear_multi.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_cmp.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_cmp_d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_cmp_mag.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_cnt_lsb.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_copy.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_count_bits.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_div.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_div_2.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_div_2d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_div_3.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_div_d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_dr_is_modulus.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_dr_reduce.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_dr_setup.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_exch.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_exptmod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_exptmod_fast.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_expt_d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_exteuclid.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_fread.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_fwrite.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_gcd.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_get_int.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_grow.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_init.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_init_copy.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_init_multi.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_init_set.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_init_set_int.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_init_size.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_invmod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_invmod_slow.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_is_square.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_jacobi.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_karatsuba_mul.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_karatsuba_sqr.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_lcm.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_lshd.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_mod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_mod_2d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_mod_d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_montgomery_calc_normalization.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_montgomery_reduce.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_montgomery_setup.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_mul.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_mulmod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_mul_2.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_mul_2d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_mul_d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_neg.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_n_root.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_or.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_prime_fermat.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_prime_is_divisible.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_prime_is_prime.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_prime_miller_rabin.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_prime_next_prime.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_prime_rabin_miller_trials.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_prime_random_ex.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_radix_size.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_radix_smap.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_rand.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_read_radix.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_read_signed_bin.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_read_unsigned_bin.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce_2k.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce_2k_l.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce_2k_setup.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce_2k_setup_l.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce_is_2k.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce_is_2k_l.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce_setup.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_rshd.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_set.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_set_int.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_shrink.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_signed_bin_size.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_sqr.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_sqrmod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_sqrt.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_sub.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_submod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_sub_d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_toom_mul.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_toom_sqr.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_toradix.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_toradix_n.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_to_signed_bin.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_to_signed_bin_n.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_to_unsigned_bin.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_to_unsigned_bin_n.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_unsigned_bin_size.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_xor.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_mp_zero.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_prime_tab.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_reverse.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_s_mp_add.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_s_mp_exptmod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_s_mp_mul_digs.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_s_mp_mul_high_digs.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_s_mp_sqr.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtommath\bn_s_mp_sub.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\fortuna.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\rc4.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\rng_get_bytes.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\rng_make_prng.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\sober128.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\sober128tab.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\sprng.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\yarrow.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\anubis.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\blowfish.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\camellia.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\cast5.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\des.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\kasumi.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\khazad.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\kseed.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\multi2.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\noekeon.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\rc2.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\rc5.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\rc6.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\skipjack.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\xtea.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\aes\aes.c">
+      <Filter>Third Party\tomcrypt\ciphers\aes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\aes\aes_tab.c">
+      <Filter>Third Party\tomcrypt\ciphers\aes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tomcrypt_aes_enc.c">
+      <Filter>Third Party\tomcrypt\ciphers\aes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\safer\safer.c">
+      <Filter>Third Party\tomcrypt\ciphers\safer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\safer\saferp.c">
+      <Filter>Third Party\tomcrypt\ciphers\safer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\safer\safer_tab.c">
+      <Filter>Third Party\tomcrypt\ciphers\safer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\twofish\twofish.c">
+      <Filter>Third Party\tomcrypt\ciphers\twofish</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\twofish\twofish_tab.c">
+      <Filter>Third Party\tomcrypt\ciphers\twofish</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ccm\ccm_memory.c">
+      <Filter>Third Party\tomcrypt\encauth\ccm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ccm\ccm_memory_ex.c">
+      <Filter>Third Party\tomcrypt\encauth\ccm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ccm\ccm_test.c">
+      <Filter>Third Party\tomcrypt\encauth\ccm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_addheader.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_decrypt.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_decrypt_verify_memory.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_done.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_encrypt.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_encrypt_authenticate_memory.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_init.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_test.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_add_aad.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_add_iv.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_done.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_gf_mult.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_init.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_memory.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_mult_h.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_process.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_reset.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_test.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_decrypt.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_decrypt_verify_memory.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_done_decrypt.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_done_encrypt.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_encrypt.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_encrypt_authenticate_memory.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_init.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_ntz.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_shift_xor.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_test.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\s_ocb_done.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\chc\chc.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\md2.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\md4.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\md5.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\rmd128.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\rmd160.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\rmd256.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\rmd320.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\sha1.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\tiger.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\helper\hash_file.c">
+      <Filter>Third Party\tomcrypt\hashes\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\helper\hash_filehandle.c">
+      <Filter>Third Party\tomcrypt\hashes\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\helper\hash_memory.c">
+      <Filter>Third Party\tomcrypt\hashes\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\helper\hash_memory_multi.c">
+      <Filter>Third Party\tomcrypt\hashes\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\sha2\sha224.c">
+      <Filter>Third Party\tomcrypt\hashes\sha2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\sha2\sha256.c">
+      <Filter>Third Party\tomcrypt\hashes\sha2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\sha2\sha384.c">
+      <Filter>Third Party\tomcrypt\hashes\sha2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\sha2\sha512.c">
+      <Filter>Third Party\tomcrypt\hashes\sha2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\whirl\whirl.c">
+      <Filter>Third Party\tomcrypt\hashes\whirl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\whirl\whirltab.c">
+      <Filter>Third Party\tomcrypt\hashes\whirl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\f9\f9_done.c">
+      <Filter>Third Party\tomcrypt\mac\f9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\f9\f9_file.c">
+      <Filter>Third Party\tomcrypt\mac\f9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\f9\f9_init.c">
+      <Filter>Third Party\tomcrypt\mac\f9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\f9\f9_memory.c">
+      <Filter>Third Party\tomcrypt\mac\f9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\f9\f9_memory_multi.c">
+      <Filter>Third Party\tomcrypt\mac\f9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\f9\f9_process.c">
+      <Filter>Third Party\tomcrypt\mac\f9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\f9\f9_test.c">
+      <Filter>Third Party\tomcrypt\mac\f9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\hmac\hmac_done.c">
+      <Filter>Third Party\tomcrypt\mac\hmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\hmac\hmac_file.c">
+      <Filter>Third Party\tomcrypt\mac\hmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\hmac\hmac_init.c">
+      <Filter>Third Party\tomcrypt\mac\hmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\hmac\hmac_memory.c">
+      <Filter>Third Party\tomcrypt\mac\hmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\hmac\hmac_memory_multi.c">
+      <Filter>Third Party\tomcrypt\mac\hmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\hmac\hmac_process.c">
+      <Filter>Third Party\tomcrypt\mac\hmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\hmac\hmac_test.c">
+      <Filter>Third Party\tomcrypt\mac\hmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\omac\omac_done.c">
+      <Filter>Third Party\tomcrypt\mac\omac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\omac\omac_file.c">
+      <Filter>Third Party\tomcrypt\mac\omac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\omac\omac_init.c">
+      <Filter>Third Party\tomcrypt\mac\omac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\omac\omac_memory.c">
+      <Filter>Third Party\tomcrypt\mac\omac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\omac\omac_memory_multi.c">
+      <Filter>Third Party\tomcrypt\mac\omac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\omac\omac_process.c">
+      <Filter>Third Party\tomcrypt\mac\omac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\omac\omac_test.c">
+      <Filter>Third Party\tomcrypt\mac\omac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pelican\pelican.c">
+      <Filter>Third Party\tomcrypt\mac\pelican</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pelican\pelican_memory.c">
+      <Filter>Third Party\tomcrypt\mac\pelican</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pelican\pelican_test.c">
+      <Filter>Third Party\tomcrypt\mac\pelican</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_done.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_file.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_init.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_memory.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_memory_multi.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_ntz.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_process.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_shift_xor.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_test.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\xcbc\xcbc_done.c">
+      <Filter>Third Party\tomcrypt\mac\xcbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\xcbc\xcbc_file.c">
+      <Filter>Third Party\tomcrypt\mac\xcbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\xcbc\xcbc_init.c">
+      <Filter>Third Party\tomcrypt\mac\xcbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\xcbc\xcbc_memory.c">
+      <Filter>Third Party\tomcrypt\mac\xcbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\xcbc\xcbc_memory_multi.c">
+      <Filter>Third Party\tomcrypt\mac\xcbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\xcbc\xcbc_process.c">
+      <Filter>Third Party\tomcrypt\mac\xcbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\xcbc\xcbc_test.c">
+      <Filter>Third Party\tomcrypt\mac\xcbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\math\gmp_desc.c">
+      <Filter>Third Party\tomcrypt\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\math\ltm_desc.c">
+      <Filter>Third Party\tomcrypt\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\math\multi.c">
+      <Filter>Third Party\tomcrypt\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\math\rand_prime.c">
+      <Filter>Third Party\tomcrypt\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\math\tfm_desc.c">
+      <Filter>Third Party\tomcrypt\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\math\fp\ltc_ecc_fp_mulmod.c">
+      <Filter>Third Party\tomcrypt\math\fp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\burn_stack.c">
+      <Filter>Third Party\tomcrypt\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\error_to_string.c">
+      <Filter>Third Party\tomcrypt\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\pk_get_oid.c">
+      <Filter>Third Party\tomcrypt\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\zeromem.c">
+      <Filter>Third Party\tomcrypt\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\base64\base64_decode.c">
+      <Filter>Third Party\tomcrypt\misc\base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\base64\base64_encode.c">
+      <Filter>Third Party\tomcrypt\misc\base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_argchk.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_cipher_descriptor.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_cipher_is_valid.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_cipher.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_cipher_any.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_cipher_id.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_hash.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_hash_any.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_hash_id.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_hash_oid.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_prng.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_fsa.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_hash_descriptor.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_hash_is_valid.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_ltc_mp_descriptor.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_prng_descriptor.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_prng_is_valid.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_register_cipher.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_register_hash.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_register_prng.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_unregister_cipher.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_unregister_hash.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_unregister_prng.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\pkcs5\pkcs_5_1.c">
+      <Filter>Third Party\tomcrypt\misc\pkcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\misc\pkcs5\pkcs_5_2.c">
+      <Filter>Third Party\tomcrypt\misc\pkcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cbc\cbc_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\cbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cbc\cbc_done.c">
+      <Filter>Third Party\tomcrypt\modes\cbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cbc\cbc_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\cbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cbc\cbc_getiv.c">
+      <Filter>Third Party\tomcrypt\modes\cbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cbc\cbc_setiv.c">
+      <Filter>Third Party\tomcrypt\modes\cbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cbc\cbc_start.c">
+      <Filter>Third Party\tomcrypt\modes\cbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cfb\cfb_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\cfb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cfb\cfb_done.c">
+      <Filter>Third Party\tomcrypt\modes\cfb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cfb\cfb_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\cfb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cfb\cfb_getiv.c">
+      <Filter>Third Party\tomcrypt\modes\cfb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cfb\cfb_setiv.c">
+      <Filter>Third Party\tomcrypt\modes\cfb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cfb\cfb_start.c">
+      <Filter>Third Party\tomcrypt\modes\cfb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ctr\ctr_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\ctr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ctr\ctr_done.c">
+      <Filter>Third Party\tomcrypt\modes\ctr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ctr\ctr_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\ctr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ctr\ctr_getiv.c">
+      <Filter>Third Party\tomcrypt\modes\ctr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ctr\ctr_setiv.c">
+      <Filter>Third Party\tomcrypt\modes\ctr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ctr\ctr_start.c">
+      <Filter>Third Party\tomcrypt\modes\ctr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ctr\ctr_test.c">
+      <Filter>Third Party\tomcrypt\modes\ctr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ecb\ecb_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\ecb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ecb\ecb_done.c">
+      <Filter>Third Party\tomcrypt\modes\ecb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ecb\ecb_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\ecb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ecb\ecb_start.c">
+      <Filter>Third Party\tomcrypt\modes\ecb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\f8\f8_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\f8</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\f8\f8_done.c">
+      <Filter>Third Party\tomcrypt\modes\f8</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\f8\f8_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\f8</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\f8\f8_getiv.c">
+      <Filter>Third Party\tomcrypt\modes\f8</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\f8\f8_setiv.c">
+      <Filter>Third Party\tomcrypt\modes\f8</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\f8\f8_start.c">
+      <Filter>Third Party\tomcrypt\modes\f8</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\f8\f8_test_mode.c">
+      <Filter>Third Party\tomcrypt\modes\f8</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_done.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_getiv.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_process.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_setiv.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_start.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_test.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ofb\ofb_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\ofb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ofb\ofb_done.c">
+      <Filter>Third Party\tomcrypt\modes\ofb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ofb\ofb_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\ofb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ofb\ofb_getiv.c">
+      <Filter>Third Party\tomcrypt\modes\ofb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ofb\ofb_setiv.c">
+      <Filter>Third Party\tomcrypt\modes\ofb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ofb\ofb_start.c">
+      <Filter>Third Party\tomcrypt\modes\ofb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\xts\xts_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\xts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\xts\xts_done.c">
+      <Filter>Third Party\tomcrypt\modes\xts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\xts\xts_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\xts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\xts\xts_init.c">
+      <Filter>Third Party\tomcrypt\modes\xts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\xts\xts_mult_x.c">
+      <Filter>Third Party\tomcrypt\modes\xts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\modes\xts\xts_test.c">
+      <Filter>Third Party\tomcrypt\modes\xts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_decode_bit_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\bit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_decode_raw_bit_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\bit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_encode_bit_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\bit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_encode_raw_bit_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\bit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_length_bit_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\bit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\boolean\der_decode_boolean.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\boolean</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\boolean\der_encode_boolean.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\boolean</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\boolean\der_length_boolean.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\boolean</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\choice\der_decode_choice.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\choice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\ia5\der_decode_ia5_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\ia5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\ia5\der_encode_ia5_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\ia5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\ia5\der_length_ia5_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\ia5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\integer\der_decode_integer.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\integer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\integer\der_encode_integer.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\integer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\integer\der_length_integer.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\integer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\object_identifier\der_decode_object_identifier.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\object_identifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\object_identifier\der_encode_object_identifier.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\object_identifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\object_identifier\der_length_object_identifier.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\object_identifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\octet\der_decode_octet_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\octet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\octet\der_encode_octet_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\octet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\octet\der_length_octet_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\octet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\printable_string\der_decode_printable_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\printable_string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\printable_string\der_encode_printable_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\printable_string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\printable_string\der_length_printable_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\printable_string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_ex.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_flexi.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_multi.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_decode_subject_public_key_info.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_encode_sequence_ex.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_encode_sequence_multi.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_encode_subject_public_key_info.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_length_sequence.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_sequence_free.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\set\der_encode_set.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\set</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\set\der_encode_setof.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\set</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\short_integer\der_decode_short_integer.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\short_integer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\short_integer\der_encode_short_integer.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\short_integer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\short_integer\der_length_short_integer.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\short_integer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\utctime\der_decode_utctime.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\utctime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\utctime\der_encode_utctime.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\utctime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\utctime\der_length_utctime.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\utctime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\utf8\der_decode_utf8_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\utf8</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\utf8\der_encode_utf8_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\utf8</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\utf8\der_length_utf8_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\utf8</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_decrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_encrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_export.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_free.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_import.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_make_key.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_shared_secret.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_sign_hash.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_verify_hash.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_verify_key.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_ansi_x963_export.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_ansi_x963_import.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_decrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_encrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_export.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_free.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_get_size.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_import.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_make_key.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_shared_secret.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_sign_hash.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_sizes.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_test.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_verify_hash.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_is_valid_idx.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_map.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_mul2add.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_mulmod.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_mulmod_timing.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_points.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_projective_add_point.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_projective_dbl_point.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\katja\katja_decrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\katja</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\katja\katja_encrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\katja</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\katja\katja_export.c">
+      <Filter>Third Party\tomcrypt\pk\katja</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\katja\katja_exptmod.c">
+      <Filter>Third Party\tomcrypt\pk\katja</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\katja\katja_free.c">
+      <Filter>Third Party\tomcrypt\pk\katja</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\katja\katja_import.c">
+      <Filter>Third Party\tomcrypt\pk\katja</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\katja\katja_make_key.c">
+      <Filter>Third Party\tomcrypt\pk\katja</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_i2osp.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_mgf1.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_oaep_decode.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_oaep_encode.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_os2ip.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_pss_decode.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_pss_encode.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_v1_5_decode.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_v1_5_encode.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_decrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_encrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_export.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_exptmod.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_free.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_import.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_make_key.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_sign_hash.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_verify_hash.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dh\dh.c">
+      <Filter>Third Party\tomcrypt\pk\dh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_cancel.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_create_query.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_data.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_destroy.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_expand_name.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_expand_string.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_fds.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_free_hostent.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_free_string.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_getenv.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_gethostbyaddr.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_gethostbyname.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_getnameinfo.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_getsock.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_init.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_library_init.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_llist.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_mkquery.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_nowarn.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_options.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_parse_aaaa_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_parse_a_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_parse_mx_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_parse_naptr_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_parse_ns_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_parse_ptr_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_parse_soa_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_parse_srv_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_parse_txt_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_platform.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_process.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_query.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_search.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_send.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_strcasecmp.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_strdup.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_strerror.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_timeout.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_version.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_writev.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares__close_sockets.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares__get_hostent.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares__read_line.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares__timeval.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\bitncmp.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\inet_net_pton.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\inet_ntop.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\windows_port.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lcrypt\lcrypt.c">
+      <Filter>Third Party\lcrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lcrypt\lcrypt_bits.c">
+      <Filter>Third Party\lcrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lcrypt\lcrypt_ciphers.c">
+      <Filter>Third Party\lcrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lcrypt\lcrypt_hashes.c">
+      <Filter>Third Party\lcrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lcrypt\lcrypt_math.c">
+      <Filter>Third Party\lcrypt</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\includes\Async.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\AtStartExit.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\Base64.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\BigInt.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\BLua.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\BRegex.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\BSHA1.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\BStdIO.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\BStream.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\BString.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\Buffer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\BWebSocket.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\c++11-surrogates.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\Exceptions.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\Handle.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\HelperTasks.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\Http.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\HttpActionStatic.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\HttpServer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\Input.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\Local.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\LuaBigInt.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\LuaHandle.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\LuaTask.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\Main.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\msvc-config.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\Output.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\Printer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\Selectable.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\SimpleMustache.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\Socket.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\StacklessTask.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\Task.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\TaskMan.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\Threads.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\ZHandle.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\zlib\crc32.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\zlib\deflate.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\zlib\inffast.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\zlib\inffixed.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\zlib\inflate.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\zlib\inftrees.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\zlib\trees.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\zlib\zconf.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\zlib\zlib.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\zlib\zutil.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\aliases.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\aliases2.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\aliases_aix.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\aliases_dos.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\aliases_extra.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\aliases_osf1.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\armscii_8.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\ascii.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\big5.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\big5hkscs.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\c99.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\ces_big5.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\ces_gbk.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cjk_variants.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cns11643.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cns11643_1.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cns11643_15.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cns11643_2.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cns11643_3.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cns11643_4.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cns11643_4a.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cns11643_4b.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cns11643_5.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cns11643_6.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cns11643_7.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cns11643_inv.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\converters.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1046.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1124.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1125.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1129.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1133.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1161.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1162.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1163.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1250.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1251.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1252.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1253.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1254.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1255.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1256.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1257.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp1258.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp437.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp737.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp775.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp850.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp852.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp853.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp855.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp856.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp857.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp858.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp860.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp861.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp862.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp863.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp864.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp865.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp866.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp869.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp874.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp922.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp932.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp932ext.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp936ext.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp943.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp949.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp950.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\cp950ext.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\dec_hanyu.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\dec_kanji.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\euc_cn.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\euc_jisx0213.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\euc_jp.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\euc_kr.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\euc_tw.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\flags.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\flushwc.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\gb12345.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\gb12345ext.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\gb18030.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\gb18030ext.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\gb18030uni.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\gb2312.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\gbk.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\gbkext1.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\gbkext2.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\gbkext_inv.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\georgian_academy.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\georgian_ps.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\hkscs.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\hp_roman8.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\hz.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iconv-config.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iconv.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso2022_cn.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso2022_cnext.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso2022_jp.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso2022_jp1.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso2022_jp2.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso2022_jp3.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso2022_kr.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso646_cn.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso646_jp.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso8859_1.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso8859_10.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso8859_13.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso8859_14.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso8859_15.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso8859_16.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso8859_2.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso8859_3.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso8859_4.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso8859_5.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso8859_6.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso8859_7.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso8859_8.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\iso8859_9.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\isoir165.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\isoir165ext.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\java.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\jisx0201.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\jisx0208.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\jisx0212.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\jisx0213.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\johab.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\johab_hangul.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\koi8_r.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\koi8_ru.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\koi8_t.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\koi8_u.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\ksc5601.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\libcharset.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\localcharset.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\loops.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\loop_unicode.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\loop_wchar.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\mac_arabic.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\mac_centraleurope.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\mac_croatian.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\mac_cyrillic.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\mac_greek.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\mac_hebrew.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\mac_iceland.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\mac_roman.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\mac_romania.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\mac_thai.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\mac_turkish.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\mac_ukraine.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\mulelao.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\nextstep.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\relocatable.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\riscos1.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\shift_jisx0213.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\sjis.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\tcvn.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\tds565.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\tis620.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\translit.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\ucs2.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\ucs2be.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\ucs2internal.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\ucs2le.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\ucs2swapped.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\ucs4.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\ucs4be.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\ucs4internal.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\ucs4le.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\ucs4swapped.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\uhc_1.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\uhc_2.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\utf16.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\utf16be.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\utf16le.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\utf32.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\utf32be.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\utf32le.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\utf7.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\utf8.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\vietcomb.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iconv\viscii.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pthreads-win32\config.h">
+      <Filter>Third Party\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pthreads-win32\context.h">
+      <Filter>Third Party\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pthreads-win32\implement.h">
+      <Filter>Third Party\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pthreads-win32\need_errno.h">
+      <Filter>Third Party\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pthreads-win32\pthread.h">
+      <Filter>Third Party\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pthreads-win32\sched.h">
+      <Filter>Third Party\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pthreads-win32\semaphore.h">
+      <Filter>Third Party\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libev\ev++.h">
+      <Filter>Third Party\libev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libev\ev.h">
+      <Filter>Third Party\libev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libev\event.h">
+      <Filter>Third Party\libev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libev\event_compat.h">
+      <Filter>Third Party\libev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libev\ev_vars.h">
+      <Filter>Third Party\libev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libev\ev_wrap.h">
+      <Filter>Third Party\libev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\regex\regex.h">
+      <Filter>Third Party\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\jsoncpp\include\json\autolink.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\jsoncpp\include\json\config.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\jsoncpp\include\json\features.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\jsoncpp\include\json\forwards.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\jsoncpp\include\json\json.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\jsoncpp\include\json\reader.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\jsoncpp\include\json\value.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\jsoncpp\include\json\writer.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\jsoncpp\src\json_batchallocator.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtommath\tommath.h">
+      <Filter>Third Party\tommath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtommath\tommath_class.h">
+      <Filter>Third Party\tommath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtommath\tommath_superclass.h">
+      <Filter>Third Party\tommath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_argchk.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_cfg.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_cipher.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_custom.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_hash.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_mac.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_macros.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_math.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_misc.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_pk.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_pkcs.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_prng.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\aboutdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\accel.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\access.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\affinematrix2d.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\affinematrix2dbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\afterstd.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\anidecod.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\animate.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\animdecod.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\any.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\anybutton.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\anystr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\app.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\apptrait.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\archive.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\arrstr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\artprov.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\atomic.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\bannerwindow.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\base64.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\beforestd.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\bitmap.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\bmpbuttn.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\bmpcbox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\bookctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\brush.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\buffer.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\build.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\busyinfo.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\button.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\calctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\caret.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\chartype.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\checkbox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\checkeddelete.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\checklst.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\chkconf.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\choicdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\choice.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\choicebk.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\clipbrd.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\clntdata.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\clrpicker.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cmdargs.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cmdline.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cmdproc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cmndata.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\collpane.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\colordlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\colour.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\colourdata.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\combo.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\combobox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\commandlinkbutton.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\compiler.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\compositewin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\confbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\config.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\containr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\control.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\convauto.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cpp.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cppunit.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\crt.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cshelp.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ctrlsub.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cursor.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\custombgwin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dataobj.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dataview.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\datectrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dateevt.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\datetime.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\datetimectrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\datstrm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcbuffer.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcclient.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcgraph.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcmemory.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcmirror.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcprint.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcps.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcscreen.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcsvg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dde.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\debug.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\debugrpt.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\defs.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dialog.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dialup.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dir.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dirctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dirdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\display.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\display_impl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dlimpexp.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dlist.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dnd.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\docmdi.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\docview.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dragimag.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dvrenderers.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dynarray.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dynlib.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dynload.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\editlbox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\effects.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\encconv.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\encinfo.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\event.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\eventfilter.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\evtloop.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\evtloopsrc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\except.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fdrepdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\features.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ffile.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\file.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fileconf.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\filectrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\filedlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\filefn.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\filehistory.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\filename.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\filepicker.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\filesys.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\flags.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fmappriv.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\font.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fontdata.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fontdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fontenc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fontenum.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fontmap.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fontpicker.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fontutil.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\frame.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fswatcher.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fs_arc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fs_filter.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fs_inet.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fs_mem.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fs_zip.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\gauge.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\gbsizer.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\gdicmn.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\gdiobj.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\geometry.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\gifdecod.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\glcanvas.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\graphics.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\grid.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\hash.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\hashmap.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\hashset.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\headercol.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\headerctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\help.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\helpbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\helphtml.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\helpwin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\htmllbox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\hyperlink.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\icon.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\iconbndl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\iconloc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagbmp.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\image.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imaggif.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagiff.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagjpeg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imaglist.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagpcx.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagpng.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagpnm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagtga.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagtiff.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagxpm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\infobar.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\init.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\intl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\iosfwrap.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ioswrap.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ipc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ipcbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\itemid.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\joystick.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\kbdstate.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\language.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\layout.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\laywin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\link.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\list.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\listbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\listbook.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\listbox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\listctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\log.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\longlong.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\math.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\matrix.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\mdi.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\mediactrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\memconf.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\memory.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\memtext.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\menu.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\menuitem.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\metafile.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\mimetype.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\minifram.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\modalhook.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\module.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\mousemanager.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\mousestate.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\msgdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\msgout.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\msgqueue.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\mstream.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\nativewin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\nonownedwnd.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\notebook.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\notifmsg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\numdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\numformatter.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\object.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\odcombo.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\overlay.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ownerdrw.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\palette.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\panel.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\paper.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\pen.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\persist.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\pickerbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\platform.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\platinfo.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\popupwin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\position.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\power.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\preferences.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\print.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\printdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\prntbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\process.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\progdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\propdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ptr_scpd.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ptr_shrd.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\quantize.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\radiobox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\radiobut.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\range.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\rawbmp.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\rearrangectrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\recguard.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\regex.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\region.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\renderer.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\richmsgdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\richtooltip.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\rtti.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sashwin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sckaddr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sckipc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sckstrm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\scopedarray.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\scopedptr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\scopeguard.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\scrolbar.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\scrolwin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\selstore.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\settings.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\setup_inc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\setup_redirect.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sharedptr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\simplebook.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sizer.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\slider.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\snglinst.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\socket.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sound.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\spinbutt.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\spinctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\splash.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\splitter.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\srchctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sstream.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stack.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stackwalk.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\statbmp.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\statbox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\statline.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stattext.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\statusbr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stdpaths.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stdstream.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stockitem.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stopwatch.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\strconv.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stream.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\string.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stringimpl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stringops.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\strvararg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sysopt.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tarstrm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\taskbar.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tbarbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\testing.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\textbuf.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\textcompleter.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\textctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\textdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\textentry.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\textfile.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\textwrapper.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tglbtn.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\thread.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\time.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\timectrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\timer.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tipdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tipwin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tls.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tokenzr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\toolbar.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\toolbook.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tooltip.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\toplevel.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tracker.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\translation.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\treebase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\treebook.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\treectrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\treelist.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\txtstrm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\typeinfo.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\types.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\uiaction.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\unichar.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\uri.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\url.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ustring.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\utils.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\valgen.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\validate.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\valnum.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\valtext.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\variant.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\variantbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\vector.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\version.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\versioninfo.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\vidmode.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\vlbox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\vms_x_fix.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\volume.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\vscroll.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\weakref.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\webview.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\webviewarchivehandler.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\webviewfshandler.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wfstream.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\window.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\windowid.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\withimages.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wizard.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wrapsizer.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wupdlock.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wx.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wxchar.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wxcrt.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wxcrtbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wxcrtvararg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wxhtml.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wxprec.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xlocale.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xpmdecod.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xpmhand.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xti.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xti2.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xtictor.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xtihandler.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xtiprop.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xtistrm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xtitypes.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xtixml.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\zipstrm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\zstream.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ares_build.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_data.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_dns.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_getenv.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_iphlpapi.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_ipv6.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_library_init.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_llist.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_nowarn.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_platform.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_private.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_rules.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_setup.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_strcasecmp.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_strdup.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_version.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\ares_writev.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\config-win32.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\nameser.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\c-ares\setup_once.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\iconv\aliases.gperf">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="..\iconv\encodings.def">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="..\iconv\encodings_aix.def">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="..\iconv\encodings_dos.def">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="..\iconv\encodings_extra.def">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="..\iconv\encodings_local.def">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="..\iconv\encodings_osf1.def">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="..\iconv\Makefile.in">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="..\iconv\Makefile.msvc">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="..\iconv\Makefile.os2">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="..\iconv\Makefile.vms">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="..\iconv\translit.def">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="..\..\src\jsoncpp\src\json_internalarray.inl">
+      <Filter>Third Party\jsoncpp</Filter>
+    </None>
+    <None Include="..\..\src\jsoncpp\src\json_internalmap.inl">
+      <Filter>Third Party\jsoncpp</Filter>
+    </None>
+    <None Include="..\..\src\jsoncpp\src\json_valueiterator.inl">
+      <Filter>Third Party\jsoncpp</Filter>
+    </None>
+  </ItemGroup>
+</Project>

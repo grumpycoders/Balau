@@ -134,7 +134,7 @@ int sLua_BigInt::BigInt_proceed_static(Lua & L, int n, int caller) {
     switch (caller) {
     case BIGINT_CONSTRUCTOR:
         {
-            BigInt * a;
+            BigInt * a = NULL;
             if (L.type() == LUA_TSTRING) {
                 a = new BigInt();
                 s = L.tostring(1);
@@ -155,9 +155,11 @@ int sLua_BigInt::BigInt_proceed_static(Lua & L, int n, int caller) {
             } else {
                 L.error("Invalid arguments to BigInt:new");
             }
-            LuaBigIntFactory o(a);
-            o.pushDestruct(L);
-            r = 1;
+            if (a) {
+                LuaBigIntFactory o(a);
+                o.pushDestruct(L);
+                r = 1;
+            }
             break;
         }
     }

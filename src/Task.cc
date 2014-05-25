@@ -136,7 +136,7 @@ void Balau::Task::coroutine() {
             Printer::elog(E_TASK, "Stackless task %s at %p is task-switching.", getName(), this);
         }
     }
-    catch (EAgain & e) {
+    catch (EAgain &) {
         Printer::log(M_ERROR, "Task %s at %p threw an EAgain - you should catch it and yield; the app will crash now", getName(), this);
         m_status = FAULTED;
     }

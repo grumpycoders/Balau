@@ -1,0 +1,2410 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6E74C651-E02E-4BEC-ADDB-7E2A79E0F6F7}</ProjectGuid>
+    <RootNamespace>Balau</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;_CONSOLE;_LIB;PTW32_STATIC_LIB;DEBUG;_DEBUG;DEBUGBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4290;4800</DisableSpecificWarnings>
+      <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h</ForcedIncludeFiles>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;_CONSOLE;_LIB;PTW32_STATIC_LIB;DEBUG;_DEBUG;DEBUGBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4290;4800</DisableSpecificWarnings>
+      <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;_CONSOLE;_LIB;PTW32_STATIC_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4290;4800</DisableSpecificWarnings>
+      <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;_CONSOLE;_LIB;PTW32_STATIC_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4290;4800</DisableSpecificWarnings>
+      <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\lcrypt\lcrypt.c" />
+    <ClCompile Include="..\..\lcrypt\lcrypt_bits.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\lcrypt\lcrypt_ciphers.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\lcrypt\lcrypt_hashes.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\lcrypt\lcrypt_math.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libev\ev.c" />
+    <ClCompile Include="..\..\libev\event.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libev\ev_epoll.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libev\ev_kqueue.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libev\ev_poll.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libev\ev_port.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libev\ev_select.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libev\ev_win32.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\aes\aes.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\aes\aes_tab.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\anubis.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\blowfish.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\camellia.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\cast5.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\des.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\kasumi.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\khazad.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\kseed.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\multi2.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\noekeon.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\rc2.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\rc5.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\rc6.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\safer\safer.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\safer\saferp.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\safer\safer_tab.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\skipjack.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\twofish\twofish.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\twofish\twofish_tab.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\ciphers\xtea.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ccm\ccm_memory.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ccm\ccm_memory_ex.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ccm\ccm_test.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_addheader.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_decrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_decrypt_verify_memory.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_encrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_encrypt_authenticate_memory.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_init.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_test.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_add_aad.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_add_iv.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_gf_mult.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_init.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_memory.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_mult_h.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_process.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_reset.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\gcm\gcm_test.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_decrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_decrypt_verify_memory.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_done_decrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_done_encrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_encrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_encrypt_authenticate_memory.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_init.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_ntz.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_shift_xor.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\ocb_test.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\encauth\ocb\s_ocb_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\chc\chc.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\helper\hash_file.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\helper\hash_filehandle.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\helper\hash_memory.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\helper\hash_memory_multi.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\md2.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\md4.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\md5.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\rmd128.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\rmd160.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\rmd256.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\rmd320.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\sha1.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\sha2\sha224.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\sha2\sha256.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\sha2\sha384.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\sha2\sha512.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\tiger.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\whirl\whirl.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\hashes\whirl\whirltab.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\mac\f9\f9_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\f9\f9_file.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\f9\f9_init.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\f9\f9_memory.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\f9\f9_memory_multi.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\f9\f9_process.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\f9\f9_test.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\hmac\hmac_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\hmac\hmac_file.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\hmac\hmac_init.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\hmac\hmac_memory.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\hmac\hmac_memory_multi.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\hmac\hmac_process.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\hmac\hmac_test.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\omac\omac_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\omac\omac_file.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\omac\omac_init.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\omac\omac_memory.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\omac\omac_memory_multi.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\omac\omac_process.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\omac\omac_test.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pelican\pelican.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pelican\pelican_memory.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pelican\pelican_test.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_file.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_init.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_memory.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_memory_multi.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_ntz.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_process.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_shift_xor.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\pmac\pmac_test.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\xcbc\xcbc_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\xcbc\xcbc_file.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\xcbc\xcbc_init.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\xcbc\xcbc_memory.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\xcbc\xcbc_memory_multi.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\xcbc\xcbc_process.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\mac\xcbc\xcbc_test.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\math\fp\ltc_ecc_fp_mulmod.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\math\gmp_desc.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\math\ltm_desc.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\math\multi.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\math\rand_prime.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\math\tfm_desc.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\base64\base64_decode.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\base64\base64_encode.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\burn_stack.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_argchk.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_cipher_descriptor.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_cipher_is_valid.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_cipher.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_cipher_any.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_cipher_id.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_hash.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_hash_any.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_hash_id.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_hash_oid.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_find_prng.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_fsa.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_hash_descriptor.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_hash_is_valid.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_ltc_mp_descriptor.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_prng_descriptor.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_prng_is_valid.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_register_cipher.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_register_hash.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_register_prng.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_unregister_cipher.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_unregister_hash.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\crypt\crypt_unregister_prng.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\error_to_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\pkcs5\pkcs_5_1.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\pkcs5\pkcs_5_2.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\pk_get_oid.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\misc\zeromem.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cbc\cbc_decrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cbc\cbc_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cbc\cbc_encrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cbc\cbc_getiv.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cbc\cbc_setiv.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cbc\cbc_start.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cfb\cfb_decrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cfb\cfb_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cfb\cfb_encrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cfb\cfb_getiv.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cfb\cfb_setiv.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\cfb\cfb_start.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ctr\ctr_decrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ctr\ctr_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ctr\ctr_encrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ctr\ctr_getiv.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ctr\ctr_setiv.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ctr\ctr_start.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ctr\ctr_test.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ecb\ecb_decrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ecb\ecb_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ecb\ecb_encrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ecb\ecb_start.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\f8\f8_decrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\f8\f8_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\f8\f8_encrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\f8\f8_getiv.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\f8\f8_setiv.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\f8\f8_start.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\f8\f8_test_mode.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_decrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_encrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_getiv.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_process.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_setiv.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_start.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\lrw\lrw_test.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ofb\ofb_decrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ofb\ofb_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ofb\ofb_encrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ofb\ofb_getiv.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ofb\ofb_setiv.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\ofb\ofb_start.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\xts\xts_decrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\xts\xts_done.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\xts\xts_encrypt.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\xts\xts_init.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\xts\xts_mult_x.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\modes\xts\xts_test.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_decode_bit_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_decode_raw_bit_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_encode_bit_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_encode_raw_bit_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_length_bit_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\boolean\der_decode_boolean.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\boolean\der_encode_boolean.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\boolean\der_length_boolean.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\choice\der_decode_choice.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\ia5\der_decode_ia5_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\ia5\der_encode_ia5_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\ia5\der_length_ia5_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\integer\der_decode_integer.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\integer\der_encode_integer.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\integer\der_length_integer.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\object_identifier\der_decode_object_identifier.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\object_identifier\der_encode_object_identifier.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\object_identifier\der_length_object_identifier.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\octet\der_decode_octet_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\octet\der_encode_octet_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\octet\der_length_octet_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\printable_string\der_decode_printable_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\printable_string\der_encode_printable_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\printable_string\der_length_printable_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_ex.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_flexi.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_multi.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_decode_subject_public_key_info.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_encode_sequence_ex.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_encode_sequence_multi.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_encode_subject_public_key_info.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_length_sequence.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_sequence_free.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\set\der_encode_set.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\set\der_encode_setof.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\short_integer\der_decode_short_integer.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\short_integer\der_encode_short_integer.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\short_integer\der_length_short_integer.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\utctime\der_decode_utctime.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\utctime\der_encode_utctime.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\utctime\der_length_utctime.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\utf8\der_decode_utf8_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\utf8\der_encode_utf8_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\utf8\der_length_utf8_string.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dh\dh.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4290;4800;4703</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4290;4800;4703</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4290;4800;4703</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4290;4800;4703</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_decrypt_key.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_encrypt_key.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_export.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_free.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_import.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_make_key.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_shared_secret.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_sign_hash.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_verify_hash.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_verify_key.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_ansi_x963_export.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_ansi_x963_import.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_decrypt_key.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_encrypt_key.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_export.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_free.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_get_size.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_import.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_make_key.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_shared_secret.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_sign_hash.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_sizes.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_test.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ecc_verify_hash.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_is_valid_idx.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_map.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_mul2add.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_mulmod.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_mulmod_timing.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_points.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_projective_add_point.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\ecc\ltc_ecc_projective_dbl_point.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\katja\katja_decrypt_key.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\katja\katja_encrypt_key.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\katja\katja_export.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\katja\katja_exptmod.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\katja\katja_free.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\katja\katja_import.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\katja\katja_make_key.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_i2osp.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_mgf1.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_oaep_decode.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_oaep_encode.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_os2ip.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_pss_decode.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_pss_encode.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_v1_5_decode.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\pkcs1\pkcs_1_v1_5_encode.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_decrypt_key.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_encrypt_key.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_export.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_exptmod.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_free.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_import.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_make_key.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_sign_hash.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_verify_hash.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\fortuna.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\rc4.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\rng_get_bytes.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\rng_make_prng.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\sober128.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\sober128tab.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\sprng.c" />
+    <ClCompile Include="..\..\libtomcrypt\src\prngs\yarrow.c" />
+    <ClCompile Include="..\..\libtommath\bncore.c" />
+    <ClCompile Include="..\..\libtommath\bn_error.c" />
+    <ClCompile Include="..\..\libtommath\bn_fast_mp_invmod.c" />
+    <ClCompile Include="..\..\libtommath\bn_fast_mp_montgomery_reduce.c" />
+    <ClCompile Include="..\..\libtommath\bn_fast_s_mp_mul_digs.c" />
+    <ClCompile Include="..\..\libtommath\bn_fast_s_mp_mul_high_digs.c" />
+    <ClCompile Include="..\..\libtommath\bn_fast_s_mp_sqr.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_2expt.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_abs.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_add.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_addmod.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_add_d.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_and.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_clamp.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_clear.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_clear_multi.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_cmp.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_cmp_d.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_cmp_mag.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_cnt_lsb.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_copy.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_count_bits.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_div.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_div_2.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_div_2d.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_div_3.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_div_d.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_dr_is_modulus.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_dr_reduce.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_dr_setup.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_exch.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_exptmod.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_exptmod_fast.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_expt_d.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_exteuclid.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_fread.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_fwrite.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_gcd.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_get_int.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_grow.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_init.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_init_copy.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_init_multi.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_init_set.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_init_set_int.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_init_size.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_invmod.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_invmod_slow.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_is_square.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_jacobi.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_karatsuba_mul.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_karatsuba_sqr.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_lcm.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_lshd.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_mod.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_mod_2d.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_mod_d.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_montgomery_calc_normalization.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_montgomery_reduce.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_montgomery_setup.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_mul.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_mulmod.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_mul_2.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_mul_2d.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_mul_d.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_neg.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_n_root.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_or.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_prime_fermat.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_prime_is_divisible.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_prime_is_prime.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_prime_miller_rabin.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_prime_next_prime.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_prime_rabin_miller_trials.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_prime_random_ex.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_radix_size.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_radix_smap.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_rand.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_read_radix.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_read_signed_bin.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_read_unsigned_bin.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce_2k.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce_2k_l.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce_2k_setup.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce_2k_setup_l.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce_is_2k.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce_is_2k_l.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_reduce_setup.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_rshd.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_set.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_set_int.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_shrink.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_signed_bin_size.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_sqr.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_sqrmod.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_sqrt.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_sub.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_submod.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_sub_d.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_toom_mul.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_toom_sqr.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_toradix.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_toradix_n.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_to_signed_bin.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_to_signed_bin_n.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_to_unsigned_bin.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_to_unsigned_bin_n.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_unsigned_bin_size.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_xor.c" />
+    <ClCompile Include="..\..\libtommath\bn_mp_zero.c" />
+    <ClCompile Include="..\..\libtommath\bn_prime_tab.c" />
+    <ClCompile Include="..\..\libtommath\bn_reverse.c" />
+    <ClCompile Include="..\..\libtommath\bn_s_mp_add.c" />
+    <ClCompile Include="..\..\libtommath\bn_s_mp_exptmod.c" />
+    <ClCompile Include="..\..\libtommath\bn_s_mp_mul_digs.c" />
+    <ClCompile Include="..\..\libtommath\bn_s_mp_mul_high_digs.c" />
+    <ClCompile Include="..\..\libtommath\bn_s_mp_sqr.c" />
+    <ClCompile Include="..\..\libtommath\bn_s_mp_sub.c" />
+    <ClCompile Include="..\..\src\Async.cc" />
+    <ClCompile Include="..\..\src\Base64.cc" />
+    <ClCompile Include="..\..\src\BigInt.cc" />
+    <ClCompile Include="..\..\src\BLua.cc" />
+    <ClCompile Include="..\..\src\BRegex.cc" />
+    <ClCompile Include="..\..\src\BStream.cc" />
+    <ClCompile Include="..\..\src\BString.cc" />
+    <ClCompile Include="..\..\src\Buffer.cc" />
+    <ClCompile Include="..\..\src\BWebSocket.cc" />
+    <ClCompile Include="..\..\src\Exceptions.cc" />
+    <ClCompile Include="..\..\src\Handle.cc" />
+    <ClCompile Include="..\..\src\HelperTasks.cc" />
+    <ClCompile Include="..\..\src\Http.cc" />
+    <ClCompile Include="..\..\src\HttpActionStatic.cc" />
+    <ClCompile Include="..\..\src\HttpServer.cc" />
+    <ClCompile Include="..\..\src\Input.cc" />
+    <ClCompile Include="..\..\src\jsoncpp\src\json_reader.cpp" />
+    <ClCompile Include="..\..\src\jsoncpp\src\json_value.cpp" />
+    <ClCompile Include="..\..\src\jsoncpp\src\json_writer.cpp" />
+    <ClCompile Include="..\..\src\Local.cc" />
+    <ClCompile Include="..\..\src\LuaBigInt.cc" />
+    <ClCompile Include="..\..\src\LuaHandle.cc" />
+    <ClCompile Include="..\..\src\LuaTask.cc" />
+    <ClCompile Include="..\..\src\Main.cc" />
+    <ClCompile Include="..\..\src\Output.cc" />
+    <ClCompile Include="..\..\src\Printer.cc" />
+    <ClCompile Include="..\..\src\Selectable.cc" />
+    <ClCompile Include="..\..\src\SimpleMustache.cc" />
+    <ClCompile Include="..\..\src\Socket.cc" />
+    <ClCompile Include="..\..\src\StdIO.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Task.cc" />
+    <ClCompile Include="..\..\src\TaskMan.cc" />
+    <ClCompile Include="..\..\src\Threads.cc" />
+    <ClCompile Include="..\..\src\ZHandle.cc" />
+    <ClCompile Include="..\c-ares\ares_cancel.c" />
+    <ClCompile Include="..\c-ares\ares_create_query.c" />
+    <ClCompile Include="..\c-ares\ares_data.c" />
+    <ClCompile Include="..\c-ares\ares_destroy.c" />
+    <ClCompile Include="..\c-ares\ares_expand_name.c" />
+    <ClCompile Include="..\c-ares\ares_expand_string.c" />
+    <ClCompile Include="..\c-ares\ares_fds.c" />
+    <ClCompile Include="..\c-ares\ares_free_hostent.c" />
+    <ClCompile Include="..\c-ares\ares_free_string.c" />
+    <ClCompile Include="..\c-ares\ares_getenv.c" />
+    <ClCompile Include="..\c-ares\ares_gethostbyaddr.c" />
+    <ClCompile Include="..\c-ares\ares_gethostbyname.c" />
+    <ClCompile Include="..\c-ares\ares_getnameinfo.c" />
+    <ClCompile Include="..\c-ares\ares_getsock.c" />
+    <ClCompile Include="..\c-ares\ares_init.c" />
+    <ClCompile Include="..\c-ares\ares_library_init.c" />
+    <ClCompile Include="..\c-ares\ares_llist.c" />
+    <ClCompile Include="..\c-ares\ares_mkquery.c" />
+    <ClCompile Include="..\c-ares\ares_nowarn.c" />
+    <ClCompile Include="..\c-ares\ares_options.c" />
+    <ClCompile Include="..\c-ares\ares_parse_aaaa_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_a_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_mx_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_naptr_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_ns_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_ptr_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_soa_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_srv_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_txt_reply.c" />
+    <ClCompile Include="..\c-ares\ares_platform.c">
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</SDLCheck>
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</SDLCheck>
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</SDLCheck>
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</SDLCheck>
+    </ClCompile>
+    <ClCompile Include="..\c-ares\ares_process.c" />
+    <ClCompile Include="..\c-ares\ares_query.c" />
+    <ClCompile Include="..\c-ares\ares_search.c" />
+    <ClCompile Include="..\c-ares\ares_send.c" />
+    <ClCompile Include="..\c-ares\ares_strcasecmp.c" />
+    <ClCompile Include="..\c-ares\ares_strdup.c" />
+    <ClCompile Include="..\c-ares\ares_strerror.c" />
+    <ClCompile Include="..\c-ares\ares_timeout.c" />
+    <ClCompile Include="..\c-ares\ares_version.c" />
+    <ClCompile Include="..\c-ares\ares_writev.c" />
+    <ClCompile Include="..\c-ares\ares__close_sockets.c" />
+    <ClCompile Include="..\c-ares\ares__get_hostent.c" />
+    <ClCompile Include="..\c-ares\ares__read_line.c" />
+    <ClCompile Include="..\c-ares\ares__timeval.c" />
+    <ClCompile Include="..\c-ares\bitncmp.c" />
+    <ClCompile Include="..\c-ares\inet_net_pton.c" />
+    <ClCompile Include="..\c-ares\inet_ntop.c" />
+    <ClCompile Include="..\c-ares\windows_port.c" />
+    <ClCompile Include="..\iconv\iconv.c" />
+    <ClCompile Include="..\iconv\localcharset.c" />
+    <ClCompile Include="..\iconv\relocatable.c" />
+    <ClCompile Include="..\pthreads-win32\attr.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\autostatic.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\barrier.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\cancel.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\cleanup.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\condvar.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\create.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\dll.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\errno.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\exit.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\fork.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\global.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\misc.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\mutex.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\nonportable.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\private.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread.c" />
+    <ClCompile Include="..\pthreads-win32\pthread_attr_destroy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_getdetachstate.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_getinheritsched.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_getschedparam.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_getschedpolicy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_getscope.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_getstackaddr.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_getstacksize.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_init.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_setdetachstate.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_setinheritsched.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_setschedparam.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_setschedpolicy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_setscope.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_setstackaddr.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_attr_setstacksize.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_barrierattr_destroy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_barrierattr_getpshared.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_barrierattr_init.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_barrierattr_setpshared.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_barrier_destroy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_barrier_init.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_barrier_wait.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_cancel.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_condattr_destroy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_condattr_getpshared.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_condattr_init.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_condattr_setpshared.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_cond_destroy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_cond_init.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_cond_signal.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_cond_wait.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_delay_np.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_detach.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_equal.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_exit.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_getconcurrency.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_getschedparam.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_getspecific.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_getunique_np.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_getw32threadhandle_np.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_join.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_key_create.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_key_delete.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_kill.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_destroy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_getkind_np.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_getpshared.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_getrobust.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_gettype.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_init.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_setkind_np.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_setpshared.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_setrobust.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutexattr_settype.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutex_consistent.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutex_destroy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutex_init.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutex_lock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutex_timedlock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutex_trylock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_mutex_unlock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_num_processors_np.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_once.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlockattr_destroy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlockattr_getpshared.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlockattr_init.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlockattr_setpshared.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_destroy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_init.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_rdlock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_timedrdlock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_timedwrlock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_tryrdlock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_trywrlock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_unlock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_rwlock_wrlock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_self.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_setcancelstate.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_setcanceltype.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_setconcurrency.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_setschedparam.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_setspecific.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_spin_destroy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_spin_init.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_spin_lock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_spin_trylock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_spin_unlock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_testcancel.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_timechange_handler_np.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\pthread_win32_attach_detach_np.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_calloc.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_callUserDestroyRoutines.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_cond_check_need_init.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_getprocessors.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_is_attr.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_MCS_lock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_mutex_check_need_init.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_new.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_processInitialize.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_processTerminate.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_relmillisecs.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_reuse.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_rwlock_cancelwrwait.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_rwlock_check_need_init.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_semwait.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_spinlock_check_need_init.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_threadDestroy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_threadStart.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_throw.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_timespec.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_tkAssocCreate.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\ptw32_tkAssocDestroy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\rwlock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sched.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sched_getscheduler.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sched_get_priority_max.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sched_get_priority_min.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sched_setscheduler.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sched_yield.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\semaphore.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_close.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_destroy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_getvalue.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_init.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_open.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_post.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_post_multiple.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_timedwait.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_trywait.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_unlink.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sem_wait.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\signal.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\spin.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\sync.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\tsd.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\pthreads-win32\w32_CancelableWait.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\regex\msvc-regex.c" />
+    <ClCompile Include="..\tomcrypt_aes_enc.c" />
+    <ClCompile Include="..\zlib\adler32.c" />
+    <ClCompile Include="..\zlib\crc32.c" />
+    <ClCompile Include="..\zlib\deflate.c" />
+    <ClCompile Include="..\zlib\infback.c" />
+    <ClCompile Include="..\zlib\inffast.c" />
+    <ClCompile Include="..\zlib\inflate.c" />
+    <ClCompile Include="..\zlib\inftrees.c" />
+    <ClCompile Include="..\zlib\trees.c" />
+    <ClCompile Include="..\zlib\uncompr.c" />
+    <ClCompile Include="..\zlib\zutil.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\aboutdlg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\accel.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\access.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\affinematrix2d.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\affinematrix2dbase.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\afterstd.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\anidecod.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\animate.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\animdecod.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\any.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\anybutton.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\anystr.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\app.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\apptrait.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\archive.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\arrstr.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\artprov.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\atomic.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\bannerwindow.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\base64.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\beforestd.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\bitmap.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\bmpbuttn.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\bmpcbox.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\bookctrl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\brush.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\buffer.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\build.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\busyinfo.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\button.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\calctrl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\caret.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\chartype.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\checkbox.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\checkeddelete.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\checklst.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\chkconf.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\choicdlg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\choice.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\choicebk.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\clipbrd.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\clntdata.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\clrpicker.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cmdargs.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cmdline.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cmdproc.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cmndata.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\collpane.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\colordlg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\colour.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\colourdata.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\combo.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\combobox.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\commandlinkbutton.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\compiler.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\compositewin.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\confbase.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\config.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\containr.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\control.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\convauto.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cpp.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cppunit.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\crt.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cshelp.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ctrlsub.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\cursor.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\custombgwin.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dataobj.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dataview.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\datectrl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dateevt.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\datetime.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\datetimectrl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\datstrm.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dc.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcbuffer.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcclient.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcgraph.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcmemory.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcmirror.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcprint.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcps.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcscreen.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dcsvg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dde.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\debug.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\debugrpt.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\defs.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dialog.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dialup.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dir.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dirctrl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dirdlg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\display.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\display_impl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dlimpexp.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dlist.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dnd.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\docmdi.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\docview.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dragimag.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dvrenderers.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dynarray.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dynlib.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\dynload.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\editlbox.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\effects.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\encconv.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\encinfo.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\event.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\eventfilter.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\evtloop.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\evtloopsrc.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\except.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fdrepdlg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\features.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ffile.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\file.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fileconf.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\filectrl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\filedlg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\filefn.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\filehistory.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\filename.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\filepicker.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\filesys.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\flags.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fmappriv.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\font.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fontdata.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fontdlg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fontenc.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fontenum.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fontmap.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fontpicker.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fontutil.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\frame.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fswatcher.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fs_arc.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fs_filter.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fs_inet.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fs_mem.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\fs_zip.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\gauge.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\gbsizer.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\gdicmn.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\gdiobj.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\geometry.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\gifdecod.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\glcanvas.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\graphics.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\grid.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\hash.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\hashmap.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\hashset.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\headercol.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\headerctrl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\help.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\helpbase.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\helphtml.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\helpwin.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\htmllbox.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\hyperlink.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\icon.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\iconbndl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\iconloc.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagbmp.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\image.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imaggif.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagiff.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagjpeg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imaglist.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagpcx.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagpng.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagpnm.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagtga.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagtiff.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\imagxpm.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\infobar.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\init.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\intl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\iosfwrap.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ioswrap.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ipc.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ipcbase.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\itemid.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\joystick.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\kbdstate.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\language.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\layout.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\laywin.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\link.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\list.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\listbase.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\listbook.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\listbox.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\listctrl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\log.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\longlong.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\math.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\matrix.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\mdi.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\mediactrl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\memconf.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\memory.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\memtext.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\menu.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\menuitem.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\metafile.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\mimetype.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\minifram.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\modalhook.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\module.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\mousemanager.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\mousestate.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\msgdlg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\msgout.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\msgqueue.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\mstream.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\nativewin.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\nonownedwnd.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\notebook.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\notifmsg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\numdlg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\numformatter.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\object.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\odcombo.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\overlay.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ownerdrw.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\palette.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\panel.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\paper.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\pen.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\persist.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\pickerbase.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\platform.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\platinfo.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\popupwin.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\position.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\power.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\preferences.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\print.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\printdlg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\prntbase.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\process.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\progdlg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\propdlg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ptr_scpd.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ptr_shrd.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\quantize.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\radiobox.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\radiobut.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\range.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\rawbmp.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\rearrangectrl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\recguard.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\regex.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\region.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\renderer.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\richmsgdlg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\richtooltip.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\rtti.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sashwin.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sckaddr.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sckipc.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sckstrm.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\scopedarray.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\scopedptr.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\scopeguard.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\scrolbar.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\scrolwin.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\selstore.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\settings.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\setup_inc.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\setup_redirect.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sharedptr.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\simplebook.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sizer.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\slider.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\snglinst.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\socket.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sound.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\spinbutt.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\spinctrl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\splash.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\splitter.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\srchctrl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sstream.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stack.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stackwalk.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\statbmp.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\statbox.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\statline.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stattext.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\statusbr.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stdpaths.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stdstream.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stockitem.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stopwatch.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\strconv.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stream.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\string.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stringimpl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\stringops.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\strvararg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\sysopt.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tarstrm.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\taskbar.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tbarbase.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\testing.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\textbuf.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\textcompleter.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\textctrl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\textdlg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\textentry.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\textfile.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\textwrapper.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tglbtn.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\thread.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\time.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\timectrl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\timer.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tipdlg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tipwin.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tls.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tokenzr.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\toolbar.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\toolbook.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tooltip.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\toplevel.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\tracker.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\translation.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\treebase.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\treebook.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\treectrl.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\treelist.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\txtstrm.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\typeinfo.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\types.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\uiaction.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\unichar.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\uri.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\url.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\ustring.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\utils.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\valgen.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\validate.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\valnum.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\valtext.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\variant.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\variantbase.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\vector.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\version.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\versioninfo.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\vidmode.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\vlbox.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\vms_x_fix.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\volume.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\vscroll.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\weakref.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\webview.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\webviewarchivehandler.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\webviewfshandler.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wfstream.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\window.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\windowid.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\withimages.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wizard.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wrapsizer.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wupdlock.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wx.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wxchar.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wxcrt.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wxcrtbase.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wxcrtvararg.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wxhtml.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\wxprec.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xlocale.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xpmdecod.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xpmhand.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xti.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xti2.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xtictor.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xtihandler.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xtiprop.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xtistrm.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xtitypes.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\xtixml.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\zipstrm.h" />
+    <ClInclude Include="..\..\..\wxWidgets\include\wx\zstream.h" />
+    <ClInclude Include="..\..\includes\Async.h" />
+    <ClInclude Include="..\..\includes\AtStartExit.h" />
+    <ClInclude Include="..\..\includes\Base64.h" />
+    <ClInclude Include="..\..\includes\BigInt.h" />
+    <ClInclude Include="..\..\includes\BLua.h" />
+    <ClInclude Include="..\..\includes\BRegex.h" />
+    <ClInclude Include="..\..\includes\BSHA1.h" />
+    <ClInclude Include="..\..\includes\BStdIO.h" />
+    <ClInclude Include="..\..\includes\BStream.h" />
+    <ClInclude Include="..\..\includes\BString.h" />
+    <ClInclude Include="..\..\includes\Buffer.h" />
+    <ClInclude Include="..\..\includes\BWebSocket.h" />
+    <ClInclude Include="..\..\includes\c++11-surrogates.h" />
+    <ClInclude Include="..\..\includes\Exceptions.h" />
+    <ClInclude Include="..\..\includes\Handle.h" />
+    <ClInclude Include="..\..\includes\HelperTasks.h" />
+    <ClInclude Include="..\..\includes\Http.h" />
+    <ClInclude Include="..\..\includes\HttpActionStatic.h" />
+    <ClInclude Include="..\..\includes\HttpServer.h" />
+    <ClInclude Include="..\..\includes\Input.h" />
+    <ClInclude Include="..\..\includes\Local.h" />
+    <ClInclude Include="..\..\includes\LuaBigInt.h" />
+    <ClInclude Include="..\..\includes\LuaHandle.h" />
+    <ClInclude Include="..\..\includes\LuaTask.h" />
+    <ClInclude Include="..\..\includes\Main.h" />
+    <ClInclude Include="..\..\includes\Output.h" />
+    <ClInclude Include="..\..\includes\Printer.h" />
+    <ClInclude Include="..\..\includes\Selectable.h" />
+    <ClInclude Include="..\..\includes\SimpleMustache.h" />
+    <ClInclude Include="..\..\includes\Socket.h" />
+    <ClInclude Include="..\..\includes\StacklessTask.h" />
+    <ClInclude Include="..\..\includes\Task.h" />
+    <ClInclude Include="..\..\includes\TaskMan.h" />
+    <ClInclude Include="..\..\includes\Threads.h" />
+    <ClInclude Include="..\..\includes\ZHandle.h" />
+    <ClInclude Include="..\..\libev\ev++.h" />
+    <ClInclude Include="..\..\libev\ev.h" />
+    <ClInclude Include="..\..\libev\event.h" />
+    <ClInclude Include="..\..\libev\event_compat.h" />
+    <ClInclude Include="..\..\libev\ev_vars.h" />
+    <ClInclude Include="..\..\libev\ev_wrap.h" />
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt.h" />
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_argchk.h" />
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_cfg.h" />
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_cipher.h" />
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_custom.h" />
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_hash.h" />
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_mac.h" />
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_macros.h" />
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_math.h" />
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_misc.h" />
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_pk.h" />
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_pkcs.h" />
+    <ClInclude Include="..\..\libtomcrypt\src\headers\tomcrypt_prng.h" />
+    <ClInclude Include="..\..\libtommath\tommath.h" />
+    <ClInclude Include="..\..\libtommath\tommath_class.h" />
+    <ClInclude Include="..\..\libtommath\tommath_superclass.h" />
+    <ClInclude Include="..\..\msvc-config.h" />
+    <ClInclude Include="..\..\src\jsoncpp\include\json\autolink.h" />
+    <ClInclude Include="..\..\src\jsoncpp\include\json\config.h" />
+    <ClInclude Include="..\..\src\jsoncpp\include\json\features.h" />
+    <ClInclude Include="..\..\src\jsoncpp\include\json\forwards.h" />
+    <ClInclude Include="..\..\src\jsoncpp\include\json\json.h" />
+    <ClInclude Include="..\..\src\jsoncpp\include\json\reader.h" />
+    <ClInclude Include="..\..\src\jsoncpp\include\json\value.h" />
+    <ClInclude Include="..\..\src\jsoncpp\include\json\writer.h" />
+    <ClInclude Include="..\..\src\jsoncpp\src\json_batchallocator.h" />
+    <ClInclude Include="..\ares_build.h" />
+    <ClInclude Include="..\c-ares\ares.h" />
+    <ClInclude Include="..\c-ares\ares_data.h" />
+    <ClInclude Include="..\c-ares\ares_dns.h" />
+    <ClInclude Include="..\c-ares\ares_getenv.h" />
+    <ClInclude Include="..\c-ares\ares_iphlpapi.h" />
+    <ClInclude Include="..\c-ares\ares_ipv6.h" />
+    <ClInclude Include="..\c-ares\ares_library_init.h" />
+    <ClInclude Include="..\c-ares\ares_llist.h" />
+    <ClInclude Include="..\c-ares\ares_nowarn.h" />
+    <ClInclude Include="..\c-ares\ares_platform.h" />
+    <ClInclude Include="..\c-ares\ares_private.h" />
+    <ClInclude Include="..\c-ares\ares_rules.h" />
+    <ClInclude Include="..\c-ares\ares_setup.h" />
+    <ClInclude Include="..\c-ares\ares_strcasecmp.h" />
+    <ClInclude Include="..\c-ares\ares_strdup.h" />
+    <ClInclude Include="..\c-ares\ares_version.h" />
+    <ClInclude Include="..\c-ares\ares_writev.h" />
+    <ClInclude Include="..\c-ares\config-win32.h" />
+    <ClInclude Include="..\c-ares\nameser.h" />
+    <ClInclude Include="..\c-ares\setup_once.h" />
+    <ClInclude Include="..\iconv\aliases.h" />
+    <ClInclude Include="..\iconv\aliases2.h" />
+    <ClInclude Include="..\iconv\aliases_aix.h" />
+    <ClInclude Include="..\iconv\aliases_dos.h" />
+    <ClInclude Include="..\iconv\aliases_extra.h" />
+    <ClInclude Include="..\iconv\aliases_osf1.h" />
+    <ClInclude Include="..\iconv\armscii_8.h" />
+    <ClInclude Include="..\iconv\ascii.h" />
+    <ClInclude Include="..\iconv\big5.h" />
+    <ClInclude Include="..\iconv\big5hkscs.h" />
+    <ClInclude Include="..\iconv\c99.h" />
+    <ClInclude Include="..\iconv\ces_big5.h" />
+    <ClInclude Include="..\iconv\ces_gbk.h" />
+    <ClInclude Include="..\iconv\cjk_variants.h" />
+    <ClInclude Include="..\iconv\cns11643.h" />
+    <ClInclude Include="..\iconv\cns11643_1.h" />
+    <ClInclude Include="..\iconv\cns11643_15.h" />
+    <ClInclude Include="..\iconv\cns11643_2.h" />
+    <ClInclude Include="..\iconv\cns11643_3.h" />
+    <ClInclude Include="..\iconv\cns11643_4.h" />
+    <ClInclude Include="..\iconv\cns11643_4a.h" />
+    <ClInclude Include="..\iconv\cns11643_4b.h" />
+    <ClInclude Include="..\iconv\cns11643_5.h" />
+    <ClInclude Include="..\iconv\cns11643_6.h" />
+    <ClInclude Include="..\iconv\cns11643_7.h" />
+    <ClInclude Include="..\iconv\cns11643_inv.h" />
+    <ClInclude Include="..\iconv\converters.h" />
+    <ClInclude Include="..\iconv\cp1046.h" />
+    <ClInclude Include="..\iconv\cp1124.h" />
+    <ClInclude Include="..\iconv\cp1125.h" />
+    <ClInclude Include="..\iconv\cp1129.h" />
+    <ClInclude Include="..\iconv\cp1133.h" />
+    <ClInclude Include="..\iconv\cp1161.h" />
+    <ClInclude Include="..\iconv\cp1162.h" />
+    <ClInclude Include="..\iconv\cp1163.h" />
+    <ClInclude Include="..\iconv\cp1250.h" />
+    <ClInclude Include="..\iconv\cp1251.h" />
+    <ClInclude Include="..\iconv\cp1252.h" />
+    <ClInclude Include="..\iconv\cp1253.h" />
+    <ClInclude Include="..\iconv\cp1254.h" />
+    <ClInclude Include="..\iconv\cp1255.h" />
+    <ClInclude Include="..\iconv\cp1256.h" />
+    <ClInclude Include="..\iconv\cp1257.h" />
+    <ClInclude Include="..\iconv\cp1258.h" />
+    <ClInclude Include="..\iconv\cp437.h" />
+    <ClInclude Include="..\iconv\cp737.h" />
+    <ClInclude Include="..\iconv\cp775.h" />
+    <ClInclude Include="..\iconv\cp850.h" />
+    <ClInclude Include="..\iconv\cp852.h" />
+    <ClInclude Include="..\iconv\cp853.h" />
+    <ClInclude Include="..\iconv\cp855.h" />
+    <ClInclude Include="..\iconv\cp856.h" />
+    <ClInclude Include="..\iconv\cp857.h" />
+    <ClInclude Include="..\iconv\cp858.h" />
+    <ClInclude Include="..\iconv\cp860.h" />
+    <ClInclude Include="..\iconv\cp861.h" />
+    <ClInclude Include="..\iconv\cp862.h" />
+    <ClInclude Include="..\iconv\cp863.h" />
+    <ClInclude Include="..\iconv\cp864.h" />
+    <ClInclude Include="..\iconv\cp865.h" />
+    <ClInclude Include="..\iconv\cp866.h" />
+    <ClInclude Include="..\iconv\cp869.h" />
+    <ClInclude Include="..\iconv\cp874.h" />
+    <ClInclude Include="..\iconv\cp922.h" />
+    <ClInclude Include="..\iconv\cp932.h" />
+    <ClInclude Include="..\iconv\cp932ext.h" />
+    <ClInclude Include="..\iconv\cp936ext.h" />
+    <ClInclude Include="..\iconv\cp943.h" />
+    <ClInclude Include="..\iconv\cp949.h" />
+    <ClInclude Include="..\iconv\cp950.h" />
+    <ClInclude Include="..\iconv\cp950ext.h" />
+    <ClInclude Include="..\iconv\dec_hanyu.h" />
+    <ClInclude Include="..\iconv\dec_kanji.h" />
+    <ClInclude Include="..\iconv\euc_cn.h" />
+    <ClInclude Include="..\iconv\euc_jisx0213.h" />
+    <ClInclude Include="..\iconv\euc_jp.h" />
+    <ClInclude Include="..\iconv\euc_kr.h" />
+    <ClInclude Include="..\iconv\euc_tw.h" />
+    <ClInclude Include="..\iconv\flags.h" />
+    <ClInclude Include="..\iconv\flushwc.h" />
+    <ClInclude Include="..\iconv\gb12345.h" />
+    <ClInclude Include="..\iconv\gb12345ext.h" />
+    <ClInclude Include="..\iconv\gb18030.h" />
+    <ClInclude Include="..\iconv\gb18030ext.h" />
+    <ClInclude Include="..\iconv\gb18030uni.h" />
+    <ClInclude Include="..\iconv\gb2312.h" />
+    <ClInclude Include="..\iconv\gbk.h" />
+    <ClInclude Include="..\iconv\gbkext1.h" />
+    <ClInclude Include="..\iconv\gbkext2.h" />
+    <ClInclude Include="..\iconv\gbkext_inv.h" />
+    <ClInclude Include="..\iconv\georgian_academy.h" />
+    <ClInclude Include="..\iconv\georgian_ps.h" />
+    <ClInclude Include="..\iconv\hkscs.h" />
+    <ClInclude Include="..\iconv\hp_roman8.h" />
+    <ClInclude Include="..\iconv\hz.h" />
+    <ClInclude Include="..\iconv\iconv-config.h" />
+    <ClInclude Include="..\iconv\iconv.h" />
+    <ClInclude Include="..\iconv\iso2022_cn.h" />
+    <ClInclude Include="..\iconv\iso2022_cnext.h" />
+    <ClInclude Include="..\iconv\iso2022_jp.h" />
+    <ClInclude Include="..\iconv\iso2022_jp1.h" />
+    <ClInclude Include="..\iconv\iso2022_jp2.h" />
+    <ClInclude Include="..\iconv\iso2022_jp3.h" />
+    <ClInclude Include="..\iconv\iso2022_kr.h" />
+    <ClInclude Include="..\iconv\iso646_cn.h" />
+    <ClInclude Include="..\iconv\iso646_jp.h" />
+    <ClInclude Include="..\iconv\iso8859_1.h" />
+    <ClInclude Include="..\iconv\iso8859_10.h" />
+    <ClInclude Include="..\iconv\iso8859_13.h" />
+    <ClInclude Include="..\iconv\iso8859_14.h" />
+    <ClInclude Include="..\iconv\iso8859_15.h" />
+    <ClInclude Include="..\iconv\iso8859_16.h" />
+    <ClInclude Include="..\iconv\iso8859_2.h" />
+    <ClInclude Include="..\iconv\iso8859_3.h" />
+    <ClInclude Include="..\iconv\iso8859_4.h" />
+    <ClInclude Include="..\iconv\iso8859_5.h" />
+    <ClInclude Include="..\iconv\iso8859_6.h" />
+    <ClInclude Include="..\iconv\iso8859_7.h" />
+    <ClInclude Include="..\iconv\iso8859_8.h" />
+    <ClInclude Include="..\iconv\iso8859_9.h" />
+    <ClInclude Include="..\iconv\isoir165.h" />
+    <ClInclude Include="..\iconv\isoir165ext.h" />
+    <ClInclude Include="..\iconv\java.h" />
+    <ClInclude Include="..\iconv\jisx0201.h" />
+    <ClInclude Include="..\iconv\jisx0208.h" />
+    <ClInclude Include="..\iconv\jisx0212.h" />
+    <ClInclude Include="..\iconv\jisx0213.h" />
+    <ClInclude Include="..\iconv\johab.h" />
+    <ClInclude Include="..\iconv\johab_hangul.h" />
+    <ClInclude Include="..\iconv\koi8_r.h" />
+    <ClInclude Include="..\iconv\koi8_ru.h" />
+    <ClInclude Include="..\iconv\koi8_t.h" />
+    <ClInclude Include="..\iconv\koi8_u.h" />
+    <ClInclude Include="..\iconv\ksc5601.h" />
+    <ClInclude Include="..\iconv\libcharset.h" />
+    <ClInclude Include="..\iconv\localcharset.h" />
+    <ClInclude Include="..\iconv\loops.h" />
+    <ClInclude Include="..\iconv\loop_unicode.h" />
+    <ClInclude Include="..\iconv\loop_wchar.h" />
+    <ClInclude Include="..\iconv\mac_arabic.h" />
+    <ClInclude Include="..\iconv\mac_centraleurope.h" />
+    <ClInclude Include="..\iconv\mac_croatian.h" />
+    <ClInclude Include="..\iconv\mac_cyrillic.h" />
+    <ClInclude Include="..\iconv\mac_greek.h" />
+    <ClInclude Include="..\iconv\mac_hebrew.h" />
+    <ClInclude Include="..\iconv\mac_iceland.h" />
+    <ClInclude Include="..\iconv\mac_roman.h" />
+    <ClInclude Include="..\iconv\mac_romania.h" />
+    <ClInclude Include="..\iconv\mac_thai.h" />
+    <ClInclude Include="..\iconv\mac_turkish.h" />
+    <ClInclude Include="..\iconv\mac_ukraine.h" />
+    <ClInclude Include="..\iconv\mulelao.h" />
+    <ClInclude Include="..\iconv\nextstep.h" />
+    <ClInclude Include="..\iconv\relocatable.h" />
+    <ClInclude Include="..\iconv\riscos1.h" />
+    <ClInclude Include="..\iconv\shift_jisx0213.h" />
+    <ClInclude Include="..\iconv\sjis.h" />
+    <ClInclude Include="..\iconv\tcvn.h" />
+    <ClInclude Include="..\iconv\tds565.h" />
+    <ClInclude Include="..\iconv\tis620.h" />
+    <ClInclude Include="..\iconv\translit.h" />
+    <ClInclude Include="..\iconv\ucs2.h" />
+    <ClInclude Include="..\iconv\ucs2be.h" />
+    <ClInclude Include="..\iconv\ucs2internal.h" />
+    <ClInclude Include="..\iconv\ucs2le.h" />
+    <ClInclude Include="..\iconv\ucs2swapped.h" />
+    <ClInclude Include="..\iconv\ucs4.h" />
+    <ClInclude Include="..\iconv\ucs4be.h" />
+    <ClInclude Include="..\iconv\ucs4internal.h" />
+    <ClInclude Include="..\iconv\ucs4le.h" />
+    <ClInclude Include="..\iconv\ucs4swapped.h" />
+    <ClInclude Include="..\iconv\uhc_1.h" />
+    <ClInclude Include="..\iconv\uhc_2.h" />
+    <ClInclude Include="..\iconv\utf16.h" />
+    <ClInclude Include="..\iconv\utf16be.h" />
+    <ClInclude Include="..\iconv\utf16le.h" />
+    <ClInclude Include="..\iconv\utf32.h" />
+    <ClInclude Include="..\iconv\utf32be.h" />
+    <ClInclude Include="..\iconv\utf32le.h" />
+    <ClInclude Include="..\iconv\utf7.h" />
+    <ClInclude Include="..\iconv\utf8.h" />
+    <ClInclude Include="..\iconv\vietcomb.h" />
+    <ClInclude Include="..\iconv\viscii.h" />
+    <ClInclude Include="..\pthreads-win32\config.h" />
+    <ClInclude Include="..\pthreads-win32\context.h" />
+    <ClInclude Include="..\pthreads-win32\implement.h" />
+    <ClInclude Include="..\pthreads-win32\need_errno.h" />
+    <ClInclude Include="..\pthreads-win32\pthread.h" />
+    <ClInclude Include="..\pthreads-win32\sched.h" />
+    <ClInclude Include="..\pthreads-win32\semaphore.h" />
+    <ClInclude Include="..\regex\regex.h" />
+    <ClInclude Include="..\zlib\crc32.h" />
+    <ClInclude Include="..\zlib\deflate.h" />
+    <ClInclude Include="..\zlib\inffast.h" />
+    <ClInclude Include="..\zlib\inffixed.h" />
+    <ClInclude Include="..\zlib\inflate.h" />
+    <ClInclude Include="..\zlib\inftrees.h" />
+    <ClInclude Include="..\zlib\trees.h" />
+    <ClInclude Include="..\zlib\zconf.h" />
+    <ClInclude Include="..\zlib\zlib.h" />
+    <ClInclude Include="..\zlib\zutil.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\jsoncpp\src\json_internalarray.inl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\..\src\jsoncpp\src\json_internalmap.inl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\..\src\jsoncpp\src\json_valueiterator.inl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\iconv\aliases.gperf">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\iconv\encodings.def" />
+    <None Include="..\iconv\encodings_aix.def" />
+    <None Include="..\iconv\encodings_dos.def" />
+    <None Include="..\iconv\encodings_extra.def" />
+    <None Include="..\iconv\encodings_local.def" />
+    <None Include="..\iconv\encodings_osf1.def" />
+    <None Include="..\iconv\Makefile.in">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\iconv\Makefile.msvc">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\iconv\Makefile.os2">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\iconv\Makefile.vms">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\iconv\translit.def" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
