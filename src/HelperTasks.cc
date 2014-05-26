@@ -38,7 +38,7 @@ void Balau::CopyTask::Do() {
             }
         }
     }
-    catch (EAgain & e) {
+    catch (EAgain &) {
         taskSwitch();
     }
 }

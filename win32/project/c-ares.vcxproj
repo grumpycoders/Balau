@@ -87,7 +87,8 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
-      <UndefinePreprocessorDefinitions>CARES_BUILDING_LIBRARY;CARES_STATICLIB;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <PreprocessorDefinitions>CARES_BUILDING_LIBRARY;CARES_STATICLIB;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -99,7 +100,8 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
-      <UndefinePreprocessorDefinitions>CARES_BUILDING_LIBRARY;CARES_STATICLIB;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <PreprocessorDefinitions>CARES_BUILDING_LIBRARY;CARES_STATICLIB;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -113,7 +115,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
-      <UndefinePreprocessorDefinitions>CARES_BUILDING_LIBRARY;CARES_STATICLIB;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <PreprocessorDefinitions>CARES_BUILDING_LIBRARY;CARES_STATICLIB;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -129,7 +132,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
-      <UndefinePreprocessorDefinitions>CARES_BUILDING_LIBRARY;CARES_STATICLIB;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <PreprocessorDefinitions>CARES_BUILDING_LIBRARY;CARES_STATICLIB;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

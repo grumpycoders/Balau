@@ -296,7 +296,7 @@ int Balau::LuaStatics::callwrap(lua_State * __L, lua_CFunction func) {
         L.push((void *) &s_signature);
         r = L.yield(L.gettop());
     }
-    catch (EAgain & e) {
+    catch (EAgain &) {
         L.error("The C callback from Lua has thrown an EAgain - you can't do that, you have to wrap it using Lua::yield. The application will now crash, because this task will stop, but the event in the EAgain will later try to wake it up.");
     }
     catch (GeneralException & e) {

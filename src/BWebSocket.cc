@@ -251,7 +251,7 @@ void Balau::WebSocketWorker::Do() {
     error:
         disconnect();
     }
-    catch (Balau::EAgain & e) {
+    catch (Balau::EAgain &) {
         taskSwitch();
     }
 }
