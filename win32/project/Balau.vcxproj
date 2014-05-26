@@ -65,13 +65,28 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;_CONSOLE;_LIB;PTW32_STATIC_LIB;DEBUG;_DEBUG;DEBUGBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;_CONSOLE;_LIB;PTW32_STATIC_LIB;DEBUG;_DEBUG;DEBUGBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h</ForcedIncludeFiles>
@@ -86,7 +101,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;_CONSOLE;_LIB;PTW32_STATIC_LIB;DEBUG;_DEBUG;DEBUGBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;_CONSOLE;_LIB;PTW32_STATIC_LIB;DEBUG;_DEBUG;DEBUGBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h</ForcedIncludeFiles>
@@ -102,7 +117,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;_CONSOLE;_LIB;PTW32_STATIC_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;_CONSOLE;_LIB;PTW32_STATIC_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h</ForcedIncludeFiles>
@@ -120,7 +135,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;_CONSOLE;_LIB;PTW32_STATIC_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;_CONSOLE;_LIB;PTW32_STATIC_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h</ForcedIncludeFiles>
@@ -701,59 +716,6 @@
     <ClCompile Include="..\..\src\TaskMan.cc" />
     <ClCompile Include="..\..\src\Threads.cc" />
     <ClCompile Include="..\..\src\ZHandle.cc" />
-    <ClCompile Include="..\c-ares\ares_cancel.c" />
-    <ClCompile Include="..\c-ares\ares_create_query.c" />
-    <ClCompile Include="..\c-ares\ares_data.c" />
-    <ClCompile Include="..\c-ares\ares_destroy.c" />
-    <ClCompile Include="..\c-ares\ares_expand_name.c" />
-    <ClCompile Include="..\c-ares\ares_expand_string.c" />
-    <ClCompile Include="..\c-ares\ares_fds.c" />
-    <ClCompile Include="..\c-ares\ares_free_hostent.c" />
-    <ClCompile Include="..\c-ares\ares_free_string.c" />
-    <ClCompile Include="..\c-ares\ares_getenv.c" />
-    <ClCompile Include="..\c-ares\ares_gethostbyaddr.c" />
-    <ClCompile Include="..\c-ares\ares_gethostbyname.c" />
-    <ClCompile Include="..\c-ares\ares_getnameinfo.c" />
-    <ClCompile Include="..\c-ares\ares_getsock.c" />
-    <ClCompile Include="..\c-ares\ares_init.c" />
-    <ClCompile Include="..\c-ares\ares_library_init.c" />
-    <ClCompile Include="..\c-ares\ares_llist.c" />
-    <ClCompile Include="..\c-ares\ares_mkquery.c" />
-    <ClCompile Include="..\c-ares\ares_nowarn.c" />
-    <ClCompile Include="..\c-ares\ares_options.c" />
-    <ClCompile Include="..\c-ares\ares_parse_aaaa_reply.c" />
-    <ClCompile Include="..\c-ares\ares_parse_a_reply.c" />
-    <ClCompile Include="..\c-ares\ares_parse_mx_reply.c" />
-    <ClCompile Include="..\c-ares\ares_parse_naptr_reply.c" />
-    <ClCompile Include="..\c-ares\ares_parse_ns_reply.c" />
-    <ClCompile Include="..\c-ares\ares_parse_ptr_reply.c" />
-    <ClCompile Include="..\c-ares\ares_parse_soa_reply.c" />
-    <ClCompile Include="..\c-ares\ares_parse_srv_reply.c" />
-    <ClCompile Include="..\c-ares\ares_parse_txt_reply.c" />
-    <ClCompile Include="..\c-ares\ares_platform.c">
-      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</SDLCheck>
-      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</SDLCheck>
-      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</SDLCheck>
-      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</SDLCheck>
-    </ClCompile>
-    <ClCompile Include="..\c-ares\ares_process.c" />
-    <ClCompile Include="..\c-ares\ares_query.c" />
-    <ClCompile Include="..\c-ares\ares_search.c" />
-    <ClCompile Include="..\c-ares\ares_send.c" />
-    <ClCompile Include="..\c-ares\ares_strcasecmp.c" />
-    <ClCompile Include="..\c-ares\ares_strdup.c" />
-    <ClCompile Include="..\c-ares\ares_strerror.c" />
-    <ClCompile Include="..\c-ares\ares_timeout.c" />
-    <ClCompile Include="..\c-ares\ares_version.c" />
-    <ClCompile Include="..\c-ares\ares_writev.c" />
-    <ClCompile Include="..\c-ares\ares__close_sockets.c" />
-    <ClCompile Include="..\c-ares\ares__get_hostent.c" />
-    <ClCompile Include="..\c-ares\ares__read_line.c" />
-    <ClCompile Include="..\c-ares\ares__timeval.c" />
-    <ClCompile Include="..\c-ares\bitncmp.c" />
-    <ClCompile Include="..\c-ares\inet_net_pton.c" />
-    <ClCompile Include="..\c-ares\inet_ntop.c" />
-    <ClCompile Include="..\c-ares\windows_port.c" />
     <ClCompile Include="..\iconv\iconv.c" />
     <ClCompile Include="..\iconv\localcharset.c" />
     <ClCompile Include="..\iconv\relocatable.c" />
@@ -1757,27 +1719,6 @@
     <ClInclude Include="..\..\src\jsoncpp\include\json\value.h" />
     <ClInclude Include="..\..\src\jsoncpp\include\json\writer.h" />
     <ClInclude Include="..\..\src\jsoncpp\src\json_batchallocator.h" />
-    <ClInclude Include="..\ares_build.h" />
-    <ClInclude Include="..\c-ares\ares.h" />
-    <ClInclude Include="..\c-ares\ares_data.h" />
-    <ClInclude Include="..\c-ares\ares_dns.h" />
-    <ClInclude Include="..\c-ares\ares_getenv.h" />
-    <ClInclude Include="..\c-ares\ares_iphlpapi.h" />
-    <ClInclude Include="..\c-ares\ares_ipv6.h" />
-    <ClInclude Include="..\c-ares\ares_library_init.h" />
-    <ClInclude Include="..\c-ares\ares_llist.h" />
-    <ClInclude Include="..\c-ares\ares_nowarn.h" />
-    <ClInclude Include="..\c-ares\ares_platform.h" />
-    <ClInclude Include="..\c-ares\ares_private.h" />
-    <ClInclude Include="..\c-ares\ares_rules.h" />
-    <ClInclude Include="..\c-ares\ares_setup.h" />
-    <ClInclude Include="..\c-ares\ares_strcasecmp.h" />
-    <ClInclude Include="..\c-ares\ares_strdup.h" />
-    <ClInclude Include="..\c-ares\ares_version.h" />
-    <ClInclude Include="..\c-ares\ares_writev.h" />
-    <ClInclude Include="..\c-ares\config-win32.h" />
-    <ClInclude Include="..\c-ares\nameser.h" />
-    <ClInclude Include="..\c-ares\setup_once.h" />
     <ClInclude Include="..\iconv\aliases.h" />
     <ClInclude Include="..\iconv\aliases2.h" />
     <ClInclude Include="..\iconv\aliases_aix.h" />

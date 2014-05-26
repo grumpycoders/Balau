@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="..\ares_build.h" />
+    <ClInclude Include="..\c-ares\ares.h" />
+    <ClInclude Include="..\c-ares\ares_data.h" />
+    <ClInclude Include="..\c-ares\ares_dns.h" />
+    <ClInclude Include="..\c-ares\ares_getenv.h" />
+    <ClInclude Include="..\c-ares\ares_iphlpapi.h" />
+    <ClInclude Include="..\c-ares\ares_ipv6.h" />
+    <ClInclude Include="..\c-ares\ares_library_init.h" />
+    <ClInclude Include="..\c-ares\ares_llist.h" />
+    <ClInclude Include="..\c-ares\ares_nowarn.h" />
+    <ClInclude Include="..\c-ares\ares_platform.h" />
+    <ClInclude Include="..\c-ares\ares_private.h" />
+    <ClInclude Include="..\c-ares\ares_rules.h" />
+    <ClInclude Include="..\c-ares\ares_setup.h" />
+    <ClInclude Include="..\c-ares\ares_strcasecmp.h" />
+    <ClInclude Include="..\c-ares\ares_strdup.h" />
+    <ClInclude Include="..\c-ares\ares_version.h" />
+    <ClInclude Include="..\c-ares\ares_writev.h" />
+    <ClInclude Include="..\c-ares\config-win32.h" />
+    <ClInclude Include="..\c-ares\nameser.h" />
+    <ClInclude Include="..\c-ares\setup_once.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\c-ares\ares_cancel.c" />
+    <ClCompile Include="..\c-ares\ares_create_query.c" />
+    <ClCompile Include="..\c-ares\ares_data.c" />
+    <ClCompile Include="..\c-ares\ares_destroy.c" />
+    <ClCompile Include="..\c-ares\ares_expand_name.c" />
+    <ClCompile Include="..\c-ares\ares_expand_string.c" />
+    <ClCompile Include="..\c-ares\ares_fds.c" />
+    <ClCompile Include="..\c-ares\ares_free_hostent.c" />
+    <ClCompile Include="..\c-ares\ares_free_string.c" />
+    <ClCompile Include="..\c-ares\ares_getenv.c" />
+    <ClCompile Include="..\c-ares\ares_gethostbyaddr.c" />
+    <ClCompile Include="..\c-ares\ares_gethostbyname.c" />
+    <ClCompile Include="..\c-ares\ares_getnameinfo.c" />
+    <ClCompile Include="..\c-ares\ares_getsock.c" />
+    <ClCompile Include="..\c-ares\ares_init.c" />
+    <ClCompile Include="..\c-ares\ares_library_init.c" />
+    <ClCompile Include="..\c-ares\ares_llist.c" />
+    <ClCompile Include="..\c-ares\ares_mkquery.c" />
+    <ClCompile Include="..\c-ares\ares_nowarn.c" />
+    <ClCompile Include="..\c-ares\ares_options.c" />
+    <ClCompile Include="..\c-ares\ares_parse_aaaa_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_a_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_mx_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_naptr_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_ns_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_ptr_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_soa_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_srv_reply.c" />
+    <ClCompile Include="..\c-ares\ares_parse_txt_reply.c" />
+    <ClCompile Include="..\c-ares\ares_platform.c" />
+    <ClCompile Include="..\c-ares\ares_process.c" />
+    <ClCompile Include="..\c-ares\ares_query.c" />
+    <ClCompile Include="..\c-ares\ares_search.c" />
+    <ClCompile Include="..\c-ares\ares_send.c" />
+    <ClCompile Include="..\c-ares\ares_strcasecmp.c" />
+    <ClCompile Include="..\c-ares\ares_strdup.c" />
+    <ClCompile Include="..\c-ares\ares_strerror.c" />
+    <ClCompile Include="..\c-ares\ares_timeout.c" />
+    <ClCompile Include="..\c-ares\ares_version.c" />
+    <ClCompile Include="..\c-ares\ares_writev.c" />
+    <ClCompile Include="..\c-ares\ares__close_sockets.c" />
+    <ClCompile Include="..\c-ares\ares__get_hostent.c" />
+    <ClCompile Include="..\c-ares\ares__read_line.c" />
+    <ClCompile Include="..\c-ares\ares__timeval.c" />
+    <ClCompile Include="..\c-ares\bitncmp.c" />
+    <ClCompile Include="..\c-ares\inet_net_pton.c" />
+    <ClCompile Include="..\c-ares\inet_ntop.c" />
+    <ClCompile Include="..\c-ares\windows_port.c" />
+  </ItemGroup>
+</Project>
