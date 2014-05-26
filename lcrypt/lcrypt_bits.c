@@ -70,7 +70,7 @@ static uint64_t reverse_bits(uint64_t a, int bits)
 static int64_t sign_extend(uint64_t a, int bits)
 {
   int64_t sret;;
-  if((a & (1 << (bits - 1))) != 0)
+  if((a & (1ULL << (bits - 1))) != 0)
   {
     a = ((uint64_t)0xffffffffffffffffLL << bits) | a;
     memcpy(&sret, &a, 8);
