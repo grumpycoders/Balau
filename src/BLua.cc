@@ -173,7 +173,7 @@ int Balau::LuaStatics::getenv(lua_State * __L) {
 #ifdef _WIN32
 #ifdef UNICODE
     wchar_t wbuffer[BUFSIZ + 1];
-    String varStr = L.tostring(1).iconv("UTF-8", "UNICODE");
+    String varStr = L.tostring(1).iconv("UTF-8", "UNICODELITTLE");
     if (GetEnvironmentVariable((wchar_t *)varStr.to_charp(), wbuffer, BUFSIZ)) {
         char buffer[BUFSIZ + 1];
         const wchar_t * pwbuffer = wbuffer;
@@ -215,8 +215,8 @@ int Balau::LuaStatics::setenv(lua_State * __L) {
 
 #ifdef _WIN32
 #ifdef UNICODE
-    String varStr = L.tostring(1).iconv("UTF-8", "UNICODE");
-    String valStr = L.tostring(2).iconv("UTF-8", "UNICODE");
+    String varStr = L.tostring(1).iconv("UTF-8", "UNICODELITTLE");
+    String valStr = L.tostring(2).iconv("UTF-8", "UNICODELITTLE");
     SetEnvironmentVariable((wchar_t *)varStr.to_charp(), (wchar_t *)valStr.to_charp());
 #else
     SetEnvironmentVariable(L.tostring(1).to_charp(), L.tostring(2).to_charp());
@@ -237,7 +237,7 @@ int Balau::LuaStatics::unsetenv(lua_State * __L) {
 
 #ifdef _WIN32
 #ifdef UNICODE
-    String varStr = L.tostring(1).iconv("UTF-8", "UNICODE");
+    String varStr = L.tostring(1).iconv("UTF-8", "UNICODELITTLE");
     SetEnvironmentVariable((wchar_t *)varStr.to_charp(), NULL);
 #else
     SetEnvironmentVariable(L.tostring(1).to_charp(), NULL);
