@@ -604,7 +604,7 @@ Balau::BigInt & Balau::BigInt::do_modpow(const BigInt & a, const BigInt & m) thr
 
 bool Balau::BigInt::isPrime() const throw (GeneralException) {
     int r = 0;
-    if (mp_prime_is_prime((mp_int *) m_bi, NULL, &r) != MP_OKAY)
+    if (mp_prime_is_prime((mp_int *) m_bi, 256, &r) != MP_OKAY)
         throw GeneralException("Error while calling mp_prime_is_prime");
     return r == MP_YES;
 }
