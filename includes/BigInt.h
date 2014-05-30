@@ -30,6 +30,9 @@ class BigInt {
     uint32_t to_uint32() const throw (GeneralException);
     int32_t to_int32() const throw (GeneralException);
 
+    BigInt operator^(const BigInt &) const throw (GeneralException);
+    BigInt operator|(const BigInt &) const throw (GeneralException);
+    BigInt operator&(const BigInt &) const throw (GeneralException);
     BigInt operator+(unsigned int) const throw (GeneralException);
     BigInt operator+(const BigInt &) const throw (GeneralException);
     BigInt operator-(unsigned int) const throw (GeneralException);
@@ -41,6 +44,9 @@ class BigInt {
     BigInt operator<<(unsigned int) const throw (GeneralException);
     BigInt operator>>(unsigned int) const;
 
+    BigInt & operator^=(const BigInt &) throw (GeneralException);
+    BigInt & operator|=(const BigInt &) throw (GeneralException);
+    BigInt & operator&=(const BigInt &) throw (GeneralException);
     BigInt & operator+=(unsigned int) throw (GeneralException);
     BigInt & operator+=(const BigInt &) throw (GeneralException);
     BigInt & operator-=(unsigned int) throw (GeneralException);
@@ -104,6 +110,10 @@ class BigInt {
     size_t exportSize() const;
     void exportBin(void *) const throw (GeneralException);
     void importBin(const void *, size_t) throw (GeneralException);
+
+    size_t exportUSize() const;
+    void exportUBin(void *) const throw (GeneralException);
+    void importUBin(const void *, size_t) throw (GeneralException);
 
     String toString(int radix = 10) const;
     char * makeString(int radix = 10) const;

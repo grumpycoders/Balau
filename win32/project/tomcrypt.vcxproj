@@ -86,8 +86,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\libtomcrypt\src\headers;..\..\libtommath</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\libtomcrypt\src\headers;..\..\libtommath;..\pthreads-win32</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>PTW32_STATIC_LIB;LTC_PTHREAD;WIN32;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -98,8 +98,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\libtomcrypt\src\headers;..\..\libtommath</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\libtomcrypt\src\headers;..\..\libtommath;..\pthreads-win32</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>PTW32_STATIC_LIB;LTC_PTHREAD;WIN32;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -112,8 +112,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\libtomcrypt\src\headers;..\..\libtommath</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\libtomcrypt\src\headers;..\..\libtommath;..\pthreads-win32</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>PTW32_STATIC_LIB;LTC_PTHREAD;WIN32;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -128,8 +128,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\libtomcrypt\src\headers;..\..\libtommath</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\libtomcrypt\src\headers;..\..\libtommath;..\pthreads-win32</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>PTW32_STATIC_LIB;LTC_PTHREAD;WIN32;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

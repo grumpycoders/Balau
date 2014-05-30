@@ -86,12 +86,14 @@ int Balau::Base64::decode_block(char s1, char s2, char s3, char s4, unsigned cha
     return len;
 }
 
-int Balau::Base64::decode(const String & str_in, uint8_t * data_out) {
+int Balau::Base64::decode(const String & str_in, uint8_t * data_out, size_t outLen) {
     int s_len = str_in.strlen(), len = 0, i, t_len, idx;
     char s1, s2, s3, s4;
     unsigned char t_out[3];
-    unsigned char * out = (unsigned char *) malloc(s_len * 3 / 4 + 4);
-    unsigned char * p = out;
+    unsigned char * p = data_out;
+
+    bool failure = false;
+
     std::function<char()> readNext = [&]() {
         char r = '=';
 
@@ -102,20 +104,28 @@ int Balau::Base64::decode(const String & str_in, uint8_t * data_out) {
             r = str_in[idx++];
         } while (r == '\r' || r == '\n' || r == ' ' || r == '\t');
 
-        return r;
+        if (isdigit(r) || isalpha(r) || r == '+' || r == '/')
+            return r;
+
+        failure = true;
+
+        return '=';
     };
     
-    for (idx = 0; idx < s_len;) {
+    for (idx = 0; idx < s_len || failure; len += t_len) {
         s1 = readNext();
         s2 = readNext();
         s3 = readNext();
         s4 = readNext();
         t_len = decode_block(s1, s2, s3, s4, t_out);
         
-        for (i = 0; i < t_len; i++) *(p++) = t_out[i];
-
-        len += t_len;
+        for (i = 0; i < t_len; i++) {
+            if (outLen == 0)
+                return -1;
+            *(p++) = t_out[i];
+            outLen--;
+        }
     }
 
-    return len;
+    return failure ? -1 : len;
 }
