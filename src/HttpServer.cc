@@ -184,9 +184,8 @@ void Balau::HttpWorker::readVariables(Http::StringMap & variables, char * str) {
 
         char * val = strchr(str, '=');
 
-        if (val) {
+        if (val)
             *val++ = 0;
-        }
         String keyStr = httpUnescape(str);
         String valStr = val ? httpUnescape(val) : String("");
         variables[keyStr] = valStr;
@@ -260,6 +259,7 @@ bool Balau::HttpWorker::handleClient() {
     String httpVersion;
     Http::StringMap httpHeaders;
     Http::StringMap variables;
+    Http::StringMap cookies;
     Http::FileList files;
     bool persistent = false;
     bool upgrade = false;
@@ -402,7 +402,16 @@ bool Balau::HttpWorker::handleClient() {
             String key = line.extract(0, colon);
             String value = line.extract(colon + 1);
 
-            httpHeaders[key] = value.trim();
+            if (key == "Cookie") {
+                int equal = value.strchr('=');
+                if (equal > 0) {
+                    key = value.extract(0, equal).trim();
+                    value = value.extract(equal + 1).trim();
+                    cookies[key] = value;
+                }
+            } else {
+                httpHeaders[key] = value.trim();
+            }
         }
     } while(true);
 
@@ -499,7 +508,8 @@ bool Balau::HttpWorker::handleClient() {
             // will handle this horror later...
             Failure("multipart/form-data not supported for now");
         } else {
-            uint8_t * postData = (uint8_t *) malloc(length);
+            uint8_t * postData = (uint8_t *) malloc(length + 1);
+            postData[length] = 0;
 
             while (true) {
                 try {
@@ -567,6 +577,7 @@ bool Balau::HttpWorker::handleClient() {
         req.host = host;
         req.uri = uri;
         req.variables = variables;
+        req.cookies = cookies;
         req.headers = httpHeaders;
         req.files = files;
         req.persistent = persistent;

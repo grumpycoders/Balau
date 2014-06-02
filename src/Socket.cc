@@ -548,7 +548,15 @@ ssize_t Balau::Socket::write(const void * buf, size_t count) throw (GeneralExcep
 }
 
 ssize_t Balau::Socket::recv(int sockfd, void *buf, size_t len, int flags) {
-    return ::recv(sockfd, (char *) buf, len, flags);
+    ssize_t r = ::recv(sockfd, (char *) buf, len, flags);
+    if (r < 0) {
+#ifdef _WIN32
+        int err = WSAGetLastError();
+        if (err == WSAECONNABORTED)
+            return 0;
+#endif
+    }
+    return r;
 }
 
 ssize_t Balau::Socket::send(int sockfd, const void *buf, size_t len, int flags) {

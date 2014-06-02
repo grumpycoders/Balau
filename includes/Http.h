@@ -19,6 +19,7 @@ const char * getStatusMsg(int httpStatus);
 const char * getContentType(const String & extension);
 
 typedef std::map<String, String> StringMap;
+typedef std::multimap<String, String> StringMultiMap;
 typedef std::map<String, IO<Handle> > FileList;
 
 struct Request {
@@ -26,7 +27,8 @@ struct Request {
     String host;
     String uri;
     StringMap variables;
-    StringMap headers;
+    StringMap cookies;
+    StringMap headers; // this needs to become a StringMultiMap
     FileList files;
     bool persistent;
     bool upgrade;
