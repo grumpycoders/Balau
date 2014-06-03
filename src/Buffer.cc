@@ -60,12 +60,27 @@ ssize_t Balau::Buffer::write(const void * buf, size_t count) throw (GeneralExcep
 }
 
 void Balau::Buffer::reset() {
-    if (!m_fromConst)
-        m_buffer = (uint8_t *) realloc(m_buffer, 0);
-    m_bufSize = 0;
+    if (!m_fromConst) {
+        m_buffer = (uint8_t *)realloc(m_buffer, 0);
+        m_bufSize = 0;
+    }
     m_numBlocks = 0;
     wseek(0);
     rseek(0);
+}
+
+void Balau::Buffer::clear() {
+    reset();
+    m_fromConst = false;
+    m_buffer = NULL;
+    m_bufSize = 0;
+}
+
+void Balau::Buffer::borrow(const uint8_t * buffer, size_t s) {
+    clear();
+    m_fromConst = true;
+    m_buffer = const_cast<uint8_t *>(buffer);
+    m_bufSize = s;
 }
 
 bool Balau::Buffer::isClosed() { return false; }

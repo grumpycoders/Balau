@@ -168,6 +168,9 @@
     <ClCompile Include="..\..\lcrypt\lcrypt_math.c">
       <Filter>Third Party\lcrypt</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\MMap.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\includes\Async.h">
@@ -325,6 +328,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\jsoncpp\src\json_batchallocator.h">
       <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\MMap.h">
+      <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

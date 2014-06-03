@@ -239,6 +239,7 @@
     <ClCompile Include="..\..\src\LuaHandle.cc" />
     <ClCompile Include="..\..\src\LuaTask.cc" />
     <ClCompile Include="..\..\src\Main.cc" />
+    <ClCompile Include="..\..\src\MMap.cc" />
     <ClCompile Include="..\..\src\Output.cc" />
     <ClCompile Include="..\..\src\Printer.cc" />
     <ClCompile Include="..\..\src\Selectable.cc" />
@@ -282,6 +283,7 @@
     <ClInclude Include="..\..\includes\LuaHandle.h" />
     <ClInclude Include="..\..\includes\LuaTask.h" />
     <ClInclude Include="..\..\includes\Main.h" />
+    <ClInclude Include="..\..\includes\MMap.h" />
     <ClInclude Include="..\..\includes\Output.h" />
     <ClInclude Include="..\..\includes\Printer.h" />
     <ClInclude Include="..\..\includes\Selectable.h" />
