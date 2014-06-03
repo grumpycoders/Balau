@@ -131,10 +131,10 @@ static inline void TestHelper(const String & msg) throw (TestException) {
 template<typename T>
 ClassName::ClassName(T * ptr) {
 #ifdef _MSC_VER
-	m_demangled = strdup(typeid(*ptr).name());
+    m_demangled = strdup(typeid(*ptr).name());
 #else
-	int status;
-	m_demangled = abi::__cxa_demangle(typeid(*ptr).name(), 0, 0, &status);
+    int status;
+    m_demangled = abi::__cxa_demangle(typeid(*ptr).name(), 0, 0, &status);
 #endif
 }
 

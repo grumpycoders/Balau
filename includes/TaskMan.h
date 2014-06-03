@@ -88,9 +88,9 @@ class TaskMan {
     template<class T>
     friend T * createAsyncOp(T * op);
 #ifdef _MSC_VER
-	typedef stdext::hash_set<Task *> taskHash_t;
+    typedef stdext::hash_set<Task *> taskHash_t;
 #else
-	struct taskHasher { size_t operator()(const Task * t) const { return reinterpret_cast<uintptr_t>(t); } };
+    struct taskHasher { size_t operator()(const Task * t) const { return reinterpret_cast<uintptr_t>(t); } };
     typedef gnu::hash_set<Task *, taskHasher> taskHash_t;
 #endif
     taskHash_t m_tasks, m_signaledTasks;

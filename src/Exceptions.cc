@@ -32,11 +32,11 @@ void Balau::GeneralException::genTrace() {
 #ifndef _MSC_VER
         char * demangled = abi::__cxa_demangle(symbol->Name, 0, 0, &status);
 #else
-		char * demangled = NULL;
+        char * demangled = NULL;
 #endif
-		line.set("%i: 0x%08x (%s)", i, symbol->Address, status == 0 && demangled ? demangled : symbol->Name);
-		if (demangled)
-	        free(demangled);
+        line.set("%i: 0x%08x (%s)", i, symbol->Address, status == 0 && demangled ? demangled : symbol->Name);
+        if (demangled)
+            free(demangled);
         m_trace.push_back(line);
     }
 
