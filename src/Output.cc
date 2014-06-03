@@ -220,8 +220,9 @@ class AsyncOpWrite : public Balau::AsyncOperation {
       AsyncOpWrite(int fd, const void * buf, size_t count, off64_t offset, cbResults_t * results) : m_fd(fd), m_buf(buf), m_count(count), m_offset(offset), m_results(results) { }
     virtual void run() {
 #ifdef _MSC_VER
-        off64_t offset = lseek(m_fd, m_offset, SEEK_SET);
+        off64_t offset = _lseeki64(m_fd, m_offset, SEEK_SET);
         if (offset < 0) {
+            m_results->result = -1;
             m_results->errorno = errno;
             return;
         }
