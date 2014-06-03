@@ -48,6 +48,7 @@ BRegex.cc \
 Handle.cc \
 Input.cc \
 Output.cc \
+MMap.cc \
 Socket.cc \
 Selectable.cc \
 Buffer.cc \
