@@ -98,7 +98,7 @@ static inline void * realloc(void * previous, size_t size) {
 };
 
 static inline void AssertHelperInner(const String & msg, const char * details = NULL) throw (GeneralException) {
-#if defined(_MSC_VER) && defined(DEBUG)
+#if defined(_MSC_VER) && defined(_DEBUG)
     __debugbreak();
 #endif
     throw GeneralException(msg, details);

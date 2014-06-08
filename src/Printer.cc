@@ -17,7 +17,7 @@ static const char * prefixes[] = {
 };
 
 Balau::Printer::Printer() {
-#ifdef DEBUG
+#ifdef _DEBUG
     m_detailledLogs = true;
 #endif
     if (!localPrinter.getGlobal())

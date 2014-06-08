@@ -4,7 +4,7 @@ ifeq ($(DEBUG),)
 CPPFLAGS += -g3 -gdwarf-2 -O3 -DNDEBUG
 LDFLAGS += -g3 -gdwarf-2
 else
-CPPFLAGS += -g3 -gdwarf-2 -DDEBUG -DEV_VERIFY=3
+CPPFLAGS += -g3 -gdwarf-2 -D_DEBUG -DEV_VERIFY=3
 LDFLAGS += -g3 -gdwarf-2
 endif
 
