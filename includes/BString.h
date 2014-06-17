@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #ifdef _MSC_VER
 #ifdef _WIN64
@@ -86,6 +87,7 @@ class String : private std::string {
     String lower() const { String c = *this; return c.do_lower(); }
     String iconv(const String & from, const String & to) const { String c = *this; c.do_iconv(from.to_charp(), to.to_charp()); return c; }
     String iconv(const char * from, const char * to) const { String c = *this; c.do_iconv(from, to); return c; }
+    String replace_all(char from, char to) const { String c = *this; c.do_replace_all(from, to); return c; }
 
     String & do_ltrim();
     String & do_rtrim();
@@ -94,6 +96,7 @@ class String : private std::string {
     String & do_lower();
     String & do_iconv(const String & from, const String & to) { return do_iconv(from.to_charp(), to.to_charp()); }
     String & do_iconv(const char * from, const char * to);
+    String & do_replace_all(char from, char to) { std::replace(begin(), end(), from, to); return *this; }
 
     String & operator=(const String & v) { *((std::string *) this) = std::string::assign(v); return *this; }
     String & operator=(const char * v) { *((std::string *) this) = std::string::assign(v); return *this; }
