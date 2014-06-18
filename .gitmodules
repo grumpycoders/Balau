@@ -19,3 +19,6 @@
 [submodule "win32/c-ares"]
 	path = win32/c-ares
 	url = https://github.com/bagder/c-ares.git
+[submodule "win32/curl"]
+	path = win32/curl
+	url = https://github.com/bagder/curl.git
