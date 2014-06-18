@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <curl/curl.h>
 #ifndef _WIN32
 #include <coro.h>
 #endif
@@ -102,6 +103,10 @@ class TaskMan {
     int m_stopCode = 0;
     bool m_stopped = false;
     bool m_allowedToSignal = false;
+    CURLM * m_curlMulti = false;
+    int m_curlStillRunning = 0;
+    static int curlSocketCallback(CURL * easy, curl_socket_t s, int what, void * userp, void * socketp);
+    static int curlMultiTimerCallback(CURLM * multi, long timeout_ms, void * userp);
 
       TaskMan(const TaskMan &) = delete;
     TaskMan & operator=(const TaskMan &) = delete;

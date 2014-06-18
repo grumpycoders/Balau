@@ -9,7 +9,10 @@
 #include <Windows.h>
 #endif
 
+#include <curl/curl.h>
+
 static Balau::AsyncManager s_async;
+static CURLSH * s_curlshared = NULL;
 
 namespace {
 
@@ -33,9 +36,49 @@ class Stopper : public Balau::Task {
     int m_code;
 };
 
+class CurlSharedManager : public Balau::AtStart, Balau::AtExit {
+  public:
+      CurlSharedManager() : AtStart(0), AtExit(0) { }
+    struct SharedLocks {
+        Balau::RWLock cookie, dns, ssl_session;
+    };
+    static void lock_function(CURL *handle, curl_lock_data data, curl_lock_access access, void * userptr) {
+        SharedLocks * locks = (SharedLocks *) userptr;
+        Balau::RWLock * lock = NULL;
+        switch (data) {
+            case CURL_LOCK_DATA_COOKIE: lock = &locks->cookie; break;
+            case CURL_LOCK_DATA_DNS: lock = &locks->dns; break;
+            case CURL_LOCK_DATA_SSL_SESSION: lock = &locks->ssl_session; break;
+            default: Failure("Unknown lock");
+        }
+        switch (access) {
+            case CURL_LOCK_ACCESS_SHARED: lock->enterR(); break;
+            case CURL_LOCK_ACCESS_SINGLE: lock->enterW(); break;
+            default: Failure("Unknown access");
+        } 
+    }
+    static void unlock_function(CURL *handle, curl_lock_data data, void * userptr) {
+        SharedLocks * locks = (SharedLocks *) userptr;
+    }
+    void doStart() {
+        static SharedLocks locks;
+        s_curlshared = curl_share_init();
+        curl_share_setopt(s_curlshared, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
+        curl_share_setopt(s_curlshared, CURLSHOPT_SHARE, CURL_LOCK_DATA_DNS);
+        curl_share_setopt(s_curlshared, CURLSHOPT_SHARE, CURL_LOCK_DATA_SSL_SESSION);
+        curl_share_setopt(s_curlshared, CURLSHOPT_USERDATA, &locks);
+        curl_share_setopt(s_curlshared, CURLSHOPT_LOCKFUNC, lock_function);
+        curl_share_setopt(s_curlshared, CURLSHOPT_UNLOCKFUNC, lock_function);
+    }
+    void doExit() {
+        curl_share_cleanup(s_curlshared);
+    }
+};
+
 };
 
 static AsyncStarter s_asyncStarter;
+static CurlSharedManager s_curlSharedmManager;
 
 void Stopper::Do() {
     getTaskMan()->stopMe(m_code);
@@ -178,6 +221,8 @@ Balau::TaskMan::TaskMan() {
     s_scheduler.registerTaskMan(this);
 
     m_nStacks = 0;
+
+    m_curlMulti = curl_multi_init();
 }
 
 #ifdef _WIN32
@@ -210,6 +255,20 @@ Balau::TaskMan::~TaskMan() {
     // probably way more work to do here in order to clean up tasks from that thread
     m_evt.stop();
     ev_loop_destroy(m_loop);
+    curl_multi_cleanup(m_curlMulti);
+    curl_multi_setopt(m_curlMulti, CURLMOPT_SOCKETFUNCTION, reinterpret_cast<curl_socket_callback>(curlSocketCallback));
+    curl_multi_setopt(m_curlMulti, CURLMOPT_SOCKETDATA, this);
+    curl_multi_setopt(m_curlMulti, CURLMOPT_TIMERFUNCTION, reinterpret_cast <curl_multi_timer_callback>(curlMultiTimerCallback));
+    curl_multi_setopt(m_curlMulti, CURLMOPT_TIMERDATA, this);
+    curl_multi_setopt(m_curlMulti, CURLMOPT_PIPELINING, 1L);
+}
+
+int Balau::TaskMan::curlSocketCallback(CURL * easy, curl_socket_t s, int what, void * userp, void * socketp) {
+    return 0;
+}
+
+int Balau::TaskMan::curlMultiTimerCallback(CURLM * multi, long timeout_ms, void * userp) {
+    return 0;
 }
 
 void * Balau::TaskMan::getStack() {
