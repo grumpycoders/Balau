@@ -224,6 +224,7 @@
     <ClCompile Include="..\..\src\BString.cc" />
     <ClCompile Include="..\..\src\Buffer.cc" />
     <ClCompile Include="..\..\src\BWebSocket.cc" />
+    <ClCompile Include="..\..\src\CurlTask.cc" />
     <ClCompile Include="..\..\src\Exceptions.cc" />
     <ClCompile Include="..\..\src\Handle.cc" />
     <ClCompile Include="..\..\src\HelperTasks.cc" />

@@ -171,6 +171,9 @@
     <ClCompile Include="..\..\src\MMap.cc">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\CurlTask.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\includes\Async.h">

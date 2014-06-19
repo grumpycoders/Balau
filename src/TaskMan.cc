@@ -71,6 +71,7 @@ class CurlSharedManager : public Balau::AtStart, Balau::AtExit {
         lock->leave();
     }
     void doStart() {
+        curl_global_init(CURL_GLOBAL_ALL);
         static SharedLocks locks;
         s_curlshared = curl_share_init();
         curl_share_setopt(s_curlshared, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
@@ -267,14 +268,17 @@ int Balau::TaskMan::curlSocketCallback(CURL * easy, curl_socket_t s, int what, v
         evt->stop();
         break;
     case CURL_POLL_IN:
+        evt->stop();
         evt->set(s, ev::READ);
         evt->start();
         break;
     case CURL_POLL_OUT:
+        evt->stop();
         evt->set(s, ev::WRITE);
         evt->start();
         break;
     case CURL_POLL_INOUT:
+        evt->stop();
         evt->set(s, ev::READ | ev::WRITE);
         evt->start();
         break;
@@ -403,11 +407,12 @@ int Balau::TaskMan::mainLoop() {
 
         // if we begin that loop with any pending task, just don't loop, so we can add them immediately.
         bool noWait = !m_pendingAdd.isEmpty() || !yielded.empty() || !stopped.empty();
+        bool curlNeedsSpin = !m_curlTimer.is_active() && m_curlStillRunning != 0;
 
         // libev's event "loop". We always runs it once though.
         m_allowedToSignal = true;
         Printer::elog(E_TASK, "TaskMan at %p Going to libev main loop; stopped = %s", this, m_stopped ? "true" : "false");
-        ev_run(m_loop, noWait || m_stopped ? EVRUN_NOWAIT : EVRUN_ONCE);
+        ev_run(m_loop, noWait || curlNeedsSpin || m_stopped ? EVRUN_NOWAIT : EVRUN_ONCE);
         Printer::elog(E_TASK, "TaskMan at %p Getting out of libev main loop", this);
 
         // calling async's idle
@@ -458,6 +463,8 @@ int Balau::TaskMan::mainLoop() {
         yielded = yielded2;
         yielded2.clear();
 
+        bool curlGotHandle = false;
+
         // Adding tasks that were added, maybe from other threads
         while (!m_pendingAdd.isEmpty()) {
             Printer::elog(E_TASK, "TaskMan at %p trying to pop a task...", this);
@@ -470,9 +477,13 @@ int Balau::TaskMan::mainLoop() {
             starting.insert(t);
             CurlTask * curlTask = dynamic_cast<CurlTask *>(t);
             if (curlTask) {
+                curlGotHandle = true;
                 curl_multi_add_handle(m_curlMulti, curlTask->m_curlHandle);
             }
         }
+
+        if (curlGotHandle || curlNeedsSpin)
+            curl_multi_socket_all(m_curlMulti, &m_curlStillRunning);
 
         // Finally, let's destroy tasks that no longer are necessary.
         bool didDelete;
