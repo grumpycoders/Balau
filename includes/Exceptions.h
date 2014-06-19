@@ -99,9 +99,11 @@ static inline void * realloc(void * previous, size_t size) {
 
 static inline void AssertHelperInner(const String & msg, const char * details = NULL) throw (GeneralException) {
 #if defined(_MSC_VER) && defined(_DEBUG)
-    __debugbreak();
+	if (IsDebuggerPresent())
+		__debugbreak();
+	else
 #endif
-    throw GeneralException(msg, details);
+		throw GeneralException(msg, details);
 }
 
 static inline void AssertHelper(const String & msg, const char * fmt, ...) printfwarning(2, 3);
