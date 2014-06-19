@@ -24,6 +24,7 @@ namespace gnu = __gnu_cxx;
 namespace Balau {
 
 class TaskScheduler;
+class CurlTask;
 
 namespace Events {
 
@@ -85,6 +86,7 @@ class TaskMan {
     void * m_fiber;
 #endif
     friend class Task;
+    friend class CurlTask;
     friend class TaskScheduler;
     template<class T>
     friend T * createAsyncOp(T * op);
@@ -106,12 +108,15 @@ class TaskMan {
     ev::timer m_curlTimer;
     CURLM * m_curlMulti = false;
     int m_curlStillRunning = 0;
+    bool m_curlGotNewHandles = false;
     static int curlSocketCallbackStatic(CURL * easy, curl_socket_t s, int what, void * userp, void * socketp);
     int curlSocketCallback(CURL * easy, curl_socket_t s, int what, void * socketp);
     void curlSocketEventCallback(ev::io & w, int revents);
     static int curlMultiTimerCallbackStatic(CURLM * multi, long timeout_ms, void * userp);
     int curlMultiTimerCallback(CURLM * multi, long timeout_ms);
     void curlMultiTimerEventCallback(ev::timer & w, int revents);
+    void registerCurlHandle(CurlTask * curlTask);
+    void unregisterCurlHandle(CurlTask * curlTask);
 
       TaskMan(const TaskMan &) = delete;
     TaskMan & operator=(const TaskMan &) = delete;

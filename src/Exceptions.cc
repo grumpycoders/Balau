@@ -102,3 +102,12 @@ void Balau::ExitHelper(const String & msg, const char * fmt, ...) {
         ExitHelperInner(msg, NULL);
     }
 }
+
+void Balau::AssertHelperInner(const Balau::String & msg, const char * details) throw (Balau::GeneralException) {
+#if defined(_MSC_VER) && defined(_DEBUG)
+    if (IsDebuggerPresent())
+        __debugbreak();
+    else
+#endif
+        throw Balau::GeneralException(msg, details);
+}

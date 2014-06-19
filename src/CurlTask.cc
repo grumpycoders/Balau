@@ -10,6 +10,11 @@ Balau::CurlTask::CurlTask() {
     curl_easy_setopt(m_curlHandle, CURLOPT_DEBUGDATA, this);
 }
 
+Balau::CurlTask::~CurlTask() {
+    unregisterCurlHandle();
+    curl_easy_cleanup(m_curlHandle);
+}
+
 size_t Balau::CurlTask::writeFunctionStatic(char * ptr, size_t size, size_t nmemb, void * userdata) {
     CurlTask * curlTask = (CurlTask *) userdata;
     return curlTask->writeFunction(ptr, size, nmemb);
@@ -26,6 +31,24 @@ int Balau::CurlTask::debugFunctionStatic(CURL * easy, curl_infotype info, char *
     return curlTask->debugFunction(info, str, str_len);
 }
 
-void Balau::CurlTask::curlDone(CURLcode result) {
+Balau::DownloadTask::DownloadTask(const Balau::String & url) {
+    curl_easy_setopt(m_curlHandle, CURLOPT_URL, url.to_charp());
+    m_name.set("DownloadTask(%s)", url.to_charp());
+}
 
+void Balau::DownloadTask::Do() {
+    if (m_state)
+        return;
+
+    m_state = 1;
+    registerCurlHandle();
+    waitFor(&m_evt);
+    yield();
+}
+
+void Balau::DownloadTask::curlDone(CURLcode result) {
+    m_curlResult = result;
+    curl_easy_getinfo(m_curlHandle, CURLINFO_RESPONSE_CODE, &m_responseCode);
+    m_evt.doSignal();
+    m_done = true;
 }
