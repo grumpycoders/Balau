@@ -1,3 +1,8 @@
+#ifdef _MSC_VER
+#include <Windows.h>
+#endif
+
+#undef ERROR
 
 #include "Async.h"
 #include "TaskMan.h"
@@ -5,10 +10,6 @@
 #include "Main.h"
 #include "Local.h"
 #include "CurlTask.h"
-
-#ifdef _MSC_VER
-#include <Windows.h>
-#endif
 
 #include <curl/curl.h>
 
@@ -60,6 +61,14 @@ class CurlSharedManager : public Balau::AtStart, Balau::AtExit {
     }
     static void unlock_function(CURL *handle, curl_lock_data data, void * userptr) {
         SharedLocks * locks = (SharedLocks *) userptr;
+        Balau::RWLock * lock = NULL;
+        switch (data) {
+            case CURL_LOCK_DATA_COOKIE: lock = &locks->cookie; break;
+            case CURL_LOCK_DATA_DNS: lock = &locks->dns; break;
+            case CURL_LOCK_DATA_SSL_SESSION: lock = &locks->ssl_session; break;
+            default: Failure("Unknown lock");
+        }
+        lock->leave();
     }
     void doStart() {
         static SharedLocks locks;
@@ -281,9 +290,11 @@ int Balau::TaskMan::curlSocketCallback(CURL * easy, curl_socket_t s, int what, v
 void Balau::TaskMan::curlSocketEventCallback(ev::io & w, int revents) {
     int bitmask = 0;
     if (revents & ev::READ)
-        bitmask |= CURL_POLL_IN;
+        bitmask |= CURL_CSELECT_IN;
     if (revents & ev::WRITE)
-        bitmask |= CURL_POLL_OUT;
+        bitmask |= CURL_CSELECT_OUT;
+    if (revents & ev::ERROR)
+        bitmask |= CURL_CSELECT_ERR;
     curl_multi_socket_action(m_curlMulti, w.fd, bitmask, &m_curlStillRunning);
 }
 
