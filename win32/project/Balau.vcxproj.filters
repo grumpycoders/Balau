@@ -209,9 +209,6 @@
     <ClInclude Include="..\..\includes\BWebSocket.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\includes\c++11-surrogates.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\includes\Exceptions.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -330,6 +327,9 @@
       <Filter>Third Party\jsoncpp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\includes\MMap.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\CurlTask.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

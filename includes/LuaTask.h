@@ -1,6 +1,5 @@
 #pragma once
 
-#include <c++11-surrogates.h>
 #include <BLua.h>
 #include <Task.h>
 #include <StacklessTask.h>
@@ -58,7 +57,7 @@ class LuaTask : public Task {
       ~LuaTask() { L.weaken(); }
     virtual const char * getName() const { return "LuaTask"; }
   private:
-      LuaTask(Lua && __L, LuaExecCell * cell) : L(Move(__L)), m_cell(cell) { if (!cell->needsStack()) setStackless(); }
+      LuaTask(Lua && __L, LuaExecCell * cell) : L(std::move(__L)), m_cell(cell) { if (!cell->needsStack()) setStackless(); }
     virtual void Do();
     Lua L;
     LuaExecCell * m_cell;

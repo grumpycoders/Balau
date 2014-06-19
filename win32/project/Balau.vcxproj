@@ -270,7 +270,7 @@
     <ClInclude Include="..\..\includes\BString.h" />
     <ClInclude Include="..\..\includes\Buffer.h" />
     <ClInclude Include="..\..\includes\BWebSocket.h" />
-    <ClInclude Include="..\..\includes\c++11-surrogates.h" />
+    <ClInclude Include="..\..\includes\CurlTask.h" />
     <ClInclude Include="..\..\includes\Exceptions.h" />
     <ClInclude Include="..\..\includes\Handle.h" />
     <ClInclude Include="..\..\includes\HelperTasks.h" />

@@ -103,10 +103,15 @@ class TaskMan {
     int m_stopCode = 0;
     bool m_stopped = false;
     bool m_allowedToSignal = false;
+    ev::timer m_curlTimer;
     CURLM * m_curlMulti = false;
     int m_curlStillRunning = 0;
-    static int curlSocketCallback(CURL * easy, curl_socket_t s, int what, void * userp, void * socketp);
-    static int curlMultiTimerCallback(CURLM * multi, long timeout_ms, void * userp);
+    static int curlSocketCallbackStatic(CURL * easy, curl_socket_t s, int what, void * userp, void * socketp);
+    int curlSocketCallback(CURL * easy, curl_socket_t s, int what, void * socketp);
+    void curlSocketEventCallback(ev::io & w, int revents);
+    static int curlMultiTimerCallbackStatic(CURLM * multi, long timeout_ms, void * userp);
+    int curlMultiTimerCallback(CURLM * multi, long timeout_ms);
+    void curlMultiTimerEventCallback(ev::timer & w, int revents);
 
       TaskMan(const TaskMan &) = delete;
     TaskMan & operator=(const TaskMan &) = delete;

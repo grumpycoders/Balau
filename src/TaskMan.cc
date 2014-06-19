@@ -4,6 +4,7 @@
 #include "Task.h"
 #include "Main.h"
 #include "Local.h"
+#include "CurlTask.h"
 
 #ifdef _MSC_VER
 #include <Windows.h>
@@ -223,6 +224,85 @@ Balau::TaskMan::TaskMan() {
     m_nStacks = 0;
 
     m_curlMulti = curl_multi_init();
+
+    curl_multi_setopt(m_curlMulti, CURLMOPT_SOCKETFUNCTION, reinterpret_cast<curl_socket_callback>(curlSocketCallbackStatic));
+    curl_multi_setopt(m_curlMulti, CURLMOPT_SOCKETDATA, this);
+    curl_multi_setopt(m_curlMulti, CURLMOPT_TIMERFUNCTION, reinterpret_cast <curl_multi_timer_callback>(curlMultiTimerCallbackStatic));
+    curl_multi_setopt(m_curlMulti, CURLMOPT_TIMERDATA, this);
+    curl_multi_setopt(m_curlMulti, CURLMOPT_PIPELINING, 1L);
+
+    m_curlTimer.set(m_loop);
+    m_curlTimer.set<TaskMan, &TaskMan::curlMultiTimerEventCallback>(this);
+}
+
+int Balau::TaskMan::curlSocketCallbackStatic(CURL * easy, curl_socket_t s, int what, void * userp, void * socketp) {
+    TaskMan * taskMan = (TaskMan *)userp;
+    return taskMan->curlSocketCallback(easy, s, what, socketp);
+}
+
+int Balau::TaskMan::curlSocketCallback(CURL * easy, curl_socket_t s, int what, void * socketp) {
+    ev::io * evt = (ev::io *) socketp;
+    if (!evt) {
+        if (what == CURL_POLL_REMOVE)
+            return 0;
+        evt = new ev::io;
+        evt->set<TaskMan, &TaskMan::curlSocketEventCallback>(this);
+        evt->set(s, ev::READ | ev::WRITE);
+        evt->set(m_loop);
+        evt->start();
+        curl_multi_assign(m_curlMulti, s, evt);
+    }
+
+    switch (what) {
+    case CURL_POLL_NONE:
+        evt->stop();
+        break;
+    case CURL_POLL_IN:
+        evt->set(s, ev::READ);
+        evt->start();
+        break;
+    case CURL_POLL_OUT:
+        evt->set(s, ev::WRITE);
+        evt->start();
+        break;
+    case CURL_POLL_INOUT:
+        evt->set(s, ev::READ | ev::WRITE);
+        evt->start();
+        break;
+    case CURL_POLL_REMOVE:
+        evt->stop();
+        curl_multi_assign(m_curlMulti, s, NULL);
+        delete evt;
+    }
+
+    return 0;
+}
+
+void Balau::TaskMan::curlSocketEventCallback(ev::io & w, int revents) {
+    int bitmask = 0;
+    if (revents & ev::READ)
+        bitmask |= CURL_POLL_IN;
+    if (revents & ev::WRITE)
+        bitmask |= CURL_POLL_OUT;
+    curl_multi_socket_action(m_curlMulti, w.fd, bitmask, &m_curlStillRunning);
+}
+
+int Balau::TaskMan::curlMultiTimerCallbackStatic(CURLM * multi, long timeout_ms, void * userp) {
+    TaskMan * taskMan = (TaskMan *)userp;
+    return taskMan->curlMultiTimerCallback(multi, timeout_ms);
+}
+
+int Balau::TaskMan::curlMultiTimerCallback(CURLM * multi, long timeout_ms) {
+    m_curlTimer.stop();
+    if (timeout_ms >= 0) {
+        m_curlTimer.set((ev_tstamp) timeout_ms);
+        m_curlTimer.start();
+    }
+    return 0;
+}
+
+void Balau::TaskMan::curlMultiTimerEventCallback(ev::timer & w, int revents) {
+    curl_multi_socket_action(m_curlMulti, CURL_SOCKET_TIMEOUT, 0, &m_curlStillRunning);
 }
 
 #ifdef _WIN32
@@ -256,19 +336,6 @@ Balau::TaskMan::~TaskMan() {
     m_evt.stop();
     ev_loop_destroy(m_loop);
     curl_multi_cleanup(m_curlMulti);
-    curl_multi_setopt(m_curlMulti, CURLMOPT_SOCKETFUNCTION, reinterpret_cast<curl_socket_callback>(curlSocketCallback));
-    curl_multi_setopt(m_curlMulti, CURLMOPT_SOCKETDATA, this);
-    curl_multi_setopt(m_curlMulti, CURLMOPT_TIMERFUNCTION, reinterpret_cast <curl_multi_timer_callback>(curlMultiTimerCallback));
-    curl_multi_setopt(m_curlMulti, CURLMOPT_TIMERDATA, this);
-    curl_multi_setopt(m_curlMulti, CURLMOPT_PIPELINING, 1L);
-}
-
-int Balau::TaskMan::curlSocketCallback(CURL * easy, curl_socket_t s, int what, void * userp, void * socketp) {
-    return 0;
-}
-
-int Balau::TaskMan::curlMultiTimerCallback(CURLM * multi, long timeout_ms, void * userp) {
-    return 0;
 }
 
 void * Balau::TaskMan::getStack() {
@@ -390,6 +457,10 @@ int Balau::TaskMan::mainLoop() {
             t->setup(this, t->isStackless() ? NULL : getStack());
             m_tasks.insert(t);
             starting.insert(t);
+            CurlTask * curlTask = dynamic_cast<CurlTask *>(t);
+            if (curlTask) {
+                curl_multi_add_handle(m_curlMulti, curlTask->m_curlHandle);
+            }
         }
 
         // Finally, let's destroy tasks that no longer are necessary.
