@@ -14,7 +14,7 @@
 #include <curl/curl.h>
 
 static Balau::AsyncManager s_async;
-static CURLSH * s_curlshared = NULL;
+static CURLSH * s_curlShared = NULL;
 
 namespace {
 
@@ -73,16 +73,17 @@ class CurlSharedManager : public Balau::AtStart, Balau::AtExit {
     void doStart() {
         curl_global_init(CURL_GLOBAL_ALL);
         static SharedLocks locks;
-        s_curlshared = curl_share_init();
-        curl_share_setopt(s_curlshared, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
-        curl_share_setopt(s_curlshared, CURLSHOPT_SHARE, CURL_LOCK_DATA_DNS);
-        curl_share_setopt(s_curlshared, CURLSHOPT_SHARE, CURL_LOCK_DATA_SSL_SESSION);
-        curl_share_setopt(s_curlshared, CURLSHOPT_USERDATA, &locks);
-        curl_share_setopt(s_curlshared, CURLSHOPT_LOCKFUNC, lock_function);
-        curl_share_setopt(s_curlshared, CURLSHOPT_UNLOCKFUNC, lock_function);
+        s_curlShared = curl_share_init();
+        curl_share_setopt(s_curlShared, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
+        curl_share_setopt(s_curlShared, CURLSHOPT_SHARE, CURL_LOCK_DATA_DNS);
+        curl_share_setopt(s_curlShared, CURLSHOPT_SHARE, CURL_LOCK_DATA_SSL_SESSION);
+        curl_share_setopt(s_curlShared, CURLSHOPT_USERDATA, &locks);
+        curl_share_setopt(s_curlShared, CURLSHOPT_LOCKFUNC, lock_function);
+        curl_share_setopt(s_curlShared, CURLSHOPT_UNLOCKFUNC, lock_function);
     }
     void doExit() {
-        curl_share_cleanup(s_curlshared);
+        curl_share_cleanup(s_curlShared);
+        curl_global_cleanup();
     }
 };
 
@@ -478,12 +479,28 @@ int Balau::TaskMan::mainLoop() {
             CurlTask * curlTask = dynamic_cast<CurlTask *>(t);
             if (curlTask) {
                 curlGotHandle = true;
+                curl_easy_setopt(curlTask->m_curlHandle, CURLOPT_SHARE, s_curlShared);
+                curl_easy_setopt(curlTask->m_curlHandle, CURLOPT_PRIVATE, curlTask);
                 curl_multi_add_handle(m_curlMulti, curlTask->m_curlHandle);
             }
         }
 
         if (curlGotHandle || curlNeedsSpin)
             curl_multi_socket_all(m_curlMulti, &m_curlStillRunning);
+
+        CURLMsg * curlMsg = NULL;
+        int curlMsgInQueue;
+
+        while ((curlMsg = curl_multi_info_read(m_curlMulti, &curlMsgInQueue))) {
+            if (curlMsg->msg != CURLMSG_DONE)
+                continue;
+            Task * maybeCurlTask = NULL;
+            curl_easy_getinfo(curlMsg->easy_handle, CURLINFO_PRIVATE, &maybeCurlTask);
+            IAssert(maybeCurlTask, "curl easy handle didn't have any private data...");
+            CurlTask * curlTask = dynamic_cast<CurlTask *>(maybeCurlTask);
+            IAssert(curlTask, "curl easy handle had corrupted private data...");
+            curlTask->curlDone(curlMsg->data.result);
+        }
 
         // Finally, let's destroy tasks that no longer are necessary.
         bool didDelete;

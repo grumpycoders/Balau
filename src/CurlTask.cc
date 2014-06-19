@@ -25,3 +25,7 @@ int Balau::CurlTask::debugFunctionStatic(CURL * easy, curl_infotype info, char *
     IAssert(easy == curlTask->m_curlHandle, "Got a debug callback for a handle that isn't our own.");
     return curlTask->debugFunction(info, str, str_len);
 }
+
+void Balau::CurlTask::curlDone(CURLcode result) {
+
+}

@@ -13,6 +13,8 @@ public:
   protected:
     CURL * m_curlHandle;
 private:
+    void curlDone(CURLcode result);
+
     static  size_t writeFunctionStatic(char * ptr, size_t size, size_t nmemb, void * userdata);
     virtual size_t writeFunction(char * ptr, size_t size, size_t nmemb) { return size * nmemb; }
     static  size_t readFunctionStatic(void * ptr, size_t size, size_t nmemb, void * userdata);
