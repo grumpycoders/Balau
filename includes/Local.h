@@ -26,7 +26,7 @@ class PThreadsTLSManager : public TLSManager {
 template <class TLS>
 class PThreadsTLSFactory : private PThreadsTLSManager {
   public:
-      PThreadsTLSFactory() : m_constructor([]() -> TLS * { return new TLS(); }) { }
+      PThreadsTLSFactory() : m_constructor([]() -> TLS * { return new TLS(); }) { init();  }
       ~PThreadsTLSFactory() { destroyAll(); }
     void setConstructor(const std::function<TLS *()> & constructor) { m_constructor = constructor; }
     TLS * get() {
