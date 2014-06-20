@@ -79,8 +79,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;.\curl;..\curl\include;..\curl\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;USE_WINDOWS_SSPI;USE_SCHANNEL;CURL_DISABLE_LDAP;WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;.\curl;..\curl\include;..\curl\lib;..\c-ares;c-ares;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;USE_WINDOWS_SSPI;USE_SCHANNEL;CURL_DISABLE_LDAP;USE_ARES;WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -108,8 +108,8 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;.\curl;..\curl\include;..\curl\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;USE_WINDOWS_SSPI;USE_SCHANNEL;CURL_DISABLE_LDAP;WIN64;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;.\curl;..\curl\include;..\curl\lib;..\c-ares;c-ares;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;USE_WINDOWS_SSPI;USE_SCHANNEL;CURL_DISABLE_LDAP;USE_ARES;WIN64;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -135,8 +135,8 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>.;.\curl;..\curl\include;..\curl\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;USE_WINDOWS_SSPI;USE_SCHANNEL;CURL_DISABLE_LDAP;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;.\curl;..\curl\include;..\curl\lib;..\c-ares;c-ares;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;USE_WINDOWS_SSPI;USE_SCHANNEL;CURL_DISABLE_LDAP;USE_ARES;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -164,8 +164,8 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>.;.\curl;..\curl\include;..\curl\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;USE_WINDOWS_SSPI;USE_SCHANNEL;CURL_DISABLE_LDAP;WIN64;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;.\curl;..\curl\include;..\curl\lib;..\c-ares;c-ares;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;USE_WINDOWS_SSPI;USE_SCHANNEL;CURL_DISABLE_LDAP;USE_ARES;WIN64;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>

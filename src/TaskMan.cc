@@ -540,6 +540,7 @@ void Balau::TaskMan::registerCurlHandle(Balau::CurlTask * curlTask) {
     m_curlGotNewHandles = true;
     curl_easy_setopt(curlTask->m_curlHandle, CURLOPT_SHARE, s_curlShared);
     curl_easy_setopt(curlTask->m_curlHandle, CURLOPT_PRIVATE, curlTask);
+    curl_easy_setopt(curlTask->m_curlHandle, CURLOPT_NOSIGNAL, 1L);
     curl_multi_add_handle(m_curlMulti, curlTask->m_curlHandle);
 }
 

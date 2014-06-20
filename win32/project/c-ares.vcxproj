@@ -86,7 +86,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c-ares;..\..\win32\c-ares</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
       <PreprocessorDefinitions>CARES_BUILDING_LIBRARY;CARES_STATICLIB;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -99,7 +99,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c-ares;..\..\win32\c-ares</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
       <PreprocessorDefinitions>CARES_BUILDING_LIBRARY;CARES_STATICLIB;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -114,7 +114,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c-ares;..\..\win32\c-ares</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
       <PreprocessorDefinitions>CARES_BUILDING_LIBRARY;CARES_STATICLIB;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -131,7 +131,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c-ares;..\..\win32\c-ares</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
       <PreprocessorDefinitions>CARES_BUILDING_LIBRARY;CARES_STATICLIB;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -142,7 +142,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\ares_build.h" />
     <ClInclude Include="..\c-ares\ares.h" />
     <ClInclude Include="..\c-ares\ares_data.h" />
     <ClInclude Include="..\c-ares\ares_dns.h" />
@@ -163,6 +162,7 @@
     <ClInclude Include="..\c-ares\config-win32.h" />
     <ClInclude Include="..\c-ares\nameser.h" />
     <ClInclude Include="..\c-ares\setup_once.h" />
+    <ClInclude Include="c-ares\ares_build.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\c-ares\ares_cancel.c" />

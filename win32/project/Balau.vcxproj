@@ -86,7 +86,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>PTW32_STATIC_LIB;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;_CONSOLE;_LIB;CURL_STATICLIB;DEBUG;_DEBUG;DEBUGBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>PTW32_STATIC_LIB;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;_CONSOLE;_LIB;CURL_STATICLIB;USE_ARES;DEBUG;_DEBUG;DEBUGBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.;.\curl;..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers;..\..\win32\curl\include</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h</ForcedIncludeFiles>
@@ -101,7 +101,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>PTW32_STATIC_LIB;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;_CONSOLE;_LIB;CURL_STATICLIB;DEBUG;_DEBUG;DEBUGBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>PTW32_STATIC_LIB;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;_CONSOLE;_LIB;CURL_STATICLIB;USE_ARES;DEBUG;_DEBUG;DEBUGBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.;.\curl;..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers;..\..\win32\curl\include</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h</ForcedIncludeFiles>
@@ -117,7 +117,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>PTW32_STATIC_LIB;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;_CONSOLE;_LIB;CURL_STATICLIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>PTW32_STATIC_LIB;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;_CONSOLE;_LIB;CURL_STATICLIB;USE_ARES;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.;.\curl;..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers;..\..\win32\curl\include</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h</ForcedIncludeFiles>
@@ -135,7 +135,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>PTW32_STATIC_LIB;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;_CONSOLE;_LIB;CURL_STATICLIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>PTW32_STATIC_LIB;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;_CONSOLE;_LIB;CURL_STATICLIB;USE_ARES;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.;.\curl;..\..\includes;..\..\includes\msc;..\..\libev;..\..\win32;..\..\win32\pthreads-win32;..\..\win32\iconv;..\..\win32\zlib;..\..\win32\regex;..\..\win32\c-ares;..\..\LuaJIT\src;..\..\src\jsoncpp\include;..\..\libtommath;..\..\libtomcrypt\src\headers;..\..\win32\curl\include</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h</ForcedIncludeFiles>

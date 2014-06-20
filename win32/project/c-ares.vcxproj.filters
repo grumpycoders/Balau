@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="..\ares_build.h" />
     <ClInclude Include="..\c-ares\ares.h" />
     <ClInclude Include="..\c-ares\ares_data.h" />
     <ClInclude Include="..\c-ares\ares_dns.h" />
@@ -22,6 +21,7 @@
     <ClInclude Include="..\c-ares\config-win32.h" />
     <ClInclude Include="..\c-ares\nameser.h" />
     <ClInclude Include="..\c-ares\setup_once.h" />
+    <ClInclude Include="c-ares\ares_build.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\c-ares\ares_cancel.c" />
