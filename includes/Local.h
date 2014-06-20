@@ -23,6 +23,34 @@ class PThreadsTLSManager : public TLSManager {
     pthread_key_t m_key;
 };
 
+template <class TLS>
+class PThreadsTLSFactory : private PThreadsTLSManager {
+  public:
+      PThreadsTLSFactory() : m_constructor([]() -> TLS * { return new TLS(); }) { }
+      ~PThreadsTLSFactory() { destroyAll(); }
+    void setConstructor(const std::function<TLS *()> & constructor) { m_constructor = constructor; }
+    TLS * get() {
+        TLS * tls = (TLS *) getTLS();
+        if (!tls) {
+            tls = m_constructor();
+            setTLS(tls);
+            m_TLSes.push(tls);
+            ++m_numTLSes;
+        }
+        return tls;
+    }
+  private:
+    void destroyAll() {
+        while (m_numTLSes--) {
+            TLS * tls = m_TLSes.pop();
+            delete tls;
+        }
+    }
+    Queue<TLS> m_TLSes;
+    std::atomic<unsigned> m_numTLSes;
+    std::function<TLS *()> m_constructor;
+};
+
 extern TLSManager * g_tlsManager;
 
 class Local : public AtStart {
