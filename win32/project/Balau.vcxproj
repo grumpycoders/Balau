@@ -267,10 +267,10 @@
     <ClInclude Include="..\..\includes\Async.h" />
     <ClInclude Include="..\..\includes\AtStartExit.h" />
     <ClInclude Include="..\..\includes\Base64.h" />
+    <ClInclude Include="..\..\includes\BHashes.h" />
     <ClInclude Include="..\..\includes\BigInt.h" />
     <ClInclude Include="..\..\includes\BLua.h" />
     <ClInclude Include="..\..\includes\BRegex.h" />
-    <ClInclude Include="..\..\includes\BSHA1.h" />
     <ClInclude Include="..\..\includes\BStdIO.h" />
     <ClInclude Include="..\..\includes\BStream.h" />
     <ClInclude Include="..\..\includes\BString.h" />

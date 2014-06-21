@@ -194,9 +194,6 @@
     <ClInclude Include="..\..\includes\BRegex.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\includes\BSHA1.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\includes\BStdIO.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -333,6 +330,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\includes\CurlTask.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\BHashes.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
