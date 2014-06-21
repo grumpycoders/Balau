@@ -126,6 +126,16 @@ class String : private std::string {
     char & operator[](ssize_t i) { if (i < 0) i = strlen() + i; return at(i); }
 
     void reserve(size_t s) { std::string::reserve(s); }
+
+    size_t find_first_of(const String & set, size_t offset = 0) const { return std::string::find_first_of(set, offset); }
+    size_t find_last_of(const String & set, size_t offset = 0) const { return std::string::find_last_of(set, offset); }
+    size_t find_first_not_of(const String & set, size_t offset = 0) const { return std::string::find_first_not_of(set, offset); }
+    size_t find_last_not_of(const String & set, size_t offset = 0) const { return std::string::find_last_not_of(set, offset); }
+
+    bool isEmpty() { return std::string::empty(); }
+
+    using std::string::npos;
+    using std::string::size_type;
 };
 
 };

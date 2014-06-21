@@ -9,18 +9,28 @@ namespace Balau {
 class CurlTask : public StacklessTask {
   public:
       CurlTask();
-      ~CurlTask();
+      virtual ~CurlTask();
     friend class TaskMan;
+  
+    static String percentEncode(const String & src);
+    static String percentDecode(const String & src);
+    static std::vector<String> tokenize(const String & str, const String & delimiters = "&", bool trimEmpty = true);
+
+    virtual void prepareRequest() { }
+
   protected:
     CURL * m_curlHandle;
-    void registerCurlHandle() { getTaskMan()->registerCurlHandle(this); }
+    void registerCurlHandle() { prepareRequest(); getTaskMan()->registerCurlHandle(this); }
     void unregisterCurlHandle() { getTaskMan()->unregisterCurlHandle(this); }
+
   private:
-    virtual size_t writeFunction(char * ptr, size_t size, size_t nmemb) { return size * nmemb; }
-    virtual size_t readFunction(void * ptr, size_t size, size_t nmemb) { return CURL_READFUNC_ABORT; }
+    virtual size_t headerFunction(char * ptr, size_t size) { return size; }
+    virtual size_t writeFunction(char * ptr, size_t size) { return size; }
+    virtual size_t readFunction(void * ptr, size_t size) { return CURL_READFUNC_ABORT; }
     virtual int    debugFunction(curl_infotype info, char * str, size_t str_len) { return 0; }
     virtual void   curlDone(CURLcode result) { }
 
+    static  size_t headerFunctionStatic(char * ptr, size_t size, size_t nmemb, void * userdata);
     static  size_t writeFunctionStatic(char * ptr, size_t size, size_t nmemb, void * userdata);
     static  size_t readFunctionStatic(void * ptr, size_t size, size_t nmemb, void * userdata);
     static  int    debugFunctionStatic(CURL * easy, curl_infotype info, char * str, size_t str_len, void * userdata);
@@ -42,10 +52,22 @@ class DownloadTask : public CurlTask {
     virtual const char * getName() const override { return m_name.to_charp(); }
     virtual void Do() override;
     virtual void curlDone(CURLcode result) override;
-    virtual size_t writeFunction(char * ptr, size_t size, size_t nmemb) override { m_data += ptr; return size * nmemb; }
+    virtual void downloadDone() { }
+    virtual size_t writeFunction(char * ptr, size_t size) override { m_data += ptr; return size; }
     String m_name;
     Events::Custom m_evt;
     bool m_done = false;
+};
+
+class HttpDownloadTask : public DownloadTask {
+  public:
+      HttpDownloadTask(const String & url) : DownloadTask(url) { }
+      virtual ~HttpDownloadTask();
+    void addHeader(const String & header);
+    virtual void prepareRequest() override;
+
+  private:
+    struct curl_slist * m_headers = NULL;
 };
 
 };
