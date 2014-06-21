@@ -1,6 +1,5 @@
 #pragma once
 
-#include <array>
 #include <Exceptions.h>
 #include <tomcrypt.h>
 
@@ -73,20 +72,20 @@ class HMAC {
     hmac_state m_state;
 };
 
-class CHC       : public Hash<&chc_desc> { };
-class Whirlpool : public Hash<&whirlpool_desc> { };
-class SHA512    : public Hash<&sha512_desc> { };
-class SHA384    : public Hash<&sha384_desc> { };
-class SHA256    : public Hash<&sha256_desc> { };
-class SHA224    : public Hash<&sha224_desc> { };
-class SHA1      : public Hash<&sha1_desc> { };
-class MD5       : public Hash<&md5_desc> { };
-class MD4       : public Hash<&md4_desc> { };
-class MD2       : public Hash<&md2_desc> { };
-class Tiger     : public Hash<&tiger_desc> { };
-class RMD128    : public Hash<&rmd128_desc> { };
-class RMD160    : public Hash<&rmd160_desc> { };
-class RMD256    : public Hash<&rmd256_desc> { };
-class RMD320    : public Hash<&rmd320_desc> { };
+typedef Hash<&chc_desc>       CHC;
+typedef Hash<&whirlpool_desc> Whirlpool;
+typedef Hash<&sha512_desc>    SHA512;
+typedef Hash<&sha384_desc>    SHA384;
+typedef Hash<&sha256_desc>    SHA256;
+typedef Hash<&sha224_desc>    SHA224;
+typedef Hash<&sha1_desc>      SHA1;
+typedef Hash<&md5_desc>       MD5;
+typedef Hash<&md4_desc>       MD4;
+typedef Hash<&md2_desc>       MD2;
+typedef Hash<&tiger_desc>     Tiger;
+typedef Hash<&rmd128_desc>    RMD128;
+typedef Hash<&rmd160_desc>    RMD160;
+typedef Hash<&rmd256_desc>    RMD256;
+typedef Hash<&rmd320_desc>    RMD320;
 
 };

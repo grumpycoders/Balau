@@ -335,6 +335,9 @@
     <ClInclude Include="..\..\includes\BHashes.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\includes\BCypher.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\jsoncpp\src\json_internalarray.inl">
