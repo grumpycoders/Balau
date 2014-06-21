@@ -134,6 +134,9 @@ class String : private std::string {
 
     bool isEmpty() { return std::string::empty(); }
 
+    std::vector<String> tokenize(const String & delimiters = "&", bool trimEmpty = true);
+
+
     using std::string::npos;
     using std::string::size_type;
 };

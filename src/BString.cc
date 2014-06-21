@@ -154,3 +154,25 @@ Balau::String::List Balau::String::split(char c) {
     free(d);
     return r;
 }
+
+std::vector<Balau::String> Balau::String::tokenize(const String & delimiters, bool trimEmpty) {
+    std::vector<String> tokens;
+    size_t pos, lastPos = 0;
+    for (;;) {
+        pos = find_first_of(delimiters, lastPos);
+        if (pos == String::npos) {
+            pos = strlen();
+
+            if ((pos != lastPos) || !trimEmpty)
+                tokens.push_back(extract(lastPos, pos));
+
+            return tokens;
+        }
+        else {
+            if ((pos != lastPos) || !trimEmpty)
+                tokens.push_back(extract(lastPos, pos));
+        }
+
+        lastPos = pos + 1;
+    }
+}

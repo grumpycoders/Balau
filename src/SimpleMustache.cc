@@ -65,7 +65,7 @@ Balau::SimpleMustache::Context & Balau::SimpleMustache::Context::Proxy::operator
         m_idx = ctxLst.size() + m_idx + 1;
     if (m_idx <= 0)
         m_idx = 1;
-    if (ctxLst.size() < m_idx)
+    if (ctxLst.size() < static_cast<size_t>(m_idx))
         ctxLst.resize(m_idx);
     SubContext & subCtx = ctxLst[m_idx - 1];
     SubContext::iterator s = subCtx.find(key);
@@ -447,7 +447,7 @@ Balau::SimpleMustache::Fragments::const_iterator Balau::SimpleMustache::render_r
 Balau::String Balau::SimpleMustache::escape(const String & s) {
     int size = 0;
 
-    for (int i = 0; i < s.strlen(); i++) {
+    for (unsigned i = 0; i < s.strlen(); i++) {
         switch (s[i]) {
         case '&':
             size += 5;
@@ -476,7 +476,7 @@ Balau::String Balau::SimpleMustache::escape(const String & s) {
     char * t = (char *) malloc(size + 1);
     char * p = t;
 
-    for (int i = 0; i < s.strlen(); i++) {
+    for (unsigned i = 0; i < s.strlen(); i++) {
         switch (s[i]) {
         case '&':
             *p++ = '&';

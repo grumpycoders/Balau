@@ -12,10 +12,6 @@ class CurlTask : public StacklessTask {
       virtual ~CurlTask();
     friend class TaskMan;
   
-    static String percentEncode(const String & src);
-    static String percentDecode(const String & src);
-    static std::vector<String> tokenize(const String & str, const String & delimiters = "&", bool trimEmpty = true);
-
     virtual void prepareRequest() { }
 
   protected:

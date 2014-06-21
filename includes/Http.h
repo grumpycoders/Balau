@@ -15,8 +15,9 @@ namespace Balau {
 namespace Http {
 
 const char * getStatusMsg(int httpStatus);
-
 const char * getContentType(const String & extension);
+String percentEncode(const String & src);
+String percentDecode(const String & src);
 
 typedef std::map<String, String> StringMap;
 typedef std::multimap<String, String> StringMultiMap;

@@ -256,7 +256,12 @@
     <ClCompile Include="..\..\src\TaskMan.cc" />
     <ClCompile Include="..\..\src\Threads.cc" />
     <ClCompile Include="..\..\src\ZHandle.cc" />
-    <ClCompile Include="..\regex\msvc-regex.c" />
+    <ClCompile Include="..\regex\msvc-regex.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4290;4800;4018;4090;4047;4101</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4290;4800;4018;4090;4047;4101</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4290;4800;4018;4090;4047;4101</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4290;4800;4018;4090;4047;4101</DisableSpecificWarnings>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\includes\Async.h" />
