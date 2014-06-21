@@ -18,17 +18,18 @@ class Hash {
         int r = desc->process(&m_state, data, len);
         IAssert(r == CRYPT_OK, "process for %s returned %i", desc->name, r);
     }
+    unsigned final(void * digest, unsigned outlen) {
+        AAssert(outlen >= digestSize(), "digest size too small being passed on for %s: %u instead of %u", name(), outlen, digestSize());
+        int r = desc->done(&m_state, (uint8_t *) digest);
+        IAssert(r == CRYPT_OK, "done for %s returned %i", desc->name, r);
+        return digestSize();
+    }
+
     void update(const String & data) { update((uint8_t *) data.to_charp(), data.strlen()); }
     template<size_t L>
     void update(const char (&str)[L]) { update((uint8_t *) str, L - 1); }
     template<size_t L>
     unsigned final(uint8_t (&digest)[L]) { return final(digest, L); }
-    unsigned final(void * digest, unsigned outlen) {
-        AAssert(outlen >= digestSize(), "digest size too small being passed on for %s: %u instead of %u", name(), outlen, digestSize());
-        int r = desc->done(&m_state, (uint8_t *)digest);
-        IAssert(r == CRYPT_OK, "done for %s returned %i", desc->name, r);
-        return digestSize();
-    }
 
     static const unsigned digestSize() { return desc->hashsize; }
     static const unsigned blockSize() { return desc->blocksize; }
@@ -46,23 +47,24 @@ class HMAC {
         int r = hmac_init(&m_state, find_hash_id(Hash::hashID()), key, len);
         IAssert(r == CRYPT_OK, "hmac_init for %s returned %i", Hash::name(), r);
     }
-    void prepare(const String & data) { prepare((uint8_t *) data.to_charp(), data.strlen()); }
-    template<size_t L>
-    void prepare(const char (&str)[L]) { prepare((uint8_t *) str, L - 1); }
     void update(const uint8_t * data, const size_t len) {
         int r = hmac_process(&m_state, data, len);
         IAssert(r == CRYPT_OK, "hmac_process for %s returned %i", Hash::name(), r);
     }
-    void update(const String & data) { update((uint8_t *) data.to_charp(), data.strlen()); }
-    template<size_t L>
-    void update(const char (&str)[L]) { update((uint8_t *) str, L - 1); }
-    template<size_t L>
-    unsigned final(uint8_t(&digest)[L]) { return final(digest, L); }
     unsigned final(void * digest, unsigned outlen) {
         int r = hmac_done(&m_state, (uint8_t *) digest, &outlen);
         IAssert(r == CRYPT_OK, "hmac_done for %s returned %i", Hash::name(), r);
         return outlen;
     }
+
+    void prepare(const String & data) { prepare((uint8_t *)data.to_charp(), data.strlen()); }
+    template<size_t L>
+    void prepare(const char (&str)[L]) { prepare((uint8_t *) str, L - 1); }
+    void update(const String & data) { update((uint8_t *) data.to_charp(), data.strlen()); }
+    template<size_t L>
+    void update(const char (&str)[L]) { update((uint8_t *) str, L - 1); }
+    template<size_t L>
+    unsigned final(uint8_t(&digest)[L]) { return final(digest, L); }
 
     static const unsigned digestSize() { return Hash::digestSize(); }
     static const unsigned blockSize() { return Hash::blockSize(); }
