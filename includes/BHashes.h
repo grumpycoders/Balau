@@ -50,7 +50,7 @@ class HMAC {
         int r = hmac_process(&m_state, data, len);
         IAssert(r == CRYPT_OK, "hmac_process for %s returned %i", Hash::name(), r);
     }
-    unsigned final(void * digest, unsigned outlen) {
+    unsigned long final(void * digest, unsigned long outlen) {
         int r = hmac_done(&m_state, (uint8_t *) digest, &outlen);
         IAssert(r == CRYPT_OK, "hmac_done for %s returned %i", Hash::name(), r);
         return outlen;

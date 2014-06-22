@@ -9,7 +9,7 @@ LDFLAGS += -g3 -gdwarf-2
 endif
 
 INCLUDES = includes libcoro libev LuaJIT/src lcrypt libtommath libtomcrypt/src/headers src/jsoncpp/include
-LIBS = z
+LIBS = z curl
 DEFINES = _LARGEFILE64_SOURCE LITTLE_ENDIAN LTM_DESC LTC_SOURCE USE_LTM
 
 ifeq ($(SYSTEM),Darwin)
@@ -61,6 +61,8 @@ Task.cc \
 TaskMan.cc \
 \
 HelperTasks.cc \
+\
+CurlTask.cc \
 \
 Http.cc \
 HttpServer.cc \
