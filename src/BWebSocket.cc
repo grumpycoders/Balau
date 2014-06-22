@@ -215,7 +215,7 @@ void Balau::WebSocketWorker::Do() {
                 *remainingBytesP = *payloadLenP;
                 if (*totalLenP >= MAX_WEBSOCKET_LIMIT)
                     goto error;
-                *payloadP = (uint8_t *)realloc(*payloadP, *totalLenP + (*opcodeP == OPCODE_TEXT ? 1 : 0));
+                *payloadP = (uint8_t *) realloc(*payloadP, *totalLenP + (*opcodeP == OPCODE_TEXT ? 1 : 0));
             case READ_PL:
                 while (*remainingBytesP) {
                     int r = m_socket->read(*payloadP + *totalLenP - *remainingBytesP, *remainingBytesP);
@@ -325,8 +325,8 @@ bool Balau::WebSocketServerBase::Do(HttpServer * server, Http::Request & req, Ht
     {
         HttpServer::Response response(server, req, out);
 
-        String & key = req.headers["Sec-WebSocket-Key"];
-        uint8_t * toHash = (uint8_t *)alloca(key.strlen() + magic.strlen());
+        const String & key = req.headers["Sec-WebSocket-Key"];
+        uint8_t * toHash = (uint8_t *) alloca(key.strlen() + magic.strlen());
         memcpy(toHash, key.to_charp(), key.strlen());
         memcpy(toHash + key.strlen(), magic.to_charp(), magic.strlen());
 
