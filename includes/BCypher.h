@@ -46,27 +46,53 @@ class PRNG {
     prng_state m_state;
 };
 
-template<class PRNG>
+template<class PRNG, size_t BlockLen = 64>
 class Cypher : public PRNG {
-public:
+  public:
     void process(uint8_t * buf, size_t len) {
         while (len) {
             if (!m_len) {
                 m_ptr = m_buffer;
-                m_len = sizeof(m_buffer);
-                generate(m_buffer, sizeof(m_buffer));
+                m_len = BlockLen;
+                generate(m_buffer, BlockLen);
             }
 
-            size_t chunkLen = std::min(m_len, len);
+            ssize_t chunkLen = std::min(m_len, len);
             m_len -= chunkLen;
             len -= chunkLen;
+
+            if ((((uintptr_t) m_ptr) & 7) && (((uintptr_t) buf) & 7)) {
+                uint64_t * buf64 = (uint64_t *) buf;
+                uint64_t * ptr64 = (uint64_t *) m_ptr;
+                chunkLen -= 7;
+                while (chunkLen > 0) {
+                    chunkLen -= 8;
+                    *buf64++ ^= *ptr64++;
+                }
+                m_ptr = (uint8_t *) ptr64;
+                buf = (uint8_t *) buf64;
+                chunkLen += 7;
+            }
+
+            if ((((uintptr_t) m_ptr) & 3) && (((uintptr_t) buf) & 3)) {
+                uint64_t * buf32 = (uint32_t *) buf;
+                uint64_t * ptr32 = (uint32_t *) m_ptr;
+                chunkLen -= 3;
+                while (chunkLen > 0) {
+                    chunkLen -= 4;
+                    *buf32++ ^= *ptr32++;
+                }
+                m_ptr = (uint8_t *) ptr32;
+                buf = (uint8_t *) buf32;
+                chunkLen += 3;
+            }
 
             while (chunkLen--)
                 *buf++ ^= *m_ptr++;
         }
     }
-private:
-    uint8_t m_buffer[64], * m_ptr = m_buffer;
+  private:
+    uint8_t m_buffer[BlockLen], * m_ptr = m_buffer;
     size_t m_len = 0;
 };
 
@@ -76,4 +102,4 @@ typedef PRNG<&rc4_desc>      RC4;
 typedef PRNG<&sprng_desc>    SPRNG;
 typedef PRNG<&sober128_desc> Sober128;
 
-}
+};
