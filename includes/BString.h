@@ -69,6 +69,9 @@ class String : private std::string {
     }
 
     int to_int(int base = 0) const { return strtol(to_charp(), NULL, base); }
+    unsigned to_uint(int base = 0) const { return strtoul(to_charp(), NULL, base); }
+    int64_t to_int64(int base = 0) const { return strtoll(to_charp(), NULL, base); }
+    uint64_t to_uint64(int base = 0) const { return strtoull(to_charp(), NULL, base); }
     double to_double() const { return strtod(to_charp(), NULL); }
     typedef std::vector<String> List;
     List split(char c);
