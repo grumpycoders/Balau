@@ -164,13 +164,12 @@ std::vector<Balau::String> Balau::String::tokenize(const String & delimiters, bo
             pos = strlen();
 
             if ((pos != lastPos) || !trimEmpty)
-                tokens.push_back(extract(lastPos, pos));
+                tokens.push_back(extract(lastPos, pos - lastPos));
 
             return tokens;
-        }
-        else {
+        } else {
             if ((pos != lastPos) || !trimEmpty)
-                tokens.push_back(extract(lastPos, pos));
+                tokens.push_back(extract(lastPos, pos - lastPos));
         }
 
         lastPos = pos + 1;
