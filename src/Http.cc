@@ -85,8 +85,7 @@ Balau::String Balau::Http::percentEncode(const String & src) {
         char c = src[i];
         if (((c >= '0') && (c <= '9')) || ((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) || (c == '-') || (c == '.') || (c == '_') || (c == '~')) {
             ret += c;
-        }
-        else {
+        } else {
             ret += '%';
             ret += toHex[c >> 4];
             ret += toHex[c & 15];
@@ -105,34 +104,29 @@ Balau::String Balau::Http::percentDecode(const String & src) {
         char c = src[i];
         if (((c >= '0') && (c <= '9')) || ((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) || (c == '-') || (c == '.') || (c == '_') || (c == '~')) {
             ret += c;
-        }
-        else if ((c == '%') && ((i + 2) < size)) {
+        } else if ((c == '%') && ((i + 2) < size)) {
             char h1 = src[i + 1];
             char h2 = src[i + 2];
             if ((h1 >= '0') && (h1 <= '9')) {
                 c = h1 - '0';
-            }
-            else if ((h1 >= 'A') && (h1 <= 'F')) {
+            } else if ((h1 >= 'A') && (h1 <= 'F')) {
                 c = h1 - 'A' + 10;
-            }
-            else {
+            } else {
                 // invalid
                 return ret;
             }
             c <<= 4;
             if ((h2 >= '0') && (h2 <= '9')) {
                 c |= h2 - '0';
-            }
-            else if ((h2 >= 'A') && (h2 <= 'F')) {
+            } else if ((h2 >= 'A') && (h2 <= 'F')) {
                 c |= h2 - 'A' + 10;
-            }
-            else {
+            } else {
                 // invalid
                 return ret;
             }
             i += 2;
-        }
-        else {
+            ret += c;
+        } else {
             // invalid
             return ret;
         }
