@@ -141,9 +141,6 @@
     <ClCompile Include="..\..\libev\ev_win32.c">
       <Filter>Third Party\libev</Filter>
     </ClCompile>
-    <ClCompile Include="..\regex\msvc-regex.c">
-      <Filter>Third Party\regex</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\jsoncpp\src\json_reader.cpp">
       <Filter>Third Party\jsoncpp</Filter>
     </ClCompile>
@@ -173,6 +170,24 @@
     </ClCompile>
     <ClCompile Include="..\..\src\CurlTask.cc">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regex\engine.c">
+      <Filter>Third Party\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regex\regcomp.c">
+      <Filter>Third Party\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regex\regerror.c">
+      <Filter>Third Party\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regex\regexec.c">
+      <Filter>Third Party\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regex\regfree.c">
+      <Filter>Third Party\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regex\split.c">
+      <Filter>Third Party\regex</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -337,6 +352,9 @@
     </ClInclude>
     <ClInclude Include="..\..\includes\BCypher.h">
       <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\regex\regex2.h">
+      <Filter>Third Party\regex</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

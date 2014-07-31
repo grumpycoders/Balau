@@ -244,12 +244,22 @@
     <ClCompile Include="..\..\src\TaskMan.cc" />
     <ClCompile Include="..\..\src\Threads.cc" />
     <ClCompile Include="..\..\src\ZHandle.cc" />
-    <ClCompile Include="..\regex\msvc-regex.c">
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4290;4800;4018;4090;4047;4101</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4290;4800;4018;4090;4047;4101</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4290;4800;4018;4090;4047;4101</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4290;4800;4018;4090;4047;4101</DisableSpecificWarnings>
+    <ClCompile Include="..\regex\engine.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\regex\regcomp.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4290;4800;4703</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4290;4800;4703</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4290;4800;4703</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4290;4800;4703</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\regex\regerror.c" />
+    <ClCompile Include="..\regex\regexec.c" />
+    <ClCompile Include="..\regex\regfree.c" />
+    <ClCompile Include="..\regex\split.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\includes\Async.h" />
@@ -306,6 +316,7 @@
     <ClInclude Include="..\..\src\jsoncpp\include\json\writer.h" />
     <ClInclude Include="..\..\src\jsoncpp\src\json_batchallocator.h" />
     <ClInclude Include="..\regex\regex.h" />
+    <ClInclude Include="..\regex\regex2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\jsoncpp\src\json_internalarray.inl">
