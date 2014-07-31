@@ -6,8 +6,8 @@ extern "C" {
 
 int getopt(int nargc, char ** nargv, char * ostr);
 
-extern int opterr = 1;
-extern int optind = 1;
+extern int opterr;
+extern int optind;
 extern int optopt;
 extern char * optarg;
 
