@@ -106,7 +106,7 @@ class TaskMan {
     bool m_stopped = false;
     bool m_allowedToSignal = false;
     ev::timer m_curlTimer;
-    CURLM * m_curlMulti = false;
+    CURLM * m_curlMulti = NULL;
     int m_curlStillRunning = 0;
     bool m_curlGotNewHandles = false;
     static int curlSocketCallbackStatic(CURL * easy, curl_socket_t s, int what, void * userp, void * socketp);
