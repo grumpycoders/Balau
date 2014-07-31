@@ -22,6 +22,9 @@
     <Filter Include="Third Party\lcrypt">
       <UniqueIdentifier>{b7c1083c-5e02-4f73-b973-73dfb07f1a9f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Third Party\getopt">
+      <UniqueIdentifier>{d9a98750-dc39-4eb1-9e0d-49bb1a95b104}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Async.cc">
@@ -141,9 +144,6 @@
     <ClCompile Include="..\..\libev\ev_win32.c">
       <Filter>Third Party\libev</Filter>
     </ClCompile>
-    <ClCompile Include="..\regex\msvc-regex.c">
-      <Filter>Third Party\regex</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\jsoncpp\src\json_reader.cpp">
       <Filter>Third Party\jsoncpp</Filter>
     </ClCompile>
@@ -173,6 +173,27 @@
     </ClCompile>
     <ClCompile Include="..\..\src\CurlTask.cc">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regex\engine.c">
+      <Filter>Third Party\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regex\regcomp.c">
+      <Filter>Third Party\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regex\regerror.c">
+      <Filter>Third Party\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regex\regexec.c">
+      <Filter>Third Party\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regex\regfree.c">
+      <Filter>Third Party\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regex\split.c">
+      <Filter>Third Party\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\getopt\getopt.c">
+      <Filter>Third Party\getopt</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -337,6 +358,12 @@
     </ClInclude>
     <ClInclude Include="..\..\includes\BCypher.h">
       <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\regex\regex2.h">
+      <Filter>Third Party\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\getopt\getopt.h">
+      <Filter>Third Party\getopt</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
