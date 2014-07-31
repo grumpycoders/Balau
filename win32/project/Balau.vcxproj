@@ -244,6 +244,7 @@
     <ClCompile Include="..\..\src\TaskMan.cc" />
     <ClCompile Include="..\..\src\Threads.cc" />
     <ClCompile Include="..\..\src\ZHandle.cc" />
+    <ClCompile Include="..\getopt\getopt.c" />
     <ClCompile Include="..\regex\engine.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -315,6 +316,7 @@
     <ClInclude Include="..\..\src\jsoncpp\include\json\value.h" />
     <ClInclude Include="..\..\src\jsoncpp\include\json\writer.h" />
     <ClInclude Include="..\..\src\jsoncpp\src\json_batchallocator.h" />
+    <ClInclude Include="..\getopt\getopt.h" />
     <ClInclude Include="..\regex\regex.h" />
     <ClInclude Include="..\regex\regex2.h" />
   </ItemGroup>

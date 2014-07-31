@@ -22,6 +22,9 @@
     <Filter Include="Third Party\lcrypt">
       <UniqueIdentifier>{b7c1083c-5e02-4f73-b973-73dfb07f1a9f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Third Party\getopt">
+      <UniqueIdentifier>{d9a98750-dc39-4eb1-9e0d-49bb1a95b104}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Async.cc">
@@ -189,6 +192,9 @@
     <ClCompile Include="..\regex\split.c">
       <Filter>Third Party\regex</Filter>
     </ClCompile>
+    <ClCompile Include="..\getopt\getopt.c">
+      <Filter>Third Party\getopt</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\includes\Async.h">
@@ -355,6 +361,9 @@
     </ClInclude>
     <ClInclude Include="..\regex\regex2.h">
       <Filter>Third Party\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\getopt\getopt.h">
+      <Filter>Third Party\getopt</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
