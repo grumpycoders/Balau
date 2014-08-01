@@ -403,11 +403,14 @@ bool Balau::HttpWorker::handleClient() {
             String value = line.extract(colon + 1);
 
             if (key == "Cookie") {
-                int equal = value.strchr('=');
-                if (equal > 0) {
-                    key = value.extract(0, equal).trim();
-                    value = value.extract(equal + 1).trim();
-                    cookies[key] = value;
+                String::List cookiesStrs = value.split(';');
+                for (auto & value: cookiesStrs) {
+                    int equal = value.strchr('=');
+                    if (equal > 0) {
+                        key = value.extract(0, equal).trim();
+                        value = value.extract(equal + 1).trim();
+                        cookies[key] = value;
+                    }
                 }
             } else {
                 httpHeaders[key] = value.trim();
