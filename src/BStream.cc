@@ -53,7 +53,7 @@ ssize_t Balau::BStream::read(void * _buf, size_t count) throw (Balau::GeneralExc
     m_cursor = 0;
     IAssert(m_availBytes == 0, "At this point, our internal buffer should be empty, but it's not: %zu", m_availBytes);
     ssize_t r = m_h->read(m_buffer, s_blockSize);
-    EAssert(r >= 0, "BStream got an error while reading: %zu", r);
+    EAssert(r >= 0, "BStream got an error while reading: %zi", r);
     m_availBytes = r;
 
     if (toCopy > m_availBytes)
