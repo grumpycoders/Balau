@@ -1,3 +1,4 @@
+#include <ares.h>
 #ifndef _WIN32
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -160,51 +161,6 @@ static const char * inet_ntop(int af, const void * src, char * dst, socklen_t si
 
 #endif
 
-namespace Balau {
-
-struct DNSRequest {
-    struct addrinfo * res;
-    int error;
-    Balau::Events::Custom evt;
-};
-
-};
-
-namespace {
-
-class AsyncOpResolv : public Balau::AsyncOperation {
-  public:
-      AsyncOpResolv(const char * name, const char * service, struct addrinfo * hints, Balau::DNSRequest * request)
-        : m_name(name ? ::strdup(name) : NULL)
-        , m_service(service ? ::strdup(service) : NULL)
-        , m_hints(*hints)
-        , m_request(request)
-        { }
-      virtual ~AsyncOpResolv() { free(m_name); free(m_service); }
-    virtual bool needsMainQueue() { return false; }
-    virtual bool needsFinishWorker() { return true; }
-    virtual void run() {
-        m_request->error = getaddrinfo(m_name, m_service, &m_hints, &m_request->res);
-    }
-    virtual void done() {
-        m_request->evt.doSignal();
-        delete this;
-    }
-  private:
-    char * m_name;
-    char * m_service;
-    struct addrinfo m_hints;
-    Balau::DNSRequest * m_request;
-};
-
-};
-
-static Balau::DNSRequest * resolveName(const char * name, const char * service = NULL, struct addrinfo * hints = NULL) {
-    Balau::DNSRequest * req = new Balau::DNSRequest();
-    Balau::createAsyncOp(new AsyncOpResolv(name, service, hints, req));
-    return req;
-}
-
 Balau::Socket::Socket() throw (GeneralException) {
 #ifdef _WIN32
     int fd = _open_osfhandle(WSASocket(AF_INET6, SOCK_STREAM, 0, 0, 0, 0), 0);
@@ -271,52 +227,75 @@ bool Balau::Socket::canRead() { return true; }
 bool Balau::Socket::canWrite() { return true; }
 const char * Balau::Socket::getName() { return m_name.to_charp(); }
 
-bool Balau::Socket::resolved() {
-    return m_req && m_req->evt.gotSignal();
+void Balau::Socket::resolve(const char * hostname) {
+    if (!m_resolving) {
+        m_resolving = 2;
+        Task * t = Task::getCurrentTask();
+        auto callback = [&](int status, int timeouts, struct hostent * hostent, int family, ptrdiff_t srcOffset, void * destAddr, size_t sizeofDest, bool & failed) {
+            if (status == ARES_SUCCESS) {
+                IAssert(hostent->h_addrtype == family, "We asked for socket family %i, but got %i instead", family, hostent->h_addrtype);
+                memcpy(destAddr, ((uint8_t *)hostent->h_addr_list[0]) + srcOffset, sizeofDest);
+            }
+            else {
+                failed = true;
+            }
+            if (--m_resolving == 0) {
+                m_resolveEvent.doSignal();
+                m_resolving = false;
+                m_resolved = true;
+            }
+        };
+
+        t->getTaskMan()->getHostByName(hostname, AF_INET, [&](int status, int timeouts, struct hostent * hostent) { callback(status, timeouts, hostent, AF_INET, offsetof(struct sockaddr_in, sin_addr), &m_resolvedAddr4, sizeof(m_resolvedAddr4), m_resolve4Failed); });
+        t->getTaskMan()->getHostByName(hostname, AF_INET6, [&](int status, int timeouts, struct hostent * hostent) { callback(status, timeouts, hostent, AF_INET6, offsetof(struct sockaddr_in6, sin6_addr), &m_resolvedAddr6, sizeof(m_resolvedAddr6), m_resolve6Failed); });
+
+        Task::operationYield(&m_resolveEvent, Task::INTERRUPTIBLE);
+    }
+}
+
+void Balau::Socket::initAddr(sockaddr_in6 & out) {
+    out.sin6_family = AF_INET6;
+    out.sin6_port = 0;
+    out.sin6_flowinfo = 0;
+    out.sin6_addr = in6addr_any;
+}
+
+void Balau::Socket::resolved(sockaddr_in6 & out) {
+    if (!m_resolve6Failed) {
+        memcpy(&out.sin6_addr, &m_resolvedAddr6, sizeof(struct in6_addr));
+    }
+    else {
+        memset(&out.sin6_addr, 0, sizeof(struct in6_addr));
+        // v4 mapped IPv6 address
+        out.sin6_addr.s6_addr[10] = 0xff;
+        out.sin6_addr.s6_addr[11] = 0xff;
+        memcpy(out.sin6_addr.s6_addr + 12, &m_resolvedAddr4, sizeof(struct in_addr));
+    }
+    m_resolving = false;
+    m_resolved = false;
 }
 
 bool Balau::Socket::setLocal(const char * hostname, int port) {
     AAssert(m_localAddr.sin6_family == 0, "Can't call setLocal twice");
 
-    if (hostname && hostname[0] && !m_req) {
-        struct addrinfo hints;
-        memset(&hints, 0, sizeof(hints));
-        hints.ai_family = AF_INET6;
-        hints.ai_socktype = SOCK_STREAM;
-        hints.ai_protocol = IPPROTO_TCP;
-        hints.ai_flags = AI_V4MAPPED;
+    if (hostname && hostname[0])
+        resolve(hostname);
 
-        m_req = resolveName(hostname, NULL, &hints);
-        Task::operationYield(&m_req->evt, Task::INTERRUPTIBLE);
-    }
+    initAddr(m_localAddr);
 
-    if (m_req) {
-        AAssert(m_req->evt.gotSignal(), "Please don't call setLocal after a EAgain without checking its resolution status first.");
-        struct addrinfo * res = m_req->res;
-        if (m_req->error != 0) {
-            Printer::elog(E_SOCKET, "Got a resolution error for host %s: %s (%i)", hostname, gai_strerror(m_req->error), m_req->error);
-            if (res)
-                freeaddrinfo(res);
-            delete m_req;
-            m_req = NULL;
+    if (m_resolving || m_resolved) {
+        AAssert(m_resolved && !m_resolving, "Please don't call setLocal after a EAgain without checking its resolution status first.");
+        if (m_resolve4Failed && m_resolve6Failed) {
+            Printer::elog(E_SOCKET, "Got a resolution error for host %s", hostname);
+            m_resolved = false;
             return false;
         }
-        IAssert(res, "That really shouldn't happen...");
-        EAssert(res->ai_family == AF_INET6, "getaddrinfo returned a familiy which isn't AF_INET6; %i", res->ai_family);
-        EAssert(res->ai_protocol == IPPROTO_TCP, "getaddrinfo returned a protocol which isn't IPPROTO_TCP; %i", res->ai_protocol);
-        EAssert(res->ai_addrlen == sizeof(sockaddr_in6), "getaddrinfo returned an addrlen which isn't that of sizeof(sockaddr_in6); %i", res->ai_addrlen);
-        memcpy(&m_localAddr.sin6_addr, &((sockaddr_in6 *) res->ai_addr)->sin6_addr, sizeof(struct in6_addr));
-        freeaddrinfo(res);
-        delete m_req;
-        m_req = NULL;
-    } else {
-        m_localAddr.sin6_addr = in6addr_any;
+        resolved(m_localAddr);
     }
 
     if (port)
         m_localAddr.sin6_port = htons(port);
 
-    m_localAddr.sin6_family = AF_INET6;
 #ifndef _WIN32
     int enable = 1;
     setsockopt(getFD(), SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable));
@@ -334,47 +313,24 @@ bool Balau::Socket::connect(const char * hostname, int port) {
     AAssert(hostname, "You can't call Socket::connect() without a hostname");
     AAssert(!isClosed(), "You can't call Socket::connect() on a closed socket");
 
-    if (!m_connecting && !m_req) {
-        Printer::elog(E_SOCKET, "Resolving %s", hostname);
-        IAssert(m_remoteAddr.sin6_family == 0, "That shouldn't happen...; family = %i", m_remoteAddr.sin6_family);
+    if (!m_connecting && !m_resolving)
+        resolve(hostname);
 
-        struct addrinfo hints;
-        memset(&hints, 0, sizeof(hints));
-        hints.ai_family = AF_INET6;
-        hints.ai_socktype = SOCK_STREAM;
-        hints.ai_protocol = IPPROTO_TCP;
-        hints.ai_flags = AI_V4MAPPED;
-
-        m_req = resolveName(hostname, NULL, &hints);
-        Task::operationYield(&m_req->evt, Task::INTERRUPTIBLE);
-    }
-
-    if (!m_connecting && m_req) {
-        AAssert(m_req->evt.gotSignal(), "Please don't call connect after a EAgain without checking its resolution status first.");
-        struct addrinfo * res = m_req->res;
-        if (m_req->error != 0) {
-            Printer::elog(E_SOCKET, "Got a resolution error for host %s: %s (%i)", hostname, gai_strerror(m_req->error), m_req->error);
-            if (res)
-                freeaddrinfo(res);
-            delete m_req;
-            m_req = NULL;
+    if (!m_connecting && (m_resolving || m_resolved)) {
+        AAssert(m_resolved && !m_resolving, "Please don't call connect after a EAgain without checking its resolution status first.");
+        if (m_resolve4Failed && m_resolve6Failed) {
+            Printer::elog(E_SOCKET, "Got a resolution error for host %s", hostname);
+            m_resolved = false;
             return false;
         }
-        IAssert(res, "That really shouldn't happen...");
         Printer::elog(E_SOCKET, "Got a resolution answer");
-        EAssert(res->ai_family == AF_INET6, "getaddrinfo returned a familiy which isn't AF_INET6; %i", res->ai_family);
-        EAssert(res->ai_protocol == IPPROTO_TCP, "getaddrinfo returned a protocol which isn't IPPROTO_TCP; %i", res->ai_protocol);
-        EAssert(res->ai_addrlen == sizeof(sockaddr_in6), "getaddrinfo returned an addrlen which isn't that of sizeof(sockaddr_in6); %i", res->ai_addrlen);
-        memcpy(&m_remoteAddr.sin6_addr, &((sockaddr_in6 *) res->ai_addr)->sin6_addr, sizeof(struct in6_addr));
 
+        initAddr(m_remoteAddr);
+        resolved(m_remoteAddr);
         m_remoteAddr.sin6_port = htons(port);
-        m_remoteAddr.sin6_family = AF_INET6;
 
         m_connecting = true;
-
-        freeaddrinfo(res);
-        delete m_req;
-        m_req = NULL;
+        m_resolved = false;
     } else {
         // if we end up there, it means our yield earlier threw an EAgain exception.
         AAssert(gotR(), "Please don't call connect after a EAgain without checking its signal first.");

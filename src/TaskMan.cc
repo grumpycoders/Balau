@@ -1,10 +1,3 @@
-#ifdef _WIN32
-#include <windows.h>
-#include <io.h>
-#endif
-
-#undef ERROR
-
 #include "Async.h"
 #include "TaskMan.h"
 #include "Task.h"
@@ -12,7 +5,15 @@
 #include "Local.h"
 #include "CurlTask.h"
 
+#include <ares.h>
 #include <curl/curl.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#include <io.h>
+#endif
+
+#undef ERROR
 
 static Balau::AsyncManager s_async;
 static CURLSH * s_curlShared = NULL;
@@ -39,9 +40,9 @@ class Stopper : public Balau::Task {
     int m_code;
 };
 
-class CurlSharedManager : public Balau::AtStart, Balau::AtExit {
+class CurlAndCaresSharedManager : public Balau::AtStart, Balau::AtExit {
   public:
-      CurlSharedManager() : AtStart(0), AtExit(0) { }
+      CurlAndCaresSharedManager() : AtStart(0), AtExit(0) { }
     struct SharedLocks {
         Balau::RWLock share, cookie, dns, ssl_session;
     };
@@ -83,8 +84,12 @@ class CurlSharedManager : public Balau::AtStart, Balau::AtExit {
         curl_share_setopt(s_curlShared, CURLSHOPT_USERDATA, &locks);
         curl_share_setopt(s_curlShared, CURLSHOPT_LOCKFUNC, lock_function);
         curl_share_setopt(s_curlShared, CURLSHOPT_UNLOCKFUNC, unlock_function);
+
+        ares_library_init(ARES_LIB_INIT_ALL);
     }
     void doExit() {
+        ares_library_cleanup();
+
         curl_share_cleanup(s_curlShared);
         curl_global_cleanup();
     }
@@ -93,7 +98,7 @@ class CurlSharedManager : public Balau::AtStart, Balau::AtExit {
 };
 
 static AsyncStarter s_asyncStarter;
-static CurlSharedManager s_curlSharedmManager;
+static CurlAndCaresSharedManager s_curlSharedmManager;
 
 void Stopper::Do() {
     getTaskMan()->stopMe(m_code);
@@ -247,6 +252,21 @@ Balau::TaskMan::TaskMan() {
 
     m_curlTimer.set(m_loop);
     m_curlTimer.set<TaskMan, &TaskMan::curlMultiTimerEventCallback>(this);
+
+    m_aresTimer.set(m_loop);
+    m_aresTimer.set<TaskMan, &TaskMan::aresTimerEventCallback>(this);
+
+    ares_options aresOptions;
+
+    aresOptions.sock_state_cb = aresSocketCallbackStatic;
+    aresOptions.sock_state_cb_data = this;
+
+    ares_init_options(&m_aresChannel, &aresOptions, ARES_OPT_SOCK_STATE_CB);
+
+    for (int i = 0; i < ARES_MAX_SOCKETS; i++) {
+        m_aresSockets[i] = ARES_SOCKET_BAD;
+        m_aresSocketEvents[i] = NULL;
+    }
 }
 
 #ifdef _WIN32
@@ -258,7 +278,7 @@ inline static int toSocket(int fd) { return fd; }
 #endif
 
 int Balau::TaskMan::curlSocketCallbackStatic(CURL * easy, curl_socket_t s, int what, void * userp, void * socketp) {
-    TaskMan * taskMan = (TaskMan *)userp;
+    TaskMan * taskMan = (TaskMan *) userp;
     return taskMan->curlSocketCallback(easy, s, what, socketp);
 }
 
@@ -331,6 +351,95 @@ void Balau::TaskMan::curlMultiTimerEventCallback(ev::timer & w, int revents) {
     curl_multi_socket_action(m_curlMulti, CURL_SOCKET_TIMEOUT, 0, &m_curlStillRunning);
 }
 
+void Balau::TaskMan::aresSocketCallbackStatic(void * data, curl_socket_t s, int read, int write) {
+    TaskMan * taskMan = (TaskMan *) data;
+    return taskMan->aresSocketCallback(s, read, write);
+}
+
+void Balau::TaskMan::aresSocketCallback(curl_socket_t s, int read, int write) {
+    int fd = fromSocket(s);
+    int i;
+    int freeSlot = ARES_MAX_SOCKETS;
+
+    int what = CURL_POLL_NONE;
+
+    for (i = 0; i < ARES_MAX_SOCKETS; i++) {
+        if (m_aresSockets[i] == s)
+            break;
+        if (m_aresSockets[i] == ARES_SOCKET_BAD)
+            freeSlot = i;
+    }
+
+    if (i == ARES_MAX_SOCKETS)
+        i = freeSlot;
+
+    IAssert(i != ARES_MAX_SOCKETS, "ares socket error - please increase ARES_MAX_SOCKETS");
+
+    if (!read && !write) {
+        what = CURL_POLL_REMOVE;
+    } else if (read && !write) {
+        what = CURL_POLL_IN;
+    } else if (!read && write) {
+        what = CURL_POLL_OUT;
+    } else if (read && write) {
+        what = CURL_POLL_INOUT;
+    }
+
+    struct timeval tv;
+    bool hasTimer = ares_timeout(m_aresChannel, NULL, &tv);
+
+    m_aresTimer.stop();
+    if (hasTimer) {
+        m_aresTimer.set((ev_tstamp)(tv.tv_sec * 1000 + tv.tv_usec / 1000 + 1));
+        m_aresTimer.start();
+    }
+
+    ev::io * evt = m_aresSocketEvents[i];
+    if (!evt) {
+        if (what == CURL_POLL_REMOVE)
+            return;
+        evt = new ev::io;
+        evt->set<TaskMan, &TaskMan::aresSocketEventCallback>(this);
+        evt->set(m_loop);
+        m_aresSocketEvents[i] = evt;
+        m_aresSockets[i] = s;
+    }
+
+    switch (what) {
+    case CURL_POLL_IN:
+        evt->stop();
+        evt->set(fd, ev::READ);
+        evt->start();
+        break;
+    case CURL_POLL_OUT:
+        evt->stop();
+        evt->set(fd, ev::WRITE);
+        evt->start();
+        break;
+    case CURL_POLL_INOUT:
+        evt->stop();
+        evt->set(fd, ev::READ | ev::WRITE);
+        evt->start();
+        break;
+    case CURL_POLL_REMOVE:
+        evt->stop();
+        delete evt;
+        m_aresSocketEvents[i] = NULL;
+        m_aresSockets[i] = ARES_SOCKET_BAD;
+    }
+
+    return;
+}
+
+void Balau::TaskMan::aresSocketEventCallback(ev::io & w, int revents) {
+    ares_socket_t s = toSocket(w.fd);
+    ares_process_fd(m_aresChannel, revents & (ev::READ | ev::ERROR) ? s : ARES_SOCKET_BAD, revents & (ev::WRITE | ev::ERROR) ? s : ARES_SOCKET_BAD);
+}
+
+void Balau::TaskMan::aresTimerEventCallback(ev::timer & w, int revents) {
+    ares_process(m_aresChannel, NULL, NULL);
+}
+
 #ifdef _WIN32
 namespace {
 
@@ -362,6 +471,7 @@ Balau::TaskMan::~TaskMan() {
     m_evt.stop();
     ev_loop_destroy(m_loop);
     curl_multi_cleanup(m_curlMulti);
+    ares_destroy(m_aresChannel);
 }
 
 void * Balau::TaskMan::getStack() {
@@ -551,6 +661,17 @@ void Balau::TaskMan::unregisterCurlHandle(Balau::CurlTask * curlTask) {
         return;
     curl_easy_setopt(curlTask->m_curlHandle, CURLOPT_PRIVATE, static_cast<void *>(0));
     curl_multi_remove_handle(m_curlMulti, curlTask->m_curlHandle);
+}
+
+void Balau::TaskMan::getHostByName(const Balau::String & name, int family, AresHostCallback callback) {
+    AresHostCallback * dup = new AresHostCallback(callback);
+    ares_gethostbyname(m_aresChannel, name.to_charp(), family, aresHostCallback, dup);
+}
+
+void Balau::TaskMan::aresHostCallback(void * arg, int status, int timeouts, struct hostent * hostent) {
+    AresHostCallback * callback = (AresHostCallback *) arg;
+    (*callback)(status, timeouts, hostent);
+    delete callback;
 }
 
 void Balau::TaskMan::iRegisterTask(Balau::Task * t, Balau::Task * stick, Events::TaskEvent * event) {

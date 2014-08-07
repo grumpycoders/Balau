@@ -18,8 +18,6 @@
 
 namespace Balau {
 
-struct DNSRequest;
-
 class Socket : public Selectable {
   public:
       Socket() throw (GeneralException);
@@ -34,19 +32,29 @@ class Socket : public Selectable {
     bool connect(const char * hostname, int port);
     IO<Socket> accept() throw (GeneralException);
     bool listen();
-    bool resolved();
+    bool resolved() { return m_resolved; }
   private:
       Socket(int fd);
 
     virtual ssize_t recv(int sockfd, void *buf, size_t len, int flags);
     virtual ssize_t send(int sockfd, const void *buf, size_t len, int flags);
 
+    void resolve(const char * hostname);
+    void initAddr(sockaddr_in6 & out);
+    void resolved(sockaddr_in6 & out);
+
     String m_name;
     bool m_connected = false;
     bool m_connecting = false;
     bool m_listening = false;
+    int m_resolving = 0;
+    bool m_resolved = false;
+    bool m_resolve4Failed = false;
+    bool m_resolve6Failed = false;
+    Events::Custom m_resolveEvent;
+    struct in_addr m_resolvedAddr4;
+    struct in6_addr m_resolvedAddr6;
     sockaddr_in6 m_localAddr, m_remoteAddr;
-    DNSRequest * m_req = NULL;
 };
 
 class ListenerBase : public StacklessTask {

@@ -21,6 +21,8 @@
 namespace gnu = __gnu_cxx;
 #endif
 
+struct ares_channeldata;
+
 namespace Balau {
 
 class TaskScheduler;
@@ -67,6 +69,9 @@ class TaskMan {
     template<class T>
     static T * registerTask(T * t, Events::TaskEvent * event) { TaskMan::iRegisterTask(t, NULL, event); return t; }
 
+    typedef std::function<void(int status, int timeouts, struct hostent * hostent)> AresHostCallback;
+    void getHostByName(const Balau::String & name, int family, AresHostCallback callback);
+
   private:
     static void iRegisterTask(Task * t, Task * stick, Events::TaskEvent * event);
     static void registerAsyncOp(AsyncOperation * op);
@@ -105,6 +110,7 @@ class TaskMan {
     int m_stopCode = 0;
     bool m_stopped = false;
     bool m_allowedToSignal = false;
+
     ev::timer m_curlTimer;
     CURLM * m_curlMulti = NULL;
     int m_curlStillRunning = 0;
@@ -117,6 +123,17 @@ class TaskMan {
     void curlMultiTimerEventCallback(ev::timer & w, int revents);
     void registerCurlHandle(CurlTask * curlTask);
     void unregisterCurlHandle(CurlTask * curlTask);
+
+    struct ares_channeldata * m_aresChannel = NULL;
+    static const int ARES_MAX_SOCKETS = 2;
+    curl_socket_t m_aresSockets[ARES_MAX_SOCKETS];
+    ev::io * m_aresSocketEvents[ARES_MAX_SOCKETS];
+    ev::timer m_aresTimer;
+    static void aresSocketCallbackStatic(void * data, curl_socket_t s, int read, int write);
+    void aresSocketCallback(curl_socket_t s, int read, int write);
+    void aresSocketEventCallback(ev::io & w, int revents);
+    void aresTimerEventCallback(ev::timer & w, int revents);
+    static void aresHostCallback(void * arg, int status, int timeouts, struct hostent * hostent);
 
       TaskMan(const TaskMan &) = delete;
     TaskMan & operator=(const TaskMan &) = delete;
