@@ -4,6 +4,7 @@
 #include <curl/curl.h>
 #ifndef _WIN32
 #include <coro.h>
+#include <netdb.h>
 #endif
 #include <ev++.h>
 #ifdef _MSC_VER

@@ -9,7 +9,7 @@ LDFLAGS += -g3 -gdwarf-2
 endif
 
 INCLUDES = includes libcoro libev LuaJIT/src lcrypt libtommath libtomcrypt/src/headers src/jsoncpp/include
-LIBS = z curl
+LIBS = z curl cares
 DEFINES = _LARGEFILE64_SOURCE LITTLE_ENDIAN LTM_DESC LTC_SOURCE USE_LTM
 
 ifeq ($(SYSTEM),Darwin)
