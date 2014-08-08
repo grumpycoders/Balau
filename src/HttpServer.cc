@@ -633,20 +633,20 @@ typedef Balau::Listener<Balau::HttpWorker> HttpListener;
 
 void Balau::HttpServer::start() {
     AAssert(!m_started, "Don't start an HttpServer twice");
-    m_listenerPtr = TaskMan::registerTask(new HttpListener(m_port, m_local.to_charp(), this));
     m_started = true;
+    m_listenerPtr = TaskMan::registerTask(new HttpListener(m_port, m_local.to_charp(), this), &m_listenerEvent);
 }
 
 void Balau::HttpServer::stop() {
     AAssert(m_started, "Don't stop an HttpServer that hasn't been started");
-    HttpListener * listener = reinterpret_cast<HttpListener *>(m_listenerPtr);
-    Events::TaskEvent event(listener);
-    Task::prepare(&event);
-    listener->stop();
     m_started = false;
-    Task::operationYield(&event);
-    IAssert(event.gotSignal(), "HttpServer::stop didn't actually get the listener to stop");
-    event.ack();
+    IAssert(!m_listenerEvent.gotSignal(), "Our listener has stopped already!");
+    HttpListener * listener = reinterpret_cast<HttpListener *>(m_listenerPtr);
+    Task::prepare(&m_listenerEvent);
+    listener->stop();
+    Task::operationYield(&m_listenerEvent);
+    IAssert(m_listenerEvent.gotSignal(), "HttpServer::stop didn't actually get the listener to stop");
+    m_listenerEvent.ack();
 }
 
 void Balau::HttpServer::registerAction(Action * action) {
@@ -663,6 +663,15 @@ void Balau::HttpServer::flushAllActions() {
         m_actions.pop_front();
         a->unref();
     }
+}
+
+bool Balau::HttpServer::started() {
+    if (m_listenerEvent.gotSignal())
+        return false;
+    HttpListener * listener = reinterpret_cast<HttpListener *>(m_listenerPtr);
+    if (!listener)
+        return false;
+    return listener->started();
 }
 
 Balau::HttpServer::Action::ActionMatch Balau::HttpServer::Action::matches(const char * uri, const char * host) {

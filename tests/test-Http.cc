@@ -137,7 +137,8 @@ void MainTask::Do() {
     s->setLocal("localhost");
     s->start();
 
-    sleep(1);
+    while (!s->started())
+        sleep(0.1);
 
     Events::TaskEvent stopperEvent;
     Task * stopper = TaskMan::registerTask(new Stopper, &stopperEvent);

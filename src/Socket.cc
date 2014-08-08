@@ -228,26 +228,26 @@ bool Balau::Socket::canWrite() { return true; }
 const char * Balau::Socket::getName() { return m_name.to_charp(); }
 
 void Balau::Socket::resolve(const char * hostname) {
-    if (!m_resolving) {
+    if (!m_resolving && !m_resolved) {
         m_resolving = 2;
         Task * t = Task::getCurrentTask();
-        auto callback = [&](int status, int timeouts, struct hostent * hostent, int family, ptrdiff_t srcOffset, void * destAddr, size_t sizeofDest, bool & failed) {
+        IO<Socket> self(this);
+        auto callback = [self](int status, int timeouts, struct hostent * hostent, int family, void * destAddr, size_t sizeofDest, bool & failed) mutable {
             if (status == ARES_SUCCESS) {
                 IAssert(hostent->h_addrtype == family, "We asked for socket family %i, but got %i instead", family, hostent->h_addrtype);
-                memcpy(destAddr, ((uint8_t *)hostent->h_addr_list[0]) + srcOffset, sizeofDest);
-            }
-            else {
+                uint8_t * srcPtr = (uint8_t *) hostent->h_addr_list[0];
+                memcpy(destAddr, srcPtr, sizeofDest);
+            } else {
                 failed = true;
             }
-            if (--m_resolving == 0) {
-                m_resolveEvent.doSignal();
-                m_resolving = false;
-                m_resolved = true;
+            if (--self->m_resolving == 0) {
+                self->m_resolveEvent.doSignal();
+                self->m_resolved = true;
             }
         };
 
-        t->getTaskMan()->getHostByName(hostname, AF_INET, [&](int status, int timeouts, struct hostent * hostent) { callback(status, timeouts, hostent, AF_INET, offsetof(struct sockaddr_in, sin_addr), &m_resolvedAddr4, sizeof(m_resolvedAddr4), m_resolve4Failed); });
-        t->getTaskMan()->getHostByName(hostname, AF_INET6, [&](int status, int timeouts, struct hostent * hostent) { callback(status, timeouts, hostent, AF_INET6, offsetof(struct sockaddr_in6, sin6_addr), &m_resolvedAddr6, sizeof(m_resolvedAddr6), m_resolve6Failed); });
+        t->getTaskMan()->getHostByName(hostname, AF_INET, [callback, self](int status, int timeouts, struct hostent * hostent) mutable { callback(status, timeouts, hostent, AF_INET, &self->m_resolvedAddr4, sizeof(self->m_resolvedAddr4), self->m_resolve4Failed); });
+        t->getTaskMan()->getHostByName(hostname, AF_INET6, [callback, self](int status, int timeouts, struct hostent * hostent) mutable { callback(status, timeouts, hostent, AF_INET6, &self->m_resolvedAddr6, sizeof(self->m_resolvedAddr6), self->m_resolve6Failed); });
 
         Task::operationYield(&m_resolveEvent, Task::INTERRUPTIBLE);
     }
@@ -263,16 +263,19 @@ void Balau::Socket::initAddr(sockaddr_in6 & out) {
 void Balau::Socket::resolved(sockaddr_in6 & out) {
     if (!m_resolve6Failed) {
         memcpy(&out.sin6_addr, &m_resolvedAddr6, sizeof(struct in6_addr));
+    } else {
+        if (m_resolvedAddr4.s_addr == htonl(INADDR_LOOPBACK)) {
+            out.sin6_addr = in6addr_loopback;
+        } else {
+            memset(&out.sin6_addr, 0, sizeof(struct in6_addr));
+            // v4 mapped IPv6 address
+            out.sin6_addr.s6_addr[10] = 0xff;
+            out.sin6_addr.s6_addr[11] = 0xff;
+            memcpy(out.sin6_addr.s6_addr + 12, &m_resolvedAddr4, sizeof(struct in_addr));
+        }
     }
-    else {
-        memset(&out.sin6_addr, 0, sizeof(struct in6_addr));
-        // v4 mapped IPv6 address
-        out.sin6_addr.s6_addr[10] = 0xff;
-        out.sin6_addr.s6_addr[11] = 0xff;
-        memcpy(out.sin6_addr.s6_addr + 12, &m_resolvedAddr4, sizeof(struct in_addr));
-    }
-    m_resolving = false;
     m_resolved = false;
+    m_resolveEvent.reset();
 }
 
 bool Balau::Socket::setLocal(const char * hostname, int port) {
@@ -535,20 +538,35 @@ void Balau::ListenerBase::stop() {
 }
 
 void Balau::ListenerBase::Do() {
-    bool r;
-    IO<Socket> io;
-    while (!m_stop) {
-        StacklessBegin();
-        StacklessOperation(r = m_listener->setLocal(m_local.to_charp(), m_port));
-        EAssert(r, "Couldn't set the local IP/port to listen to");
-        r = m_listener->listen();
-        EAssert(r, "Couldn't listen on the given IP/port");
-        setName();
-        waitFor(&m_evt);
-        StacklessOperationOrCond(io = m_listener->accept(), m_stop);
-        if (m_stop)
-            return;
-        factory(io, m_opaque);
-        StacklessEnd();
+    try {
+        while (!m_stop) {
+            bool r;
+            IO<Socket> io;
+
+            switch (m_state) {
+            case 0:
+                waitFor(&m_evt);
+                m_state++;
+            case 1:
+                Printer::elog(E_SOCKET, "Listener task at %p (%s) is going to setLocal(%s, %i)", this, m_name.to_charp(), m_local.to_charp(), m_port);
+                r = m_listener->setLocal(m_local.to_charp(), m_port);
+                EAssert(r, "Couldn't set the local IP/port to listen to");
+                Printer::elog(E_SOCKET, "Listener task at %p (%s) starts listening", this, m_name.to_charp());
+                r = m_listener->listen();
+                EAssert(r, "Couldn't listen on the given IP/port");
+                setName();
+                m_started = true;
+                m_state++;
+            default:
+                Printer::elog(E_SOCKET, "Listener task at %p (%s) starts accepting", this, m_name.to_charp());
+                io = m_listener->accept();
+                Printer::elog(E_SOCKET, "Listener task at %p (%s) accepted a connection: %s", this, m_name.to_charp(), io->getName());
+                if (!m_stop)
+                    factory(io, m_opaque);
+            }
+        }
+    }
+    catch (EAgain &) {
+        taskSwitch();
     }
 }

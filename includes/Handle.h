@@ -160,7 +160,7 @@ class HPrinter : public Handle {
 class IOBase {
   private:
       IOBase() { }
-      ~IOBase() { if (m_h) m_h->delRef(); }
+      ~IOBase() { if (m_h) m_h->delRef(); m_h = NULL; }
     void setHandle(Handle * h) { m_h = h; if (m_h) m_h->addRef(); }
     Handle * m_h = NULL;
     template<class T>

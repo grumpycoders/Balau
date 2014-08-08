@@ -79,6 +79,7 @@ class HttpServer {
     };
     ActionFound findAction(const char * uri, const char * host);
     String getServerName() { return "Balau/1.0"; }
+    bool started();
   private:
     bool m_started;
     void * m_listenerPtr;
@@ -87,6 +88,7 @@ class HttpServer {
     typedef std::list<Action *> ActionList;
     ActionList m_actions;
     RWLock m_actionsLock;
+    Events::TaskEvent m_listenerEvent;
 
     friend class HttpWorker;
 

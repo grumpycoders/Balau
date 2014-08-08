@@ -40,9 +40,9 @@ class Stopper : public Balau::Task {
     int m_code;
 };
 
-class CurlAndCaresSharedManager : public Balau::AtStart, Balau::AtExit {
+class CurlAndAresSharedManager : public Balau::AtStart, Balau::AtExit {
   public:
-      CurlAndCaresSharedManager() : AtStart(0), AtExit(0) { }
+      CurlAndAresSharedManager() : AtStart(0), AtExit(0) { }
     struct SharedLocks {
         Balau::RWLock share, cookie, dns, ssl_session;
     };
@@ -98,7 +98,7 @@ class CurlAndCaresSharedManager : public Balau::AtStart, Balau::AtExit {
 };
 
 static AsyncStarter s_asyncStarter;
-static CurlAndCaresSharedManager s_curlSharedmManager;
+static CurlAndAresSharedManager s_curlAndAresSharedManager;
 
 void Stopper::Do() {
     getTaskMan()->stopMe(m_code);
@@ -385,14 +385,12 @@ void Balau::TaskMan::aresSocketCallback(curl_socket_t s, int read, int write) {
         what = CURL_POLL_INOUT;
     }
 
-    struct timeval tv;
-    bool hasTimer = ares_timeout(m_aresChannel, NULL, &tv);
+    struct timeval tv = { 5, 0 };
+    ares_timeout(m_aresChannel, &tv, &tv);
 
     m_aresTimer.stop();
-    if (hasTimer) {
-        m_aresTimer.set((ev_tstamp)(tv.tv_sec * 1000 + tv.tv_usec / 1000 + 1));
-        m_aresTimer.start();
-    }
+    m_aresTimer.set((ev_tstamp)(tv.tv_sec * 1000 + tv.tv_usec / 1000 + 1));
+    m_aresTimer.start();
 
     ev::io * evt = m_aresSocketEvents[i];
     if (!evt) {

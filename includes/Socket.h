@@ -62,6 +62,7 @@ class ListenerBase : public StacklessTask {
     virtual void Do();
     void stop();
     virtual const char * getName() const;
+    bool started() { return m_started; }
   protected:
       ListenerBase(int port, const char * local, void * opaque);
     virtual void factory(IO<Socket> & io, void * opaque) = 0;
@@ -74,6 +75,7 @@ class ListenerBase : public StacklessTask {
     String m_local;
     int m_port = 0;
     void * m_opaque = NULL;
+    bool m_started = false;
 };
 
 template<class Worker>
