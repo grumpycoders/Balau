@@ -18,6 +18,7 @@ class Lua;
 
 class LuaObjectBase {
   public:
+      virtual ~LuaObjectBase() { }
     virtual void destroy() = 0;
     void detach() { m_detached = true; }
     virtual Task * spawnCollector() = 0;

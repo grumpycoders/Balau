@@ -105,7 +105,6 @@ static int lcrypt_cipher_ ## name ## _encrypt(lua_State *L)                     
     const unsigned char *in = (const unsigned char *)luaL_checklstring(L, 2, &in_length);       \
     int i, block_length = cipher_descriptor[skey->cipher].block_length;                         \
     int padding_length = in_length + block_length - in_length % block_length;                   \
-printf("in_length = %d, padding_length = %d\n", in_length, padding_length);                     \
     unsigned char *out = lcrypt_malloc(L, 2 * (in_length + padding_length));                    \
     memcpy(out + in_length + padding_length, in, in_length);                                    \
     memset(out + in_length + padding_length + in_length, padding_length, padding_length);       \
