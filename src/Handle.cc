@@ -102,30 +102,29 @@ ssize_t Balau::Handle::forceWrite(const void * _buf, size_t count, Events::BaseE
 
 template<class T>
 Balau::Future<T> genericRead(Balau::IO<Balau::Handle> t) {
-    std::shared_ptr<T> b(new T);
-    int c = 0;
+    T b;
+    size_t c = 0;
     return Balau::Future<T>([t, b, c]() mutable {
         do {
-            int r = t->read(((uint8_t *) b.get()) + c, sizeof(T) - c);
+            ssize_t r = t->read(((uint8_t *) &b) + c, sizeof(T) - c);
+            AAssert(r >= 0, "genericRead got an error: %zi", r);
             c += r;
-        } while (c < sizeof(T));
-        return *b;
+        } while ((c < sizeof(T)) && !t->isEOF());
+        return b;
     });
 }
 
 template<class T>
 Balau::Future<T> genericReadBE(Balau::IO<Balau::Handle> t) {
-    std::shared_ptr<T> b(new T);
-    int c = 0;
-    *b.get() = 0;
+    T b;
+    size_t c = sizeof(T);
     return Balau::Future<T>([t, b, c]() mutable {
         do {
-            uint8_t v = t->readU8().get();
-            *b.get() <<= 8;
-            *b.get() += v;
-            c++;
-        } while (c < sizeof(T));
-        return *b;
+            ssize_t r = t->read(((uint8_t *) &b) + c - 1, 1);
+            AAssert(r >= 0, "genericReadBE got an error: %zi", r);
+            c -= r;
+        } while (c && !t->isEOF());
+        return b;
     });
 }
 
@@ -186,10 +185,10 @@ Balau::Future<int64_t>  Balau::Handle::readBEI64() { return genericReadBE<int64_
 template<class T>
 Balau::Future<void> genericWrite(Balau::IO<Balau::Handle> t, T val) {
     std::shared_ptr<T> b(new T(val));
-    int c = 0;
+    size_t c = 0;
     return Balau::Future<void>([t, b, c]() mutable {
         do {
-            int r = t->write(((uint8_t *) b.get()) + c, sizeof(T));
+            ssize_t r = t->write(((uint8_t *) b.get()) + c, sizeof(T));
             c += r;
         } while (c < sizeof(T));
     });

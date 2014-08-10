@@ -123,7 +123,7 @@ void Balau::BigInt::set(double v) throw (GeneralException) {
     if (mp_set_int((mp_int *) m_bi, 0) != MP_OKAY)
         throw GeneralException("Error while calling mp_set_init");
 
-    for (e -= 1.0; e > 0.0; e -= 1.0) {
+    for (e--; e > 0; e--) {
         f *= 2.0;
         if (f >= 1.0) {
             operator+=(1);
@@ -177,7 +177,7 @@ int64_t Balau::BigInt::to_int64() const throw (GeneralException) {
 uint32_t Balau::BigInt::to_uint32() const throw (GeneralException) {
     if (mp_count_bits((mp_int *) m_bi) > 32)
         throw GeneralException("BigInt too big to fit in a uint32");
-    uint64_t v = 0;
+    uint32_t v = 0;
     int shift = 0;
     int digit = 0;
     while (shift <= 32) {
@@ -189,8 +189,8 @@ uint32_t Balau::BigInt::to_uint32() const throw (GeneralException) {
 
 int32_t Balau::BigInt::to_int32() const throw (GeneralException) {
     if (mp_count_bits((mp_int *) m_bi) > 31)
-        throw GeneralException("BigInt too big to fit in a uint32");
-    int64_t v = 0;
+        throw GeneralException("BigInt too big to fit in a int32");
+    int32_t v = 0;
     int shift = 0;
     int digit = 0;
     while (shift <= 31) {
@@ -632,8 +632,9 @@ void Balau::BigInt::exportUBin(void * _buf) const throw (GeneralException) {
 
 void Balau::BigInt::importBin(const void * _buf, size_t size) throw (GeneralException) {
     unsigned char * buf = (unsigned char *) _buf;
+    AAssert(size < std::numeric_limits<unsigned long>::max(), "BigInt::importBin(%p, %zu): size too big", _buf, size);
     bool isNeg = buf[0] != 0;
-    if (mp_read_unsigned_bin((mp_int *) m_bi, buf + 1, size - 1) != MP_OKAY)
+    if (mp_read_unsigned_bin((mp_int *) m_bi, buf + 1, (unsigned long) size - 1) != MP_OKAY)
         throw GeneralException("Error while calling mp_read_unsigned_bin");
     if (isNeg)
         do_neg();
@@ -641,7 +642,8 @@ void Balau::BigInt::importBin(const void * _buf, size_t size) throw (GeneralExce
 
 void Balau::BigInt::importUBin(const void * _buf, size_t size) throw (GeneralException) {
     unsigned char * buf = (unsigned char *)_buf;
-    if (mp_read_unsigned_bin((mp_int *) m_bi, buf, size) != MP_OKAY)
+    AAssert(size < std::numeric_limits<unsigned long>::max(), "BigInt::importBin(%p, %zu): size too big", _buf, size);
+    if (mp_read_unsigned_bin((mp_int *)m_bi, buf, (unsigned long) size) != MP_OKAY)
         throw GeneralException("Error while calling mp_read_unsigned_bin");
 }
 

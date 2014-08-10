@@ -41,7 +41,7 @@ Balau::String & Balau::String::append(const char * fmt, va_list ap) {
 }
 
 int Balau::String::strchrcnt(char c) const {
-    unsigned int l = length();
+    size_t l = length();
     int r = 0;
     const char * buffer = data();
 
@@ -53,10 +53,10 @@ int Balau::String::strchrcnt(char c) const {
 }
 
 Balau::String & Balau::String::do_ltrim() {
-    unsigned int l = length(), s = 0;
+    size_t l = length(), s = 0;
     const char * buffer = data();
 
-    for (unsigned int i = 0; i < l; i++)
+    for (size_t i = 0; i < l; i++)
         if (isspace(buffer[i]))
             s++;
         else
@@ -68,7 +68,7 @@ Balau::String & Balau::String::do_ltrim() {
 }
 
 Balau::String & Balau::String::do_rtrim() {
-    unsigned int i, l = length(), p = l;
+    size_t i, l = length(), p = l;
     const char * buffer = data();
 
     if (l == 0)
@@ -89,18 +89,18 @@ Balau::String & Balau::String::do_rtrim() {
 }
 
 Balau::String & Balau::String::do_upper() {
-    unsigned int l = length();
+    size_t l = length();
 
-    for (unsigned int i = 0; i < l; i++)
+    for (size_t i = 0; i < l; i++)
         (*this)[i] = toupper((*this)[i]);
 
     return *this;
 }
 
 Balau::String & Balau::String::do_lower() {
-    unsigned int l = length();
+    size_t l = length();
 
-    for (unsigned int i = 0; i < l; i++)
+    for (size_t i = 0; i < l; i++)
         (*this)[i] = tolower((*this)[i]);
 
     return *this;

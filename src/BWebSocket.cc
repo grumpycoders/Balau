@@ -21,7 +21,7 @@ Balau::WebSocketFrame::WebSocketFrame(const uint8_t * data, size_t len, uint8_t 
         maskPtr = m_data + 2;
     } else if (m_len < 65536) {
         m_data[1] |= 126;
-        m_data[2] = m_len >> 8;
+        m_data[2] = (m_len >> 8) & 0xff;
         m_data[3] = m_len & 0xff;
         maskPtr = m_data + 4;
     } else {
@@ -61,7 +61,7 @@ void Balau::WebSocketFrame::send(Balau::IO<Balau::Handle> socket) {
     size_t totalLen = m_headerSize + m_len;
 
     if (m_mask) {
-        for (int i = m_headerSize; i < totalLen; i++) {
+        for (size_t i = m_headerSize; i < totalLen; i++) {
             m_data[i] ^= m_mask >> 24;
             m_mask = rotate(m_mask);
         }
@@ -218,7 +218,7 @@ void Balau::WebSocketWorker::Do() {
                 *payloadP = (uint8_t *) realloc(*payloadP, *totalLenP + (*opcodeP == OPCODE_TEXT ? 1 : 0));
             case READ_PL:
                 while (*remainingBytesP) {
-                    int r = m_socket->read(*payloadP + *totalLenP - *remainingBytesP, *remainingBytesP);
+                    ssize_t r = m_socket->read(*payloadP + *totalLenP - *remainingBytesP, *remainingBytesP);
                     if (m_socket->isClosed())
                         return;
                     if (r < 0)

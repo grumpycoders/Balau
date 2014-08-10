@@ -17,6 +17,8 @@ extern "C" {
 #include <luajit.h>
 }
 
+#undef max
+
 #ifndef BUFFERSIZE
 #define BUFFERSIZE 2048
 #endif
@@ -68,7 +70,7 @@ int Balau::LuaStatics::hex(lua_State * __L) {
     if (((n != 1) && (n != 2)) || !L.isnumber(1) || ((n == 2) && !L.isstring(2)))
         L.error("Incorrect arguments to function `hex'");
 
-    x = L.tonumber(1);
+    x = (int) L.tonumber(1);
     String fmt = n == 2 ? L.tostring() : "%02x";
     r.set(fmt.to_charp(), x);
 
@@ -1081,19 +1083,21 @@ Balau::LuaObjectBase * Balau::LuaObjectFactory::getMeInternal(Lua & L, int i) {
     return o;
 }
 
-void Balau::LuaObjectFactory::pushMethod(Lua & L, const char * s, int strSize, lua_CFunction f, int upvalues) {
+void Balau::LuaObjectFactory::pushMethod(Lua & L, const char * s, size_t strSize, lua_CFunction f, int upvalues) {
+    AAssert(strSize < std::numeric_limits<int>::max(), "string size too large! (%zu)", strSize);
     if (upvalues == 0) {
-        L.push(s, strSize);
+        L.push(s, (int) strSize);
         L.push(f);
     } else {
         L.push(f, upvalues);
-        L.push(s, strSize);
+        L.push(s, (int) strSize);
         L.insert(-2);
     }
     L.settable(-3, true);
 }
 
-void Balau::LuaObjectFactory::pushMeta(Lua & L, const char * s, int strSize, lua_CFunction f, int upvalues) {
+void Balau::LuaObjectFactory::pushMeta(Lua & L, const char * s, size_t strSize, lua_CFunction f, int upvalues) {
+    AAssert(strSize < std::numeric_limits<int>::max(), "string size too large! (%zu)", strSize);
     if (!L.getmetatable())
         L.newtable();
     if (upvalues == 0) {
@@ -1101,7 +1105,7 @@ void Balau::LuaObjectFactory::pushMeta(Lua & L, const char * s, int strSize, lua
         L.push(f);
     } else {
         L.push(f, upvalues);
-        L.push(s, strSize);
+        L.push(s, (int) strSize);
         L.insert(-2);
     }
     L.settable();

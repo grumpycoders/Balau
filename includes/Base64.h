@@ -7,7 +7,7 @@ namespace Balau {
 class Base64 {
 public:
     static String encode(const uint8_t * data, int len);
-    static int decode(const String & str_in, uint8_t * data_out, size_t outLen = static_cast<size_t>(-1));
+    static ssize_t decode(const String & str_in, uint8_t * data_out, size_t outLen = static_cast<size_t>(-1));
     static const double ratio;
 
 private:

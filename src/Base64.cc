@@ -34,7 +34,7 @@ void Balau::Base64::encode_block(unsigned char in_tab[3], int len, char out[5]) 
 
 Balau::String Balau::Base64::encode(const uint8_t * data, int stream_size) {
     String encoded;
-    encoded.reserve(stream_size * ratio + 1);
+    encoded.reserve((size_t) (stream_size * ratio + 1));
     unsigned char in_tab[3];
     int len, i, s_pos;
 
@@ -86,8 +86,8 @@ int Balau::Base64::decode_block(char s1, char s2, char s3, char s4, unsigned cha
     return len;
 }
 
-int Balau::Base64::decode(const String & str_in, uint8_t * data_out, size_t outLen) {
-    int s_len = str_in.strlen(), len = 0, i, t_len, idx;
+ssize_t Balau::Base64::decode(const String & str_in, uint8_t * data_out, size_t outLen) {
+    size_t s_len = str_in.strlen(), len = 0, i, t_len, idx;
     char s1, s2, s3, s4;
     unsigned char t_out[3];
     unsigned char * p = data_out;

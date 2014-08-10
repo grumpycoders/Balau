@@ -139,7 +139,7 @@ int sLua_BigInt::BigInt_proceed_static(Lua & L, int n, int caller) {
                 a = new BigInt();
                 s = L.tostring(1);
                 if (n == 2)
-                    radix = L.tonumber(-1);
+                    radix = (int) L.tonumber(-1);
                 a->set(s, radix);
             } else if (n == 1) {
                 if (L.istable()) {
@@ -178,7 +178,7 @@ int sLua_BigInt::BigInt_proceed(Lua & L, int n, BigInt * a, int caller) {
         if (L.type() == LUA_TSTRING) {
             s = L.tostring(2);
             if (n == 3)
-                radix = L.tonumber(-1);
+                radix = (int) L.tonumber(-1);
             a->set(s, radix);
         } else {
             lua_Number f = L.tonumber();
@@ -187,11 +187,11 @@ int sLua_BigInt::BigInt_proceed(Lua & L, int n, BigInt * a, int caller) {
         r = 0;
         break;
     case BIGINT_SET2EXPT:
-        a->set2expt(L.tonumber());
+        a->set2expt((int) L.tonumber());
         break;
     case BIGINT_TOSTRING:
         if (n == 3)
-            radix = L.tonumber(-1);
+            radix = (int) L.tonumber(-1);
         L.push(a->toString(radix));
         r = 1;
         break;
@@ -245,7 +245,7 @@ int sLua_BigInt::BigInt_proceed(Lua & L, int n, BigInt * a, int caller) {
             LuaBigIntFactory cf(c = new BigInt());
             cf.pushDestruct(L);
         }
-        *c = *a << L.tonumber();
+        *c = *a << (unsigned int) L.tonumber();
         r = 1;
         break;
     case BIGINT_SHR:
@@ -253,7 +253,7 @@ int sLua_BigInt::BigInt_proceed(Lua & L, int n, BigInt * a, int caller) {
             LuaBigIntFactory cf(c = new BigInt());
             cf.pushDestruct(L);
         }
-        *c = *a >> L.tonumber();
+        *c = *a >> (unsigned int) L.tonumber();
         r = 1;
         break;
     case BIGINT_DO_ADD:
@@ -277,10 +277,10 @@ int sLua_BigInt::BigInt_proceed(Lua & L, int n, BigInt * a, int caller) {
         *a %= *b;
         break;
     case BIGINT_DO_SHL:
-        *a <<= L.tonumber();
+        *a <<= (unsigned int) L.tonumber();
         break;
     case BIGINT_DO_SHR:
-        *a >>= L.tonumber();
+        *a >>= (unsigned int) L.tonumber();
         break;
     case BIGINT_UNM:
         {

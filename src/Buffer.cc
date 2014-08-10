@@ -22,7 +22,7 @@ ssize_t Balau::Buffer::read(void * buf, size_t count) throw (GeneralException) {
     off64_t cursor = rtell();
     if (cursor >= m_bufSize)
         return 0;
-    off64_t avail = m_bufSize - cursor;
+    size_t avail = m_bufSize - cursor;
 
     if (count > avail)
         count = avail;

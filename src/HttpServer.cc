@@ -148,7 +148,7 @@ Balau::String Balau::HttpWorker::httpUnescape(const char * in) {
     String r;
     const char * p;
     char hexa[3];
-    char out;
+    uint8_t out;
 
     for (p = in; *p; p++) {
         switch (*p) {
@@ -163,8 +163,8 @@ Balau::String Balau::HttpWorker::httpUnescape(const char * in) {
             if (!hexa[1])
                 return r;
             hexa[2] = 0;
-            out = strtol(hexa, NULL, 16);
-            r += String(&out, 1);
+            out = (uint8_t) strtol(hexa, NULL, 16);
+            r += String((char *) &out, 1);
             break;
         default:
             r += String(p, 1);
@@ -284,66 +284,67 @@ bool Balau::HttpWorker::handleClient() {
 
         if (!gotFirst) {
             gotFirst = true;
-            int urlBegin = 0;
+            size_t urlBegin = 0;
+            size_t lineLen = line.strlen();
 
             // first line is in the form of METHOD URL HTTP/xxx
             switch(line[0]) {
             case 'G':
-                if ((line[1] == 'E') && (line[2] == 'T') && (line[3] == ' ')) {
+                if ((lineLen >= 5) && (line[1] == 'E') && (line[2] == 'T') && (line[3] == ' ')) {
                     urlBegin = 4;
                     method = Http::GET;
                 }
                 break;
             case 'H':
-                if ((line[1] == 'E') && (line[2] == 'A') && (line[3] == 'D') && (line[4] == ' ')) {
+                if ((lineLen >= 6) && (line[1] == 'E') && (line[2] == 'A') && (line[3] == 'D') && (line[4] == ' ')) {
                     urlBegin = 5;
                     method = Http::HEAD;
                 }
                 break;
             case 'P':
-                if ((line[1] == 'O') && (line[2] == 'S') && (line[3] == 'T') && (line[4] == ' ')) {
+                if ((lineLen >= 6) && (line[1] == 'O') && (line[2] == 'S') && (line[3] == 'T') && (line[4] == ' ')) {
                     urlBegin = 5;
                     method = Http::POST;
-                } else if ((line[1] == 'U') && (line[2] == 'T') && (line[3] == ' ')) {
+                } else if ((lineLen >= 5) && (line[1] == 'U') && (line[2] == 'T') && (line[3] == ' ')) {
                     urlBegin = 4;
                     method = Http::PUT;
-                } else if ((line[1] == 'R') && (line[2] == 'O') && (line[3] == 'P') && (line[4] == 'F') && (line[5] == 'I') && (line[6] == 'N') && (line[7] == 'D') && (line[8] == ' ')) {
+                } else if ((lineLen >= 10) && (line[1] == 'R') && (line[2] == 'O') && (line[3] == 'P') && (line[4] == 'F') && (line[5] == 'I') && (line[6] == 'N') && (line[7] == 'D') && (line[8] == ' ')) {
                     urlBegin = 9;
                     method = Http::PROPFIND;
                 }
                 break;
             case 'D':
-                if ((line[1] == 'E') && (line[2] == 'L') && (line[3] == 'E') && (line[4] == 'T') && (line[5] == 'E') && (line[6] == ' ')) {
+                if ((lineLen >= 8) && (line[1] == 'E') && (line[2] == 'L') && (line[3] == 'E') && (line[4] == 'T') && (line[5] == 'E') && (line[6] == ' ')) {
                     urlBegin = 7;
                     method = Http::DELETE;
                 }
                 break;
             case 'T':
-                if ((line[1] == 'R') && (line[2] == 'A') && (line[3] == 'C') && (line[4] == 'E') && (line[5] == ' ')) {
+                if ((lineLen >= 7) && (line[1] == 'R') && (line[2] == 'A') && (line[3] == 'C') && (line[4] == 'E') && (line[5] == ' ')) {
                     urlBegin = 6;
                     method = Http::TRACE;
                 }
                 break;
             case 'O':
-                if ((line[1] == 'P') && (line[2] == 'T') && (line[3] == 'I') && (line[4] == 'O') && (line[5] == 'N') && (line[6] == 'S') && (line[7] == ' ')) {
+                if ((lineLen >= 9) && (line[1] == 'P') && (line[2] == 'T') && (line[3] == 'I') && (line[4] == 'O') && (line[5] == 'N') && (line[6] == 'S') && (line[7] == ' ')) {
                     urlBegin = 8;
                     method = Http::OPTIONS;
                 }
                 break;
             case 'C':
-                if ((line[1] == 'O') && (line[2] == 'N') && (line[3] == 'N') && (line[4] == 'E') && (line[5] == 'C') && (line[6] == 'T') && (line[7] == ' ')) {
+                if ((lineLen >= 9) && (line[1] == 'O') && (line[2] == 'N') && (line[3] == 'N') && (line[4] == 'E') && (line[5] == 'C') && (line[6] == 'T') && (line[7] == ' ')) {
                     urlBegin = 8;
                     method = Http::CONNECT;
                 }
                 break;
             case 'B':
-                if ((line[1] == 'R') && (line[2] == 'E') && (line[3] == 'W') && (line[4] == ' ')) {
+                if ((lineLen >= 6) && (line[1] == 'R') && (line[2] == 'E') && (line[3] == 'W') && (line[4] == ' ')) {
                     urlBegin = 5;
                     method = Http::BREW;
                 }
                 break;
             case 'W':
-                if ((line[1] == 'H') && (line[2] == 'E') && (line[3] == 'N') && (line[4] == ' ')) {
+                if ((lineLen >= 6) && (line[1] == 'H') && (line[2] == 'E') && (line[3] == 'N') && (line[4] == ' ')) {
                     urlBegin = 5;
                     method = Http::WHEN;
                 }
@@ -355,7 +356,8 @@ bool Balau::HttpWorker::handleClient() {
                 return false;
             }
 
-            int urlEnd = line.strrchr(' ') - 1;
+            // we checked for a space before, so this can't return -1
+            size_t urlEnd = line.strrchr(' ') - 1;
 
             if (urlEnd < urlBegin) {
                 Printer::elog(E_HTTPSERVER, "%s has a misformated URI (or no space after it)", m_name.to_charp());
@@ -365,9 +367,9 @@ bool Balau::HttpWorker::handleClient() {
 
             uri = line.extract(urlBegin, urlEnd - urlBegin + 1);
 
-            int httpBegin = urlEnd + 2;
+            size_t httpBegin = urlEnd + 2;
 
-            if ((httpBegin + 5) >= line.strlen()) {
+            if ((httpBegin + 5) >= lineLen) {
                 Printer::elog(E_HTTPSERVER, "%s doesn't have enough characters after the URI", m_name.to_charp());
                 send400();
                 return false;
@@ -392,7 +394,7 @@ bool Balau::HttpWorker::handleClient() {
             }
         } else {
             // parse HTTP header.
-            int colon = line.strchr(':');
+            ssize_t colon = line.strchr(':');
             if (colon <= 0) {
                 Printer::elog(E_HTTPSERVER, "%s has an invalid HTTP header", m_name.to_charp());
                 send400();
@@ -405,7 +407,7 @@ bool Balau::HttpWorker::handleClient() {
             if (key == "Cookie") {
                 String::List cookiesStrs = value.split(';');
                 for (auto & value: cookiesStrs) {
-                    int equal = value.strchr('=');
+                    ssize_t equal = value.strchr('=');
                     if (equal > 0) {
                         key = value.extract(0, equal).trim();
                         value = value.extract(equal + 1).trim();
@@ -533,7 +535,7 @@ bool Balau::HttpWorker::handleClient() {
         }
     }
 
-    int variablesPos = uri.strchr('?');
+    ssize_t variablesPos = uri.strchr('?');
 
     if (variablesPos >= 0) {
         char * variablesStr = uri.strdup(variablesPos + 1);
@@ -545,7 +547,7 @@ bool Balau::HttpWorker::handleClient() {
     }
 
     if (uri.extract(0, 7) == "http://") {
-        int hostEnd = uri.strchr('/', 7);
+        ssize_t hostEnd = uri.strchr('/', 7);
 
         if (hostEnd < 0) {
             host = uri.extract(7);

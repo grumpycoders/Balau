@@ -120,19 +120,19 @@ int sLua_IOHandle::IOHandle_proceed(Balau::Lua & L, int n, IOHandle * obj, int c
         break;
     case IOHANDLE_WRITEU8:
         {
-            Balau::Future<void> c = h->writeU8(L.tonumber());
+            Balau::Future<void> c = h->writeU8((uint8_t) L.tonumber());
             return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
         }
         break;
     case IOHANDLE_WRITEU16:
         {
-            Balau::Future<void> c = h->writeU16(L.tonumber());
+            Balau::Future<void> c = h->writeU16((uint16_t) L.tonumber());
             return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
         }
         break;
     case IOHANDLE_WRITEU32:
         {
-            Balau::Future<void> c = h->writeU32(L.tonumber());
+            Balau::Future<void> c = h->writeU32((uint32_t) L.tonumber());
             return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
         }
         break;
@@ -146,7 +146,7 @@ int sLua_IOHandle::IOHandle_proceed(Balau::Lua & L, int n, IOHandle * obj, int c
                 Balau::BigInt b(L.tostring());
                 v = b.to_uint64();
             } else {
-                v = L.tonumber();
+                v = (uint64_t) L.tonumber();
             }
             Balau::Future<void> c = h->writeU64(v);
             return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
@@ -154,19 +154,19 @@ int sLua_IOHandle::IOHandle_proceed(Balau::Lua & L, int n, IOHandle * obj, int c
         break;
     case IOHANDLE_WRITEI8:
         {
-            Balau::Future<void> c = h->writeI8(L.tonumber());
+            Balau::Future<void> c = h->writeI8((int8_t) L.tonumber());
             return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
         }
         break;
     case IOHANDLE_WRITEI16:
         {
-            Balau::Future<void> c = h->writeI16(L.tonumber());
+            Balau::Future<void> c = h->writeI16((int16_t) L.tonumber());
             return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
         }
         break;
     case IOHANDLE_WRITEI32:
         {
-            Balau::Future<void> c = h->writeI32(L.tonumber());
+            Balau::Future<void> c = h->writeI32((int32_t) L.tonumber());
             return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
         }
         break;
@@ -180,7 +180,7 @@ int sLua_IOHandle::IOHandle_proceed(Balau::Lua & L, int n, IOHandle * obj, int c
                 Balau::BigInt b(L.tostring());
                 v = b.to_int64();
             } else {
-                v = L.tonumber();
+                v = (int64_t) L.tonumber();
             }
             Balau::Future<void> c = h->writeI64(v);
             return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));

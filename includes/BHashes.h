@@ -3,6 +3,8 @@
 #include <Exceptions.h>
 #include <tomcrypt.h>
 
+#undef max
+
 namespace Balau {
 
 template<const struct ltc_hash_descriptor * desc>
@@ -13,9 +15,16 @@ class Hash {
         int r = desc->init(&m_state);
         IAssert(r == CRYPT_OK, "init for %s returned %i", desc->name, r);
     }
-    void update(const uint8_t * data, const size_t len) {
-        int r = desc->process(&m_state, data, len);
-        IAssert(r == CRYPT_OK, "process for %s returned %i", desc->name, r);
+    void update(const uint8_t * data, size_t len) {
+        while (len) {
+            unsigned long blockLen = std::numeric_limits<unsigned long>::max();
+            if (blockLen > len)
+                blockLen = (unsigned long) len;
+            int r = desc->process(&m_state, data, blockLen);
+            data += blockLen;
+            len -= blockLen;
+            IAssert(r == CRYPT_OK, "process for %s returned %i", desc->name, r);
+        }
     }
     unsigned final(void * digest, unsigned outlen) {
         AAssert(outlen >= digestSize(), "digest size too small being passed on for %s: %u instead of %u", name(), outlen, digestSize());

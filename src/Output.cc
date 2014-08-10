@@ -114,7 +114,7 @@ void Balau::Output::open(bool truncate) throw (GeneralException) {
                     throw GeneralException(String("Unable to open file ") + m_name + " for reading: " + strerror_r(cbResults->errorno, str, sizeof(str)) + " (err#" + cbResults->errorno + ")");
                 }
             } else {
-                m_fd = cbResults->result;
+                m_fd = (int) cbResults->result;
             }
 
             delete cbResults;

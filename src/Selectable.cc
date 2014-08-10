@@ -96,7 +96,7 @@ ssize_t Balau::Selectable::read(void * buf, size_t count) throw (GeneralExceptio
     int spins = 0;
 
     do {
-        ssize_t r = recv(getSocket(m_fd), (char *) buf, count, 0);
+        ssize_t r = recv((int) getSocket(m_fd), (char *) buf, count, 0);
 
         if (r >= 0) {
             m_evtR->resetMaybe();
@@ -137,7 +137,7 @@ ssize_t Balau::Selectable::write(const void * buf, size_t count) throw (GeneralE
     int spins = 0;
 
     do {
-        ssize_t r = send(getSocket(m_fd), (const char *) buf, count, 0);
+        ssize_t r = send((int) getSocket(m_fd), (const char *) buf, count, 0);
 
         EAssert(r != 0, "send() returned 0 (broken pipe ?)");
 

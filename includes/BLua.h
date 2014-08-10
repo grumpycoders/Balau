@@ -79,8 +79,8 @@ class LuaObjectFactory {
     static void pushMeta(Lua & L, const char (&str)[S], lua_CFunction func, int upvalues = 0) {
         pushMeta(L, str, S - 1, func, upvalues);
     }
-    static void pushMethod(Lua & L, const char * name, int strSize, lua_CFunction func, int upvalues = 0);
-    static void pushMeta(Lua & L, const char * name, int strSize, lua_CFunction func, int upvalues = 0);
+    static void pushMethod(Lua & L, const char * name, size_t strSize, lua_CFunction func, int upvalues = 0);
+    static void pushMeta(Lua & L, const char * name, size_t strSize, lua_CFunction func, int upvalues = 0);
     static LuaObjectBase * getMeInternal(Lua & L, int idx);
     friend class Lua;
   private:
@@ -132,7 +132,7 @@ class Lua {
     void push(bool b) { checkstack(); lua_pushboolean(L, b); }
     template<size_t S>
     void push(const char (&str)[S]) { checkstack(); lua_pushlstring(L, str, S - 1); }
-    void push(const char * str, int size = -1) { if (size < 0) size = strlen(str); checkstack(); lua_pushlstring(L, str, size); }
+    void push(const char * str, ssize_t size = -1) { if (size < 0) size = strlen(str); checkstack(); lua_pushlstring(L, str, size); }
     void push(void * p) { checkstack(); lua_pushlightuserdata(L, p); }
     void push(lua_CFunction f, int n = 0) { checkstack(); lua_pushcclosure(L, f, n); }
     void pop(int idx = 1) { lua_pop(L, idx); }
@@ -379,7 +379,7 @@ class LuaHelpers : public LuaHelpersBase {
         lua_functypes_t * tab;
         bool method;
 
-        caller = L.tonumber(L.upvalue(1));
+        caller = (int) L.tonumber(L.upvalue(1));
         proceed = (proceed_t) L.touserdata(L.upvalue(2));
         proceed_static = (proceed_static_t) L.touserdata(L.upvalue(3));
         tab = (lua_functypes_t *) L.touserdata(L.upvalue(4));
