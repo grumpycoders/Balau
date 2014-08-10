@@ -3,7 +3,7 @@
 #include "Async.h"
 #include "TaskMan.h"
 
-Balau::ZStream::ZStream(const IO<Handle> & h, int level, header_t header) : m_h(h) {
+Balau::ZStream::ZStream(IO<Handle> h, int level, header_t header) : Filter(h) {
     m_zin.zalloc = m_zout.zalloc = NULL;
     m_zin.zfree = m_zout.zfree = NULL;
     m_zin.opaque = m_zout.opaque = NULL;
@@ -20,7 +20,7 @@ Balau::ZStream::ZStream(const IO<Handle> & h, int level, header_t header) : m_h(
     EAssert(r == Z_OK, "inflateInit2 returned %i", r);
     r = deflateInit2(&m_zout, level, Z_DEFLATED, window, 9, Z_DEFAULT_STRATEGY);
     EAssert(r == Z_OK, "deflateInit2 returned %i", r);
-    m_name.set("ZStream(%s)", m_h->getName());
+    m_name.set("ZStream(%s)", h->getName());
 }
 
 void Balau::ZStream::close() throw (GeneralException) {
@@ -29,7 +29,7 @@ void Balau::ZStream::close() throw (GeneralException) {
     case WRITING_FINISH:
     case COMPRESSING_FINISH:
     case COMPRESSING_FINISH_IDLE:
-        if (m_h->canWrite())
+        if (getIO()->canWrite())
             finish();
         inflateEnd(&m_zin);
         deflateEnd(&m_zout);
@@ -37,38 +37,14 @@ void Balau::ZStream::close() throw (GeneralException) {
             free(m_buf);
             m_buf = NULL;
         }
-        m_closed = true;
         m_phase = CLOSING;
     case CLOSING:
-        if (!m_detached)
-            m_h->close();
+        Filter::close();
         m_phase = IDLE;
         return;
     default:
         AAssert(false, "Wrong phase");
     }
-}
-
-bool Balau::ZStream::isClosed() {
-    return m_closed;
-}
-
-bool Balau::ZStream::isEOF() {
-    if (m_closed || m_eof)
-        return true;
-    return m_h->isEOF();
-}
-
-bool Balau::ZStream::canRead() {
-    return m_h->canRead();
-}
-
-bool Balau::ZStream::canWrite() {
-    return m_h->canWrite();
-}
-
-const char * Balau::ZStream::getName() {
-    return m_name.to_charp();
 }
 
 namespace {
@@ -105,7 +81,7 @@ bool Balau::ZStream::isPendingComplete() {
     case WRITING:
     case WRITING_FINISH:
     case CLOSING:
-        return m_h->isPendingComplete();
+        return getIO()->isPendingComplete();
     case COMPRESSING:
     case DECOMPRESSING:
     case COMPRESSING_FINISH:
@@ -119,10 +95,10 @@ bool Balau::ZStream::isPendingComplete() {
 static const int BLOCK_SIZE = 1024;
 
 ssize_t Balau::ZStream::read(void * buf, size_t count) throw (GeneralException) {
-    if (m_closed || m_eof)
+    if (isClosed() || m_eof)
         return 0;
 
-    AAssert(m_h->canRead(), "Can't call ZStream::read on a non-readable handle.");
+    AAssert(getIO()->canRead(), "Can't call ZStream::read on a non-readable handle.");
 
     const int block_size = BLOCK_SIZE * (m_useAsyncOp ? 16 : 1);
     AsyncOpZlib * async = dynamic_cast<AsyncOpZlib *>(m_op);
@@ -137,12 +113,12 @@ ssize_t Balau::ZStream::read(void * buf, size_t count) throw (GeneralException) 
             m_zin.next_in = m_buf = (uint8_t *) malloc(block_size);
             m_zin.avail_in = 0;
         }
-        while ((m_count != 0) && !m_h->isClosed() && !m_h->isEOF()) {
+        while ((m_count != 0) && !getIO()->isClosed() && !getIO()->isEOF()) {
             if (m_zin.avail_in == 0) {
                 m_zin.next_in = m_buf;
                 m_phase = READING;
     case READING:
-                m_status = m_h->read(m_buf, block_size);
+                m_status = getIO()->read(m_buf, block_size);
                 if (m_status <= 0)
                     return m_total;
                 m_zin.avail_in = m_status;
@@ -181,10 +157,10 @@ ssize_t Balau::ZStream::read(void * buf, size_t count) throw (GeneralException) 
 }
 
 ssize_t Balau::ZStream::write(const void * buf, size_t count) throw (GeneralException) {
-    if (m_closed || m_eof)
+    if (isClosed() || m_eof)
         return 0;
 
-    AAssert(m_h->canWrite(), "Can't call ZStream::write on a non-writable handle.");
+    AAssert(getIO()->canWrite(), "Can't call ZStream::write on a non-writable handle.");
 
     const int block_size = BLOCK_SIZE * (m_useAsyncOp ? 16 : 1);
     ssize_t w;
@@ -198,7 +174,7 @@ ssize_t Balau::ZStream::write(const void * buf, size_t count) throw (GeneralExce
         m_zout.avail_in = count;
         if (!m_buf)
             m_buf = (uint8_t *) malloc(block_size);
-        while ((m_count != 0) && !m_h->isClosed()) {
+        while ((m_count != 0) && !getIO()->isClosed()) {
             m_zout.next_out = (Bytef *) m_buf;
             m_zout.avail_out = block_size;
             if (m_useAsyncOp) {
@@ -221,7 +197,7 @@ ssize_t Balau::ZStream::write(const void * buf, size_t count) throw (GeneralExce
             m_wptr = m_buf;
             while (m_compressed) {
     case WRITING:
-                w = m_h->write(m_wptr, m_compressed);
+                w = getIO()->write(m_wptr, m_compressed);
                 if (w <= 0) {
                     m_phase = IDLE;
                     return m_total;
@@ -243,7 +219,7 @@ ssize_t Balau::ZStream::write(const void * buf, size_t count) throw (GeneralExce
 }
 
 void Balau::ZStream::doFlush(bool finish) {
-    AAssert(m_h->canWrite(), "Can't call ZStream::doFlush on a non-writable handle.");
+    AAssert(getIO()->canWrite(), "Can't call ZStream::doFlush on a non-writable handle.");
 
     const int block_size = BLOCK_SIZE * (m_useAsyncOp ? 16 : 1);
     void * buf = m_useAsyncOp ? malloc(block_size) : alloca(block_size);
@@ -277,7 +253,7 @@ void Balau::ZStream::doFlush(bool finish) {
             m_wptr = m_buf;
             while (m_compressed) {
     case WRITING_FINISH:
-                w = m_h->write(m_wptr, m_compressed);
+                w = getIO()->write(m_wptr, m_compressed);
                 if (w <= 0) {
                     m_phase = IDLE;
                     return;

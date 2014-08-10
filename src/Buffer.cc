@@ -82,10 +82,3 @@ void Balau::Buffer::borrow(const uint8_t * buffer, size_t s) {
     m_buffer = const_cast<uint8_t *>(buffer);
     m_bufSize = s;
 }
-
-bool Balau::Buffer::isClosed() { return false; }
-bool Balau::Buffer::isEOF() { return rtell() == m_bufSize; }
-const char * Balau::Buffer::getName() { return "Buffer"; }
-off64_t Balau::Buffer::getSize() { return m_bufSize; }
-bool Balau::Buffer::canRead() { return true; }
-bool Balau::Buffer::canWrite() { return !m_fromConst; }

@@ -11,27 +11,18 @@
 #undef ERROR
 #endif
 
-class OutputCheck : public Balau::Handle {
+class OutputCheck : public Balau::Filter {
   public:
-      OutputCheck(Balau::IO<Balau::Handle> h) : m_h(h), m_wrote(false) { IAssert(m_h->canWrite(), "We haven't been passed a writable Handle to our HttpWorker... ?"); m_name.set("OutputCheck(%s)", m_h->getName()); }
-    virtual void close() throw (Balau::GeneralException) { m_h->close(); }
-    virtual bool isClosed() { return m_h->isClosed(); }
-    virtual bool isEOF() { return m_h->isEOF(); }
-    virtual bool canWrite() { return true; }
-    virtual bool canRead() { return m_h->canRead(); }
-    virtual const char * getName() { return m_name.to_charp(); }
+      OutputCheck(Balau::IO<Balau::Handle> h) : Filter(h), m_wrote(false) { IAssert(h->canWrite(), "We haven't been passed a writable Handle to our HttpWorker... ?"); m_name.set("OutputCheck(%s)", h->getName()); }
     virtual ssize_t write(const void * buf, size_t count) throw (Balau::GeneralException) {
         if (!count)
             return 0;
         m_wrote = true;
-        return m_h->write(buf, count);
+        return Filter::write(buf, count);
     }
-    virtual ssize_t read(void * buf, size_t count) throw (Balau::GeneralException) {
-        return m_h->read(buf, count);
-    }
+    virtual const char * getName() { return m_name.to_charp(); }
     bool wrote() { return m_wrote; }
   private:
-    Balau::IO<Balau::Handle> m_h;
     Balau::String m_name;
     bool m_wrote;
 };

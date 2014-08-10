@@ -12,12 +12,14 @@ class Buffer : public SeekableHandle {
     virtual void close() throw (GeneralException) override;
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException) override;
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) override;
-    virtual bool isClosed() override;
-    virtual bool isEOF() override;
-    virtual bool canRead() override;
-    virtual bool canWrite() override;
-    virtual const char * getName() override;
-    virtual off64_t getSize() override;
+    virtual bool isClosed() override { return false; }
+    virtual bool isEOF() override { return rtell() == m_bufSize; }
+    virtual bool canRead() override { return true; }
+    virtual bool canWrite() override { return !m_fromConst; }
+    virtual bool canEAgainOnRead() override { return false; }
+    virtual bool canEAgainOnWrite() override { return false; }
+    virtual const char * getName() override { return "Buffer"; }
+    virtual off64_t getSize() override { return m_bufSize; }
     const uint8_t * getBuffer() { return m_buffer + rtell(); }
     void reset();
     void clear();

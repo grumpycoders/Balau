@@ -3,31 +3,24 @@
 
 static const int s_blockSize = 16 * 1024;
 
-Balau::BStream::BStream(const IO<Handle> & h) : m_h(h), m_buffer((uint8_t *) malloc(s_blockSize)) {
-    AAssert(m_h->canRead(), "You can't create a buffered stream with a Handle that can't read");
-    m_name.set("Stream(%s)", m_h->getName());
-    if ((m_h.isA<Buffer>()) || (m_h.isA<BStream>()))
+Balau::BStream::BStream(IO<Handle> h) : Filter(h), m_buffer((uint8_t *) malloc(s_blockSize)) {
+    AAssert(h->canRead(), "You can't create a buffered stream with a Handle that can't read");
+    m_name.set("Stream(%s)", h->getName());
+    if ((h.isA<Buffer>()) || (h.isA<BStream>()))
         m_passThru = true;
 }
 
 void Balau::BStream::close() throw (Balau::GeneralException) {
-    if (!m_detached)
-        m_h->close();
+    Filter::close();
     free(m_buffer);
     m_buffer = NULL;
     m_availBytes = 0;
     m_cursor = 0;
 }
 
-bool Balau::BStream::isClosed() { return m_closed || m_h->isClosed(); }
-bool Balau::BStream::isEOF() { return (m_availBytes == 0) && m_h->isEOF(); }
-bool Balau::BStream::canRead() { return true; }
-const char * Balau::BStream::getName() { return m_name.to_charp(); }
-off64_t Balau::BStream::getSize() { return m_h->getSize(); }
-
 ssize_t Balau::BStream::read(void * _buf, size_t count) throw (Balau::GeneralException) {
     if (m_passThru)
-        return m_h->read(_buf, count);
+        return getIO()->read(_buf, count);
     uint8_t * buf = (uint8_t *) _buf;
     size_t copied = 0;
     size_t toCopy = count;
@@ -48,11 +41,11 @@ ssize_t Balau::BStream::read(void * _buf, size_t count) throw (Balau::GeneralExc
         return copied;
 
     if (count >= s_blockSize)
-        return m_h->read(buf, count) + copied;
+        return getIO()->read(buf, count) + copied;
 
     m_cursor = 0;
     IAssert(m_availBytes == 0, "At this point, our internal buffer should be empty, but it's not: %zu", m_availBytes);
-    ssize_t r = m_h->read(m_buffer, s_blockSize);
+    ssize_t r = getIO()->read(m_buffer, s_blockSize);
     EAssert(r >= 0, "BStream got an error while reading: %zi", r);
     m_availBytes = r;
 
@@ -86,8 +79,8 @@ int Balau::BStream::peekNextByte() {
 }
 
 Balau::String Balau::BStream::readString(bool putNL) {
-    if (m_h.isA<BStream>())
-        return m_h.asA<BStream>()->readString(putNL);
+    if (getIO().isA<BStream>())
+        return getIO().asA<BStream>()->readString(putNL);
 
     peekNextByte();
     uint8_t * cr, * lf, * nl;

@@ -51,17 +51,19 @@ class Handle {
     virtual const char * getName() = 0;
 
     // normal API
-    virtual bool canSeek();
-    virtual bool canRead();
-    virtual bool canWrite();
+    virtual bool canSeek() { return false; }
+    virtual bool canRead() { return false; }
+    virtual bool canWrite() { return false; }
+    virtual bool canEAgainOnRead() { return true; }
+    virtual bool canEAgainOnWrite() { return true; }
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException) WARN_UNUSED_RESULT;
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) WARN_UNUSED_RESULT;
     virtual void rseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException);
     virtual void wseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException);
     virtual off64_t rtell() throw (GeneralException);
     virtual off64_t wtell() throw (GeneralException);
-    virtual off64_t getSize();
-    virtual time_t getMTime();
+    virtual off64_t getSize() { return -1; }
+    virtual time_t getMTime() { return -1; }
     virtual bool isPendingComplete() { return true; }
 
     enum Endianness {
@@ -208,48 +210,54 @@ class SeekableHandle : public Handle {
     off64_t m_wOffset, m_rOffset;
 };
 
-class ReadOnly : public Handle {
-  public:
-      ReadOnly(IO<Handle> & io) : m_io(io) { AAssert(m_io->canRead(), "You need to use ReadOnly with a Handle that can at least read"); }
-    virtual void close() throw (GeneralException) { m_io->close(); }
-    virtual bool isClosed() { return m_io->isClosed(); }
-    virtual bool isEOF() { return m_io->isEOF(); }
-    virtual bool canSeek() { return m_io->canSeek(); }
-    virtual bool canRead() { return true; }
-    virtual bool canWrite() { return false; }
-    virtual const char * getName() { return m_io->getName(); }
-    virtual ssize_t read(void * buf, size_t count) throw (GeneralException) { return m_io->read(buf, count); }
-    virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) { throw GeneralException("Can't write"); }
-    virtual void rseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException) { m_io->rseek(offset, whence); }
-    virtual void wseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException) { throw GeneralException("Can't write"); }
-    virtual off64_t rtell() throw (GeneralException) { return m_io->rtell(); }
-    virtual off64_t wtell() throw (GeneralException) { throw GeneralException("Can't write"); }
-    virtual off64_t getSize() { return m_io->getSize(); }
-    virtual time_t getMTime() { return m_io->getMTime(); }
-  private:
+class Filter : public Handle {
+public:
+    virtual void close() throw (GeneralException) override { if (!m_detached) m_io->close(); m_closed = true; }
+    virtual bool isClosed() override { return m_closed || m_io->isClosed(); }
+    virtual bool isEOF() override { return m_closed || m_io->isEOF(); }
+    virtual bool canSeek() override { return m_io->canSeek(); }
+    virtual bool canRead() override { return m_io->canRead(); }
+    virtual bool canWrite() override { return m_io->canWrite(); }
+    virtual bool canEAgainOnRead() { return m_io->canEAgainOnRead(); }
+    virtual bool canEAgainOnWrite() { return m_io->canEAgainOnWrite(); }
+    void detach() { m_detached = true; }
+    bool isDetached() { return m_detached; }
+    virtual const char * getName() override { return m_io->getName(); }
+    virtual ssize_t read(void * buf, size_t count) throw (GeneralException) override { return m_io->read(buf, count); }
+    virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) override { return m_io->write(buf, count); }
+    virtual void rseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException) override { m_io->rseek(offset, whence); }
+    virtual void wseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException) override { m_io->wseek(offset, whence); }
+    virtual off64_t rtell() throw (GeneralException) override { return m_io->rtell(); }
+    virtual off64_t wtell() throw (GeneralException) override { return m_io->wtell(); }
+    virtual off64_t getSize() override { return m_io->getSize(); }
+    virtual time_t getMTime() override { return m_io->getMTime(); }
+    virtual bool isPendingComplete() { return m_io->isPendingComplete(); }
+protected:
+      Filter(IO<Handle> & io) : m_io(io) { }
+    IO<Handle> getIO() { return m_io; }
+private:
+    bool m_detached = false, m_closed = false;
     IO<Handle> m_io;
 };
 
-class WriteOnly : public Handle {
+class ReadOnly : public Filter {
   public:
-      WriteOnly(IO<Handle> & io) : m_io(io) { AAssert(m_io->canWrite(), "You need to use WriteOnly with a Handle that can at least write"); }
-    virtual void close() throw (GeneralException) { m_io->close(); }
-    virtual bool isClosed() { return m_io->isClosed(); }
-    virtual bool isEOF() { return m_io->isEOF(); }
-    virtual bool canSeek() { return m_io->canSeek(); }
-    virtual bool canRead() { return false; }
-    virtual bool canWrite() { return true; }
-    virtual const char * getName() { return m_io->getName(); }
-    virtual ssize_t read(void * buf, size_t count) throw (GeneralException) { throw GeneralException("Can't read"); }
-    virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) { return m_io->write(buf, count); }
-    virtual void rseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException) { throw GeneralException("Can't read"); }
-    virtual void wseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException) { return m_io->wseek(offset, whence); }
-    virtual off64_t rtell() throw (GeneralException) { throw GeneralException("Can't read"); }
-    virtual off64_t wtell() throw (GeneralException) { return m_io->wtell(); }
-    virtual off64_t getSize() { return m_io->getSize(); }
-    virtual time_t getMTime() { return m_io->getMTime(); }
-  private:
-    IO<Handle> m_io;
+      ReadOnly(IO<Handle> & io) : Filter(io) { AAssert(io->canRead(), "You need to use ReadOnly with a Handle that can at least read"); }
+    virtual bool canRead() override { return true; }
+    virtual bool canWrite() override { return false; }
+    virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) override { throw GeneralException("Can't write"); }
+    virtual void wseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException) override { throw GeneralException("Can't write"); }
+    virtual off64_t wtell() throw (GeneralException) override { throw GeneralException("Can't write"); }
+};
+
+class WriteOnly : public Filter {
+  public:
+      WriteOnly(IO<Handle> & io) : Filter(io) { AAssert(io->canWrite(), "You need to use WriteOnly with a Handle that can at least write"); }
+    virtual bool canRead() override { return false; }
+    virtual bool canWrite() override { return true; }
+    virtual ssize_t read(void * buf, size_t count) throw (GeneralException) override { throw GeneralException("Can't read"); }
+    virtual void rseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException) override { throw GeneralException("Can't read"); }
+    virtual off64_t rtell() throw (GeneralException) override { throw GeneralException("Can't read"); }
 };
 
 };
