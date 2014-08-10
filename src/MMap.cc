@@ -21,7 +21,7 @@ class MMapPlatform {
         size_t s = 0;
         TCHAR * fnameTchar;
 #ifdef UNICODE
-        fname.do_iconv("UTF-8", "UNICODELITTLE");
+        fname.do_iconv("UTF-8", "CP1200");
         fnameTchar = (TCHAR *) alloca(fname.strlen() + 2);
         memset(fnameTchar, 0, fname.strlen() + 2);
         memcpy(fnameTchar, fname.to_charp(), fname.strlen());
