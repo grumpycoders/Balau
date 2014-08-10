@@ -131,30 +131,35 @@ Balau::Future<uint16_t> Balau::Handle::readU16() {
     else
         return readLEU16();
 }
+
 Balau::Future<uint32_t> Balau::Handle::readU32() {
     if (m_bigEndianMode)
         return readBEU32();
     else
         return readLEU32();
 }
+
 Balau::Future<uint64_t> Balau::Handle::readU64() {
     if (m_bigEndianMode)
         return readBEU64();
     else
         return readLEU64();
 }
+
 Balau::Future<int16_t>  Balau::Handle::readI16() {
     if (m_bigEndianMode)
         return readBEI16();
     else
         return readLEI16();
 }
+
 Balau::Future<int32_t>  Balau::Handle::readI32() {
     if (m_bigEndianMode)
         return readBEI32();
     else
         return readLEI32();
 }
+
 Balau::Future<int64_t>  Balau::Handle::readI64() {
     if (m_bigEndianMode)
         return readBEI64();
@@ -177,25 +182,86 @@ Balau::Future<int32_t>  Balau::Handle::readBEI32() { return genericReadBE<int32_
 Balau::Future<int64_t>  Balau::Handle::readBEI64() { return genericReadBE<int64_t> (this); }
 
 template<class T>
-Balau::Future<void> genericWrite(Balau::IO<Balau::Handle> t, T val) {
-    std::shared_ptr<T> b(new T(val));
+Balau::Future<void> genericWrite(Balau::IO<Balau::Handle> t, T b) {
     size_t c = 0;
     return Balau::Future<void>([t, b, c]() mutable {
         do {
-            ssize_t r = t->write(((uint8_t *) b.get()) + c, sizeof(T));
+            ssize_t r = t->write(((uint8_t *) &b) + c, sizeof(T) - c);
             c += r;
         } while (c < sizeof(T));
     });
 }
 
-Balau::Future<void> Balau::Handle::writeU8 (uint8_t  v) { return genericWrite<uint8_t >(this, v); }
-Balau::Future<void> Balau::Handle::writeU16(uint16_t v) { return genericWrite<uint16_t>(this, v); }
-Balau::Future<void> Balau::Handle::writeU32(uint32_t v) { return genericWrite<uint32_t>(this, v); }
-Balau::Future<void> Balau::Handle::writeU64(uint64_t v) { return genericWrite<uint64_t>(this, v); }
-Balau::Future<void> Balau::Handle::writeI8 (int8_t   v) { return genericWrite<int8_t  >(this, v); }
-Balau::Future<void> Balau::Handle::writeI16(int16_t  v) { return genericWrite<int16_t >(this, v); }
-Balau::Future<void> Balau::Handle::writeI32(int32_t  v) { return genericWrite<int32_t >(this, v); }
-Balau::Future<void> Balau::Handle::writeI64(int64_t  v) { return genericWrite<int64_t >(this, v); }
+template<class T>
+Balau::Future<void> genericWriteBE(Balau::IO<Balau::Handle> t, T v) {
+    size_t c = sizeof(T);
+    return Balau::Future<void>([t, v, c]() mutable {
+        do {
+            ssize_t r = t->write(((uint8_t *) &v) + c - 1, 1);
+            AAssert(r >= 0, "genericWriteBE got an error: %zi", r);
+            c -= r;
+        } while (c && !t->isEOF());
+    });
+}
+
+Balau::Future<void> Balau::Handle::writeU8(uint8_t v) { return genericWrite<uint8_t>(this, v); }
+Balau::Future<void> Balau::Handle::writeI8(int8_t  v) { return genericWrite<int8_t >(this, v); }
+
+Balau::Future<void> Balau::Handle::writeU16(uint16_t v) {
+    if (m_bigEndianMode)
+        return writeBEU16(v);
+    else
+        return writeLEU16(v);
+}
+
+Balau::Future<void> Balau::Handle::writeU32(uint32_t v) {
+    if (m_bigEndianMode)
+        return writeBEU32(v);
+    else
+        return writeLEU32(v);
+}
+
+Balau::Future<void> Balau::Handle::writeU64(uint64_t v) {
+    if (m_bigEndianMode)
+        return writeBEU64(v);
+    else
+        return writeLEU64(v);
+}
+
+Balau::Future<void> Balau::Handle::writeI16(int16_t v) {
+    if (m_bigEndianMode)
+        return writeBEI16(v);
+    else
+        return writeLEI16(v);
+}
+
+Balau::Future<void> Balau::Handle::writeI32(int32_t v) {
+    if (m_bigEndianMode)
+        return writeBEI32(v);
+    else
+        return writeLEI32(v);
+}
+
+Balau::Future<void> Balau::Handle::writeI64(int64_t v) {
+    if (m_bigEndianMode)
+        return writeBEI64(v);
+    else
+        return writeLEI64(v);
+}
+
+Balau::Future<void> Balau::Handle::writeLEU16(uint16_t v) { return genericWrite<uint16_t>(this, v); }
+Balau::Future<void> Balau::Handle::writeLEU32(uint32_t v) { return genericWrite<uint32_t>(this, v); }
+Balau::Future<void> Balau::Handle::writeLEU64(uint64_t v) { return genericWrite<uint64_t>(this, v); }
+Balau::Future<void> Balau::Handle::writeLEI16(int16_t  v) { return genericWrite<int16_t >(this, v); }
+Balau::Future<void> Balau::Handle::writeLEI32(int32_t  v) { return genericWrite<int32_t >(this, v); }
+Balau::Future<void> Balau::Handle::writeLEI64(int64_t  v) { return genericWrite<int64_t >(this, v); }
+
+Balau::Future<void> Balau::Handle::writeBEU16(uint16_t v) { return genericWriteBE<uint16_t>(this, v); }
+Balau::Future<void> Balau::Handle::writeBEU32(uint32_t v) { return genericWriteBE<uint32_t>(this, v); }
+Balau::Future<void> Balau::Handle::writeBEU64(uint64_t v) { return genericWriteBE<uint64_t>(this, v); }
+Balau::Future<void> Balau::Handle::writeBEI16(int16_t  v) { return genericWriteBE<int16_t >(this, v); }
+Balau::Future<void> Balau::Handle::writeBEI32(int32_t  v) { return genericWriteBE<int32_t >(this, v); }
+Balau::Future<void> Balau::Handle::writeBEI64(int64_t  v) { return genericWriteBE<int64_t >(this, v); }
 
 void Balau::Handle::rseek(off64_t offset, int whence) throw (GeneralException) {
     if (canSeek())
@@ -204,22 +270,12 @@ void Balau::Handle::rseek(off64_t offset, int whence) throw (GeneralException) {
         throw GeneralException("Handle can't seek");
 }
 
-void Balau::Handle::wseek(off64_t offset, int whence) throw (GeneralException) {
-    rseek(offset, whence);
-}
-
 off64_t Balau::Handle::rtell() throw (GeneralException) {
     if (canSeek())
         throw GeneralException(String("Handle ") + getName() + " can seek, but rtell() not implemented (missing in class " + ClassName(this).c_str() + ")");
     else
         throw GeneralException("Handle can't seek");
 }
-
-off64_t Balau::Handle::wtell() throw (GeneralException) {
-    return rtell();
-}
-
-bool Balau::SeekableHandle::canSeek() { return true; }
 
 void Balau::SeekableHandle::rseek(off64_t offset, int whence) throw (GeneralException) {
     AAssert(canRead() || canWrite(), "Can't use a SeekableHandle with a Handle that can neither read or write...");

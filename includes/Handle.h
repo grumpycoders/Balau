@@ -59,9 +59,9 @@ class Handle {
     virtual ssize_t read(void * buf, size_t count) throw (GeneralException) WARN_UNUSED_RESULT;
     virtual ssize_t write(const void * buf, size_t count) throw (GeneralException) WARN_UNUSED_RESULT;
     virtual void rseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException);
-    virtual void wseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException);
+    virtual void wseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException) { return rseek(offset, whence); }
     virtual off64_t rtell() throw (GeneralException);
-    virtual off64_t wtell() throw (GeneralException);
+    virtual off64_t wtell() throw (GeneralException) { return rtell(); }
     virtual off64_t getSize() { return -1; }
     virtual time_t getMTime() { return -1; }
     virtual bool isPendingComplete() { return true; }
@@ -101,7 +101,7 @@ class Handle {
     Future<int32_t>  readLEI32();
     Future<int64_t>  readLEI64();
 
-    Future<void>     writeU8(uint8_t);
+    Future<void>     writeU8 (uint8_t);
     Future<void>     writeU16(uint16_t);
     Future<void>     writeU32(uint32_t);
     Future<void>     writeU64(uint64_t);
@@ -110,9 +110,23 @@ class Handle {
     Future<void>     writeI32(int32_t);
     Future<void>     writeI64(int64_t);
 
+    Future<void>     writeBEU16(uint16_t);
+    Future<void>     writeBEU32(uint32_t);
+    Future<void>     writeBEU64(uint64_t);
+    Future<void>     writeBEI16(int16_t);
+    Future<void>     writeBEI32(int32_t);
+    Future<void>     writeBEI64(int64_t);
+
+    Future<void>     writeLEU16(uint16_t);
+    Future<void>     writeLEU32(uint32_t);
+    Future<void>     writeLEU64(uint64_t);
+    Future<void>     writeLEI16(int16_t);
+    Future<void>     writeLEI32(int32_t);
+    Future<void>     writeLEI64(int64_t);
+
     // these need to be changed into Future<>s
     template <size_t L>
-    ssize_t writeString(const char (&str)[L]) WARN_UNUSED_RESULT;
+    ssize_t writeString(const char (&str)[L]) WARN_UNUSED_RESULT { return writeString(str, L - 1); }
     ssize_t writeString(const String & str) WARN_UNUSED_RESULT { return forceWrite(str.to_charp(), str.strlen()); }
     ssize_t writeString(const char * str, ssize_t len) WARN_UNUSED_RESULT { return forceWrite(str, len); }
     ssize_t forceRead(void * buf, size_t count, Events::BaseEvent * evt = NULL) throw (GeneralException) WARN_UNUSED_RESULT;
@@ -143,10 +157,7 @@ class Handle {
     Handle & operator=(const Handle &) = delete;
 };
 
-template <size_t L>
-ssize_t Handle::writeString(const char (&str)[L]) { return writeString(str, L - 1); }
-
-class HPrinter : public Handle {
+ class HPrinter : public Handle {
   public:
     virtual void close() throw (GeneralException) { }
     virtual bool isClosed() { return false; }
@@ -197,7 +208,7 @@ class IO : public IOBase {
 class SeekableHandle : public Handle {
   public:
       SeekableHandle() : m_wOffset(0), m_rOffset(0) { }
-    virtual bool canSeek();
+    virtual bool canSeek() { return true; }
     virtual void rseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException);
     virtual void wseek(off64_t offset, int whence = SEEK_SET) throw (GeneralException);
     virtual off64_t rtell() throw (GeneralException);
