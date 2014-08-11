@@ -96,29 +96,29 @@ ssize_t Balau::Handle::forceWrite(const void * _buf, size_t count, Events::BaseE
 
 template<class T>
 Balau::Future<T> genericRead(Balau::IO<Balau::Handle> t) {
-    T b;
+    std::shared_ptr<T> b(new T);
     size_t c = 0;
     return Balau::Future<T>([t, b, c]() mutable {
         do {
-            ssize_t r = t->read(((uint8_t *) &b) + c, sizeof(T) - c);
+            ssize_t r = t->read(((uint8_t *) b.get()) + c, sizeof(T) - c);
             AAssert(r >= 0, "genericRead got an error: %zi", r);
             c += r;
         } while ((c < sizeof(T)) && !t->isEOF());
-        return b;
+        return *b;
     });
 }
 
 template<class T>
 Balau::Future<T> genericReadBE(Balau::IO<Balau::Handle> t) {
-    T b;
+    std::shared_ptr<T> b(new T);
     size_t c = sizeof(T);
     return Balau::Future<T>([t, b, c]() mutable {
         do {
-            ssize_t r = t->read(((uint8_t *) &b) + c - 1, 1);
+            ssize_t r = t->read(((uint8_t *) b.get()) + c - 1, 1);
             AAssert(r >= 0, "genericReadBE got an error: %zi", r);
             c -= r;
         } while (c && !t->isEOF());
-        return b;
+        return *b;
     });
 }
 
