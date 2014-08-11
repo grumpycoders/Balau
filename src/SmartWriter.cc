@@ -5,9 +5,9 @@
 namespace {
 
 struct WriteCell {
-      ~WriteCell() { delete buffer; }
-    const void * buffer = NULL;
-    const uint8_t * ptr;
+      ~WriteCell() { free(buffer); }
+    void * buffer = NULL;
+    uint8_t * ptr;
     size_t size;
     bool stop = false;
     bool close = false;
@@ -32,7 +32,7 @@ class SmartWriterTask : public Balau::StacklessTask {
         cell->close = closeHandle;
         m_queue.push(cell);
     }
-    bool gotError() { return m_gotError; }
+    bool gotError() { return m_gotError.load(); }
   private:
       virtual ~SmartWriterTask() { empty(); }
     virtual const char * getName() const override { return m_name.to_charp(); }
@@ -65,18 +65,29 @@ class SmartWriterTask : public Balau::StacklessTask {
         }
 
         ssize_t r = 0;
-        try {
-            r = m_h->write(m_current->ptr, m_current->size);
-        }
-        catch (Balau::EAgain & e) {
-            waitFor(e.getEvent());
-            taskSwitch();
+
+        if (m_gotError.load()) {
+            delete m_current;
+            m_current = NULL;
+            r = -1;
+        } else {
+            try {
+                r = m_h->write(m_current->ptr, m_current->size);
+            }
+            catch (Balau::EAgain & e) {
+                waitFor(e.getEvent());
+                taskSwitch();
+            }
         }
 
-        m_current->ptr += r;
-        m_current->size -= r;
+        if (r < 0) {
+            m_gotError.store(true);
+        } else {
+            m_current->ptr += r;
+            m_current->size -= r;
+        }
 
-        if (m_current->size == 0) {
+        if (m_current && m_current->size == 0) {
             delete m_current;
             m_current = NULL;
         }
@@ -88,12 +99,12 @@ class SmartWriterTask : public Balau::StacklessTask {
     }
     Balau::IO<Balau::Handle> m_h;
     Balau::String m_name;
-    std::atomic<bool> m_gotError = false;
+    std::atomic<bool> m_gotError;
     Balau::TQueue<WriteCell> m_queue;
     WriteCell * m_current = NULL;
 };
 
-void Balau::SmartWriter::close() {
+void Balau::SmartWriter::close() throw (GeneralException) {
     if (m_writerTask) {
         m_writerTask->stop(!isDetached());
         m_writerTask = NULL;

@@ -51,6 +51,7 @@ Output.cc \
 MMap.cc \
 Socket.cc \
 Selectable.cc \
+SmartWriter.cc \
 Buffer.cc \
 BStream.cc \
 ZHandle.cc \
