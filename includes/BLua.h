@@ -47,7 +47,7 @@ template<class T>
 class LuaObject : public LuaObjectBase {
   public:
       LuaObject(T * obj) : m_obj(obj) { }
-    virtual void destroy() override { if (!isDetached() && m_obj) delete m_obj; detach(); }
+    virtual void destroy() override { if (!isDetached() && m_obj) { m_obj->cleanup(); delete m_obj; } detach(); }
     T * getObj() { return m_obj; }
     virtual Task * spawnCollector() override { return isDetached() ? NULL : new DeferredCollector<T>(m_obj); }
   private:
