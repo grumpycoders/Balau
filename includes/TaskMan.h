@@ -124,6 +124,7 @@ class TaskMan {
     void curlMultiTimerEventCallback(ev::timer & w, int revents);
     void registerCurlHandle(CurlTask * curlTask);
     void unregisterCurlHandle(CurlTask * curlTask);
+    taskHash_t m_curlTasks;
 
     struct ares_channeldata * m_aresChannel = NULL;
     static const int ARES_MAX_SOCKETS = 2;

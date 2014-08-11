@@ -467,9 +467,27 @@ Balau::TaskMan::~TaskMan() {
     s_scheduler.unregisterTaskMan(this);
     // probably way more work to do here in order to clean up tasks from that thread
     m_evt.stop();
-    ev_loop_destroy(m_loop);
+    taskHash_t tasks = std::move(m_curlTasks);
+    m_curlTasks.clear();
+    for (Task * t : tasks) {
+        CurlTask * c = dynamic_cast<CurlTask *>(t);
+        if (!c)
+            continue;
+        unregisterCurlHandle(c);
+    }
+    tasks.clear();
     curl_multi_cleanup(m_curlMulti);
     ares_destroy(m_aresChannel);
+    m_curlTimer.stop();
+    m_aresTimer.stop();
+    if (m_aresSocketEvents[0])
+        m_aresSocketEvents[0]->stop();
+    m_aresSocketEvents[0] = NULL;
+    if (m_aresSocketEvents[1])
+        m_aresSocketEvents[1]->stop();
+    m_aresSocketEvents[1] = NULL;
+
+    ev_loop_destroy(m_loop);
 }
 
 void * Balau::TaskMan::getStack() {
@@ -650,6 +668,7 @@ void Balau::TaskMan::registerCurlHandle(Balau::CurlTask * curlTask) {
     curl_easy_setopt(curlTask->m_curlHandle, CURLOPT_PRIVATE, curlTask);
     curl_easy_setopt(curlTask->m_curlHandle, CURLOPT_NOSIGNAL, 1L);
     curl_multi_add_handle(m_curlMulti, curlTask->m_curlHandle);
+    m_curlTasks.insert(curlTask);
 }
 
 void Balau::TaskMan::unregisterCurlHandle(Balau::CurlTask * curlTask) {
@@ -659,6 +678,7 @@ void Balau::TaskMan::unregisterCurlHandle(Balau::CurlTask * curlTask) {
         return;
     curl_easy_setopt(curlTask->m_curlHandle, CURLOPT_PRIVATE, static_cast<void *>(0));
     curl_multi_remove_handle(m_curlMulti, curlTask->m_curlHandle);
+    m_curlTasks.erase(curlTask);
 }
 
 void Balau::TaskMan::getHostByName(const Balau::String & name, int family, AresHostCallback callback) {
