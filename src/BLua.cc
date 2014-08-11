@@ -11,6 +11,7 @@
 #include "HelperTasks.h"
 #include "StacklessTask.h"
 #include "TaskMan.h"
+#include "LuaHandle.h"
 
 extern "C" {
 #include <lualib.h>
@@ -98,7 +99,7 @@ int Balau::LuaStatics::dumpvars(lua_State * __L) {
     if (L.isstring(2))
         L.getglobal(L.tostring(2).to_charp());
 
-    IO<Handle> h(L.recast<Balau::Handle>());
+    IO<Handle> h(L.recast<LuaIO>()->getIO());
 
     if (!h->canEAgainOnWrite()) {
         L.dumpvars(h, prefix);
@@ -311,19 +312,6 @@ int Balau::LuaStatics::callwrap(lua_State * __L, lua_CFunction func) {
 
     return r;
 }
-
-namespace {
-
-class CollectorTask : public Balau::StacklessTask {
-  public:
-      CollectorTask(Balau::LuaObjectBase * obj) : m_obj(obj) { }
-  private:
-    virtual const char * getName() const override { return "CollectorTask"; }
-    virtual void Do() override { delete m_obj; }
-    Balau::LuaObjectBase * m_obj;
-};
-
-};
 
 int Balau::LuaStatics::collector(lua_State * __L) {
     Lua L(__L);

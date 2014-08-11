@@ -18,6 +18,7 @@ class ObjectTest {
     int someMethod2(int p) { Printer::log(M_DEBUG, "ObjectTest::someMethod2() called on %p.", this); callCount++; return p * 2; }
     static void someFunction() { Printer::log(M_DEBUG, "ObjectTest::someFunction() called."); callCount++; }
     static void someStatic() { Printer::log(M_DEBUG, "ObjectTest::someStatic() called."); callCount++; }
+    void cleanup() { }
 };
 
 enum ObjectTest_methods_t {

@@ -118,6 +118,8 @@ class BigInt {
     String toString(int radix = 10) const;
     char * makeString(int radix = 10) const;
 
+    void cleanup() { }
+
   private:
     void * m_bi = NULL;
 };

@@ -2,8 +2,8 @@
 #include "LuaBigInt.h"
 #include "Handle.h"
 
-typedef Balau::IO<Balau::Handle> IOHandle;
-typedef IOHandle IOInput;
+typedef Balau::LuaIO IOHandle;
+typedef Balau::LuaIO IOInput;
 
 // Handle exports
 
@@ -102,7 +102,7 @@ struct sLua_IOHandle {
 
 int sLua_IOHandle::IOHandle_proceed(Balau::Lua & L, int n, IOHandle * obj, int caller) {
     int r = 0;
-    Balau::IO<Balau::Handle> h = *obj;
+    Balau::IO<Balau::Handle> h = obj->getIO();
 
     switch (caller) {
     case IOHANDLE_CLOSE:
@@ -538,7 +538,7 @@ int sLua_IOInput::IOInput_proceed_static(Balau::Lua & L, int n, int caller) {
 }
 
 int sLua_IOInput::IOInput_proceed(Balau::Lua & L, int n, IOInput * obj, int caller) {
-    Balau::IO<Balau::Input> h = *obj;
+    Balau::IO<Balau::Input> h = obj->getIO();
 
     switch (caller) {
     case IOINPUT_OPEN:

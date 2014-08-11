@@ -35,8 +35,9 @@ class DeferredCollector : public StacklessTask {
     virtual const char * getName() const override { return "DeferredCollector"; }
     virtual void Do() override {
         StacklessBegin();
-        StacklessOperation(delete m_obj);
+        StacklessOperation(m_obj->cleanup());
         StacklessEnd();
+        delete m_obj;
     }
   private:
     T * m_obj;
