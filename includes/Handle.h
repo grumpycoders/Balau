@@ -124,7 +124,7 @@ class Handle {
     Future<void>     writeLEI32(int32_t);
     Future<void>     writeLEI64(int64_t);
 
-    // these need to be changed into Future<>s
+    // be careful with these ones
     template <size_t L>
     ssize_t writeString(const char (&str)[L]) WARN_UNUSED_RESULT { return writeString(str, L - 1); }
     ssize_t writeString(const String & str) WARN_UNUSED_RESULT { return forceWrite(str.to_charp(), str.strlen()); }

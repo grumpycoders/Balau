@@ -17,6 +17,18 @@ enum IOHandle_methods_t {
     IOHANDLE_READI16,
     IOHANDLE_READI32,
     IOHANDLE_READI64,
+    IOHANDLE_READLEU16,
+    IOHANDLE_READLEU32,
+    IOHANDLE_READLEU64,
+    IOHANDLE_READLEI16,
+    IOHANDLE_READLEI32,
+    IOHANDLE_READLEI64,
+    IOHANDLE_READBEU16,
+    IOHANDLE_READBEU32,
+    IOHANDLE_READBEU64,
+    IOHANDLE_READBEI16,
+    IOHANDLE_READBEI32,
+    IOHANDLE_READBEI64,
     IOHANDLE_WRITEU8,
     IOHANDLE_WRITEU16,
     IOHANDLE_WRITEU32,
@@ -25,6 +37,18 @@ enum IOHandle_methods_t {
     IOHANDLE_WRITEI16,
     IOHANDLE_WRITEI32,
     IOHANDLE_WRITEI64,
+    IOHANDLE_WRITELEU16,
+    IOHANDLE_WRITELEU32,
+    IOHANDLE_WRITELEU64,
+    IOHANDLE_WRITELEI16,
+    IOHANDLE_WRITELEI32,
+    IOHANDLE_WRITELEI64,
+    IOHANDLE_WRITEBEU16,
+    IOHANDLE_WRITEBEU32,
+    IOHANDLE_WRITEBEU64,
+    IOHANDLE_WRITEBEI16,
+    IOHANDLE_WRITEBEI32,
+    IOHANDLE_WRITEBEI64,
 };
 
 struct Balau::lua_functypes_t IOHandle_methods[] = {
@@ -37,6 +61,18 @@ struct Balau::lua_functypes_t IOHandle_methods[] = {
     { IOHANDLE_READI16,         "readI16",        0, 0, { } },
     { IOHANDLE_READI32,         "readI32",        0, 0, { } },
     { IOHANDLE_READI64,         "readI64",        0, 0, { } },
+    { IOHANDLE_READLEU16,       "readLEU16",      0, 0, { } },
+    { IOHANDLE_READLEU32,       "readLEU32",      0, 0, { } },
+    { IOHANDLE_READLEU64,       "readLEU64",      0, 0, { } },
+    { IOHANDLE_READLEI16,       "readLEI16",      0, 0, { } },
+    { IOHANDLE_READLEI32,       "readLEI32",      0, 0, { } },
+    { IOHANDLE_READLEI64,       "readLEI64",      0, 0, { } },
+    { IOHANDLE_READBEU16,       "readBEU16",      0, 0, { } },
+    { IOHANDLE_READBEU32,       "readBEU32",      0, 0, { } },
+    { IOHANDLE_READBEU64,       "readBEU64",      0, 0, { } },
+    { IOHANDLE_READBEI16,       "readBEI16",      0, 0, { } },
+    { IOHANDLE_READBEI32,       "readBEI32",      0, 0, { } },
+    { IOHANDLE_READBEI64,       "readBEI64",      0, 0, { } },
     { IOHANDLE_WRITEU8,         "writeU8",        1, 1, { Balau::BLUA_NUMBER } },
     { IOHANDLE_WRITEU16,        "writeU16",       1, 1, { Balau::BLUA_NUMBER } },
     { IOHANDLE_WRITEU32,        "writeU32",       1, 1, { Balau::BLUA_NUMBER } },
@@ -45,6 +81,18 @@ struct Balau::lua_functypes_t IOHandle_methods[] = {
     { IOHANDLE_WRITEI16,        "writeI16",       1, 1, { Balau::BLUA_NUMBER } },
     { IOHANDLE_WRITEI32,        "writeI32",       1, 1, { Balau::BLUA_NUMBER } },
     { IOHANDLE_WRITEI64,        "writeI64",       1, 1, { Balau::BLUA_NUMBER | Balau::BLUA_OBJECT | Balau::BLUA_STRING } },
+    { IOHANDLE_WRITELEU16,      "writeLEU16",     1, 1, { Balau::BLUA_NUMBER } },
+    { IOHANDLE_WRITELEU32,      "writeLEU32",     1, 1, { Balau::BLUA_NUMBER } },
+    { IOHANDLE_WRITELEU64,      "writeLEU64",     1, 1, { Balau::BLUA_NUMBER | Balau::BLUA_OBJECT | Balau::BLUA_STRING } },
+    { IOHANDLE_WRITELEI16,      "writeLEI16",     1, 1, { Balau::BLUA_NUMBER } },
+    { IOHANDLE_WRITELEI32,      "writeLEI32",     1, 1, { Balau::BLUA_NUMBER } },
+    { IOHANDLE_WRITELEI64,      "writeLEI64",     1, 1, { Balau::BLUA_NUMBER | Balau::BLUA_OBJECT | Balau::BLUA_STRING } },
+    { IOHANDLE_WRITEBEU16,      "writeBEU16",     1, 1, { Balau::BLUA_NUMBER } },
+    { IOHANDLE_WRITEBEU32,      "writeBEU32",     1, 1, { Balau::BLUA_NUMBER } },
+    { IOHANDLE_WRITEBEU64,      "writeBEU64",     1, 1, { Balau::BLUA_NUMBER | Balau::BLUA_OBJECT | Balau::BLUA_STRING } },
+    { IOHANDLE_WRITEBEI16,      "writeBEI16",     1, 1, { Balau::BLUA_NUMBER } },
+    { IOHANDLE_WRITEBEI32,      "writeBEI32",     1, 1, { Balau::BLUA_NUMBER } },
+    { IOHANDLE_WRITEBEI64,      "writeBEI64",     1, 1, { Balau::BLUA_NUMBER | Balau::BLUA_OBJECT | Balau::BLUA_STRING } },
     { -1, 0, 0, 0, 0 },
 };
 
@@ -110,6 +158,98 @@ int sLua_IOHandle::IOHandle_proceed(Balau::Lua & L, int n, IOHandle * obj, int c
     case IOHANDLE_READI64:
         {
             Balau::Future<int64_t> c = h->readI64();
+            return L.yield(Balau::Future<int>([L, c]() mutable {
+                int64_t v = c.get();
+                Balau::LuaBigIntFactory f(new Balau::BigInt(v));
+                f.pushDestruct(L);
+                return 1;
+            }));
+        }
+        break;
+    case IOHANDLE_READLEU16:
+        {
+            Balau::Future<uint16_t> c = h->readLEU16();
+            return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
+        }
+        break;
+    case IOHANDLE_READLEU32:
+        {
+            Balau::Future<uint32_t> c = h->readLEU32();
+            return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
+        }
+        break;
+    case IOHANDLE_READLEU64:
+        {
+            Balau::Future<uint64_t> c = h->readLEU64();
+            return L.yield(Balau::Future<int>([L, c]() mutable {
+                uint64_t v = c.get();
+                Balau::LuaBigIntFactory f(new Balau::BigInt(v));
+                f.pushDestruct(L);
+                return 1;
+            }));
+        }
+        break;
+    case IOHANDLE_READLEI16:
+        {
+            Balau::Future<int16_t> c = h->readLEI16();
+            return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
+        }
+        break;
+    case IOHANDLE_READLEI32:
+        {
+            Balau::Future<int32_t> c = h->readLEI32();
+            return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
+        }
+        break;
+    case IOHANDLE_READLEI64:
+        {
+            Balau::Future<int64_t> c = h->readLEI64();
+            return L.yield(Balau::Future<int>([L, c]() mutable {
+                int64_t v = c.get();
+                Balau::LuaBigIntFactory f(new Balau::BigInt(v));
+                f.pushDestruct(L);
+                return 1;
+            }));
+        }
+        break;
+    case IOHANDLE_READBEU16:
+        {
+            Balau::Future<uint16_t> c = h->readBEU16();
+            return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
+        }
+        break;
+    case IOHANDLE_READBEU32:
+        {
+            Balau::Future<uint32_t> c = h->readBEU32();
+            return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
+        }
+        break;
+    case IOHANDLE_READBEU64:
+        {
+            Balau::Future<uint64_t> c = h->readBEU64();
+            return L.yield(Balau::Future<int>([L, c]() mutable {
+                uint64_t v = c.get();
+                Balau::LuaBigIntFactory f(new Balau::BigInt(v));
+                f.pushDestruct(L);
+                return 1;
+            }));
+        }
+        break;
+    case IOHANDLE_READBEI16:
+        {
+            Balau::Future<int16_t> c = h->readBEI16();
+            return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
+        }
+        break;
+    case IOHANDLE_READBEI32:
+        {
+            Balau::Future<int32_t> c = h->readBEI32();
+            return L.yield(Balau::Future<int>([L, c]() mutable { L.push((lua_Number) c.get()); return 1; }));
+        }
+        break;
+    case IOHANDLE_READBEI64:
+        {
+            Balau::Future<int64_t> c = h->readBEI64();
             return L.yield(Balau::Future<int>([L, c]() mutable {
                 int64_t v = c.get();
                 Balau::LuaBigIntFactory f(new Balau::BigInt(v));
@@ -186,6 +326,118 @@ int sLua_IOHandle::IOHandle_proceed(Balau::Lua & L, int n, IOHandle * obj, int c
             return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
         }
         break;
+    case IOHANDLE_WRITELEU16:
+        {
+            Balau::Future<void> c = h->writeLEU16((uint16_t) L.tonumber());
+            return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+        }
+        break;
+    case IOHANDLE_WRITELEU32:
+        {
+            Balau::Future<void> c = h->writeLEU32((uint32_t) L.tonumber());
+            return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+        }
+        break;
+    case IOHANDLE_WRITELEU64:
+        {
+            uint64_t v;
+            if (L.istable()) {
+                Balau::BigInt * b = L.recast<Balau::BigInt>();
+                v = b->to_uint64();
+            } else if (L.type() == LUA_TSTRING) {
+                Balau::BigInt b(L.tostring());
+                v = b.to_uint64();
+            } else {
+                v = (uint64_t) L.tonumber();
+            }
+            Balau::Future<void> c = h->writeLEU64(v);
+            return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+        }
+        break;
+    case IOHANDLE_WRITELEI16:
+        {
+            Balau::Future<void> c = h->writeLEI16((int16_t) L.tonumber());
+            return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+        }
+        break;
+    case IOHANDLE_WRITELEI32:
+        {
+            Balau::Future<void> c = h->writeLEI32((int32_t) L.tonumber());
+            return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+        }
+        break;
+    case IOHANDLE_WRITELEI64:
+        {
+            int64_t v;
+            if (L.istable()) {
+                Balau::BigInt * b = L.recast<Balau::BigInt>();
+                v = b->to_int64();
+            } else if (L.type() == LUA_TSTRING) {
+                Balau::BigInt b(L.tostring());
+                v = b.to_int64();
+            } else {
+                v = (int64_t) L.tonumber();
+            }
+            Balau::Future<void> c = h->writeLEI64(v);
+            return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+        }
+        break;
+    case IOHANDLE_WRITEBEU16:
+    {
+        Balau::Future<void> c = h->writeBEU16((uint16_t)L.tonumber());
+        return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+    }
+        break;
+    case IOHANDLE_WRITEBEU32:
+    {
+        Balau::Future<void> c = h->writeBEU32((uint32_t)L.tonumber());
+        return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+    }
+        break;
+    case IOHANDLE_WRITEBEU64:
+    {
+        uint64_t v;
+        if (L.istable()) {
+            Balau::BigInt * b = L.recast<Balau::BigInt>();
+            v = b->to_uint64();
+        } else if (L.type() == LUA_TSTRING) {
+            Balau::BigInt b(L.tostring());
+            v = b.to_uint64();
+        } else {
+            v = (uint64_t)L.tonumber();
+        }
+        Balau::Future<void> c = h->writeBEU64(v);
+        return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+    }
+        break;
+    case IOHANDLE_WRITEBEI16:
+    {
+        Balau::Future<void> c = h->writeBEI16((int16_t)L.tonumber());
+        return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+    }
+        break;
+    case IOHANDLE_WRITEBEI32:
+    {
+        Balau::Future<void> c = h->writeBEI32((int32_t)L.tonumber());
+        return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+    }
+        break;
+    case IOHANDLE_WRITEBEI64:
+    {
+        int64_t v;
+        if (L.istable()) {
+            Balau::BigInt * b = L.recast<Balau::BigInt>();
+            v = b->to_int64();
+        } else if (L.type() == LUA_TSTRING) {
+            Balau::BigInt b(L.tostring());
+            v = b.to_int64();
+        } else {
+            v = (int64_t)L.tonumber();
+        }
+        Balau::Future<void> c = h->writeBEI64(v);
+        return L.yield(Balau::Future<int>([L, c]() mutable { c.run(); return 0; }));
+    }
+        break;
     }
 
     return r;
@@ -209,6 +461,18 @@ void Balau::LuaHandleFactory::pushObjectAndMembers(Lua & L) {
     PUSH_METHOD(IOHandle, IOHANDLE_READI16);
     PUSH_METHOD(IOHandle, IOHANDLE_READI32);
     PUSH_METHOD(IOHandle, IOHANDLE_READI64);
+    PUSH_METHOD(IOHandle, IOHANDLE_READLEU16);
+    PUSH_METHOD(IOHandle, IOHANDLE_READLEU32);
+    PUSH_METHOD(IOHandle, IOHANDLE_READLEU64);
+    PUSH_METHOD(IOHandle, IOHANDLE_READLEI16);
+    PUSH_METHOD(IOHandle, IOHANDLE_READLEI32);
+    PUSH_METHOD(IOHandle, IOHANDLE_READLEI64);
+    PUSH_METHOD(IOHandle, IOHANDLE_READBEU16);
+    PUSH_METHOD(IOHandle, IOHANDLE_READBEU32);
+    PUSH_METHOD(IOHandle, IOHANDLE_READBEU64);
+    PUSH_METHOD(IOHandle, IOHANDLE_READBEI16);
+    PUSH_METHOD(IOHandle, IOHANDLE_READBEI32);
+    PUSH_METHOD(IOHandle, IOHANDLE_READBEI64);
     PUSH_METHOD(IOHandle, IOHANDLE_WRITEU8);
     PUSH_METHOD(IOHandle, IOHANDLE_WRITEU16);
     PUSH_METHOD(IOHandle, IOHANDLE_WRITEU32);
@@ -217,6 +481,18 @@ void Balau::LuaHandleFactory::pushObjectAndMembers(Lua & L) {
     PUSH_METHOD(IOHandle, IOHANDLE_WRITEI16);
     PUSH_METHOD(IOHandle, IOHANDLE_WRITEI32);
     PUSH_METHOD(IOHandle, IOHANDLE_WRITEI64);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITELEU16);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITELEU32);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITELEU64);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITELEI16);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITELEI32);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITELEI64);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITEBEU16);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITEBEU32);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITEBEU64);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITEBEI16);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITEBEI32);
+    PUSH_METHOD(IOHandle, IOHANDLE_WRITEBEI64);
 }
 
 

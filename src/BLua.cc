@@ -100,7 +100,7 @@ int Balau::LuaStatics::dumpvars(lua_State * __L) {
 
     IO<Handle> h(L.recast<Balau::Handle>());
 
-    if (h.isA<Buffer>()) {
+    if (!h->canEAgainOnWrite()) {
         L.dumpvars(h, prefix);
     } else {
         IO<Handle> s(new Buffer());
