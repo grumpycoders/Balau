@@ -233,6 +233,7 @@
     <ClCompile Include="..\..\src\Printer.cc" />
     <ClCompile Include="..\..\src\Selectable.cc" />
     <ClCompile Include="..\..\src\SimpleMustache.cc" />
+    <ClCompile Include="..\..\src\SmartWriter.cc" />
     <ClCompile Include="..\..\src\Socket.cc" />
     <ClCompile Include="..\..\src\StdIO.cc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -294,6 +295,7 @@
     <ClInclude Include="..\..\includes\Printer.h" />
     <ClInclude Include="..\..\includes\Selectable.h" />
     <ClInclude Include="..\..\includes\SimpleMustache.h" />
+    <ClInclude Include="..\..\includes\SmartWriter.h" />
     <ClInclude Include="..\..\includes\Socket.h" />
     <ClInclude Include="..\..\includes\StacklessTask.h" />
     <ClInclude Include="..\..\includes\Task.h" />

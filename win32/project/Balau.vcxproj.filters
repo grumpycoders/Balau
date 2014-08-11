@@ -195,6 +195,9 @@
     <ClCompile Include="..\getopt\getopt.c">
       <Filter>Third Party\getopt</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\SmartWriter.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\includes\Async.h">
@@ -364,6 +367,9 @@
     </ClInclude>
     <ClInclude Include="..\getopt\getopt.h">
       <Filter>Third Party\getopt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\includes\SmartWriter.h">
+      <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
