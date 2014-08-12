@@ -206,6 +206,10 @@ extern "C" {
 
 int BALAU_MAIN(int argc, char ** argv) {
     setlocale(LC_ALL, "");
+#ifdef _WIN32
+    SetConsoleCP(65001);
+    SetConsoleOutputCP(65001);
+#endif
     Balau::Main mainClass;
     return mainClass.bootstrap(argc, argv);
 }
