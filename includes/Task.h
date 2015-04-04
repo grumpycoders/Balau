@@ -1,10 +1,10 @@
 #pragma once
 
 #include <stdlib.h>
-#include <functional>
-#ifndef _WIN32
-#include <coro.h>
+#ifdef __linux
+#include <ucontext.h>
 #endif
+#include <functional>
 #include <ev++.h>
 #include <list>
 #include <Exceptions.h>
@@ -243,7 +243,7 @@ class Task {
     }
     void * m_stack = NULL;
 #ifndef _WIN32
-    coro_context m_ctx;
+    ucontext_t m_ctx;
 #else
     void * m_fiber = NULL;
 #endif

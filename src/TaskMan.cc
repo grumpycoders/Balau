@@ -222,9 +222,7 @@ void Balau::TaskMan::stopMe(int code) {
 }
 
 Balau::TaskMan::TaskMan() {
-#ifndef _WIN32
-    coro_create(&m_returnContext, 0, 0, 0, 0);
-#else
+#ifdef _WIN32
     m_fiber = ConvertThreadToFiber(NULL);
     RAssert(m_fiber, "ConvertThreadToFiber returned NULL");
 #endif

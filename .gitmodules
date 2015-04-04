@@ -1,6 +1,3 @@
-[submodule "libcoro"]
-	path = libcoro
-	url = ../libcoro
 [submodule "libev"]
 	path = libev
 	url = ../libev

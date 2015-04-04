@@ -63,7 +63,12 @@ void Balau::Task::setup(TaskMan * taskMan, void * stack) {
 #ifndef _WIN32
         IAssert(stack, "Can't setup a coroutine without a stack");
         m_stack = stack;
-        coro_create(&m_ctx, trampoline, this, m_stack, size);
+        int r = getcontext(&m_ctx);
+        RAssert(r == 0, "Unable to get current context: errno = %i", errno);
+        m_ctx.uc_stack.ss_sp = stack;
+        m_ctx.uc_stack.ss_size = size;
+        m_ctx.uc_link = &m_taskMan->m_returnContext;
+        makecontext(&m_ctx, (void(*)()) trampoline, 1, this);
 #else
         IAssert(!stack, "We shouldn't allocate stacks with Fibers");
         m_stack = NULL;
@@ -156,7 +161,7 @@ void Balau::Task::coroutine() {
     }
     if (!m_stackless) {
 #ifndef _WIN32
-        coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
+        swapcontext(&m_ctx, &m_taskMan->m_returnContext);
 #else
         SwitchToFiber(m_taskMan->m_fiber);
 #endif
@@ -174,7 +179,7 @@ void Balau::Task::switchTo() {
         coroutine();
     } else {
 #ifndef _WIN32
-        coro_transfer(&m_taskMan->m_returnContext, &m_ctx);
+        swapcontext(&m_taskMan->m_returnContext, &m_ctx);
 #else
         SwitchToFiber(m_fiber);
 #endif
@@ -193,7 +198,7 @@ bool Balau::Task::yield(bool stillRunning) {
         return true;
     } else {
 #ifndef _WIN32
-        coro_transfer(&m_ctx, &m_taskMan->m_returnContext);
+        swapcontext(&m_ctx, &m_taskMan->m_returnContext);
 #else
         SwitchToFiber(m_taskMan->m_fiber);
 #endif

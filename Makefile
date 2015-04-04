@@ -8,7 +8,7 @@ CPPFLAGS += -g3 -gdwarf-2 -D_DEBUG -DEV_VERIFY=3
 LDFLAGS += -g3 -gdwarf-2
 endif
 
-INCLUDES = includes libcoro libev LuaJIT/src lcrypt libtommath libtomcrypt/src/headers src/jsoncpp/include
+INCLUDES = includes libev LuaJIT/src lcrypt libtommath libtomcrypt/src/headers src/jsoncpp/include
 LIBS = z curl cares
 DEFINES = _LARGEFILE64_SOURCE LITTLE_ENDIAN LTM_DESC LTC_SOURCE USE_LTM
 
@@ -30,7 +30,7 @@ LDLIBS = $(addprefix -l, $(LIBS))
 
 vpath %.cpp src/jsoncpp/src
 vpath %.cc src:tests
-vpath %.c libcoro:libev:win32/pthreads-win32:win32/iconv:win32/regex:lcrypt
+vpath %.c libev:win32/pthreads-win32:win32/iconv:win32/regex:lcrypt
 
 BALAU_SOURCES = \
 Exceptions.cc \
@@ -101,12 +101,6 @@ darwin-eprintf.c \
 
 endif
 
-ifneq ($(SYSTEM),MINGW32)
-LIBCORO_SOURCES = \
-coro.c \
-
-endif
-
 LIBEV_SOURCES = \
 ev.c \
 event.c \
@@ -126,9 +120,9 @@ test-Regex.cc \
 
 LIB = libBalau.a
 
-BALAU_OBJECTS = $(addsuffix .o, $(notdir $(basename $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(LIBEV_SOURCES) $(WIN32_SOURCES) $(DARWIN_SOURCES))))
+BALAU_OBJECTS = $(addsuffix .o, $(notdir $(basename $(BALAU_SOURCES) $(LIBEV_SOURCES) $(WIN32_SOURCES) $(DARWIN_SOURCES))))
 
-WHOLE_SOURCES = $(BALAU_SOURCES) $(LIBCORO_SOURCES) $(LIBEV_SOURCES) $(WIN32_SOURCES) $(DARWIN_SOURCES) $(TEST_SOURCES)
+WHOLE_SOURCES = $(BALAU_SOURCES) $(LIBEV_SOURCES) $(WIN32_SOURCES) $(DARWIN_SOURCES) $(TEST_SOURCES)
 TESTS = $(addsuffix .$(BINEXT), $(notdir $(basename $(TEST_SOURCES))))
 
 ALL_OBJECTS = $(addsuffix .o, $(notdir $(basename $(WHOLE_SOURCES))))

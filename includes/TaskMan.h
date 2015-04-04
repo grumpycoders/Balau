@@ -3,8 +3,10 @@
 #include <stdint.h>
 #include <curl/curl.h>
 #ifndef _WIN32
-#include <coro.h>
 #include <netdb.h>
+#endif
+#ifdef __linux
+#include <ucontext.h>
 #endif
 #include <ev++.h>
 #ifdef _MSC_VER
@@ -86,10 +88,12 @@ class TaskMan {
     void asyncIdleReady() {
         m_evt.send();
     }
-#ifndef _WIN32
-    coro_context m_returnContext;
-#else
+#if defined(__linux)
+    ucontext_t m_returnContext;
+#elif defined (_WIN32)
     void * m_fiber;
+#else
+    void * m_returnContext;
 #endif
     friend class Task;
     friend class CurlTask;
