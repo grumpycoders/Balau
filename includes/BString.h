@@ -48,15 +48,27 @@ class String : private std::string {
 
     String & set(const char * fmt, va_list) printfwarning(2, 0);
     String & set(const char * fmt, ...) printfwarning(2, 3) { va_list ap; va_start(ap, fmt); set(fmt, ap); va_end(ap); return *this; }
-    String & set(const String & fmt, ...) { va_list ap; va_start(ap, fmt); set(fmt.to_charp(), ap); va_end(ap); return *this; }
+#if (_MSC_VER >= 1900)
+    String & set(const String fmt, ...) { va_list ap; va_start(ap, fmt); set(fmt.to_charp(), ap); va_end(ap); return *this; }
+#else
+	String & set(const String & fmt, ...) { va_list ap; va_start(ap, fmt); set(fmt.to_charp(), ap); va_end(ap); return *this; }
+#endif
 
     String & append(const char * fmt, va_list) printfwarning(2, 0);
     String & append(const char * fmt, ...) printfwarning(2, 3) { va_list ap; va_start(ap, fmt); append(fmt, ap); va_end(ap); return *this; }
-    String & append(const String & fmt, ...) { va_list ap; va_start(ap, fmt); append(fmt.to_charp(), ap); va_end(ap); return *this; }
+#if (_MSC_VER >= 1900)
+    String & append(const String fmt, ...) { va_list ap; va_start(ap, fmt); append(fmt.to_charp(), ap); va_end(ap); return *this; }
+#else
+	String & append(const String & fmt, ...) { va_list ap; va_start(ap, fmt); append(fmt.to_charp(), ap); va_end(ap); return *this; }
+#endif
 
     int scanf(const char * fmt, va_list ap) const { return ::vsscanf(c_str(), fmt, ap); }
     int scanf(const char * fmt, ...) const printfwarning(2, 3) { va_list ap; va_start(ap, fmt); int r = scanf(fmt, ap); va_end(ap); return r; }
-    int scanf(const String & fmt, ...) const { va_list ap; va_start(ap, fmt); int r = scanf(fmt.to_charp(), ap); va_end(ap); return r; }
+#if (_MSC_VER >= 1900)
+    int scanf(const String fmt, ...) const { va_list ap; va_start(ap, fmt); int r = scanf(fmt.to_charp(), ap); va_end(ap); return r; }
+#else
+	int scanf(const String & fmt, ...) const { va_list ap; va_start(ap, fmt); int r = scanf(fmt.to_charp(), ap); va_end(ap); return r; }
+#endif
 
     const char * to_charp(size_t begin = 0) const { return c_str() + begin; }
     String extract(size_t begin = 0, size_t size = static_cast<size_t>(-1)) const { return substr(begin, size); }
