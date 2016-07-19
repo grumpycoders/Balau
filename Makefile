@@ -22,7 +22,7 @@ ifeq ($(SYSTEM),Linux)
     CONFIG_H = linux-config.h
 endif
 
-CPPFLAGS_NO_ARCH += $(addprefix -I, $(INCLUDES)) -fexceptions -imacros $(CONFIG_H)
+CPPFLAGS_NO_ARCH += $(addprefix -I, $(INCLUDES)) -fexceptions -imacros $(ROOT_DIR)/$(CONFIG_H)
 CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS) $(addprefix -D, $(DEFINES))
 
 LDFLAGS += $(ARCH_FLAGS)

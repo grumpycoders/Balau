@@ -1,3 +1,5 @@
+ROOT_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+
 ifeq ($(SYSTEM),)
     SYSTEM := $(shell uname | cut -f 1 -d_)
 endif
