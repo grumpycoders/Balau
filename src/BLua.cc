@@ -1023,7 +1023,7 @@ void Balau::Lua::showstack(int level) {
             t = "Unknown";
         }
 
-        Printer::log(level, String(i) + ": " + t);
+        Printer::slog(level, String(i) + ": " + t);
     }
 }
 

@@ -55,19 +55,13 @@ class Printer {
     void setGlobal();
 
     static Printer * getPrinter();
-#if (_MSC_VER >= 1900)
-    static void log(uint32_t level, const String fmt, ...) { va_list ap; va_start(ap, fmt); vlog(level, fmt.to_charp(), ap); va_end(ap); }
-#else
-	static void log(uint32_t level, const String & fmt, ...) { va_list ap; va_start(ap, fmt); vlog(level, fmt.to_charp(), ap); va_end(ap); }
-#endif
+    template<typename... Args>
+    static void slog(uint32_t level, const String & fmt, Args... args) { slog(level, fmt.to_charp(), args...); }
     static void log(uint32_t level, const char * fmt, ...) printfwarning(2, 3) { va_list ap; va_start(ap, fmt); vlog(level, fmt, ap); va_end(ap); }
     static void vlog(uint32_t level, const char * fmt, va_list ap) printfwarning(2, 0) { getPrinter()->_log(level, fmt, ap); }
 
-#if (_MSC_VER >= 1900)
-    static void print(const String fmt, ...) { va_list ap; va_start(ap, fmt); vprint(fmt.to_charp(), ap); va_end(ap); }
-#else
-	static void print(const String & fmt, ...) { va_list ap; va_start(ap, fmt); vprint(fmt.to_charp(), ap); va_end(ap); }
-#endif
+    template<typename... Args>
+	static void sprint(const String & fmt, Args... args) { sprint(fmt.to_charp(), args...); }
     static void print(const char * fmt, ...) printfwarning(1, 2) { va_list ap; va_start(ap, fmt); vprint(fmt, ap); va_end(ap); }
     static void vprint(const char * fmt, va_list ap) printfwarning(1, 0) { getPrinter()->_print(fmt, ap); }
 
