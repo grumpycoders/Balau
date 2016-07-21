@@ -1,41 +1,48 @@
 #include <iconv.h>
 #include <ctype.h>
 
+#include "Exceptions.h"
 #include "Printer.h"
 #include "BString.h"
 
-Balau::String & Balau::String::set(const char * fmt, va_list ap) {
+Balau::String & Balau::String::vset(const char * fmt, va_list ap) {
     unsigned int l;
+    char * t = NULL;
 #ifdef _WIN32
-    // Microsoft is stupid.
-    char tt[4096];
-    l = _vsnprintf(tt, sizeof(tt) - 1, fmt, ap);
-    tt[4095] = 0;
-    assign(tt, l);
+    l = _vscprintf(fmt, ap);
+    if (l >= 0) {
+        t = (char *) Alloc::malloc(l + 1);
+        l = vsnprintf_s(t, l + 1, _TRUNCATE, fmt, ap);
+    }
 #else
-    char * t;
     l = vasprintf(&t, fmt, ap);
-    assign(t, l);
-    free(t);
 #endif
+    if (t) {
+        assign(t, l);
+        free(t);
+    } else {
+        clear();
+    }
 
     return *this;
 }
 
-Balau::String & Balau::String::append(const char * fmt, va_list ap) {
+Balau::String & Balau::String::vappend(const char * fmt, va_list ap) {
     unsigned int l;
+    char * t = NULL;
 #ifdef _WIN32
-    // Microsoft is stupid.
-    char tt[4096];
-    l = _vsnprintf(tt, sizeof(tt)-1, fmt, ap);
-    tt[4095] = 0;
-    std::string::append(tt, l);
+    l = _vscprintf(fmt, ap);
+    if (l >= 0) {
+        t = (char *) Alloc::malloc(l + 1);
+        l = vsnprintf_s(t, l + 1, _TRUNCATE, fmt, ap);
+    }
 #else
-    char * t;
     l = vasprintf(&t, fmt, ap);
-    std::string::append(t, l);
-    free(t);
 #endif
+    if (t) {
+        std::string::append(t, l);
+        free(t);
+    }
 
     return *this;
 }
@@ -45,9 +52,11 @@ int Balau::String::strchrcnt(char c) const {
     int r = 0;
     const char * buffer = data();
 
-    for (unsigned int i = 0; i < l; i++)
-        if (buffer[i] == c)
+    for (unsigned int i = 0; i < l; i++) {
+        if (buffer[i] == c) {
             r++;
+        }
+    }
 
     return r;
 }
@@ -56,11 +65,13 @@ Balau::String & Balau::String::do_ltrim() {
     size_t l = length(), s = 0;
     const char * buffer = data();
 
-    for (size_t i = 0; i < l; i++)
-        if (isspace(buffer[i]))
+    for (size_t i = 0; i < l; i++) {
+        if (isspace(buffer[i])) {
             s++;
-        else
+        } else {
             break;
+        }
+    }
 
     erase(0, s);
 
@@ -71,19 +82,23 @@ Balau::String & Balau::String::do_rtrim() {
     size_t i, l = length(), p = l;
     const char * buffer = data();
 
-    if (l == 0)
+    if (l == 0) {
         return *this;
+    }
 
-    for (i = l - 1; i > 0; i--)
-        if (isspace(buffer[i]))
+    for (i = l - 1; i > 0; i--) {
+        if (isspace(buffer[i])) {
             p--;
-        else
+        } else {
             break;
+        }
+    }
 
-    if ((i == 0) && isspace(buffer[0]))
+    if ((i == 0) && isspace(buffer[0])) {
         clear();
-    else
+    } else {
         erase(p);
+    }
 
     return *this;
 }
@@ -100,8 +115,9 @@ Balau::String & Balau::String::do_upper() {
 Balau::String & Balau::String::do_lower() {
     size_t l = length();
 
-    for (size_t i = 0; i < l; i++)
+    for (size_t i = 0; i < l; i++) {
         (*this)[i] = tolower((*this)[i]);
+    }
 
     return *this;
 }
@@ -115,13 +131,14 @@ Balau::String & Balau::String::do_iconv(const char * from, const char * _to) {
     char * outbuf, * t;
     size_t inleft, outleft;
 
-    if ((cd = iconv_open(to.c_str(), from)) == (iconv_t) (-1))
+    if ((cd = iconv_open(to.c_str(), from)) == (iconv_t)(-1)) {
         return *this;
+    }
 
     inleft = length();
     outleft = inleft * 8;
     inbuf = c_str();
-    t = outbuf = (char *) malloc(outleft + 1);
+    t = outbuf = (char *) Alloc::malloc(outleft + 1);
     memset(t, 0, outleft + 1);
 #ifdef HAVE_PROPER_ICONV
     ::iconv(cd, &inbuf, &inleft, &outbuf, &outleft);
@@ -143,8 +160,7 @@ Balau::String::List Balau::String::split(char c) {
 
     while (true) {
         f = ::strchr(p, c);
-        if (!f)
-            break;
+        if (!f) break;
         *f = 0;
         r.push_back(p);
         p = f + 1;
@@ -163,13 +179,15 @@ std::vector<Balau::String> Balau::String::tokenize(const String & delimiters, bo
         if (pos == String::npos) {
             pos = strlen();
 
-            if ((pos != lastPos) || !trimEmpty)
+            if ((pos != lastPos) || !trimEmpty) {
                 tokens.push_back(extract(lastPos, pos - lastPos));
+            }
 
             return tokens;
         } else {
-            if ((pos != lastPos) || !trimEmpty)
+            if ((pos != lastPos) || !trimEmpty) {
                 tokens.push_back(extract(lastPos, pos - lastPos));
+            }
         }
 
         lastPos = pos + 1;

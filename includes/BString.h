@@ -46,29 +46,20 @@ class String : private std::string {
       String(const std::string & s) : std::string(s) { }
       String(String && s) : std::string(s) { }
 
-    String & set(const char * fmt, va_list) printfwarning(2, 0);
-    String & set(const char * fmt, ...) printfwarning(2, 3) { va_list ap; va_start(ap, fmt); set(fmt, ap); va_end(ap); return *this; }
-#if (_MSC_VER >= 1900)
-    String & set(const String fmt, ...) { va_list ap; va_start(ap, fmt); set(fmt.to_charp(), ap); va_end(ap); return *this; }
-#else
-	String & set(const String & fmt, ...) { va_list ap; va_start(ap, fmt); set(fmt.to_charp(), ap); va_end(ap); return *this; }
-#endif
+    String & vset(const char * fmt, va_list) printfwarning(2, 0);
+    String & set(const char * fmt, ...) printfwarning(2, 3) { va_list ap; va_start(ap, fmt); vset(fmt, ap); va_end(ap); return *this; }
+    template<typename... Args>
+    String & sset(const String & fmt, Args... args) { set(fmt.to_charp(), args...); return *this; }
 
-    String & append(const char * fmt, va_list) printfwarning(2, 0);
-    String & append(const char * fmt, ...) printfwarning(2, 3) { va_list ap; va_start(ap, fmt); append(fmt, ap); va_end(ap); return *this; }
-#if (_MSC_VER >= 1900)
-    String & append(const String fmt, ...) { va_list ap; va_start(ap, fmt); append(fmt.to_charp(), ap); va_end(ap); return *this; }
-#else
-	String & append(const String & fmt, ...) { va_list ap; va_start(ap, fmt); append(fmt.to_charp(), ap); va_end(ap); return *this; }
-#endif
+    String & vappend(const char * fmt, va_list) printfwarning(2, 0);
+    String & append(const char * fmt, ...) printfwarning(2, 3) { va_list ap; va_start(ap, fmt); vappend(fmt, ap); va_end(ap); return *this; }
+    template<typename... Args>
+    String & sappend(const String & fmt, Args... args) { append(fmt.to_charp(), args...); return *this; }
 
-    int scanf(const char * fmt, va_list ap) const { return ::vsscanf(c_str(), fmt, ap); }
-    int scanf(const char * fmt, ...) const printfwarning(2, 3) { va_list ap; va_start(ap, fmt); int r = scanf(fmt, ap); va_end(ap); return r; }
-#if (_MSC_VER >= 1900)
-    int scanf(const String fmt, ...) const { va_list ap; va_start(ap, fmt); int r = scanf(fmt.to_charp(), ap); va_end(ap); return r; }
-#else
-	int scanf(const String & fmt, ...) const { va_list ap; va_start(ap, fmt); int r = scanf(fmt.to_charp(), ap); va_end(ap); return r; }
-#endif
+    int vscanf(const char * fmt, va_list ap) const { return ::vsscanf(c_str(), fmt, ap); }
+    int scanf(const char * fmt, ...) const printfwarning(2, 3) { va_list ap; va_start(ap, fmt); int r = vscanf(fmt, ap); va_end(ap); return r; }
+    template<typename... Args>
+    int sscanf(const String & fmt, Args... args) const { return scanf(fmt.to_charp(), args...); }
 
     const char * to_charp(size_t begin = 0) const { return c_str() + begin; }
     String extract(size_t begin = 0, size_t size = static_cast<size_t>(-1)) const { return substr(begin, size); }
