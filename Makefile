@@ -10,7 +10,7 @@ endif
 
 INCLUDES = includes libev LuaJIT/src lcrypt libtommath libtomcrypt/src/headers src/jsoncpp/include
 LIBS = z curl cares
-DEFINES = _LARGEFILE64_SOURCE LITTLE_ENDIAN LTM_DESC LTC_SOURCE USE_LTM
+DEFINES = _LARGEFILE64_SOURCE LITTLE_ENDIAN LTM_DESC LTC_SOURCE USE_LTM LTC_NO_ROLC
 
 ifeq ($(SYSTEM),Darwin)
     LIBS += pthread iconv
@@ -159,7 +159,7 @@ libtommath/libtommath.a:
 libtomcrypt: libtomcrypt/libtomcrypt.a
 
 libtomcrypt/libtomcrypt.a:
-	$(MAKE) -C libtomcrypt CC="$(CC) $(ARCH_FLAGS) -DLTM_DESC -DUSE_LTM -I../libtommath"
+	$(MAKE) -C libtomcrypt CC="$(CC) $(ARCH_FLAGS) -DLTM_DESC -DUSE_LTM -DLTC_NO_ROLC -I../libtommath"
 
 LuaJIT: LuaJIT/src/libluajit.a
 
