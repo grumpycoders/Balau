@@ -210,9 +210,6 @@
     <ClCompile Include="..\..\libtomcrypt\src\ciphers\blowfish.c">
       <Filter>ciphers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libtomcrypt\src\ciphers\camellia.c">
-      <Filter>ciphers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\libtomcrypt\src\ciphers\cast5.c">
       <Filter>ciphers</Filter>
     </ClCompile>
@@ -274,9 +271,6 @@
       <Filter>ciphers\twofish</Filter>
     </ClCompile>
     <ClCompile Include="..\..\libtomcrypt\src\encauth\ccm\ccm_memory.c">
-      <Filter>encauth\ccm</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\libtomcrypt\src\encauth\ccm\ccm_memory_ex.c">
       <Filter>encauth\ccm</Filter>
     </ClCompile>
     <ClCompile Include="..\..\libtomcrypt\src\encauth\ccm\ccm_test.c">
@@ -573,9 +567,6 @@
     <ClCompile Include="..\..\libtomcrypt\src\misc\error_to_string.c">
       <Filter>misc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libtomcrypt\src\misc\pk_get_oid.c">
-      <Filter>misc</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\libtomcrypt\src\misc\zeromem.c">
       <Filter>misc</Filter>
     </ClCompile>
@@ -816,13 +807,7 @@
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_decode_bit_string.c">
       <Filter>pk\asn1\der\bit</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_decode_raw_bit_string.c">
-      <Filter>pk\asn1\der\bit</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_encode_bit_string.c">
-      <Filter>pk\asn1\der\bit</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_encode_raw_bit_string.c">
       <Filter>pk\asn1\der\bit</Filter>
     </ClCompile>
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_length_bit_string.c">
@@ -894,16 +879,10 @@
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_multi.c">
       <Filter>pk\asn1\der\sequence</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_decode_subject_public_key_info.c">
-      <Filter>pk\asn1\der\sequence</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_encode_sequence_ex.c">
       <Filter>pk\asn1\der\sequence</Filter>
     </ClCompile>
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_encode_sequence_multi.c">
-      <Filter>pk\asn1\der\sequence</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_encode_subject_public_key_info.c">
       <Filter>pk\asn1\der\sequence</Filter>
     </ClCompile>
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_length_sequence.c">
@@ -1118,9 +1097,6 @@
     </ClCompile>
     <ClCompile Include="..\..\libtomcrypt\src\pk\rsa\rsa_verify_hash.c">
       <Filter>pk\rsa</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\libtomcrypt\src\pk\dh\dh.c">
-      <Filter>pk\dh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

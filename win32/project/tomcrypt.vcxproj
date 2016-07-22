@@ -147,7 +147,6 @@
     </ClCompile>
     <ClCompile Include="..\..\libtomcrypt\src\ciphers\anubis.c" />
     <ClCompile Include="..\..\libtomcrypt\src\ciphers\blowfish.c" />
-    <ClCompile Include="..\..\libtomcrypt\src\ciphers\camellia.c" />
     <ClCompile Include="..\..\libtomcrypt\src\ciphers\cast5.c" />
     <ClCompile Include="..\..\libtomcrypt\src\ciphers\des.c" />
     <ClCompile Include="..\..\libtomcrypt\src\ciphers\kasumi.c" />
@@ -166,7 +165,6 @@
     <ClCompile Include="..\..\libtomcrypt\src\ciphers\twofish\twofish_tab.c" />
     <ClCompile Include="..\..\libtomcrypt\src\ciphers\xtea.c" />
     <ClCompile Include="..\..\libtomcrypt\src\encauth\ccm\ccm_memory.c" />
-    <ClCompile Include="..\..\libtomcrypt\src\encauth\ccm\ccm_memory_ex.c" />
     <ClCompile Include="..\..\libtomcrypt\src\encauth\ccm\ccm_test.c" />
     <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_addheader.c" />
     <ClCompile Include="..\..\libtomcrypt\src\encauth\eax\eax_decrypt.c" />
@@ -308,7 +306,6 @@
     <ClCompile Include="..\..\libtomcrypt\src\misc\error_to_string.c" />
     <ClCompile Include="..\..\libtomcrypt\src\misc\pkcs5\pkcs_5_1.c" />
     <ClCompile Include="..\..\libtomcrypt\src\misc\pkcs5\pkcs_5_2.c" />
-    <ClCompile Include="..\..\libtomcrypt\src\misc\pk_get_oid.c" />
     <ClCompile Include="..\..\libtomcrypt\src\misc\zeromem.c" />
     <ClCompile Include="..\..\libtomcrypt\src\modes\cbc\cbc_decrypt.c" />
     <ClCompile Include="..\..\libtomcrypt\src\modes\cbc\cbc_done.c" />
@@ -361,9 +358,7 @@
     <ClCompile Include="..\..\libtomcrypt\src\modes\xts\xts_mult_x.c" />
     <ClCompile Include="..\..\libtomcrypt\src\modes\xts\xts_test.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_decode_bit_string.c" />
-    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_decode_raw_bit_string.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_encode_bit_string.c" />
-    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_encode_raw_bit_string.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\bit\der_length_bit_string.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\boolean\der_decode_boolean.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\boolean\der_encode_boolean.c" />
@@ -387,10 +382,8 @@
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_ex.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_flexi.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_multi.c" />
-    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_decode_subject_public_key_info.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_encode_sequence_ex.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_encode_sequence_multi.c" />
-    <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_encode_subject_public_key_info.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_length_sequence.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\sequence\der_sequence_free.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\set\der_encode_set.c" />
@@ -404,12 +397,6 @@
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\utf8\der_decode_utf8_string.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\utf8\der_encode_utf8_string.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\asn1\der\utf8\der_length_utf8_string.c" />
-    <ClCompile Include="..\..\libtomcrypt\src\pk\dh\dh.c">
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4703</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4703</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4703</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4703</DisableSpecificWarnings>
-    </ClCompile>
     <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_decrypt_key.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_encrypt_key.c" />
     <ClCompile Include="..\..\libtomcrypt\src\pk\dsa\dsa_export.c" />
