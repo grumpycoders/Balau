@@ -7,7 +7,7 @@ class BootstrapTask;
 
 class AtStart {
   protected:
-      AtStart(int priority = 0);
+      AtStart(int priority = 100);
     virtual void doStart() = 0;
   private:
       AtStart(const AtStart &) = delete;
@@ -20,7 +20,7 @@ class AtStart {
 
 class AtExit {
   protected:
-      AtExit(int priority = 0);
+      AtExit(int priority = 100);
     virtual void doExit() = 0;
   private:
       AtExit(const AtExit &) = delete;
@@ -33,7 +33,7 @@ class AtExit {
 
 class AtStartAsTask {
   protected:
-      AtStartAsTask(int priority = 0);
+      AtStartAsTask(int priority = 100);
     virtual Task * createStartTask() = 0;
   private:
       AtStartAsTask(const AtStartAsTask &) = delete;
@@ -46,7 +46,7 @@ class AtStartAsTask {
 
 class AtExitAsTask {
   protected:
-      AtExitAsTask(int priority = 0);
+      AtExitAsTask(int priority = 100);
     virtual Task * createExitTask() = 0;
   private:
       AtExitAsTask(const AtExit &) = delete;
