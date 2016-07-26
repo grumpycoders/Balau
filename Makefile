@@ -130,7 +130,9 @@ ALL_DEPS = $(addsuffix .dep, $(notdir $(basename $(WHOLE_SOURCES))))
 
 all: dep lib
 
-tests: $(TESTS)
+build_tests: $(TESTS)
+
+test: build_tests
 ifneq ($(CROSSCOMPILE),true)
 	$(foreach b, $(TESTS), ./$(b) && ) exit 0 || exit 1
 else
@@ -193,4 +195,4 @@ clean:
 	$(MAKE) -C libtommath clean
 	$(MAKE) -C libtomcrypt clean
 
-.PHONY: lib tests clean strip LuaJIT libtommath libtomcrypt
+.PHONY: lib test build_tests clean strip LuaJIT libtommath libtomcrypt
