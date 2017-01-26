@@ -4,6 +4,9 @@
 #ifdef __linux
 #include <ucontext.h>
 #endif
+#ifdef __APPLE__
+#include <setjmp.h>
+#endif
 #include <functional>
 #include <ev++.h>
 #include <list>
@@ -242,10 +245,13 @@ class Task {
         }
     }
     void * m_stack = NULL;
-#ifndef _WIN32
-    ucontext_t m_ctx;
-#else
+#ifdef _WIN32
     void * m_fiber = NULL;
+#elif defined(__APPLE__)
+    jmp_buf m_ctx;
+    bool m_coroutine_setup = false;
+#else
+    ucontext_t m_ctx;
 #endif
     TaskMan * m_taskMan = NULL;
     Status m_status = STARTING;

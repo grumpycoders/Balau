@@ -14,17 +14,6 @@
 #include "TaskMan.h"
 #include "Printer.h"
 
-#ifdef _WIN32
-static const char * strerror_r(int errorno, char * buf, size_t bufsize) {
-#ifdef _MSVC
-    strerror_s(buf, bufsize, errorno);
-    return buf;
-#else
-    return strerror(errorno);
-#endif
-}
-#endif
-
 namespace {
 
 struct cbResults_t {
@@ -111,7 +100,7 @@ void Balau::Output::open(bool truncate) throw (GeneralException) {
                     throw ENoEnt(m_fname);
                 } else {
                     char str[4096];
-                    throw GeneralException(String("Unable to open file ") + m_name + " for reading: " + strerror_r(cbResults->errorno, str, sizeof(str)) + " (err#" + cbResults->errorno + ")");
+                    throw GeneralException(String("Unable to open file ") + m_name + " for reading: " + strerror_ts(cbResults->errorno, str, sizeof(str)) + " (err#" + cbResults->errorno + ")");
                 }
             } else {
                 m_fd = (int) cbResults->result;
@@ -190,7 +179,7 @@ void Balau::Output::close() throw (GeneralException) {
             m_fd = -1;
             if (cbResults->result < 0) {
                 char buf[4096];
-                const char * str = strerror_r(cbResults->errorno, buf, sizeof(buf));
+                const char * str = strerror_ts(cbResults->errorno, buf, sizeof(buf));
                 throw GeneralException(String("Unable to close file ") + m_name + ": " + str);
             }
             delete cbResults;
@@ -271,7 +260,7 @@ ssize_t Balau::Output::write(const void * buf, size_t count) throw (GeneralExcep
                 wseek(result, SEEK_CUR);
             } else {
                 char str[4096];
-                throw GeneralException(String("Unable to write file ") + m_name + ": " + strerror_r(cbResults->errorno, str, sizeof(str)) + " (err#" + cbResults->errorno + ")");
+                throw GeneralException(String("Unable to write file ") + m_name + ": " + strerror_ts(cbResults->errorno, str, sizeof(str)) + " (err#" + cbResults->errorno + ")");
             }
             delete cbResults;
             m_pendingOp = NULL;

@@ -92,8 +92,8 @@ class TaskMan {
     ucontext_t m_returnContext;
 #elif defined (_WIN32)
     void * m_fiber;
-#else
-    void * m_returnContext;
+#elif defined (__APPLE__)
+    jmp_buf m_returnContext;
 #endif
     friend class Task;
     friend class CurlTask;

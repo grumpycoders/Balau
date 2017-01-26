@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
-#include <malloc.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <zlib.h>

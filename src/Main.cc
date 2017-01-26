@@ -4,6 +4,8 @@
 #include "AtStartExit.h"
 #include "StacklessTask.h"
 
+#include <locale.h>
+
 Balau::AtStart * Balau::AtStart::s_head = 0;
 Balau::AtExit * Balau::AtExit::s_head = 0;
 Balau::AtStartAsTask * Balau::AtStartAsTask::s_head = 0;

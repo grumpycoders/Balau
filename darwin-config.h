@@ -27,5 +27,3 @@
 #define HAVE_POLL_H 1
 #define HAVE_SYS_EVENT_H 1
 #define HAVE_SYS_SELECT_H 1
-
-#define __i386__ 1

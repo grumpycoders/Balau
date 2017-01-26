@@ -6,8 +6,12 @@
 #include <Printer.h>
 #include <BString.h>
 
+const char * strerror_ts(int errorno, char * buf, size_t bufsize);
+
 #ifdef _MSC_VER
 typedef __int64 off64_t;
+#elif defined(__APPLE__)
+typedef off_t off64_t;
 #endif
 
 namespace Balau {

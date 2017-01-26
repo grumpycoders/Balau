@@ -13,10 +13,14 @@
 typedef int mode_t;
 #endif
 
-#ifdef _WIN32
-static const char * strerror_r(int errorno, char * buf, size_t bufsize) {
+#if defined(_WIN32) || defined(__APPLE__)
+const char * strerror_ts(int errorno, char * buf, size_t bufsize) {
 #ifdef _MSVC
     strerror_s(buf, bufsize, errorno);
+    return buf;
+#elif defined(__APPLE__)
+    buf[0] = 0;
+    strerror_r(errorno, buf, bufsize);
     return buf;
 #else
     return strerror(errorno);
@@ -378,7 +382,7 @@ int Balau::FileSystem::mkdir(const char * path) throw (GeneralException) {
 
     if (cbResults.result < 0) {
         char str[4096];
-        throw GeneralException(String("Unable to create directory ") + path + ": " + strerror_r(cbResults.errorno, str, sizeof(str)) + " (err#" + cbResults.errorno + ")");
+        throw GeneralException(String("Unable to create directory ") + path + ": " + strerror_ts(cbResults.errorno, str, sizeof(str)) + " (err#" + cbResults.errorno + ")");
     }
 
     return cbResults.result;

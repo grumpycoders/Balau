@@ -4,6 +4,11 @@
 #ifndef _WIN32
 #define CALLBACK
 #endif
+#ifdef __APPLE__
+#include <signal.h>
+#include <setjmp.h>
+#include <unistd.h>
+#endif
 
 #include "Task.h"
 #include "TaskMan.h"
@@ -34,6 +39,17 @@ static void CALLBACK trampoline(void * arg) {
     s_trampoline(arg);
 }
 
+#ifdef __APPLE__
+static Balau::Lock signal_lock;
+static jmp_buf sig_jmp_buf;
+static void * sig_arg;
+static void sig_trampoline(int) {
+    if (_setjmp(sig_jmp_buf) != 0) {
+        s_trampoline(sig_arg);
+    }
+}
+#endif
+
 void Balau::Task::registerTrampoline() {
     AAssert(s_trampoline == NULL, "Don't call registerTrampoline directly");
     s_trampoline = coroutineTrampoline;
@@ -63,12 +79,36 @@ void Balau::Task::setup(TaskMan * taskMan, void * stack) {
 #ifndef _WIN32
         IAssert(stack, "Can't setup a coroutine without a stack");
         m_stack = stack;
+#ifdef __APPLE__
+        signal_lock.enter();
+        int r;
+        stack_t local_stack;
+        local_stack.ss_sp = stack;
+        local_stack.ss_size = size;
+        local_stack.ss_flags = 0;
+        r = sigaltstack(&local_stack, 0);
+        RAssert(r == 0, "Couldn't call sigaltstack");
+        sig_arg = this;
+        struct sigaction action;
+        action.sa_handler = sig_trampoline;
+        sigfillset(&action.sa_mask);
+        action.sa_flags = SA_ONSTACK;
+        sigaction(SIGUSR2, &action, NULL);
+        kill(getpid(), SIGUSR2);
+        signal(SIGUSR2, SIG_DFL);
+        memcpy(m_ctx, sig_jmp_buf, sizeof(sig_jmp_buf));
+        if (_setjmp(sig_jmp_buf) == 0) {
+            _longjmp(m_ctx, 1);
+        }
+        signal_lock.leave();
+#else
         int r = getcontext(&m_ctx);
         RAssert(r == 0, "Unable to get current context: errno = %i", errno);
         m_ctx.uc_stack.ss_sp = stack;
         m_ctx.uc_stack.ss_size = size;
         m_ctx.uc_link = &m_taskMan->m_returnContext;
         makecontext(&m_ctx, (void(*)()) trampoline, 1, this);
+#endif
 #else
         IAssert(!stack, "We shouldn't allocate stacks with Fibers");
         m_stack = NULL;
@@ -91,6 +131,14 @@ Balau::Task::~Task() {
 void Balau::Task::coroutineTrampoline(void * arg) {
     Task * task = reinterpret_cast<Task *>(arg);
     IAssert(task, "We didn't get a task to trampoline from... ?");
+#ifdef __APPLE__
+    if (!task->m_coroutine_setup) {
+        task->m_coroutine_setup = true;
+        if (_setjmp(task->m_ctx) == 0) {
+            _longjmp(sig_jmp_buf, 1);
+        }
+    }
+#endif
     task->coroutine();
 }
 
@@ -160,10 +208,14 @@ void Balau::Task::coroutine() {
         m_status = FAULTED;
     }
     if (!m_stackless) {
-#ifndef _WIN32
-        swapcontext(&m_ctx, &m_taskMan->m_returnContext);
-#else
+#ifdef __APPLE__
+        if (_setjmp(m_ctx) == 0) {
+            _longjmp(m_taskMan->m_returnContext, 1);
+        }
+#elif defined(_WIN32)
         SwitchToFiber(m_taskMan->m_fiber);
+#else
+        swapcontext(&m_ctx, &m_taskMan->m_returnContext);
 #endif
     }
 }
@@ -178,10 +230,14 @@ void Balau::Task::switchTo() {
     if (m_stackless) {
         coroutine();
     } else {
-#ifndef _WIN32
-        swapcontext(&m_taskMan->m_returnContext, &m_ctx);
-#else
+#ifdef __APPLE__
+        if (_setjmp(m_taskMan->m_returnContext) == 0) {
+            _longjmp(m_ctx, 1);
+        }
+#elif defined(_WIN32)
         SwitchToFiber(m_fiber);
+#else
+        swapcontext(&m_taskMan->m_returnContext, &m_ctx);
 #endif
     }
     g_tlsManager->setTLS(oldTLS);
@@ -197,10 +253,14 @@ bool Balau::Task::yield(bool stillRunning) {
     if (m_stackless) {
         return true;
     } else {
-#ifndef _WIN32
-        swapcontext(&m_ctx, &m_taskMan->m_returnContext);
-#else
+#ifdef __APPLE__
+        if (_setjmp(m_ctx) == 0) {
+            _longjmp(m_taskMan->m_returnContext, 1);
+        }
+#elif defined(_WIN32)
         SwitchToFiber(m_taskMan->m_fiber);
+#else
+        swapcontext(&m_ctx, &m_taskMan->m_returnContext);
 #endif
     }
     return false;
