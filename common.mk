@@ -20,7 +20,7 @@ CPPFLAGS += -fno-strict-aliasing
 
 ifeq ($(SYSTEM),Darwin)
     CPPFLAGS += -fPIC
-    LDFLAGS += -fPIC
+    LDFLAGS += -fPIC -pagezero_size 10000 -image_base 100000000
     ARCH_FLAGS =
     STRIP = strip -x
 endif

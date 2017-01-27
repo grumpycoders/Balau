@@ -342,6 +342,7 @@ void Balau::Lua::setCallWrap(lua_CallWrapper wrapper) {
 }
 
 Balau::Lua::Lua() : L(lua_open()) {
+    RAssert(L, "Couldn't create Lua VM");
     setCallWrap(LuaStatics::callwrap);
     declareFunc("hex", LuaStatics::hex);
     declareFunc("dumpvars", LuaStatics::dumpvars);
