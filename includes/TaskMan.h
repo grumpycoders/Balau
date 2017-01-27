@@ -140,6 +140,12 @@ class TaskMan {
     void aresSocketEventCallback(ev::io & w, int revents);
     void aresTimerEventCallback(ev::timer & w, int revents);
     static void aresHostCallback(void * arg, int status, int timeouts, struct hostent * hostent);
+    struct AresRequest {
+        Balau::String name;
+        int family;
+        AresHostCallback * callback;
+    };
+    std::queue<AresRequest *> m_aresRequests;
 
       TaskMan(const TaskMan &) = delete;
     TaskMan & operator=(const TaskMan &) = delete;

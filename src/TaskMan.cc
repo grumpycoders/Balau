@@ -544,8 +544,19 @@ int Balau::TaskMan::mainLoop() {
         bool noWait = !m_pendingAdd.isEmpty() || !yielded.empty() || !stopped.empty();
         bool curlNeedsSpin = (!m_curlTimer.is_active() && m_curlStillRunning != 0) || m_curlGotNewHandles;
 
-        // libev's event "loop". We always runs it once though.
+        // Process c-ares requests
         m_allowedToSignal = true;
+        while (!m_aresRequests.empty()) {
+            AresRequest * request = m_aresRequests.front();
+            m_aresRequests.pop();
+            ares_gethostbyname(m_aresChannel, request->name.to_charp(), request->family, aresHostCallback, request->callback);
+            // Because c-ares might call its callbacks immediately, we don't know if we didn't just wake up a few tasks,
+            // so we need to spin at least once.
+            noWait = true;
+            delete request;
+        }
+
+        // libev's event "loop". We always runs it once though.
         Printer::elog(E_TASK, "TaskMan at %p Going to libev main loop; stopped = %s", this, m_stopped ? "true" : "false");
         ev_run(m_loop, noWait || curlNeedsSpin || m_stopped ? EVRUN_NOWAIT : EVRUN_ONCE);
         Printer::elog(E_TASK, "TaskMan at %p Getting out of libev main loop", this);
@@ -680,8 +691,11 @@ void Balau::TaskMan::unregisterCurlHandle(Balau::CurlTask * curlTask) {
 }
 
 void Balau::TaskMan::getHostByName(const Balau::String & name, int family, AresHostCallback callback) {
-    AresHostCallback * dup = new AresHostCallback(callback);
-    ares_gethostbyname(m_aresChannel, name.to_charp(), family, aresHostCallback, dup);
+    AresRequest * request = new AresRequest();
+    request->name = name;
+    request->family = family;
+    request->callback = new AresHostCallback(callback);
+    m_aresRequests.push(request);
 }
 
 void Balau::TaskMan::aresHostCallback(void * arg, int status, int timeouts, struct hostent * hostent) {
