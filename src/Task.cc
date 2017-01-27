@@ -94,7 +94,7 @@ void Balau::Task::setup(TaskMan * taskMan, void * stack) {
         sigfillset(&action.sa_mask);
         action.sa_flags = SA_ONSTACK;
         sigaction(SIGUSR2, &action, NULL);
-        kill(getpid(), SIGUSR2);
+        pthread_kill(pthread_self(), SIGUSR2);
         signal(SIGUSR2, SIG_DFL);
         memcpy(m_ctx, sig_jmp_buf, sizeof(sig_jmp_buf));
         signal_lock.leave();
