@@ -44,8 +44,9 @@ static Balau::Lock signal_lock;
 static jmp_buf sig_jmp_buf;
 static void * sig_arg;
 static void sig_trampoline(int) {
+    void * arg = sig_arg;
     if (_setjmp(sig_jmp_buf) != 0) {
-        s_trampoline(sig_arg);
+        s_trampoline(arg);
     }
 }
 #endif
@@ -81,12 +82,11 @@ void Balau::Task::setup(TaskMan * taskMan, void * stack) {
         m_stack = stack;
 #ifdef __APPLE__
         signal_lock.enter();
-        int r;
         stack_t local_stack;
         local_stack.ss_sp = stack;
         local_stack.ss_size = size;
         local_stack.ss_flags = 0;
-        r = sigaltstack(&local_stack, 0);
+        int r = sigaltstack(&local_stack, 0);
         RAssert(r == 0, "Couldn't call sigaltstack");
         sig_arg = this;
         struct sigaction action;
@@ -97,9 +97,6 @@ void Balau::Task::setup(TaskMan * taskMan, void * stack) {
         kill(getpid(), SIGUSR2);
         signal(SIGUSR2, SIG_DFL);
         memcpy(m_ctx, sig_jmp_buf, sizeof(sig_jmp_buf));
-        if (_setjmp(sig_jmp_buf) == 0) {
-            _longjmp(m_ctx, 1);
-        }
         signal_lock.leave();
 #else
         int r = getcontext(&m_ctx);
@@ -131,14 +128,6 @@ Balau::Task::~Task() {
 void Balau::Task::coroutineTrampoline(void * arg) {
     Task * task = reinterpret_cast<Task *>(arg);
     IAssert(task, "We didn't get a task to trampoline from... ?");
-#ifdef __APPLE__
-    if (!task->m_coroutine_setup) {
-        task->m_coroutine_setup = true;
-        if (_setjmp(task->m_ctx) == 0) {
-            _longjmp(sig_jmp_buf, 1);
-        }
-    }
-#endif
     task->coroutine();
 }
 

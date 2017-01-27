@@ -249,7 +249,6 @@ class Task {
     void * m_fiber = NULL;
 #elif defined(__APPLE__)
     jmp_buf m_ctx;
-    bool m_coroutine_setup = false;
 #else
     ucontext_t m_ctx;
 #endif
